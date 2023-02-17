@@ -31,6 +31,8 @@ class SitemapsSettings extends BaseConfig
             $site = Craft::$app->getSites()->getPrimarySite();
             $this->siteSettings[$site->id] = $site->id;
         }
+
+        parent::init();
     }
 
     public function enableCustomSections(bool $value): self
