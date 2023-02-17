@@ -16,7 +16,5 @@
 
 ### Breaking Changes
 
-- Updated Project Config settings from `sprout-sent-email`
-  => `sprout-module-sent-email`
-- Updated translation category from `sprout-sent-email`
-  => `sprout-module-sent-email`
+- Updated Project Config settings from `sprout-sent-email` => `sprout-module-sent-email`
+- Updated translation category from `sprout-sent-email` => `sprout-module-sent-email`
