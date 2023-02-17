@@ -25,6 +25,14 @@ class SitemapsSettings extends BaseConfig
 
     public array $groupSettings = [];
 
+    public function init(): void
+    {
+        if (empty($this->siteSettings)) {
+            $site = Craft::$app->getSites()->getPrimarySite();
+            $this->siteSettings[$site->id] = $site->id;
+        }
+    }
+
     public function enableCustomSections(bool $value): self
     {
         $this->enableCustomSections = $value;
@@ -48,12 +56,7 @@ class SitemapsSettings extends BaseConfig
 
     public function siteSettings(array $value): self
     {
-        if (!$value && empty($this->siteSettings)) {
-            $site = Craft::$app->getSites()->getPrimarySite();
-            $this->siteSettings[$site->id] = $site->id;
-        } else {
-            $this->siteSettings = $value;
-        }
+        $this->siteSettings = $value;
 
         return $this;
     }
