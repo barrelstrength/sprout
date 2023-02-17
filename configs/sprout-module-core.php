@@ -1,5 +1,8 @@
 <?php
 
+use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\forms\FormsModule;
+
 /**
  * Core Module Config Overrides
  *
@@ -16,11 +19,15 @@
  * SPROUT_MODULE_CORE_MODULES=[]
  */
 return [
-    // Override replaces the entire modules array
+    // Caution: Override replaces the entire modules array
     'modules' => [
-        'reports' => [
+        DataStudioModule::class => [
             'enabled' => true,
-            'alternateName' => 'Analytics',
+            'alternateName' => '',
+        ],
+        FormsModule::class => [
+            'enabled' => true,
+            'alternateName' => '',
         ],
     ],
 ];
