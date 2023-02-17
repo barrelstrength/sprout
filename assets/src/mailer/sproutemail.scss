@@ -1,0 +1,15 @@
+.sentemail-btngroup .btn {
+    outline: none;
+}
+
+.status.sent, .status.ready {
+    background-color: #27ae60;
+}
+
+.status.scheduled {
+    background-color: #0d99f2;
+}
+
+.status.failed {
+    background-color: #d0021b;
+}

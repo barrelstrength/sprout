@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+
+{% set options = field.options %}
+
+{% if not field.options|length %}
+    {% set options = [
+        { label : "Option One"|t('sprout-module-forms') },
+        { label : "Option Two"|t('sprout-module-forms') },
+        { label : "Option Three"|t('sprout-module-forms') }
+    ] %}
+{% endif %}
+
+<ul>
+    {% for option in options %}
+        <li>
+            <label>
+                {#                {% set checkedStatus = option.default ? true : false %} #}
+
+                {{ forms.checkbox({
+                    name: 'checkboxes',
+                    label: option.label,
+                    checked: checkedStatus ?? 1,
+                    readonly: true,
+                    disabled: true
+                }) }}
+            </label>
+        </li>
+    {% endfor %}
+</ul>

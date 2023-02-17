@@ -1,0 +1,19 @@
+{% import "_includes/forms" as forms %}
+
+{# Setup our field #}
+{{ forms.text({
+    id: name,
+    name: name,
+    value: value is defined ? value : '',
+    placeholder: field.placeholder,
+}) }}
+
+<span class="sprout-regularexpression-button {{ id }}"></span>
+
+{% js %}
+
+    (function() {
+    new Craft.SproutRegularExpressionField("{{ id }}", "{{ name }}", "{{ fieldContext }}");
+    })();
+
+{% endjs %}

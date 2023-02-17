@@ -1,0 +1,105 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{{ forms.selectField({
+    label: "Sitemap Aggregation Method"|t('sprout-module-sitemaps') ~ isProBadge,
+    instructions: "Choose the method to use when generating XML Sitemaps for Sites and Site Groups."|t('sprout-module-sitemaps'),
+    name: 'sitemapAggregationMethod',
+    options: [
+        {
+            label: 'Aggregate by Site (Single-language)'|t('sprout-module-sitemaps'),
+            value: 'singleLanguageSitemaps',
+        },
+        {
+            label: 'Aggregate by Site-Group (Multilingual, multi-regional)'|t('sprout-module-sitemaps'),
+            value: 'multiLingualSitemaps',
+        }
+    ],
+    value: settings.sitemapAggregationMethod,
+    warning: sproutConfigWarning(module, 'sitemapAggregationMethod'),
+    toggle: true,
+    targetPrefix: 'sitemap-aggregation-method-'
+}) }}
+
+{% set siteRows = [] %}
+{% set siteGroupRows = [] %}
+{% set siteErrors = settings.getErrors('siteSettings') %}
+{% set groupErrors = settings.getErrors('groupSettings') %}
+
+{% for site in craft.app.sites.getAllSites() %}
+    {% set siteSettings = settings.siteSettings[site.id] ?? null %}
+
+    {% set siteRows = siteRows|merge({
+        (site.handle): {
+            heading: site.name|t('site'),
+            enabled: include('_includes/forms/lightswitch', {
+                name: 'siteSettings['~site.id~']',
+                on: siteSettings,
+                value: site.id
+            })
+        }
+    }) %}
+{% endfor %}
+
+{% for group in craft.app.sites.getAllGroups() %}
+    {% set groupSettings = settings.groupSettings[group.id] ?? null %}
+
+    {% set siteGroupRows = siteGroupRows|merge({
+        (group.name): {
+            heading: group.name|t('site'),
+            enabled: include('_includes/forms/lightswitch', {
+                name: 'groupSettings['~group.id~']',
+                on: groupSettings,
+                value: group.id
+            })
+        }
+    }) %}
+{% endfor %}
+
+<div id="sitemap-aggregation-method-singleLanguageSitemaps" {% if settings.sitemapAggregationMethod != 'singleLanguageSitemaps' %}class="hidden"{% endif %}>
+    {{ forms.editableTableField({
+        label: "Enable Sitemaps: Single-language"|t('sprout-module-sitemaps'),
+        instructions: "Single-language Sitemaps generate a sitemap.xml for each Site across all Site Groups."|t('sprout-module-sitemaps'),
+        id: 'sites',
+        name: 'sites',
+        cols: {
+            heading: {
+                type: 'heading',
+                heading: "Site"|t('sprout-module-sitemaps'),
+            },
+            enabled: {
+                type: 'heading',
+                heading: "Enabled"|t('sprout-module-sitemaps'),
+                class: 'thin'~(not craft.app.getIsMultiSite() ? ' hidden')
+            }
+        },
+        rows: siteRows,
+        staticRows: true,
+        errors: siteErrors|unique,
+        warning: sproutConfigWarning(module, 'sites'),
+    }) }}
+</div>
+
+<div id="sitemap-aggregation-method-multiLingualSitemaps" {% if not settings.sitemapAggregationMethod != 'multiLingualSitemaps' %}class="hidden"{% endif %}>
+    {{ forms.editableTableField({
+        label: "Enable Sitemaps: Multilingual"|t('sprout-module-sitemaps'),
+        instructions: "Multilingual Sitemaps generate a single, multilingual sitemap.xml file for each Site Group"|t('sprout-module-sitemaps'),
+        id: 'groups',
+        name: 'groups',
+        cols: {
+            heading: {
+                type: 'heading',
+                heading: "Group"|t('sprout-module-sitemaps'),
+            },
+            enabled: {
+                type: 'heading',
+                heading: "Enabled"|t('sprout-module-sitemaps'),
+                class: 'thin'~(not craft.app.getIsMultiSite() ? ' hidden')
+            }
+        },
+        rows: siteGroupRows,
+        staticRows: true,
+        errors: groupErrors|unique,
+        warning: sproutConfigWarning(module, 'groups'),
+    }) }}
+</div>

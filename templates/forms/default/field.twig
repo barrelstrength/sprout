@@ -1,0 +1,79 @@
+{%- set label = field.name ?? null %}
+{%- set instructions = field.instructions ?? null %}
+{%- set name = field.handle ?? null %}
+{%- set required = field.required is defined and field.required ? true : false %}
+
+{%- set id = fieldRenderingOptions.id ?? name %}
+{%- set class = fieldRenderingOptions.class ?? (name ~ '-field') %}
+{%- set value = submission is not empty ? submission.getFieldValue(name) : null %}
+{%- set inlineErrorsEnabled = form.errorDisplayMethod in ['both', 'inline'] ? true : false %}
+{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set errorClass = fieldRenderingOptions.errorClass ?? 'errors' %}
+{%- set fieldCssClasses = field['cssClasses'] is defined and not null ? field.cssClasses : '' %}
+
+{%- set dataAttributes = null %}
+{%- set data = fieldRenderingOptions.data ?? null %}
+{%- for key, dataValue in data %}
+    {%- set dataAttributes = dataAttributes ~ ' data-'~key~'="'~dataValue~'"' %}
+{% endfor -%}
+
+{% set input %}
+    {% set defaultInputVariables = {
+        form: form,
+        submission: submission,
+        field: field,
+        fieldNamespace: fieldNamespace,
+    } %}
+    {% set customInputVariables = field.getFrontEndInputVariables(value, submission, inputRenderingOptions) %}
+    {% include field.getInputTemplate(form) with defaultInputVariables|merge(customInputVariables) only %}
+{% endset %}
+
+{%- namespace fieldNamespace -%}
+    {%- if field.isPlainInput() -%}
+
+        {{ input|raw }}
+
+    {%- else %}
+
+        {% set fieldHtmlTag = field.hasMultipleLabels() ? 'fieldset' : 'div' -%}
+
+        <{{ fieldHtmlTag }}
+        {%- if id %} id="{{ id }}-field"{% endif %} class="field {{ field.getFieldInputFolder() }}
+        {%- if class %} {{ class }}{% endif -%}
+        {%- if fieldCssClasses %} {{ fieldCssClasses }}{% endif -%}
+        {%- if errors %} {{ errorClass }}{% endif -%}
+        {%- if required %} required{% endif -%}
+        " {{- dataAttributes|raw -}}
+        >
+        {% if (label or instructions) and field.displayLabel() -%}
+            <div data-label="form-field-heading">
+                {% if label -%}
+                    {%- if field.hasMultipleLabels() -%}
+                        <legend>{{- label|raw|t('site') -}}</legend>
+                    {%- else -%}
+                        <label{% if name %} for="{{ name }}"{% endif %}>
+                            {{- label|raw|t('site') -}}
+                        </label>
+                    {%- endif -%}
+                {%- endif -%}
+                {% if instructions %}
+                    <p id="{{ id }}-instructions" data-label="form-field-instructions">
+                        {{ instructions|t('site')|raw }}
+                    </p>
+                {%- endif %}
+            </div>
+        {% endif -%}
+
+        <div data-label="form-field-input">
+            {{ input|raw }}
+        </div>
+        {% if inlineErrorsEnabled %}
+            {% include form.getIncludeTemplate('errors') with {
+                errors: errors,
+                name: name
+            } only %}
+        {% endif %}
+
+        </{{ fieldHtmlTag }}>
+    {%- endif -%}
+{%- endnamespace -%}

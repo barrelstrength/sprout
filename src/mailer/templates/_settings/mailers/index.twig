@@ -1,0 +1,57 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set currentSubNavKey = 'mailers' %}
+{% set module = sprout.modules.mailer %}
+{% set settings = module.getSettings() %}
+
+{# {% set mailers = sprout.modules.mailer.mailers.getRegisteredMailers() %} #}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('sprout/settings/email-themes/new') }}" class="btn submit add icon">
+            {{ "New Mailer"|t('sprout-module-mailer') }}
+        </a>
+
+    </div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% if mailers|length %}
+    {% for mailer in mailers %}
+
+        {% set tableData = tableData|merge([{
+            id: mailer.id,
+            labelHtml: {
+                url: mailer.getCpSettingsUrl(),
+                name: mailer.name,
+            },
+            mailerType: mailer.displayName(),
+            title: mailer.name|t('sprout-module-mailer')|e,
+            url: mailer.getCpSettingsUrl(),
+
+        }]) %}
+
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+
+    <div
+        id="admin-table"
+        data-table-data="{{ tableData|json_encode }}">
+    </div>
+
+{% endblock %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% do sprout.modules.core.vite.register('mailer/MailerSettings.js', false) %}
+
+ {% js on ready %}
+
+     new MailerSettings('#admin-table');
+
+ {% endjs %}

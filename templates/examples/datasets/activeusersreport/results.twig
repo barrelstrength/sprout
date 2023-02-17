@@ -1,0 +1,19 @@
+{% set users = craft.users.status('active') %}
+
+{% if settings.limitByDateRange is defined and settings.limitByDateRange %}
+    {% set users = users.lastLoginDate('and, >= ' ~ settings.datetimeStartDate|date('Y-m-d') ~ ', <= ' ~ settings.datetimeEndDate|date('Y-m-d')) %}
+{% endif %}
+
+{% do sprout.twigDataSet.addHeaderRow([
+    "Username",
+    "Name",
+    "Email",
+]) %}
+
+{% for user in users %}
+    {% do sprout.twigDataSet.addRow([
+        user.username,
+        user.name,
+        user.email
+    ]) %}
+{% endfor %}

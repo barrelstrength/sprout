@@ -1,0 +1,48 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'control-panel' %}
+
+{% set module = sprout.modules.core %}
+{% set settings = module.getSettings() %}
+{% set cpSettingsRows = settings.getCpSettingsRows() %}
+
+{% block settings %} <!-- Template: {{ _self }}.twig -->
+
+    {{ forms.editableTableField({
+        label: "Sprout Modules"|t('sprout-module-core'),
+        instructions: "Sprout plugins are composed of one or more modules. Modules can be given custom names or be disabled."|t('sprout-module-core'),
+        id: 'modules',
+        name: 'modules',
+        cols: {
+            heading: {
+                type: 'heading',
+                heading: "Display Name"|t('sprout-module-core'),
+                thin: true,
+                info: 'Customize the Sprout features that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled features will only display here, and will no longer display in the control panel navigation and settings areas.'
+            },
+            enabled: {
+                type: 'heading',
+                thin: true
+            },
+            alternateName: {
+                type: 'singleline',
+                heading: "Alternate Name"|t('sprout-module-core'),
+                info: "Alternate name that will be used to display this module in Control Panel navigation."|t('sprout-module-core')
+            },
+            edition: {
+                type: 'heading',
+                heading: "Edition"|t('sprout-module-core'),
+                thin: true,
+            },
+        }|filter,
+        rows: cpSettingsRows,
+        fullWidth: true,
+        staticRows: true,
+        errors: settings.getErrors('modules'),
+    }) }}
+
+{% endblock %}

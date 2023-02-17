@@ -1,0 +1,12 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.elementSelectField({
+    label: 'Audience'|t('sprout-module-mailer'),
+    instructions: 'Select one or more audiences.'|t('sprout-module-mailer'),
+    id: 'audienceIds',
+    name: 'mailerInstructionsSettings[audienceIds]',
+    elementType: audienceElementType,
+    selectionLabel: "Add Audience"|t('sprout-module-mailer'),
+    sources: '*',
+    elements: audiences
+}) }}

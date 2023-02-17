@@ -1,0 +1,30 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Upgrade to Sprout Data Studio Pro"|t('sprout-module-data-studio') %}
+{% set bodyClass = 'sprout-landing-page' %}
+{% set pluginStoreLink = currentUser.admin ? cpUrl('plugin-store/sprout-data-studio') : 'https://plugins.craftcms.com/sprout-data-studio' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Upgrade. Unleash your data."|t('sprout-module-data-studio'),
+            message: "Sprout Data Studio [pro] enables exports and custom data source API access."|t('sprout-module-data-studio'),
+            primaryButtonText: "Upgrade Now"|t('sprout-module-data-studio'),
+            primaryButtonLink: pluginStoreLink,
+            secondaryButtonText: "Learn More"|t('sprout-module-data-studio'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/data-studio"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('data-studio/screenshots/feature-reports-duty.png'),
+            altText: 'Sprout Data Studio'|t('sprout-module-data-studio')
+        }) }}
+
+    </div>
+
+{% endblock %}

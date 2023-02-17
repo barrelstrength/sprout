@@ -1,0 +1,73 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{{ forms.selectField({
+    first: true,
+    required: true,
+    label: 'Entry Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'Create an entry on this section.'|t('sprout-module-forms')
+    ),
+    id: 'entryTypeId',
+    name: 'entryTypeId',
+    options: sectionsOptions,
+    value: integration.entryTypeId
+}) }}
+
+{{ forms.elementSelectField({
+    label: "Default Author"|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'This author will be used for new Submissions where no author is defined.'|t('sprout-module-forms')
+    ),
+    id: 'defaultAuthorId',
+    name: 'defaultAuthorId',
+    required: true,
+    elementType: integration.getUserElementType(),
+    selectionLabel: "Choose"|t('sprout-module-forms'),
+    limit: 1,
+    elements: [integration.getAuthor()]
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Set Author to Logged in User"|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'Set the author of new Submissions to the logged in user. Uses the Default Author if no user is logged in.'|t('sprout-module-forms')
+    ),
+    id: 'setAuthorToLoggedInUser',
+    name: 'setAuthorToLoggedInUser',
+    toggle: 'settings-save-author',
+    on: integration.setAuthorToLoggedInUser
+}) }}
+
+{{ forms.editableTableField({
+    label: "Field Mapping"|t('sprout-module-forms'),
+    id: 'fieldMapping',
+    name: 'fieldMapping',
+    minRows: integration.fieldMapping|length,
+    maxRows: integration.fieldMapping|length,
+    cols: {
+        sourceFormField: {
+            type: 'singleline',
+            heading: "Form Field"|t('sprout-module-forms'),
+            class: 'formField',
+        },
+        targetIntegrationField: {
+            type: 'select',
+            heading: "Entry Field"|t('sprout-module-forms'),
+            placeholder: "Leave blank and no data will be mapped"|t('sprout-module-forms'),
+            class: 'targetFields',
+            options: []
+        }
+    },
+    rows: integration.fieldMapping,
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}
+
+{% js on ready %}
+    new SproutFormsIntegration({
+    integrationType: "{{ className(integration)|e('js') }}",
+    updateTargetFieldsOnChange: [
+    '#settings-barrelstrength-sproutforms-integrationtypes-EntryElementIntegration-entryTypeId'
+    ]
+    });
+{% endjs %}

@@ -1,0 +1,94 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'redirects' %}
+{% set module = sprout.modules.redirects %}
+{% set settings = module.getSettings() %}
+
+{% set fieldLayout = settings.getFieldLayout() %}
+
+{% block settings %}
+
+    {{ forms.selectField({
+        label: "Match Definition"|t('sprout-module-redirects'),
+        name: 'matchDefinition',
+        instructions: "How to define request URLs for processing matches. The ‘with query strings’ option matches against the entire URL including query strings. The ‘without query strings’ option removes all parameters from the request URL before attempting to match."|t('sprout-module-redirects'),
+        options: [
+            { value: 'urlWithQueryStrings', label: 'URL (with query strings)' },
+            { value: 'urlWithoutQueryStrings', label: 'URL (without query strings)' },
+        ],
+        value: settings.matchDefinition,
+        warning: sproutConfigWarning(module, 'matchDefinition')
+    }) }}
+
+    {{ forms.selectField({
+        label: "Query String Strategy"|t('sprout-module-redirects'),
+        name: 'queryStringStrategy',
+        instructions: "How to treat query strings after processing a redirect. 'Remove query strings' will remove the query string from the incoming URL entirely. 'Append query strings' will add any query string from the incoming URL to the New URL."|t('sprout-module-redirects'),
+        options: [
+            { value: 'removeQueryStrings', label: 'Remove query strings' },
+            { value: 'appendQueryStrings', label: 'Append query strings' },
+        ],
+        value: settings.queryStringStrategy,
+        warning: sproutConfigWarning(module, 'queryStringStrategy')
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Log 404 Redirects"|t('sprout-module-redirects'),
+        instructions: "Log 'Page Not Found' errors as 404 Redirects. 404s will be saved as disabled Redirects and can be updated to 301 or 302 Redirects."|t('sprout-module-redirects'),
+        name: 'enable404RedirectLog',
+        toggle: 'settings-total-404redirects',
+        on: settings.enable404RedirectLog ? true : false,
+        onLabel: "Save Data"|t('sprout-module-redirects'),
+        offLabel: "Don't Save Data"|t('sprout-module-redirects'),
+        warning: sproutConfigWarning(module, 'enable404RedirectLog'),
+        first: true
+    }) }}
+
+    <div id="settings-total-404redirects"
+        class="{% if not settings.enable404RedirectLog %} hidden {% endif %}">
+
+        {{ forms.lightswitchField({
+            label: "Track Remote IP"|t('sprout-module-redirects'),
+            instructions: "Enable to capture the IP Address used when a 404 request is saved. IP Addresses may be considered personal information."|t('sprout-module-redirects'),
+            name: 'trackRemoteIp',
+            on: settings.trackRemoteIp ? true : false,
+            onLabel: "Save Data"|t('sprout-module-redirects'),
+            offLabel: "Don't Save Data"|t('sprout-module-redirects'),
+            warning: sproutConfigWarning(module, 'trackRemoteIp')
+        }) }}
+
+        {{ forms.textField({
+            label: "404 Redirect Limit"|t('sprout-module-redirects'),
+            instructions: "The target number of 404 Redirects that will be stored in the database per-site, after the cleanup task runs. When the limit is reached, the least recently updated 404 Redirects will be deleted from the Redirects stored for that site."|t('sprout-module-redirects'),
+            name: 'total404Redirects',
+            size:'10',
+            placeholder: '250',
+            value: settings.total404Redirects,
+            errors: settings.getErrors('total404Redirects'),
+            warning: sproutConfigWarning(module, 'total404Redirects')
+        }) }}
+
+        {{ forms.selectField({
+            label: "Cleanup Probability"|t('sprout-module-redirects'),
+            id: 'cleanup-probability',
+            name: 'cleanupProbability',
+            instructions: "The probability that the 404 Redirect cleanup task will run each web request. A lower probability will trigger a cleanup task less often and the number of 404 Redirects stored in the database may be higher than the 404 Redirect Limit target until the cleanup task is triggered."|t('sprout-module-redirects'),
+            options: [
+                { value: '0', label: 'None' },
+                { value: '100000', label: '1 in 10'},
+                { value: '10000', label: '1 in 100' },
+                { value: '1000', label: '1 in 1,000' },
+                { value: '100', label: '1 in 10,000' },
+                { value: '10', label: '1 in 100,000' },
+                { value: '1', label: '1 in 1,000,000' }
+            ],
+            value: settings.cleanupProbability,
+            warning: sproutConfigWarning(module, 'cleanupProbability')
+        }) }}
+
+    </div>
+
+{% endblock %}

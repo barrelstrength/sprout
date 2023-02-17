@@ -1,0 +1,31 @@
+<strong style="display:inline-block;padding:7px 10px;">
+
+    {% if sitemapSection.enabled %}
+        <span class="status live"></span>
+    {% else %}
+        <span class="status disabled"></span>
+    {% endif %}
+
+    {% if isCustom is defined and isCustom %}
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapSection.id, {
+            site: sitemapSection.getSite().handle
+        }) }}"
+            class="sprout-sectiontitle">
+            <code>{{ sitemapSection.uri }}</code>
+        </a>
+    {% else %}
+        {{ sitemapSection.name }}
+
+        {% if sitemapSection.uri == '__home__' %}
+            <span data-icon="home" title="Homepage"></span>
+        {% endif %}
+
+        {{ hiddenInput('sitemaps[sections]['~urlEnabledSectionKey~'][uri]', sitemapSection.uri) }}
+    {% endif %}
+
+
+    {% if urlEnabledSectionKey is defined %}
+        {{ hiddenInput('sitemaps[sections]['~urlEnabledSectionKey~'][id]', urlEnabledSectionKey) }}
+    {% endif %}
+
+</strong>

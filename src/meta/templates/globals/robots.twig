@@ -1,0 +1,31 @@
+{% extends "sprout-module-meta/_layouts/global-metadata" %}
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% set module = sprout.modules.meta %}
+{% set robots = module.optimizeMetadata.prepareRobotsMetadataForSettings(globals.robots) %}
+
+{% block content %}
+
+    <form method="post" accept-charset="UTF-8" data-saveshortcut>
+        {{ csrfInput() }}
+        {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+        {{ hiddenInput('globalColumn', 'robots') }}
+        {{ hiddenInput('siteId', globals.siteId) }}
+
+        {% set redirectUrl = craft.app.request.pathInfo~'?site='~currentSite.handle %}
+        {{ redirectInput(redirectUrl) }}
+
+        {% set robotsContext = 'globals' %}
+        {% set robotsNamespace = 'meta[globals][robots]' %}
+        {% include "sprout-module-meta/_components/fields/ElementMetadata/blocks/robots" %}
+
+        <hr>
+
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="Save"/>
+        </div>
+
+    </form>
+
+{% endblock %}

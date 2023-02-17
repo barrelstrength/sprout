@@ -1,0 +1,12 @@
+<div class="sproutforms-exampleinput-address">
+
+    <div class="address-icon">{{ svg('@Sprout/Assets/dist/static/fields/icons/map-marker-alt.svg') }}</div>
+    {% if not field.settings.showCountryDropdown %}
+        <p>{{ "A {defaultCountry} address field will display in your front-end form."|t('sprout-module-forms', {
+                defaultCountry: field.settings.defaultCountry
+            }) }}</p>
+    {% else %}
+        <p>{{ "The Address field will adapt to the selected country in your front-end form."|t('sprout-module-forms') }}</p>
+    {% endif %}
+
+</div>

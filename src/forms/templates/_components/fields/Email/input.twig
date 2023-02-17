@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.text({
+    id: id,
+    name: name,
+    value: value is defined ? value : '',
+    placeholder: placeholder ?? null,
+}) }}
+
+<span class="sprout-email-button {{ id }}">
+    <a href="" target="_blank">{{ svg('@Sprout/Assets/dist/static/fields/icons/envelope.svg') }}</a>
+</span>
+
+{# Element may be null for Quick Entry widget #}
+{% js on ready %}
+    new SproutEmailField("{{ namespaceInputId }}","{{ id }}","{{ element.id ?? null }}","{{ name }}","{{ fieldContext }}");
+
+    document.querySelector('input#{{ namespaceInputId }}').addEventListener('input', function() {
+    new SproutEmailField("{{ namespaceInputId }}","{{ id }}","{{ element.id ?? null }}","{{ name }}","{{ fieldContext }}");
+    });
+{% endjs %}

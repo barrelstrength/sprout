@@ -1,0 +1,28 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Welcome to Sprout Data Studio"|t('sprout-module-data-studio') %}
+{% set bodyClass = 'sprout-landing-page' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Aye aye, captain. Reporting for duty!"|t('sprout-module-data-studio'),
+            message: "Sprout Data Studio [pro] makes it easy to create user-friendly, project-specific, reports. Developers can build data sets in Twig, MySQL, and PHP."|t('sprout-module-data-studio'),
+            primaryButtonText: "Get Started"|t('sprout-module-data-studio'),
+            primaryButtonLink: cpUrl('sprout/data-studio'),
+            secondaryButtonText: "Read the Docs"|t('sprout-module-data-studio'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/data-studio"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('data-studio/screenshots/feature-reports-duty.png'),
+            altText: 'Sprout Data Studio'|t('sprout-module-data-studio')
+        }) }}
+
+    </div>
+{% endblock %}

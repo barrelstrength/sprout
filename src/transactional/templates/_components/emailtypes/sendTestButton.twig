@@ -1,0 +1,16 @@
+{% import "_includes/forms" as forms %}
+
+<div class="btngroup">
+    <a
+        class="btn secondary sprout-send-btn-bg sprout-send-email-btn"
+        data-email-id="{{ email.id }}"
+        data-get-send-email-html-action="sprout-module-mailer/mailer/get-send-test-html"
+        data-send-email-action="sprout-module-mailer/mailer/send-test"
+        data-modal-title="{{ 'Send a test'|t('sprout-module-mailer') }}"
+        data-modal-action-btn-label="{{ 'Send Test'|t('sprout-module-mailer') }}"
+    >
+        {{ "Send a test"|t('sprout-module-mailer') }}
+    </a>
+</div>
+
+{% do sprout.modules.core.vite.register('mailer/SendEmailModal.js', false) %}

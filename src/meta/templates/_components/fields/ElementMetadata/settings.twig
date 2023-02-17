@@ -1,0 +1,262 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set metadataFieldCount = sprout.modules.meta.elementMetadata.getMetadataFieldCount() %}
+{% set noMetadataFieldsExist = not fieldId and metadataFieldCount == 0 %}
+{% set thisIsTheOneMetadataField = fieldId and metadataFieldCount == 1 %}
+{% set module = sprout.modules.meta %}
+
+{% set isPro = module.isPro() %}
+
+{% if isPro or noMetadataFieldsExist or thisIsTheOneMetadataField %}
+
+    {% if not(noMetadataFieldsExist or thisIsTheOneMetadataField) %}
+        {{ sproutCp.upgradeToProButton(module) }}
+    {% endif %}
+
+    {% set optimizedTitleOptions = sprout.modules.meta.globalMetadata.getOptimizedTitleOptions(settings) %}
+    {% set mainEntityValues = {'schemaTypeId': settings.schemaTypeId, 'schemaOverrideTypeId': settings.schemaOverrideTypeId} %}
+
+    {{ forms.selectField({
+        label: 'Meta Title'|t('sprout-module-meta'),
+        instructions: 'Select the field to use for your basic, Open Graph, and Twitter Card meta tag titles.'|t('sprout-module-meta'),
+        id: 'optimizedTitleField',
+        name: 'optimizedTitleField',
+        options: optimizedTitleOptions,
+        value: settings.optimizedTitleField ?? null,
+        first: true,
+        toggle: true,
+        targetPrefix: 'meta-title-',
+    }) }}
+
+    <div id="meta-title-custom"{% if settings.optimizedTitleField != 'custom' %} class="hidden"{% endif %}>
+
+        {{ forms.textField({
+            label: 'Meta Title Pattern'|t('sprout-module-meta'),
+            instructions: 'Custom title pattern. Twig code allowed, i.e. {title} - {customField}'|t('sprout-module-meta'),
+            name: 'optimizedTitleFieldFormat',
+            value: settings.optimizedTitleFieldFormat ?? null,
+            placeholder: ''|t('sprout-module-meta')
+        }) }}
+    </div>
+
+    {% set optimizedDescriptionOptions = sprout.modules.meta.globalMetadata.getOptimizedDescriptionOptions(settings) %}
+
+    {{ forms.selectField({
+        label: 'Meta Description'|t('sprout-module-meta'),
+        instructions: 'Select the field to use for your basic, Open Graph, and Twitter Card meta tag descriptions.'|t('sprout-module-meta'),
+        id: 'optimizedDescriptionField',
+        name: 'optimizedDescriptionField',
+        options: optimizedDescriptionOptions,
+        value: settings.optimizedDescriptionField ?? null,
+        toggle: true,
+        targetPrefix: 'meta-description-',
+    }) }}
+
+    <div id="meta-description-custom"{% if settings.optimizedDescriptionField != 'custom' %} class="hidden"{% endif %}>
+
+        {{ forms.textField({
+            label: 'Meta Description Pattern'|t('sprout-module-meta'),
+            instructions: 'Custom description pattern. Twig code allowed, i.e. {title} - {customField}'|t('sprout-module-meta'),
+            name: 'optimizedDescriptionFieldFormat',
+            value: settings.optimizedDescriptionFieldFormat ?? null,
+            placeholder: ''|t('sprout-module-meta')
+        }) }}
+    </div>
+
+    {% set optimizedImageOptions = sprout.modules.meta.globalMetadata.getOptimizedAssetsOptions(settings) %}
+
+    {{ forms.selectField({
+        label: 'Meta Image'|t('sprout-module-meta'),
+        instructions: 'Select the Assets field to use for your basic, Open Graph, and Twitter Card meta tag feature image.'|t('sprout-module-meta'),
+        id: 'optimizedImageField',
+        name: 'optimizedImageField',
+        options: optimizedImageOptions,
+        value: settings.optimizedImageField ?? null,
+        toggle: true,
+        targetPrefix: 'meta-image-',
+    }) }}
+
+    <div id="meta-image-custom"{% if settings.optimizedImageField != 'custom' %} class="hidden"{% endif %}>
+
+        {{ forms.textField({
+            label: 'Meta Image Pattern'|t('sprout-module-meta'),
+            instructions: 'Custom description pattern. Twig code allowed, i.e. {title} - {customField}'|t('sprout-module-meta'),
+            name: 'optimizedImageFieldFormat',
+            value: settings.optimizedImageFieldFormat ?? null,
+            placeholder: ''|t('sprout-module-meta')
+        }) }}
+    </div>
+
+    <div id="organization" class="organization-info field">
+
+        <div class="identitytype-dropdown organizationinfo-dropdown">
+            {{ forms.selectField({
+                label: 'Main Entity'|t('sprout-module-meta'),
+                instructions: 'Select the Structured Data schema type that best represents your content. Test your metadata using the <a href="https://search.google.com/structured-data/testing-tool" target="_blank">Structured Data Testing Tool</a>. Advanced integrations may be necessary for more specialized data types.'|t('sprout-module-meta'),
+                class: 'mainentity-firstdropdown',
+                role: 'listbox',
+                name: 'schemaTypeId',
+                options: schemas,
+                value: '',
+                required: false
+            }) }}
+        </div>
+
+        <div class="identitytype-dropdown organizationinfo-dropdown hidden">
+            {{ forms.selectField({
+                class: 'mainentity-seconddropdown',
+                role: 'listbox',
+                name: 'schemaOverrideTypeId',
+                options: {'':''},
+                value: '',
+                required: false,
+            }) }}
+        </div>
+    </div>
+
+    {% set optimizedKeywordOptions = sprout.modules.meta.globalMetadata.getKeywordsOptions() %}
+
+    {{ forms.selectField({
+        label: "Meta Keywords"|t('sprout-module-forms'),
+        instructions: "Generate keywords and key phrases dynamically based on an algorithm or add them manually."|t('sprout-module-forms'),
+        id: 'optimizedKeywordsField',
+        name: 'optimizedKeywordsField',
+        options: optimizedKeywordOptions,
+        value: settings.optimizedKeywordsField is defined ? settings.optimizedKeywordsField : '',
+    }) }}
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: "Enable Meta Details fields"|t('sprout-module-forms') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
+        instructions: "Meta Details fields add one more level of fine-tuning over your metadata. With Meta Details fields enabled, content editors will have additional control to customize Search, Open Graph, Twitter Card, Geo, and Robots metadata. Note: enabling Meta Details fields may require additional time for content planning and monitoring in your metadata strategy."|t('sprout-module-forms'),
+        name: 'enableMetaDetailsFields',
+        toggle: 'settings-enablemetadadetails',
+        on: not isPro ? false : settings.enableMetaDetailsFields,
+        disabled: not isPro
+    }) }}
+
+    <div id="settings-enablemetadadetails"
+        class="{% if not settings.enableMetaDetailsFields %} hidden {% endif %}">
+
+        {% set advancedInput %}
+            <table class="data" style="width: auto;">
+                <thead>
+                <tr>
+                    <th scope="col">{{ "Meta Tag Type"|t('sprout-module-forms') }}</th>
+                    <th scope="col">{{ "Editable?"|t('sprout-module-forms') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <label for="showSearchMeta">{{ "Allow Search Meta fields to be edited?"|t('sprout-module-forms') }}</label>
+                    </td>
+                    <td class="centeralign">
+                        <div>
+                            {{ forms.lightswitch({
+                                name: 'showSearchMeta',
+                                on:   settings.showSearchMeta
+                            }) }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="showOpenGraph">{{ "Allow Open Graph fields to be edited?"|t('sprout-module-forms') }}</label>
+                    </td>
+                    <td class="centeralign">
+                        <div>
+                            {{ forms.lightswitch({
+                                name: 'showOpenGraph',
+                                on:   settings.showOpenGraph
+                            }) }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="showTwitter">{{ "Allow Twitter fields to be edited?"|t('sprout-module-forms') }}</label>
+                    </td>
+                    <td class="centeralign">
+                        <div>
+                            {{ forms.lightswitch({
+                                name: 'showTwitter',
+                                on:   settings.showTwitter
+                            }) }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="showGeo">{{ "Allow Geo fields to be edited?"|t('sprout-module-forms') }}</label>
+                    </td>
+                    <td class="centeralign">
+                        <div>
+                            {{ forms.lightswitch({
+                                name: 'showGeo',
+                                on:   settings.showGeo
+                            }) }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="showRobots">{{ "Allow Robots fields to be edited?"|t('sprout-module-forms') }}</label>
+                    </td>
+                    <td class="centeralign">
+                        <div>
+                            {{ forms.lightswitch({
+                                name: 'showRobots',
+                                on:   settings.showRobots
+                            }) }}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        {% endset %}
+
+        {{ forms.field({
+            errors: ''
+        }, advancedInput) }}
+
+    </div>
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: "Enable Canonical URL field"|t('sprout-module-forms') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
+        instructions: "Allow users to override the Canonical URL at Element Metadata field level"|t('sprout-module-forms'),
+        id: 'editCanonical',
+        name: 'editCanonical',
+        on: not isPro ? false : settings.editCanonical,
+        disabled: not isPro
+    }) }}
+
+    {% do sprout.modules.core.vite.register('meta/Meta.js', false, {
+        'depends': [
+            'craft\\web\\assets\\cp\\CpAsset'
+        ]
+    }) %}
+
+    {% js on ready %}
+
+        new SproutMetaWebsiteIdentitySettings({
+        items: {{ schemaSubtypes|json_encode|raw }},
+        mainEntityValues: {{ mainEntityValues|json_encode|raw }}
+        });
+
+    {% endjs %}
+
+{% else %}
+
+    {{ sproutCp.upgradeToProCallout({
+        message: sprout.modules.meta.getUpgradeMessage(),
+        cpUrl: sprout.modules.meta.getUpgradeUrl()
+    }) }}
+
+{% endif %}

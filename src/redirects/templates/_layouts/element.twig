@@ -1,0 +1,14 @@
+{% extends "_layouts/element" %}
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+
+{% do sprout.modules.core.vite.register('redirects/Redirects.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+

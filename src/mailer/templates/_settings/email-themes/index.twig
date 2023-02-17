@@ -1,0 +1,56 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.forms %}
+
+{% set currentSubNavKey = 'email-themes' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('sprout/settings/email-themes/new') }}" class="btn submit add icon">
+            {{ "New Email Theme"|t('sprout-module-mailer') }}
+        </a>
+
+    </div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% if emailThemes|length %}
+    {% for emailTheme in emailThemes %}
+
+        {% set cpEditUrl = cpUrl('sprout/settings/email-themes/edit/' ~ emailTheme.id) %}
+
+        {% set tableData = tableData|merge([{
+            id: emailTheme.id,
+            labelHtml: {
+                url: cpEditUrl,
+                name: emailTheme.name ?? emailTheme.displayName()
+            },
+            emailTemplate: emailTheme.htmlEmailTemplatePath,
+            title: emailTheme.name|t('sprout-module-mailer')|e,
+            url: cpEditUrl,
+
+        }]) %}
+
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+
+    <div
+        id="admin-table"
+        data-table-data="{{ tableData|json_encode }}">
+    </div>
+
+{% endblock %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% do sprout.modules.core.vite.register('mailer/EmailThemesSettings.js', false) %}
+
+ {% js on ready %}
+
+     new EmailThemesSettings('#admin-table');
+
+ {% endjs %}

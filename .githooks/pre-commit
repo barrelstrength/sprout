@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Stop a commit where an asset or static asset is modified without
+# a commensurate update to the manifest file in the dist folder
+# which would indicate that new production assets were built and
+# the changed assets would also be available in a release.
+#
+
+## Check if something changed in one of our asset folders
+if git diff --cached --name-only | grep -E --quiet "(assets\/src|assets\/public)"
+then
+    ASSETS_MODIFIED=true
+fi
+
+## Check if the manifest file indicates `npm run build` has been run
+if git diff --cached --name-only | grep --quiet "assets/dist/manifest.json"
+then
+    MANIFEST_MODIFIED=true
+fi
+
+if [ -n "$ASSETS_MODIFIED" ] && [ -z "$MANIFEST_MODIFIED" ]; then
+    ## If ASSETS have been modified (not null) && MANIFEST has not been modified (is null)
+    ## Stop the commit and notify developer to run build script before committing
+    echo "Assets modified but not prepared for a release."
+    echo "Run production build script before committing."
+    exit 1
+fi

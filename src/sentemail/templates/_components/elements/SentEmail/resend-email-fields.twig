@@ -1,0 +1,36 @@
+{% import "_includes/forms" as forms %}
+
+<h6>{{ 'Original Email Details'|t('sprout-module-sent-email') }}</h6>
+<table>
+    <tr>
+        <th>{{ 'Date Sent'|t('sprout-module-sent-email') }}</th>
+        <td>{{ sentEmail.dateCreated|date('F d, Y') }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'Subject Line'|t('sprout-module-sent-email') }}</th>
+        <td>{{ sentEmail.subjectLine }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'From Address'|t('sprout-module-sent-email') }}</th>
+        {% if sentEmail.fromName %}
+            <td>{{ sentEmail.fromName }}<{{ sentEmail.fromEmail }}></td>
+        {% else %}
+            <td>{{ sentEmail.fromEmail }}</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <th>{{ 'To Address'|t('sprout-module-sent-email') }}</th>
+        <td>{{ sentEmail.toEmail }}</td>
+    </tr>
+</table>
+
+<hr>
+
+{{ forms.textField({
+    label: "To"|t('sprout-module-sent-email'),
+    instructions: 'Resend to a single recipient. Repeat to resend more than once.'|t('sprout-module-sent-email'),
+    name: 'recipient',
+    placeholder: sentEmail.toEmail,
+    value: sentEmail.toEmail,
+    focus: true,
+}) }}

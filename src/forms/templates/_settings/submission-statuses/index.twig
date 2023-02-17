@@ -1,0 +1,66 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% set module = sprout.modules.forms %}
+{% set settings = module.getSettings() %}
+{% set canCreateForm = module.forms.canCreateForm() %}
+
+{% set currentSubNavKey = 'submission-statuses' %}
+{% set submissionStatuses = module.submissionStatuses.getAllSubmissionStatuses() %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('sprout/settings/forms/submission-statuses/new') }}" class="btn submit add icon">
+            {{ "New Submission Status"|t('sprout-module-forms') }}
+        </a>
+
+        {% if upgradeLink is defined and upgradeLink %}
+            {{ sproutCp.upgradeToProButton({
+                url: upgradeLink
+            }) }}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% if submissionStatuses|length %}
+    {% for submissionStatus in submissionStatuses %}
+
+        {% set cpEditUrl = cpUrl('sprout/settings/forms/submission-statuses/' ~ submissionStatus.id) %}
+        {% set showDelete = submissionStatus.isDefault or submissionStatus.handle == 'spam' ? false : true %}
+
+        {% set tableData = tableData|merge([{
+            id: submissionStatus.id,
+            labelHtml: {
+                url: cpEditUrl,
+                color: submissionStatus.color,
+                name: submissionStatus.name
+            },
+            title: submissionStatus.name|t('sprout-module-forms')|e,
+            url: cpEditUrl,
+            handle: submissionStatus.handle,
+            isDefault: submissionStatus.isDefault,
+            _showDelete: showDelete
+        }]) %}
+
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+
+    <div
+        id="submission-statuses-admin-table"
+        data-table-data="{{ tableData|json_encode }}">
+    </div>
+
+{% endblock %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% do sprout.modules.core.vite.register('forms/SubmissionStatusSettings.js', false) %}
+
+ {% js on ready %}
+
+     new SubmissionStatusSettings('#submission-statuses-admin-table');
+
+ {% endjs %}

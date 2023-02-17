@@ -1,0 +1,44 @@
+{% import "_includes/forms" as forms %}
+
+{% if user is not null %}
+    {{ hiddenInput('subscriberId', user.id) }}
+{% endif %}
+
+{{ redirectInput('sprout/email/subscribers') }}
+
+{{ forms.textField({
+    label: "Email"|t('sprout-module-mailer'),
+    name: 'email',
+    id: 'email',
+    required: true,
+    autofocus: true,
+    value: user is not null ? user.email : null,
+    errors: user is not null and user.hasErrors('email') ? user.getErrors('email') : null,
+    first: true,
+    required: true
+}) }}
+
+{{ forms.textField({
+    label: "First Name"|t('sprout-module-mailer'),
+    name: 'firstName',
+    id: 'firstName',
+    value: user is not null ? user.firstName : null,
+    errors: user is not null and user.hasErrors('firstName') ? user.getErrors('firstName') : null
+}) }}
+
+{{ forms.textField({
+    label: "Last Name"|t('sprout-module-mailer'),
+    name: 'lastName',
+    id: 'lastName',
+    value: user is not null ? user.lastName : null,
+    errors: user is not null and user.hasErrors('lastName') ? user.getErrors('lastName') : null
+}) }}
+
+{{ forms.checkboxGroupField({
+    label: "Subscriber Lists"|t('sprout-module-mailer'),
+    instructions: "The lists in which this user is subscribed."|t('sprout-module-forms'),
+    id: 'listIds',
+    name: 'listIds',
+    options: options,
+    values: values
+}) }}

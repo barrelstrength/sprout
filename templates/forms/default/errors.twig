@@ -1,0 +1,7 @@
+{% if errors -%}
+    <ul data-label="error-list">
+        {% for error in errors %}
+            <li>{{ error|t('site') }}</li>
+        {% endfor %}
+    </ul>
+{% endif -%}

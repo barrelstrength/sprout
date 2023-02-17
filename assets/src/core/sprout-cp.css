@@ -1,0 +1,184 @@
+/*
+ * Sprout Styles in the Control Panel
+ *
+ * A collection of styles to be reused across Sprout Plugins.
+ * For better consistency, use along with the sproutcp.html macro library.
+ */
+
+/*
+ * Media Box
+ *
+ * Use the media box to create a more stylized header or fallback body area.
+ */
+.sprout-mediabox-outer {
+    display: flex;
+    justify-content: center;
+    margin: 2em auto;
+}
+
+.sprout-mediabox-inner {
+    align-content: space-between;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 70%;
+}
+
+.sprout-mediathumb {
+    margin-right: 2em;
+}
+
+.sprout-mediathumb img,
+.sprout-mediathumb svg {
+    height: 140px;
+    opacity: .3;
+    width: 140px;
+}
+
+.sprout-mediabody h2 {
+    font-size: 18px;
+}
+
+.sprout-mediabody hr {
+    margin: 0;
+}
+
+.sprout-mediabody a {
+    font-weight: bold;
+}
+
+.sprout-mediabody {
+    flex-grow: 1;
+    width: 60%;
+}
+
+/* Editions Badge */
+.sprout-pro {
+    background-color: #333f4d;
+    border: 1px solid #333f4d;
+    border-radius: .25rem;
+    color: #ffffff;
+    font-size: 70%;
+    font-weight: normal;
+    letter-spacing: 1.5px;
+    padding: 3px 5px 3px 7px;
+    position: relative;
+    top: -2px;
+}
+
+.sprout-lite {
+    border: 1px solid #333f4d;
+    border-radius: .25rem;
+    font-size: 70%;
+    font-weight: normal;
+    letter-spacing: 1.5px;
+    padding: 3px 5px 3px 7px;
+    position: relative;
+    top: -2px;
+}
+
+/* Editions */
+.sprout-upgrade-btngroup {
+    order: 101;
+}
+
+.btn.sprout-upgrade-to-pro {
+    background: #47b649;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#47b649), to(#46b348));
+    background-image: linear-gradient(#47b649, #46b348);
+    color: white;
+    display: flex;
+    font-weight: bold;
+}
+
+.btn.sprout-upgrade-to-pro:active {
+    background: #2a722c;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#2a722c), to(#2f8131));
+    background-image: linear-gradient(#2a722c, #2f8131);
+}
+
+.sprout-badge-btn .btn.sprout-upgrade-to-pro span {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+.sprout-badge-row .btn.sprout-upgrade-to-pro {
+    /*display: inline-block;*/
+    font-size: 12px;
+    height: 24px;
+    /*background: #cdd8e4;*/
+    background: #565656;
+
+    /*font-size: 70%;*/
+    font-weight: normal;
+    /*font-weight: bold;*/
+    letter-spacing: 1.5px;
+    padding: 3px 5px 3px 7px;
+    position: relative;
+    top: -2px;
+}
+.sprout-badge-row .btn.sprout-upgrade-to-pro:hover {
+    background-color: #333f4d !important;
+    opacity: 1;
+}
+.sprout-badge-row .btn.sprout-upgrade-to-pro span {
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 1px;
+    vertical-align: middle;
+    width: 16px;
+}
+.sprout-badge-row .btn.sprout-upgrade-to-pro svg {
+    height: 14px;
+}
+
+.sprout-upgrade-to-pro-callout {
+    align-items: center;
+    background: #47b649;
+    background-image: linear-gradient(#47b649, #46b348);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#47b649), to(#46b348));
+    border-radius: .25rem;
+    color: white;
+    display: flex;
+    margin-top: 10px;
+}
+
+.sprout-upgrade-to-pro-callout a {
+    color: white;
+    font-weight: bold;
+}
+
+.sprout-upgrade-to-pro-callout .icon {
+    fill: #ffffff;
+    height: 18px;
+    margin: 0 10px 0 18px;
+    width: 18px;
+}
+
+.sprout-disabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+#details .details .meta.sprout-sidebar-info {
+    padding-bottom: 1.2em;
+    padding-top: 1.2em;
+}
+
+/*
+ * Sidebar touches
+ */
+#main-container #main #main-content #details div.field.sprout-meta-heading {
+    background-color: #cdd8e4;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.sprout-meta-heading h6 {
+    color: #333333;
+}

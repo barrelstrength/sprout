@@ -1,0 +1,131 @@
+<?php
+
+namespace BarrelStrength\Sprout\mailer\migrations;
+
+use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
+use Craft;
+use craft\db\Migration;
+use craft\db\Table;
+
+class m211101_000000_run_install_migration extends Migration
+{
+    public const MODULE_KEY = 'sprout.sprout-module-core.modules';
+    public const MODULE_CLASS = 'BarrelStrength\Sprout\mailer\MailerModule';
+
+    public const EMAILS_TABLE = '{{%sprout_emails}}';
+    public const EMAIL_THEMES_TABLE = '{{%sprout_email_themes}}';
+    public const MAILERS_TABLE = '{{%sprout_mailers}}';
+    public const AUDIENCES_TABLE = '{{%sprout_audiences}}';
+    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
+    public const SUBSCRIPTIONS_TABLE = '{{%sprout_subscriptions}}';
+
+    public function safeUp(): void
+    {
+        $coreModuleSettingsKey = self::MODULE_KEY . '.' . self::MODULE_CLASS;
+
+        $this->createTables();
+
+        MailerSchemaHelper::insertDefaultMailerSettings();
+
+        Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
+            'alternateName' => '',
+            'enabled' => true,
+        ]);
+    }
+
+    public function createTables(): void
+    {
+        if (!$this->getDb()->tableExists(self::AUDIENCES_TABLE)) {
+            $this->createTable(self::AUDIENCES_TABLE, [
+                'id' => $this->primaryKey(),
+                'elementId' => $this->integer()->notNull(),
+                'groupId' => $this->integer(),
+                'audienceType' => $this->string()->notNull(),
+                'name' => $this->string()->notNull(),
+                'handle' => $this->string()->notNull(),
+                'count' => $this->integer()->notNull()->defaultValue(0),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+
+            $this->createIndex(null, self::AUDIENCES_TABLE, ['elementId']);
+            $this->createIndex(null, self::AUDIENCES_TABLE, ['name']);
+            $this->createIndex(null, self::AUDIENCES_TABLE, ['handle']);
+
+            $this->addForeignKey(null, self::AUDIENCES_TABLE, ['elementId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
+            $this->addForeignKey(null, self::AUDIENCES_TABLE, ['groupId'], self::SOURCE_GROUPS_TABLE, ['id'], 'SET NULL');
+        }
+
+        if (!$this->getDb()->tableExists(self::SUBSCRIPTIONS_TABLE)) {
+            $this->createTable(self::SUBSCRIPTIONS_TABLE, [
+                'id' => $this->primaryKey(),
+                'listId' => $this->integer()->notNull(),
+                'itemId' => $this->integer()->notNull(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+
+            $this->createIndex(null, self::SUBSCRIPTIONS_TABLE, ['listId', 'itemId'], true);
+
+            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['itemId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
+            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['listId'], self::AUDIENCES_TABLE, ['id'], 'CASCADE', 'CASCADE');
+        }
+
+        if (!$this->getDb()->tableExists(self::EMAILS_TABLE)) {
+            $this->createTable(self::EMAILS_TABLE, [
+                'id' => $this->primaryKey(),
+                'emailType' => $this->string(),
+                'emailThemeId' => $this->integer(),
+                'subjectLine' => $this->string(),
+                'preheaderText' => $this->string(),
+                'defaultBody' => $this->text(),
+                'fromName' => $this->string(),
+                'fromEmail' => $this->string(),
+                'replyToEmail' => $this->string(),
+                'recipients' => $this->string(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+            // @todo - FKs, etc
+        }
+
+        // @todo - SAVE IN PROJECT CONFIG?
+        if (!$this->getDb()->tableExists(self::EMAIL_THEMES_TABLE)) {
+            $this->createTable(self::EMAIL_THEMES_TABLE, [
+                'id' => $this->primaryKey(),
+                'fieldLayoutId' => $this->integer(),
+                'name' => $this->string(),
+                'type' => $this->string(),
+                'htmlEmailTemplatePath' => $this->string(),
+                'copyPasteEmailTemplatePath' => $this->string(),
+                'settings' => $this->text(),
+                'sortOrder' => $this->integer(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+        }
+
+        if (!$this->getDb()->tableExists(self::MAILERS_TABLE)) {
+            $this->createTable(self::MAILERS_TABLE, [
+                'id' => $this->primaryKey(),
+                'name' => $this->string(),
+                'type' => $this->string(),
+                'settings' => $this->text(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+        }
+    }
+
+    public function safeDown(): bool
+    {
+        echo "m211101_000000_run_install_migration cannot be reverted.\n";
+
+        return false;
+    }
+}

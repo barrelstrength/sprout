@@ -1,0 +1,125 @@
+{% do sprout.forms.addFieldVariables({
+    'craft': craft,
+    'now': now,
+    'currentSite': currentSite,
+    'currentUser': currentUser,
+    'siteName': siteName,
+    'siteUrl': siteUrl,
+    'systemName': systemName
+}) -%}
+{%- set renderingOptions = renderingOptions is defined and renderingOptions is not empty ? renderingOptions : {} -%}
+{%- set submission = sprout.modules.forms.submissions.getSubmission(form) -%}
+{%- set lastSubmission = sprout.forms.lastSubmission(form.id) -%}
+{%- set globalErrorsEnabled = form.errorDisplayMethod in ['both', 'global'] ? true : false -%}
+{%- set errors = submission.getErrors()|length ? submission.getErrors() : false -%}
+{%- set errorClass = renderingOptions.errorClass is defined ? renderingOptions.errorClass : 'errors' -%}
+{%- set id = renderingOptions.id is defined ? renderingOptions.id : form.handle ~ '-form' -%}
+{%- set class = renderingOptions.class is defined ? renderingOptions.class : form.handle ~ '-form' -%}
+{%- set redirectUri = form.redirectUri -%}
+{#{%- set rules = form.getRules() -%}#}
+
+{%- set globalErrorListHtml -%}
+    {% set globalErrors = [] %}
+    {% for errors in submission.getErrors() %}
+        {% for error in errors %}
+            {% set globalErrors = globalErrors|merge([error]) %}
+        {% endfor %}
+    {% endfor %}
+    {% include form.getIncludeTemplate('errors') with {
+        errors: globalErrors
+    } only %}
+{%- endset -%}
+
+<form
+    method="post"
+    accept-charset="utf-8"
+    enctype="multipart/form-data"
+    data-submission-method="{{ form.submissionMethod }}"
+    data-label="{{ id }}"
+    {%- if id %} id="{{ id }}"{% endif -%}
+    {%- if class %} class="{{ class -}}{%- if errors %} {{ errorClass }}{% endif -%}"{% endif -%}
+{#    {%- if rules %} data-rules="{{ rules|json_encode|raw|e('html') }}"{% endif -%}#}
+>
+    {{ sproutDynamicCsrfInput() }}
+    <input type="hidden" aria-hidden="true" name="action" value="sprout-module-forms/submissions/save-submission">
+    <input type="hidden" aria-hidden="true" name="handle" value="{{ form.handle }}">
+    {%- if redirectUri is not empty %}
+        {% if redirectUri|slice(0, 1)|lower == '?' %}
+            {%- set redirectUri = craft.app.request.getUrl()~redirectUri %}
+        {% endif %}
+
+        <input type="hidden" aria-hidden="true" name="redirect" value="{{ redirectUri|hash }}">
+    {% endif %}
+
+    {% if globalErrorsEnabled and errors|length and (form.errorMessage or globalErrorListHtml) %}
+        {% set errorMessage = view.renderObjectTemplate(form.errorMessage, submission) %}
+        {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
+        <div data-label="{{ id }}-message-box" data-description="error-message">
+            {{ errorMessage|markdown }}
+            {{ globalErrorListHtml }}
+        </div>
+    {% endif %}
+
+    {% if lastSubmission and form.id == lastSubmission.getForm().id and form.successMessage %}
+        {% set successMessageTemplate = form.successMessage ?? '' %}
+        {% set successMessage = view.renderObjectTemplate(successMessageTemplate, lastSubmission) %}
+        {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
+        <div data-label="{{ id }}-message-box" data-description="success-message">
+            {{ successMessage|markdown }}
+        </div>
+    {% endif %}
+
+    <div data-label="form-fields">
+        {%- for tab in form.getSubmissionFieldLayout().getTabs() %}
+            {% include form.getIncludeTemplate('tab') with {
+                form: form,
+                submission: submission,
+                tab: tab,
+                renderingOptions: renderingOptions,
+            } only %}
+        {% endfor -%}
+    </div>
+
+    {# Do not remote this line when customizing templates.
+       All Captcha behavior depends on this hook. #}
+    {% hook 'sproutForms.modifyForm' %}
+
+    <div data-label="form-submit">
+        <button type="submit">{{ form.submitButtonText is not empty ? form.submitButtonText : 'Submit'|t('site') }}</button>
+    </div>
+</form>
+
+{# Add focus to the first field which has an error #}
+{% if errors -%}
+    {%- for labelId, error in errors %}
+        {%- if loop.first %}
+            {%- js at endBody %}
+                (function() {
+                var field = document.getElementById('fields-' + '{{ labelId }}');
+                if (field) {
+                field.focus();
+                }
+                })();
+            {% endjs -%}
+        {%- endif %}
+    {%- endfor %}
+{%- endif %}
+
+{% do view.registerCss('.sprout-hidden { display: none !important; }') %}
+
+{% do view.registerJsFile(sproutAssetUrl('forms-frontend/Accessibility.js')) %}
+{% do view.registerJsFile(sproutAssetUrl('forms-frontend/AddressField.js')) %}
+{% do view.registerJsFile(sproutAssetUrl('forms-frontend/DisableSubmitButton.js')) %}
+{% do view.registerJsFile(sproutAssetUrl('forms-frontend/Rules.js')) %}
+{% do view.registerJsFile(sproutAssetUrl('forms-frontend/SubmitHandler.js')) %}
+
+{% js at endBody %}
+    (function() {
+    window.csrfTokenName = "{{ craft.app.getConfig().getGeneral().csrfTokenName|e('js') }}";
+    new SproutFormsAddressField('{{ id }}');
+    new SproutFormsCheckableInputs('{{ id }}');
+    new SproutFormsDisableSubmitButton('{{ id }}');
+    new SproutFormsRules('{{ id }}');
+    new SproutFormsSubmitHandler('{{ id }}');
+    })();
+{% endjs -%}

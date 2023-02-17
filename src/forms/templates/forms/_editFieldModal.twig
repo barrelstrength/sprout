@@ -1,0 +1,172 @@
+{% import "_includes/forms" as forms %}
+
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+
+<div id="sprout-content">
+    {% if field is not defined and fieldId is defined %}
+        {% set field = craft.app.fields.getFieldById(fieldId) %}
+        {% if not field %}
+            {% exit 404 %}
+        {% endif %}
+    {% endif %}
+
+    {% set fieldTypes = sprout.modules.forms.formFields.getRegisteredFields() %}
+
+    {{ hiddenInput('formId', form.id) }}
+
+    {% if field.id %}
+        {{ hiddenInput('fieldId', field.id) }}
+    {% endif %}
+
+    {% if field.allowRequired() %}
+        {{ forms.lightswitchField({
+            label: "Required"|t('sprout-module-forms'),
+            name: 'required',
+            on: field.required,
+            first: true
+        }) }}
+    {% else %}
+        {{ hiddenInput('required', '') }}
+    {% endif %}
+
+    {{ forms.textField({
+        label: 'Name'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'The field label displayed to your users.'|t('sprout-module-forms')
+        ),
+        id: 'field-name',
+        name: 'name',
+        value: (field is defined ? field.name : null),
+        errors: (field is defined ? field.getErrors('name') : null),
+        required: true,
+        autofocus: true,
+        first: not field.allowRequired()
+    }) }}
+
+    {% if field.displayInstructionsField %}
+        {{ forms.textareaField({
+            label: 'Instructions'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+                'Instructions to guide your users when filling out this field.'|t('sprout-module-forms')
+            ),
+            id: 'instructions',
+            class: 'nicetext',
+            name: 'instructions',
+            value: (field is defined ? field.instructions : null),
+            errors: (field is defined ? field.getErrors('instructions') : null)
+        }) }}
+    {% endif %}
+
+    {% for type,fieldObject in fieldTypes %}
+        {% set isCurrent = type == className(field) %}
+        <div id="{{ type|id }}"{% if not isCurrent %} class="hidden"{% endif %}>
+            {% namespace 'types['~type~']' %}
+                {% set _field = isCurrent ? field : craft.app.fields.createField(type) %}
+                {{ _field.getSettingsHtml()|raw }}
+            {% endnamespace %}
+        </div>
+    {% endfor %}
+
+    {% if field['cssClasses'] is defined %}
+    <hr>
+
+    {% namespace 'types['~fieldClass~']' %}
+        {% set cssClassesInstructions = "The CSS class names to output in your field's HTML."|t('sprout-module-forms') %}
+        {% set cssClassesPlaceholder = 'class1 class2'|t('sprout-module-forms') %}
+
+        {% set cssOptions = {} %}
+        {% if form.getFormTemplate().getCssClassDefaults()|length %}
+            {% set cssOptions = form.getClassesOptions(field.cssClasses) %}
+        {% endif %}
+
+        {{ forms.autosuggestField({
+            label: "CSS Classes"|t('sprout-module-forms'),
+            instructions: cssClassesInstructions,
+            name: "cssClasses",
+            placeholder: cssClassesPlaceholder,
+            value: field.cssClasses ?? null,
+            errors: field.getErrors('cssClasses'),
+            code: true,
+            suggestions: [
+                {
+                    label: 'Common Classes'|t('sprout-module-meta'),
+                    data: [
+                    { name: 'left', hint: 'left'|t('sprout-module-meta') },
+                    { name: 'right', hint: 'right'|t('sprout-module-meta') },
+                ]
+                }
+            ]
+        }) }}
+
+    {% endnamespace %}
+    <hr>
+
+    {% if sections is defined and sections|length %}
+
+        {% set sectionOptions = [] %}
+
+        {% for section in sections %}
+            {% set sectionOptions = sectionOptions|merge([{ label: section.name, value: section.id }]) %}
+        {% endfor %}
+
+        {{ forms.selectField({
+            first: true,
+            required: true,
+            label: 'Section'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+                'The section where this field should be displayed.'|t('sprout-module-forms')
+            ),
+            id: 'tabId',
+            name: 'tabId',
+            options: sectionOptions,
+            value: tabId
+        }) }}
+
+    {% endif %}
+
+    {{ forms.textField({
+        label: 'Handle'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'How you’ll refer to this field in the templates.'|t('sprout-module-forms')
+        ),
+        id: 'field-handle',
+        class: 'code',
+        name: 'handle',
+        maxlength: 64,
+        value: (field is defined ? field.handle : null),
+        errors: (field is defined ? field.getErrors('handle') : null),
+        required: true
+    }) }}
+
+    {% set formFieldClassName = className(field) %}
+    {% set formFieldClass = create(formFieldClassName) %}
+
+    {{ forms.selectField({
+        label: 'Field Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'Create a new field if you need to update your field type. This value cannot be changed.'|t('sprout-module-forms')
+        ),
+        id: 'type',
+        name: 'selectType',
+        hasOptgroups: true,
+        options: [
+            {
+                label: formFieldClass.displayName(),
+                value: formFieldClassName
+            }
+        ],
+        value: formFieldClassName,
+        errors: field.getErrors('type') ?? null,
+        disabled: true
+    }) }}
+
+    {{ forms.textField({
+        id: 'type',
+        name: 'type',
+        type: 'hidden',
+        value: className(field),
+        errors: field.getErrors('type') ?? null
+    }) }}
+
+    {% if field is empty or field.handle is empty %}
+        {% js %}
+            new Craft.HandleGenerator('#field-name', '#field-handle');
+        {% endjs %}
+    {% endif %}
+</div>

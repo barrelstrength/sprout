@@ -1,0 +1,26 @@
+{%- set layoutFieldsElements = tab.getLayout().getCustomFieldElements() %}
+
+<section data-label="form-tab">
+
+    {% if form.displaySectionTitles -%}
+        <h3>{{ tab.name|t }}</h3>
+    {%- endif %}
+
+    {% for layoutElement in layoutFieldsElements -%}
+        {%- set field = layoutElement.getField() %}
+        {%- set fieldNamespace = field.getNamespace() ?? null %}
+        {%- set fieldRenderingOptions = field.getRenderingOptions(renderingOptions.fields.container ?? []) %}
+        {%- set inputRenderingOptions = field.getRenderingOptions(renderingOptions.fields.input ?? []) %}
+
+        {%- include form.getIncludeTemplate('field') with {
+            form: form,
+            submission: submission,
+            field: field,
+            required: layoutElement.required,
+            fieldNamespace: fieldNamespace,
+            fieldRenderingOptions: fieldRenderingOptions,
+            inputRenderingOptions: inputRenderingOptions,
+        } %}
+    {%- endfor %}
+
+</section>

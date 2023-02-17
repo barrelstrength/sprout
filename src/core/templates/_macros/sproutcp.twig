@@ -1,0 +1,161 @@
+{% macro mediaBox(settings) %}
+
+    {% set resourcePath = settings.resourcePath ?? null %}
+    {% set resourceAltText = settings.resourceAltText ?? null %}
+    {% set heading = settings.heading ?? null %}
+    {% set body = settings.body ?? null %}
+    {% set alignItems = settings.alignItems ?? null %}
+
+    <div class="sprout-mediabox-outer">
+        <div class="sprout-mediabox-inner"
+            {% if alignItems %}style="align-items: {{ alignItems }};"{% endif %}>
+            {% if resourcePath %}
+                <div class="sprout-mediathumb">
+                    {{ svg(resourcePath) }}
+                </div>
+            {% endif %}
+            <div class="sprout-mediabody">
+                <h2>{{ heading }}</h2>
+                <hr>
+
+                {{ body|raw }}
+
+            </div>
+        </div>
+    </div>
+
+{% endmacro %}
+
+{% macro upgradeToProButton(module) %}
+
+    {% set coreSettings = sprout.modules.core.getSettings() %}
+
+    {% if module.isUpgradable() %}
+
+        <div class="btngroup submit sprout-upgrade-btngroup sprout-badge-btn">
+            <a href="{{ module.getUpgradeUrl() }}" class="btn sprout-upgrade-to-pro" title="{{ module.getUpgradeMessage() ?? "Upgrade to Pro"|t('sprout-module-core') }}">
+                {{ "Upgrade to Pro"|t('sprout-module-core') }}
+                <span>{{ svg('@Sprout/Assets/dist/static/core/icons/icon-mask.svg') }}</span>
+            </a>
+        </div>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro upgradeToProCallout(settings) %}
+    <div class="sprout-upgrade-to-pro-callout">
+        <span class="icon">{{ svg('@Sprout/Assets/dist/static/core/icons/icon-mask.svg') }}</span>
+        {% set upgradeLink = '<a href="' ~ settings.cpUrl ~ '">' ~ "Learn&nbsp;more."|t('sprout-module-core') ~ '</a>' %}
+        {% set body = settings.message ~ ' ' ~ upgradeLink %}
+        <p>{{ body|markdown }}</p>
+    </div>
+{% endmacro %}
+
+{% macro featureHeader(settings) %}
+    {% set heading = settings.heading ?? null %}
+    {% set message = settings.message ?? null %}
+    {% set primaryButtonText = settings.primaryButtonText ?? null %}
+    {% set primaryButtonLink = settings.primaryButtonLink ?? null %}
+    {% set secondaryButtonText = settings.secondaryButtonText ?? null %}
+    {% set secondaryButtonLink = settings.secondaryButtonLink ?? null %}
+
+    <header>
+        <h1>{{ settings.heading }}</h1>
+
+        {% if message %}
+            {{ message|replace('[pro]', '<span class="sprout-pro">PRO</span>')|markdown }}
+        {% endif %}
+
+        <div class="buttons">
+            {% if primaryButtonText and primaryButtonLink %}
+                <a class="btn submit" href="{{ primaryButtonLink }}">
+                    <span class="get-started-icon">{{ svg('@Sprout/Assets/dist/static/core/icons/icon-mask.svg') }}</span> {{ primaryButtonText }}
+                </a>
+            {% endif %}
+
+            <a class="btn" data-icon="settings" href="{{ cpUrl('sprout/settings/control-panel') }}">{{ 'Update Settings'|t('sprout-module-core') }}</a>
+
+            {% if secondaryButtonText and secondaryButtonLink %}
+                <a class="btn" data-icon="world" href="{{ secondaryButtonLink }}">{{ secondaryButtonText }}</a>
+            {% endif %}
+        </div>
+    </header>
+
+{% endmacro %}
+
+{% macro featureImage(settings) %}
+    {% set imageUrl = settings.imageUrl ?? null %}
+    {% set altText = settings.altText ?? null %}
+
+    <div class="feature-image">
+        <img src="{{ imageUrl }}" alt="{{ altText }}"/>
+    </div>
+{% endmacro %}
+
+{% macro featureVideo(vimeoVideoId) %}
+    <div class="feature-video">
+        <iframe id="video" class="video" data-vimeo-id="{{ vimeoVideoId }}" src="https://player.vimeo.com/video/{{ vimeoVideoId }}" width="870" height="489" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+{% endmacro %}
+
+{% macro infoIcon(message) -%}
+    <span class='info'>{{ message }}</span>
+{%- endmacro %}
+
+{% macro sproutGroupAdminButtons(selectedGroupId) %}
+    <div class="buttons">
+        <div id="newgroupbtn"
+            class="btn add icon">{{ "New Group"|t('sprout-module-core') }}</div>
+
+        {% if selectedGroupId is defined %}
+            <div id="groupsettingsbtn" class="btn settings icon menubtn"
+                title="{{ 'Settings'|t('sprout-module-core') }}"></div>
+            <div class="menu">
+                <ul>
+                    <li><a data-action="rename" role="button">{{ "Rename selected group"|t('sprout-module-core') }}</a>
+                    </li>
+                    <li><a data-action="delete" role="button">{{ "Delete selected group"|t('sprout-module-core') }}</a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro sproutGroupAdmin(elementType, pluralDisplayName) %}
+
+    new SproutSourceGroupsAdmin({
+    groupsSelector: '#sidebar nav ul',
+    newGroupButtonSelector: '#newgroupbtn',
+    groupSettingsSelector: '#groupsettingsbtn',
+
+    elementType: '{{ elementType|escape('js') }}',
+
+    newGroupAction: 'sprout-module-core/source-groups/save-source-group',
+    newGroupOnSuccessUrlBase: '{{ craft.app.request.pathInfo }}',
+    newGroupOnErrorMessage: "{{ 'Couldn’t rename the group.'|t('sprout-module-core') }}",
+
+    renameGroupAction: 'sprout-module-core/source-groups/save-source-group',
+    renameGroupOnSuccessMessage: "{{ 'Group renamed.'|t('sprout-module-core') }}",
+    renameGroupOnErrorMessage: "{{ 'Couldn’t rename the group.'|t('sprout-module-core') }}",
+
+    promptForGroupNameMessage: "{{ 'What do you want to name your group?'|t('sprout-module-core') }}",
+
+    deleteGroupAction: 'sprout-module-core/source-groups/delete-source-group',
+    deleteGroupOnSuccessUrl: '{{ craft.app.request.pathInfo }}',
+    deleteGroupConfirmMessage: "{{ 'Are you sure you want to delete this group? {name} in this group will not be deleted'|t('sprout-module-core', { name: pluralDisplayName }) }}",
+    deleteGroupOnErrorMessage: "{{ 'Could not delete the group.'|t('sprout-module-core') }}",
+    });
+
+    {% do sprout.modules.core.vite.register('core/SourceGroups.js', false, {
+        'depends': [
+            'craft\\web\\assets\\cp\\CpAsset'
+        ]
+    }) %}
+
+{% endmacro %}
+
+
+
+

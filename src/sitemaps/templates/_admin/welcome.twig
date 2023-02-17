@@ -1,0 +1,29 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Welcome to Sprout Sitemaps"|t('sprout-module-sitemaps') %}
+{% set bodyClass = 'sprout-landing-page' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Navigation for robots."|t('sprout-module-sitemaps'),
+            message: "Sprout Sitemaps gives you fine-grained control over your XML Sitemaps for standalone, multi-lingual, and multi-regional sites. Sitemaps are managed directly within Craft – no template updates required."|t('sprout-module-redirects'),
+            primaryButtonText: "Get Started"|t('sprout-module-sitemaps'),
+            primaryButtonLink: cpUrl('sprout/sitemaps'),
+            secondaryButtonText: "Learn More"|t('sprout-module-sitemaps'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/sitemaps"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('sitemaps/screenshots/sprout-sitemaps-feature.png'),
+            altText: 'Sprout Sitemaps XML Sitemap Manager for Craft CMS'|t('sprout-module-sitemaps')
+        }) }}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{{ forms.textField({
+    label: 'Submit URL'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'Submit your form data to this URL, instead of directly to Sprout Forms.'|t('sprout-module-forms')
+    ),
+    name: 'submitAction',
+    placeholder: 'https://example.com/somewhere-else'|t('sprout-module-forms'),
+    value: integration.submitAction ?? null,
+    errors: integration.getErrors('submitAction') ?? null
+}) }}
+
+{{ forms.editableTableField({
+    label: 'Field Mapping'|t('sprout-module-forms'),
+    info: 'The field in your form.',
+    id: 'fieldMapping',
+    name: 'fieldMapping',
+    minRows: integration.fieldMapping|length,
+    maxRows: integration.fieldMapping|length,
+    cols: {
+        sourceFormField: {
+            type: 'singleline',
+            heading: 'Form Field'|t('sprout-module-forms'),
+            class: 'formField'
+        },
+        targetIntegrationField: {
+            type: 'singleline',
+            heading: 'API Field'|t('sprout-module-forms'),
+            placeholder: 'Leave blank and no data will be mapped'|t('sprout-module-forms'),
+            class: 'custom-endpoint'
+        }
+    },
+    rows: integration.fieldMapping,
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}
+
+{% js on ready %}
+    new SproutFormsIntegration({
+    integrationType: "{{ className(integration)|e('js') }}"
+    });
+{% endjs %}

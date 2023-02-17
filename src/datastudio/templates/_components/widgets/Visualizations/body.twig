@@ -1,0 +1,15 @@
+{% if visualization %}
+    {{ visualization.getVisualizationHtml({
+        chart:{
+            height:300,
+            toolbar: {
+                show:false
+            }
+        }
+    })|raw }}
+    <a href="{{ cpUrl('sprout/data-studio/view/'~report.id) }}">
+        {{ "View report"|t('sprout-module-data-studio') }}
+    </a>
+{% else %}
+    {{ "Visualization not found"|t('sprout-module-data-studio') }}
+{% endif %}

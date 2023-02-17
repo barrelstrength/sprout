@@ -1,0 +1,47 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.editableTableField({
+    label: "Approved Senders"|t('sprout-module-mailer'),
+    instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),
+    id: 'approvedSenders',
+    name: 'approvedSenders',
+    cols: {
+        fromName: {
+            type: 'singleline',
+            heading: "From Name"|t('sprout-module-mailer'),
+            code: true,
+        },
+        fromEmail: {
+            type: 'singleline',
+            heading: "From Email"|t('sprout-module-mailer'),
+            required: true,
+            code: true,
+        },
+    }|filter,
+    rows: settings.approvedSenders ?? [''],
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}
+
+{{ forms.editableTableField({
+    label: "Approved Reply-to Addresses"|t('sprout-module-mailer'),
+    instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-mailer'),
+    id: 'approvedReplyToEmails',
+    name: 'approvedReplyToEmails',
+    cols: {
+        replyToEmail: {
+            type: 'singleline',
+            heading: "Reply To Email"|t('sprout-module-mailer'),
+            info: "From Email will be used if no Reply To Email is provided."|t('sprout-module-mailer'),
+            code: true,
+        },
+    }|filter,
+    rows: settings.approvedReplyToEmails ?? [''],
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}
+

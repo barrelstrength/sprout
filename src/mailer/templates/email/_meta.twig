@@ -1,0 +1,25 @@
+{% import "_includes/forms" as forms %}
+
+<fieldset>
+    <div class="meta">
+
+        {{ forms.selectField({
+            label: 'Theme'|t('sprout-module-mailer'),
+            id: 'emailThemeId',
+            name: 'emailThemeId',
+            placeholder: '_emails/folder',
+            options: templateOptions,
+            value: element.emailThemeId,
+            errors: element.getErrors('emailThemeId'),
+        }) }}
+
+        {{ forms.selectField({
+            label: 'Mailer'|t('sprout-module-mailer'),
+            id: 'mailerType',
+            name: 'mailerType',
+            options: mailerTypeOptions,
+            value: className(mailer),
+        }) }}
+
+    </div>
+</fieldset>

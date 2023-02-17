@@ -1,0 +1,40 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{# <fieldset> #}
+{# <div class="meta"> #}
+{# {{ forms.selectField({ #}
+{# label: 'Audience Type'|t('sprout-module-mailer'), #}
+{# id: 'audienceType', #}
+{# name: 'audienceType', #}
+{# options: audienceTypeOptions, #}
+{# value: element.audienceType, #}
+{# errors: element.getErrors('audienceType'), #}
+{# }) }} #}
+{# </div> #}
+{# </fieldset> #}
+
+<fieldset>
+    <div class="meta">
+
+        {% if groups | length %}
+
+            {% set groupOptions = [] %}
+            {% set groupOptions = groupOptions|merge([{ label: 'None'|t('sprout-module-mailer'), value: '' }]) %}
+            {% for group in groups %}
+                {% set groupOptions = groupOptions|merge([{ label: group.name, value: group.id }]) %}
+            {% endfor %}
+
+            {{ forms.selectField({
+                first: true,
+                label: 'Group'|t('sprout-module-mailer'),
+                id: 'groupId',
+                name: 'groupId',
+                options: groupOptions,
+                value: element.groupId
+            }) }}
+
+        {% endif %}
+
+    </div>
+</fieldset>

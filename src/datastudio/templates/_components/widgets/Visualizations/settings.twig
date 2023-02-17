@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{% if dataSets|length %}
+    {% set dataSetInput %}
+        <div class="select">
+            <select id="dataSetId" name="dataSetId">
+                {% for dataSet in dataSets %}
+                    <option value="{{ dataSet.id }}"{% if dataSet.id == dataSetId %} selected{% endif %}>{{ dataSet.name|t('site') }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endset %}
+
+    {{ forms.field({
+        label: "Data Set"|t('sprout-module-data-studio'),
+        instructions: "Which data set do you want to display?"|t('sprout-module-data-studio'),
+        id: 'section',
+    }, dataSetInput) }}
+{% else %}
+    <p>{{ "No data sets are available."|t('sprout-module-data-studio') }}</p>
+{% endif %}

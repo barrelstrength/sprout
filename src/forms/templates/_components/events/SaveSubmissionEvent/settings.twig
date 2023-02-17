@@ -1,0 +1,26 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{{ forms.checkbox({
+    label: "When submission is created?"|t('sprout-module-forms'),
+    name: "whenNew",
+    checked: event.whenNew
+}) }}
+
+{{ forms.checkbox({
+    label: "When submission is updated?"|t('sprout-module-forms'),
+    name: "whenUpdated",
+    checked: event.whenUpdated
+}) }}
+
+{{ forms.field({
+    label: 'Forms'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'Select which forms will trigger this notification.'|t('sprout-module-forms')
+    ),
+    errors: event is defined ? event.getErrors('formIds') : null,
+}, forms.checkboxGroup({
+    name: "formIds",
+    options: event.availableForms,
+    values: event.formIds,
+    showAllOption: true
+})) }}

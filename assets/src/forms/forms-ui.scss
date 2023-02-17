@@ -1,0 +1,526 @@
+@import "node_modules/craftcms-sass/_mixins.scss";
+
+/* Stop page title from jumping down when we add the spinner */
+//.sprout-forms.forms.edit #page-title h1 {
+//    padding-top: 2px;
+//}
+
+//.sprout.forms.edit .unsaved.checkmark-icon:before {
+//    color: inherit;
+//}
+
+//.drag-zone * {
+//    pointer-events: none;
+//}
+
+.drag-zone {
+    pointer-events: auto;
+}
+
+.drag-target {
+    pointer-events: auto;
+}
+
+.layout-tab {
+    //overflow-y: auto; // Required to support autoScroll
+    //overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--l);
+    //flex: 1;
+    margin: 0;
+    height: 100%;
+    border: 1px solid $grey050;
+    //width: 100%;
+}
+
+#main-container #main #main-content #details .details {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sproutforms-icon svg {
+    height: 14px;
+    vertical-align: middle;
+    width: 14px;
+}
+
+.sproutforms-sourcefield-name {
+    vertical-align: top;
+}
+
+.source-field {
+    background-color: rgba(0, 0, 0, .06);
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px transparent, 0 0 0 1px rgba(0, 0, 0, 0.025), 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Field Layout - Target */
+
+.sprout-form-builder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#form-builder-tabs {
+    //margin-bottom: calc(var(--s) * -1);
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 100%;
+    align-items: center;
+    max-width: 100%;
+    row-gap: var(-m);
+}
+
+#form-builder-workspace {
+    flex: 0 0 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: var(--m);
+    border: 1px solid $grey100;
+    border-radius: 0 $smallBorderRadius $smallBorderRadius;
+}
+
+// @todo - copied from _cp.scss. Can I use from source?
+$detailsWidth: 350px;
+
+#form-builder-layout {
+    flex: 1 1 calc(100% - #{$detailsWidth} - var(--m));
+    //flex-basis: calc(100% - #{$detailsWidth} - var(--m));
+    //width: calc(100% - #{$detailsWidth} - var(--m));
+    //max-width: calc(100% - #{$detailsWidth} - var(--m));
+
+    padding: 24px;
+
+    background-color: $grey050;
+    background-image: linear-gradient(to right, #ecf2f9 1px, transparent 0px), linear-gradient(to bottom, #ecf2f9 1px, transparent 1px);
+    background-position: -1px -1px;
+    background-size: 24px 24px;
+    //border-bottom-left-radius: $smallBorderRadius;
+    box-shadow: inset 0 1px 3px -1px #acbed2;
+    //display: flex;
+    //flex: 1;
+    //min-height: 42vh;
+    //padding-bottom: 48px;
+    //padding-top: 48px;
+}
+
+// Copy Craft #details-container
+#form-builder-sidebar {
+    flex: 0 0 ($detailsWidth);
+    box-sizing: border-box;
+    //align-self: flex-end;
+
+    //@include padding-right(var(--xl));
+    //@include padding-left(var(--m));
+    //width: $detailsWidth + 38;
+    //flex-grow: 0;
+    //flex-basis: $detailsWidth + 38;
+    padding: var(--m);
+}
+
+#form-builder-tabs [role=tablist] {
+    margin: calc(var(--s) * -1) var(--neg-padding) 0;
+    padding: var(--s) var(--padding) 0;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: flex-start;
+    column-gap: 0;
+    flex: 1 1 calc(100% - #{$detailsWidth} - var(--m));
+}
+
+#form-builder-tabs [role=tab] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    border-radius: var(--medium-border-radius) var(--medium-border-radius) 0 0;
+    padding: 0 12px;
+    white-space: nowrap;
+    color: var(--light-text-color);
+    height: 42px;
+    border: 1px solid transparent;
+    border-bottom: 2px solid transparent;
+}
+
+#form-builder-action-buttons {
+    //flex: 0 0 ($detailsWidth);
+    //margin-left: auto;
+    margin-bottom: var(--s);
+    margin-right: var(--s);
+}
+
+#form-builder-tabs [role=tab]:hover {
+    color: var(--medium-dark-text-color);
+    background: $grey050;
+}
+
+#form-builder-tabs [role=tab].sel {
+    background: $grey050;
+    border: 1px solid $grey100;
+    border-bottom: 2px solid var(--gray-500);
+}
+
+#sprout-forms-source-fields {
+    margin-bottom: 2em;
+}
+
+#layout-tab-overlay {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.form-builder-tab {
+    cursor: grab;
+}
+
+.form-builder-tab .settings.icon {
+    margin-left: 4px;
+    margin-top: -3px;
+    cursor: pointer;
+    color: var(--link-color);
+}
+
+.edit-field-button {
+    //background-color: $blue500;
+    //border-bottom-left-radius: $smallBorderRadius;
+    //border-top-right-radius: $smallBorderRadius;
+    //color: $white;
+    cursor: pointer;
+    font-size: 18px;
+    //font-weight: bold;
+    margin-right: 4px;
+    margin-top: 4px;
+    opacity: 0;
+    padding: 3px 5px;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+    top: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.layout-field:hover .edit-field-button,
+.layout-field-overlay:hover .edit-field-button {
+    opacity: 1;
+}
+
+.layout-field-overlay {
+    //cursor: move;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.layout-field {
+    background-color: $white;
+    border: 2px solid transparent;
+    border-radius: $smallBorderRadius;
+    padding: 14px 10px 20px;
+    position: relative;
+    left: 0;
+    box-shadow: inset 0 0 0 1px transparent, 0 0 0 1px rgba(0, 0, 0, 0.025), 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+//.layout-field:hover {
+.layout-field-zone.drag-hover .layout-field {
+    border: 2px dashed rgba(13, 120, 242, .5);
+    box-shadow: rgba(0, 0, 0, 0.12) 0 3px 8px;
+    background-color: $grey050;
+    transition: all 0.3s ease-out;
+}
+
+.drag-active .layout-field-zone.drag-hover .layout-field {
+    border-color: transparent;
+    box-shadow: none;
+    background-color: transparent;
+    transition: none;
+}
+
+.layout-field-zone {
+    position: relative;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 var(--row-gap);
+    box-sizing: border-box;
+}
+
+//.layout-field-zone.end-zone .layout-field:hover {
+//    box-shadow: none;
+//    background-color: transparent;
+//    transition: none;
+//}
+
+//.layout-field-zone.end-zone .layout-field-overlay {
+//    cursor: default;
+//}
+
+// Hide showFieldHandles on Form Builder Field
+#form-builder-field-attribute {
+    display: none;
+}
+
+.layout-field .layout-field-header p,
+.layout-field .body {
+    clear: both;
+}
+
+.form-field-details {
+    text-align: right;
+    font-size: 12px;
+    color: $grey400;
+}
+
+.layout-field ul.settings {
+    opacity: 0;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.layout-field ul.settings li {
+    color: #888888;
+    float: left;
+    font-size: 8px;
+    padding-left: 8px;
+}
+
+.layout-field ul.settings li i {
+    color: #888888;
+}
+
+.layout-field h2 {
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+.layout-field h2 a {
+    color: #aaaaaa;
+    display: inline-block;
+    font-size: 8px;
+    margin-left: 5px;
+    margin-top: -2px;
+    vertical-align: top;
+}
+
+.layout-field p {
+    color: #aaaaaa;
+    margin: -7px 0 10px 0;
+}
+
+.layout-field .body {
+    margin-top: 10px;
+}
+
+/* Field Instances - Source */
+
+#sprout-form-builder {
+    user-select: none;
+}
+
+#form-source-fields {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    user-select: none;
+}
+
+#form-source-fields h6 {
+    flex-grow: 1;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.source-field {
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 10px 8px 6px 8px;
+    text-align: left;
+    width: 155px;
+}
+
+@media only screen and (min-width: 975px) {
+    #form-source-fields .source-field.odd {
+        margin-right: 10px;
+    }
+}
+
+@media only screen and (max-width: 974px) {
+    #form-source-fields .source-field {
+        margin-right: 5px;
+    }
+}
+
+*[draggable=true] {
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    user-select: none;
+    cursor: grab;
+}
+
+.source-field.drag-hover {
+    background-color: rgb(13, 120, 242);
+    color: #ffffff;
+    //cursor: move;
+}
+
+.source-field.drag-hover svg {
+    fill: #ffffff;
+}
+
+.source-field h3 {
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.source-field h3 .sproutforms-icon {
+    display: inline-block;
+    margin-right: .5em;
+}
+
+/* Default Example Form Styles */
+
+.layout-field .body textarea,
+.layout-field .body input[type="text"],
+.layout-field .body input[type="email"],
+.layout-field .body input[type="phone"],
+.layout-field .body input[type="url"],
+.layout-field .body input[type="number"] {
+    border: 1px solid #cccccc;
+    border-bottom-color: #dddddd;
+    border-top-color: #888888;
+    box-shadow: inset 1px 1px 2px 0 #707070;
+    font-size: 14px;
+    padding: 5px;
+    width: 60%;
+}
+
+.layout-field .body textarea {
+    border: 1px solid #eeeeee;
+    box-shadow: inset 1px 1px 2px 0 #cccccc;
+}
+
+.layout-field-zone.drop-highlight .layout-field {
+    animation-name: drop-highlight;
+    animation-duration: 3s;
+}
+
+@keyframes drop-highlight {
+    0% {
+        background-color: lightyellow;
+    }
+    100% {
+        background-color: inherit;
+    }
+}
+
+/* Drag Behavior */
+
+.drag-active .layout-field-overlay,
+.drag-active .layout-field,
+.drag-active .source-field {
+    //cursor: move;
+}
+
+.source-field.drag-active {
+    background-color: rgb(13, 120, 242);
+    box-sizing: border-box;
+    color: #ffffff;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.source-field.drag-active svg {
+    fill: #000000;
+}
+
+#form-source-fields .source-field.drag-active {
+    background-color: rgba(0, 0, 0, .025);
+    border: 2px dashed rgba(0, 0, 0, .1);
+    color: rgb(41, 50, 61);
+    opacity: .2;
+}
+
+.layout-field-zone.end-zone .layout-field {
+    border: 0;
+    height: 96px;
+    padding: 0;
+}
+
+.layout-field-dropzone {
+    background-color: #0d99f2;
+    opacity: 0;
+    height: 16px;
+    margin: 8px 0;
+}
+
+.layout-tab.drag-active .layout-field-zone.drag-hover .layout-field-dropzone {
+    height: 16px;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.layout-tab.drag-active .layout-field-zone.drag-active.drag-hover .layout-field-dropzone {
+    opacity: 0;
+}
+
+//.source-field.drag-active.gu-transit .sproutforms-icon svg {
+//    display: none;
+//}
+
+//.layout-field.drag-active.gu-mirror {
+//    border: 2px solid transparent;
+//}
+
+//.layout-field.drag-active.gu-mirror ul.settings {
+//    opacity: 0;
+//    transition: opacity 0.2s ease-in-out;
+//}
+
+/* Give freedom to non-Desktop UI to adjust as needed */
+@media only screen and (min-width: 975px) {
+    [sproutforms-fieldlayouteditor] #main-content {
+        position: fixed;
+    }
+    [sproutforms-fieldlayouteditor] #details-container {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}
+
+// Z-Index stuff
+
+.edit-field-button {
+    z-index: 60;
+}
+
+.layout-field-overlay {
+    z-index: 55;
+}
+
+#layout-tab-overlay {
+    z-index: 50;
+}
+
+
+
+

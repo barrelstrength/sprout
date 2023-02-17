@@ -1,0 +1,44 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% if field.allowRequired() %}
+    {{ forms.lightswitchField({
+        label: "Required"|t('sprout-module-forms'),
+        name: 'required',
+        on: field.required,
+        first: true
+    }) }}
+{% else %}
+    {{ hiddenInput('required', '') }}
+{% endif %}
+
+{{ forms.textField({
+    label: 'Name'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+        'The field label displayed to your users.'|t('sprout-module-forms')
+    ),
+    id: 'field-name',
+    name: 'name',
+    value: (field is defined ? field.name : null),
+    errors: (field is defined ? field.getErrors('name') : null),
+    required: true,
+    autofocus: true,
+    first: not field.allowRequired()
+}) }}
+
+{% if field.displayInstructionsField %}
+    {{ forms.textareaField({
+        label: 'Instructions'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'Instructions to guide your users when filling out this field.'|t('sprout-module-forms')
+        ),
+        id: 'instructions',
+        class: 'nicetext',
+        name: 'instructions',
+        value: (field is defined ? field.instructions : null),
+        errors: (field is defined ? field.getErrors('instructions') : null)
+    }) }}
+{% endif %}
+
+{% namespace 'settings' %}
+    {{ field.getSettingsHtml()|raw }}
+{% endnamespace %}
+

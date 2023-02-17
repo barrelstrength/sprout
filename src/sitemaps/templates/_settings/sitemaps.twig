@@ -1,0 +1,40 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'sitemaps' %}
+{% set module = sprout.modules.sitemaps %}
+{% set settings = module.getSettings() %}
+
+{% set isProBadge = not module.isPro() ? ' <span class="sprout-pro">PRO</span>' : '' %}
+
+{% block settings %}
+
+    {{ forms.textField({
+        label: "Total Elements Per Sitemap"|t('sprout-module-sitemaps') ~ isProBadge,
+        instructions: "The number of items that display on each page of your sitemap. A lower number may be necessary for sitemaps with a large number of elements or limited server resources."|t('sprout-module-sitemaps'),
+        name: 'totalElementsPerSitemap',
+        placeholder: '500',
+        size:'10',
+        value: settings.totalElementsPerSitemap,
+        errors: '',
+        warning: sproutConfigWarning(module, 'totalElementsPerSitemap'),
+        first: true
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Enable Custom Pages"|t,
+        instructions: "Add a section on the Sitemaps tab to manage Custom Pages that exist outside of any URL-Enabled Sections."|t,
+        name: 'enableCustomSections',
+        on: (settings.enableCustomSections is empty ? false : true),
+        onLabel: "Enable"|t('sprout-module-sitemaps'),
+        offLabel: "Disable"|t('sprout-module-sitemaps'),
+        warning: sproutConfigWarning(module, 'enableCustomSections'),
+    }) }}
+
+    {% if craft.app.isMultiSite %}
+        {% include "sprout-module-sitemaps/_settings/multisite" %}
+    {% endif %}
+
+{% endblock %}

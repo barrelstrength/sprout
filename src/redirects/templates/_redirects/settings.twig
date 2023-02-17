@@ -1,0 +1,68 @@
+{% extends "_layouts/cp" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set crumbs = [
+    { label: "Redirects"|t('sprout-module-redirects'), url: cpUrl('sprout/redirects') },
+    { label: "Settings"|t('sprout-module-redirects'), url: cpUrl('sprout/redirects/settings') }
+] %}
+
+{% set selectedSubnavItem = 'redirect-settings' %}
+
+{% set title = "Settings"|t('sprout-module-redirects') %}
+{% set redirectUrl = currentSection['url'] ?? craft.app.request.url %}
+{% set actionUrl = currentSection['actionUrl'] ?? 'sprout-module-redirects/redirects/save-db-settings' %}
+{% set fullPageForm = true %}
+
+{% block contextMenu %}
+    {% if craft.app.getIsMultiSite() %}
+        {% include "_elements/sitemenu" with {
+            selectedSiteId: site.id,
+            urlFormat: craft.app.request.pathInfo~"?site={handle}"
+        } %}
+    {% endif %}
+{% endblock %}
+
+{% set sidebar %}
+    <!-- Template: {{ _self }}.twig -->
+
+    <nav>
+        <ul>
+            <li class="heading"><span>{{ "Redirects"|t('sprout-module-redirects') }}</span></li>
+            <li>
+                <a href="{{ cpUrl('') }}" class="sel">
+                    {{ "Excluded URL"|t('sprout-module-redirects') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endset %}
+
+{% block content %} <!-- Template: {{ _self }}.twig -->
+
+    {{ actionInput(actionUrl) }}
+    {{ redirectInput(redirectUrl) }}
+
+    <div id="settings-cp">
+
+        {% namespace 'settings' %}
+
+            {{ forms.textareaField({
+                label: "Excluded URL Patterns"|t('sprout-module-redirects'),
+                instructions: "Add any regular expression patterns you wish to exclude from the Redirect log. Add each pattern on a new line. Comments can be added by starting a line with the hash # character"|t('sprout-module-redirects'),
+                class: 'nicetext',
+                name: 'excludedUrlPatterns',
+                value: settings.excludedUrlPatterns,
+                placeholder: "# Exclude all CSS and JS files
+\\.(css|js)$"|t('sprout-module-redirects'),
+                errors: settings.getErrors('excludedUrlPatterns'),
+                rows: 10,
+                warning: sproutConfigWarning(module, 'excludedUrlPatterns')
+            }) }}
+
+        {% endnamespace %}
+
+    </div>
+
+{% endblock %}

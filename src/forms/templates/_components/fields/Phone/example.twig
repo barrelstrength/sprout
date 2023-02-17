@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.select({
+    options: countries,
+    value: field.country,
+    readonly: true,
+    disabled: true
+}) }}
+
+{{ forms.text({
+    class: 'sproutfields-phone-example',
+    placeholder: field.placeholder,
+    readonly: true,
+    disabled: true
+}) }}
+
+{% css %}
+    input.sproutfields-phone-example {
+    width: 40% !important;
+    }
+{% endcss %}

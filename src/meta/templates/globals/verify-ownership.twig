@@ -1,0 +1,61 @@
+{% extends "sprout-module-meta/_layouts/global-metadata" %}
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% block content %}
+
+    {{ forms.editableTableField({
+        label: "Verify Ownership"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+            label: "Verify Ownership"|t('sprout-module-meta'),
+            search: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'globals'
+        }),
+        instructions: 'Add custom meta tags to verify your site or app ownership with third-party services. Each row below will add a meta tag to the &lt;head&gt; of your home page template.'|t('sprout-module-meta', {
+            siteUrl: siteUrl|url_encode
+        })|raw,
+        id: 'sites',
+        name: 'meta[globals][ownership]',
+        cols: {
+            service: {
+                type: 'autosuggest',
+                heading: "Meta Tag Name"|t('sprout-module-meta'),
+                info: ""|t('sprout-module-meta'),
+                code: true,
+                suggestions: [
+                    {
+                        label: 'Common Services'|t('sprout-module-meta'),
+                        data: [
+                        { name: 'google-site-verification', hint: 'Google Search Console'|t('sprout-module-meta') },
+                        { name: 'msvalidate.01', hint: 'Bing Webmaster Tools'|t('sprout-module-meta') },
+                        { name: 'fb:page_id', hint: 'Facebook Page'|t('sprout-module-meta') },
+                        { name: 'p:domain_verify', hint: 'Pinterest'|t('sprout-module-meta') },
+                        { name: 'yandex-verification', hint: 'Yandex Webmaster Tools'|t('sprout-module-meta') },
+                        { name: 'fb:app_id', hint: 'Facebook App ID'|t('sprout-module-meta') },
+                        { name: 'fb:admins', hint: 'Facebook Admins'|t('sprout-module-meta') },
+                    ]
+                    }
+                ]
+            },
+            metaTagContent: {
+                type: 'singleline',
+                heading: "Meta Tag Content"|t('sprout-module-meta'),
+                info: ""|t('sprout-module-meta'),
+                code: true,
+            },
+        }|filter,
+        rows: [
+            {
+                metaTagName: 'meta-tag-name',
+                metaTagContent: 'VERIFICATION_CODE'
+            }
+        ],
+        errors: []|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+{% endblock %}

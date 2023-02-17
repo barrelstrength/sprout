@@ -1,0 +1,116 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set module = sprout.modules.dataStudio %}
+{% set settings = module.getSettings() %}
+
+{% set dataSource = dataSet.getDataSource() %}
+
+<fieldset>
+    <div class="meta">
+
+        {% if groups | length %}
+
+            {{ forms.selectField({
+                first: true,
+                label: 'Group'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                    'The group where this data set should be displayed'|t('sprout-module-data-studio')
+                ),
+                id: 'groupId',
+                name: 'groupId',
+                options: groups,
+                value: dataSet.groupId,
+                disabled: static,
+            }) }}
+
+        {% endif %}
+
+        {{ forms.textField({
+            label: "Handle"|t('sprout-module-data-studio'),
+            id: 'handle',
+            name: 'handle',
+            value: dataSet is defined ? dataSet.handle : "",
+            errors: dataSet is defined ? dataSet.getErrors('handle') : "",
+            disabled: static,
+        }) }}
+
+        {{ forms.textField({
+            label: 'Name Format'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                "Auto-generate your data set name using settings values, such as {name} and {startDate|date('F d, Y')}"|t('sprout-module-data-studio')
+            ),
+            name: 'nameFormat',
+            id: 'name-format-field',
+            placeholder: '{dateCreated|date("D, d M Y H:i:s")}',
+            value: dataSet is defined ? dataSet.nameFormat : "",
+            errors: dataSet is defined ? dataSet.getErrors('nameFormat') : "",
+            disabled: static,
+        }) }}
+
+    </div>
+</fieldset>
+
+<fieldset>
+    <div class="meta">
+
+        {% if dataSource.isAllowHtmlEditable() %}
+            {{ forms.lightSwitchField({
+                label: 'Allow HTML'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                    "Render HTML in your data set results. Don't enable this setting if you allow user submitted content."|t('sprout-module-data-studio')
+                ),
+                name: 'allowHtml',
+                on: dataSet.allowHtml is defined ? dataSet.allowHtml : dataSource.getDefaultAllowHtml(),
+                disabled: static,
+            }) }}
+        {% endif %}
+
+        {{ forms.selectField({
+            label: 'Sort Order'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                'The order that the column defined in the Sort Column setting will be displayed. Sort Column setting must also be defined.'|t('sprout-module-data-studio')
+            ),
+            name: 'sortOrder',
+            options: [
+                { label: 'None', value: '' },
+                { label: 'Ascending (A-Z)', value: 'asc' },
+                { label: 'Descending (Z-A)', value: 'desc' }
+            ],
+            value: dataSet.sortOrder,
+            disabled: static,
+        }) }}
+
+        {{ forms.textField({
+            label: 'Sort Column'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                'The case-sensitive, column name in the Report results that you want to sort by default. Leave blank for none. Sort Order setting must also be defined.'|t('sprout-module-data-studio')
+            ),
+            name: 'sortColumn',
+            value: dataSet.sortColumn,
+            errors: dataSet is defined ? dataSet.getErrors('sortColumn') : "",
+            disabled: static,
+        }) }}
+    </div>
+</fieldset>
+
+<fieldset>
+    <div class="meta">
+
+        {{ forms.selectField({
+            label: 'Delimiter'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
+                'Select the delimiter to use when exporting the dataSet.'|t('sprout-module-data-studio')
+            ),
+            name: 'delimiter',
+            placeholder: ',',
+            options: [
+                { label: 'Comma', value: ',' },
+                { label: 'Semi-colon', value: ';' },
+                { label: 'Tab', value: "\t" }
+            ],
+            value: dataSet.delimiter ?? settings.defaultExportDelimiter,
+            warning: sproutConfigWarning(module, 'delimiter'),
+            disabled: static,
+        }) }}
+
+    </div>
+</fieldset>
+
+{% if not dataSet.handle %}
+    {% js "new Craft.HandleGenerator('#name', '#handle');" %}
+{% endif %}

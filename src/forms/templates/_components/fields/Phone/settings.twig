@@ -1,0 +1,34 @@
+{% import "_includes/forms" as forms %}
+
+{% set options = sprout.modules.forms.phoneField.getCountries() %}
+
+{{ forms.selectField({
+    name: 'country',
+    instructions: "This country will display as selected when the field loads for the first time."|t('sprout-module-forms'),
+    label: 'Default Country'|t('sprout-module-forms'),
+    options: options,
+    value: field.country
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Limit to single country"|t('sprout-module-forms'),
+    instructions: "Only accept numbers from your Default Country"|t('sprout-module-forms'),
+    name: 'limitToSingleCountry',
+    on: field.limitToSingleCountry
+}) }}
+
+{{ forms.textField({
+    label: "Placeholder Text"|t('sprout-module-forms'),
+    instructions: "The text that will be shown if the field doesn’t have a value."|t('sprout-module-forms'),
+    id: 'placeholder',
+    name: 'placeholder',
+    value: field.placeholder
+}) }}
+
+{{ forms.textField({
+    label: 'Error Message'|t('sprout-module-forms'),
+    instructions: 'Display this error message when a phone number is invalid.'|t('sprout-module-forms'),
+    name: 'customPatternErrorMessage',
+    placeholder: 'Phone number must match the format: ##########'|t('sprout-module-forms'),
+    value: field.customPatternErrorMessage
+}) }}

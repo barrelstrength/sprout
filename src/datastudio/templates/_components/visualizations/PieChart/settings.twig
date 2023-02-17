@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Label Column"|t('sprout-module-data-studio'),
+    instructions: "Set the column from the report to be used as the labels in the visualization"|t('sprout-module-data-studio'),
+    id: visualization.namespaceInputId('labelColumn'),
+    class: 'code',
+    name: visualization.namespaceInputName('labelColumn'),
+    value: visualization.labelColumn
+}) }}
+
+{{ forms.textField({
+    label: "Data Column"|t('sprout-module-data-studio'),
+    instructions: "Set the column from the report to be used as the data series in the visualization"|t('sprout-module-data-studio'),
+    id: visualization.namespaceInputId('dataColumn'),
+    class: 'code',
+    name: visualization.namespaceInputName('dataColumn'),
+    value: visualization.dataColumn
+}) }}
+
+

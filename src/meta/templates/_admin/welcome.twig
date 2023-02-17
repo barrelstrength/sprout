@@ -1,0 +1,29 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Welcome to Sprout Meta"|t('sprout-module-meta') %}
+{% set bodyClass = 'sprout-landing-page' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Smart, content-driven metadata"|t('sprout-module-meta'),
+            message: "Sprout Meta makes it seamless to manage metadata for Search, Structured Data, and Social Sharing to ensure your content is findable and sharable."|t('sprout-module-meta'),
+            primaryButtonText: "Get Started"|t('sprout-module-meta'),
+            primaryButtonLink: cpUrl('sprout/meta/globals'),
+            secondaryButtonText: "Read the Docs"|t('sprout-module-meta'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/meta"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('meta/screenshots/feature.png'),
+            altText: 'Content-focused metadata for Craft CMS'|t('sprout-module-meta')
+        }) }}
+
+    </div>
+
+{% endblock %}

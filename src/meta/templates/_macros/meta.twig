@@ -1,0 +1,39 @@
+{% macro infoIcon(params) %}
+    {%- set label = params.label ?? null -%}
+    {%- set class = params.class ?? null -%}
+    {%- set search = params.search ?? false -%}
+    {%- set structured = params.structured ?? false -%}
+    {%- set openGraph = params.openGraph ?? false -%}
+    {%- set twitterCard = params.twitterCard ?? false -%}
+    {%- set geo = params.geo ?? false -%}
+    {%- set robots = params.robots ?? false -%}
+    {%- set priority = params.priority ?? null -%}
+    {%- set message = params.message ?? null -%}
+
+    <span class="info sprout-info">
+        <div class="sprout-info-body sprout-metalevel-hud">
+            <h6>{{ "Metadata Used In"|t('sprout-module-meta') }}</h6>
+            {% if search %}<span class="sprout-icon icon-search">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/search.svg') }}
+                </span> {{ "Search"|t('sprout-module-meta') }}<br>{% endif %}
+            {% if structured %}<span class="sprout-icon icon-puzzle">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/puzzle-piece.svg') }}
+                </span> {{ "Structured Data"|t('sprout-module-meta') }}<br>{% endif %}
+
+            {% if openGraph %}<span class="sprout-icon icon-facebook">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/facebook-f.svg') }}
+                </span> {{ "Open Graph"|t('sprout-module-meta') }}<br>{% endif %}
+            {% if twitterCard %}<span class="sprout-icon icon-twitter">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/twitter.svg') }}
+                </span> {{ "Twitter Card"|t('sprout-module-meta') }}<br>{% endif %}
+            {% if geo %}<span class="sprout-icon icon-location">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/map-marker-alt.svg') }}
+                </span> {{ "Geo"|t('sprout-module-meta') }}<br>{% endif %}
+            {% if robots %}<span class="sprout-icon icon-robots">
+                {{ svg('@Sprout/Assets/dist/static/meta/icons/search-minus.svg') }}
+                </span> {{ "Robots"|t('sprout-module-meta') }}<br>{% endif %}
+
+            {% if message %}<p><i>{{ message }}</i></p>{% endif %}
+        </div>
+    </span>
+{% endmacro %}

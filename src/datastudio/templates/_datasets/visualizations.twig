@@ -1,0 +1,27 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: 'Visualization Type',
+    name: 'visualizationType',
+    value: dataSet.visualizationType,
+    options: visualizationOptions,
+    disabled: not isPro,
+    toggle: true,
+    targetPrefix: 'visualization-settings-',
+}) }}
+
+{% for visualizationType in visualizationTypes %}
+
+    {% set visualization = create(visualizationType) %}
+
+    {% set isSelected = (dataSet.visualizationType == visualizationType) %}
+    <div id="visualization-settings-{{ visualizationType|id }}"{% if not isSelected %} class="hidden"{% endif %}>
+        {# NOTE: We don't namespace the settings fields here because the EditableTable field in some
+           settings will then namespace things twice #}
+        {% if isSelected %}
+            {{ dataSet.getVisualization.getSettingsHtml()|raw }}
+        {% else %}
+            {{ visualization.getSettingsHtml()|raw }}
+        {% endif %}
+    </div>
+{% endfor %}

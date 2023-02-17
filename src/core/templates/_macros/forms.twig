@@ -1,0 +1,51 @@
+{% import "_includes/forms" as forms %}
+
+{# Form Input Macros #}
+
+{% macro address(config) %}
+    {% include "sprout-module-core/_components/fields/Address/input" with config %}
+{% endmacro %}
+
+{% macro email(config) %}
+    {% include "sprout-module-forms/_components/fields/Email/input" with config %}
+{% endmacro %}
+
+{% macro hidden(config) %}
+    {% include "sprout-module-forms/_components/fields/Hidden/input" with config %}
+{% endmacro %}
+
+{% macro invisible(config) %}
+    {% include "sprout-module-forms/_components/fields/Invisible/input" with config %}
+{% endmacro %}
+
+{% macro phone(config) %}
+    {% include "sprout-module-forms/_components/fields/Phone/input" with config %}
+{% endmacro %}
+
+{% macro regularExpression(config) %}
+    {% include "sprout-module-forms/_components/fields/RegularExpression/input" with config %}
+{% endmacro %}
+
+{% macro url(config) %}
+    {% include "sprout-module-forms/_components/fields/Url/input" with config %}
+{% endmacro %}
+
+{# Form Field Macros #}
+
+{% macro emailField(config) %}
+    {% import "_includes/forms" as forms %}
+    {% import _self as sproutFields %}
+    {{ forms.field(config, sproutFields.email(config)) }}
+{% endmacro %}
+
+{% macro phoneField(config) %}
+    {% import "_includes/forms" as forms %}
+    {% import _self as sproutFields %}
+    {{ forms.field(config, sproutFields.phone(config)) }}
+{% endmacro %}
+
+{% macro urlField(config) %}
+    {% import "_includes/forms" as forms %}
+    {% import _self as sproutFields %}
+    {{ forms.field(config, sproutFields.url(config)) }}
+{% endmacro %}

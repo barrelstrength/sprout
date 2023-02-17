@@ -1,0 +1,29 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Welcome to Sprout Redirects"|t('sprout-module-redirects') %}
+{% set bodyClass = 'sprout-landing-page' %}
+{% set pluginStoreLink = currentUser.admin ? cpUrl('plugin-store/sprout-redirects') : 'https://plugins.craftcms.com/sprout-redirects' %}
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "You once were lost. Now you're found."|t('sprout-module-redirects'),
+            message: "Sprout Redirects enables content managers to manage redirects and brand URLs. Monitor 404s, configure advanced redirect rules, and ensure all your content is findable."|t('sprout-module-redirects'),
+            primaryButtonText: "Upgrade Now"|t('sprout-module-redirects'),
+            primaryButtonLink: pluginStoreLink,
+            secondaryButtonText: "Learn More"|t('sprout-module-redirects'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/redirects"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('redirects/screenshots/sprout-redirects-feature.png'),
+            altText: 'Redirect Manager for Craft CMS'|t('sprout-module-redirects')
+        }) }}
+
+    </div>
+
+{% endblock %}

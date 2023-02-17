@@ -1,0 +1,142 @@
+{% extends "sprout-module-mailer/_layouts/base" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.mailer %}
+{# {% set selectedSubnavItem = 'campaigns' %} #}
+
+{% set title = 'Review and send'|t('sprout-module-mailer') %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ cpUrl(element.getCpEditUrl()) }}" class="btn">
+            {{ 'Continue Editing'|t('sprout-module-mailer') }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block details %}
+
+    {# email.isReadyToSend() #}
+
+    {% set emailType = element.getEmailTypeSettings() %}
+
+    <fieldset>
+        <div class="meta" x-data="{ buttonValue : 'now' }">
+
+            {{ forms.selectField({
+                label: "Schedule"|t('sprout-module-mailer'),
+                id: 'sendBehavior',
+                name: 'sendBehavior',
+                inputAttributes: {
+                    'x-model': 'buttonValue'
+                },
+                options: [
+                    { value: 'now', label: "Send now"|t('sprout-module-mailer') },
+                    { value: 'scheduled', label: "Schedule for later"|t('sprout-module-mailer') }
+                ],
+                default: 'now',
+                value: emailType.sendBehavior ?? 'now',
+                first: true,
+                toggle: true,
+                targetPrefix: 'send-behavior-',
+            }) }}
+
+            {{ forms.dateTimeField({
+                label: "Send Date"|t('sprout-module-mailer'),
+                instructions: "Date to send the campaign."|t('sprout-module-mailer'),
+                fieldId: 'send-behavior-scheduled',
+                fieldClass: [
+                    emailType.sendBehavior != 'scheduled' ? 'hidden',
+                ]|filter,
+                name: 'sendDate',
+                value: emailType.sendDate ?? '',
+                errors: emailType.getErrors('sendDate'),
+            }) }}
+
+            <div class="field" style="padding: 24px;">
+                <button
+                    type="submit"
+                    class="btn submit"
+                    style="background-color:#47b649!important;"
+                    x-text="buttonValue === 'now' ? Craft.t('sprout-module-mailer', 'Send now') : Craft.t('sprout-module-mailer', 'Schedule for later')"
+                >
+                    {{ 'Send now'|t('sprout-module-mailer') }}
+                </button>
+            </div>
+
+        </div>
+    </fieldset>
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ 'Subject'|t('sprout-module-mailer') }}</h2>
+
+    <table>
+        <tr>
+            <th>{{ 'Subject Line'|t('sprout-module-mailer') }}</th>
+            <td>{{ element.subjectLine }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Preheader Text'|t('sprout-module-mailer') }}</th>
+            <td>{{ element.preheaderText }}</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <h2>{{ 'Sender'|t('sprout-module-mailer') }}</h2>
+
+    <table>
+        <tr>
+            <th>{{ 'From'|t('sprout-module-mailer') }}</th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ 'Reply-to'|t('sprout-module-mailer') }}</th>
+            <td></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <h2>{{ 'Recipients'|t('sprout-module-mailer') }}</h2>
+
+    <table>
+        <tr>
+            <th>{{ 'To'|t('sprout-module-mailer') }}</th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ 'Audiences'|t('sprout-module-mailer') }}</th>
+            <td></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <h2>{{ 'Content'|t('sprout-module-mailer') }}</h2>
+
+    {# {% set emailUrl = cpUrl('sprout/email/preview/' ~ email.id) %} #}
+    {# {{ emailUrl ~ '?type=text' }} #}
+
+    <table>
+        <tr>
+            <th>{{ 'HTML'|t('sprout-module-mailer') }}</th>
+            <td><a href="#" class="go">{{ 'Preview'|t('sprout-module-mailer') }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Text'|t('sprout-module-mailer') }}</th>
+            <td><a href="#" class="go">{{ 'Preview'|t('sprout-module-mailer') }}</a></td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+{% do sprout.modules.core.vite.register('core/SproutAlpine.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}

@@ -1,0 +1,83 @@
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.forms %}
+{% set settings = module.getSettings() %}
+
+{{ forms.textField({
+    first: true,
+    label: "Name"|t('sprout-module-forms'),
+    instructions: "What this form will be called in the CP."|t('sprout-module-forms'),
+    id: 'name',
+    name: 'name',
+    value: form.name,
+    errors: form.getErrors('name'),
+    autofocus: true,
+    required: true
+}) }}
+
+{{ forms.textField({
+    label: "Handle"|t('sprout-module-forms'),
+    instructions: "How you’ll refer to this form in the templates."|t('sprout-module-forms'),
+    id: 'handle',
+    class: 'code',
+    name: 'handle',
+    value: form.handle,
+    errors: form.getErrors('handle'),
+    required: true
+}) }}
+
+{{ forms.textField({
+    label: "Title Format"|t('sprout-module-forms'),
+    instructions: "Submission Titles are auto-generated based on the Title Format you enter here. All information contained in the Title will also be searchable. You may use the same syntax here as you would with Dynamic Titles in your Sections. (i.e. {dateCreated|date('Ymd')} {fullName})"|t('sprout-module-forms'),
+    id: 'titleFormat',
+    name: 'titleFormat',
+    value: form.titleFormat,
+    errors: form.getErrors('titleFormat'),
+    required: true
+}) }}
+
+{% if groups is defined and groups|length %}
+
+    {% set groupOptions = [
+        { label: 'All Forms'|t('sprout-module-forms') , value: '*' }
+    ] %}
+    {% for group in groups %}
+        {% set groupOptions = groupOptions|merge([{ label: group.name, value: group.id }]) %}
+    {% endfor %}
+
+    {{ forms.selectField({
+        first: true,
+        label: "Group"|t('sprout-module-forms'),
+        instructions: "Which group should this form be displayed in?"|t('sprout-module-forms'),
+        id: 'groupId',
+        name: 'groupId',
+        options: groupOptions,
+        value: groupId
+    }) }}
+
+{% endif %}
+
+<hr>
+
+{% if settings.enableSaveData %}
+
+    {{ forms.lightswitchField({
+        label: "Save Data"|t('sprout-module-forms'),
+        instructions: "Save submitted Sprout Submissions for this form to the Craft database. Disabling this setting will not delete existing submissions, but they will no longer be visible in the Control Panel."|t('sprout-module-forms'),
+        id: 'saveData',
+        name: 'saveData',
+        on: settings.enableSaveData ? form.saveData : false,
+        onLabel: "Save Data"|t('sprout-module-forms'),
+        offLabel: "Don't Save Data"|t('sprout-module-forms')
+    }) }}
+
+{% endif %}
+
+{{ forms.textField({
+    label: "Redirect Page"|t('sprout-module-forms'),
+    instructions: "Where should the user be redirected upon form submission? Leave blank to redirect user back to the form."|t('sprout-module-forms'),
+    name: 'redirectUri',
+    placeholder: siteUrl,
+    value: (form is defined ? form.redirectUri : null),
+    errors: (form is defined ? form.getErrors('redirectUri') : null)
+}) }}

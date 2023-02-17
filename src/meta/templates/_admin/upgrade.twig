@@ -1,0 +1,30 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Upgrade to Sprout Meta PRO"|t('sprout-module-meta') %}
+{% set bodyClass = 'sprout-landing-page' %}
+{% set pluginStoreLink = currentUser.admin ? cpUrl('plugin-store/sprout-seo') : 'https://plugins.craftcms.com/sprout-seo' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Smart, content-driven metadata"|t('sprout-module-meta'),
+            message: "Sprout Meta [pro] opens the door to fine-grained control of your metadata strategy and workflows. Customize multiple Metadata fields, manage redirects, and generate sitemaps."|t('sprout-module-meta'),
+            primaryButtonText: "Upgrade Now"|t('sprout-module-meta'),
+            primaryButtonLink: pluginStoreLink,
+            secondaryButtonText: "Learn More"|t('sprout-module-meta'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/meta"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('meta/screenshots/feature.png'),
+            altText: 'Content-focused metadata for Craft CMS'|t('sprout-module-meta')
+        }) }}
+
+    </div>
+
+{% endblock %}

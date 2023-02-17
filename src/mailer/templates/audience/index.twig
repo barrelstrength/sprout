@@ -1,0 +1,54 @@
+{% extends "sprout-module-mailer/_layouts/elementindex" %}
+
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set selectedSubnavItem = 'subscriber-lists' %}
+
+{% set crumbs = [
+    { label: "Email"|t('sprout-module-mailer'), url: cpUrl('sprout/email') },
+    { label: "Subscriber Lists"|t('sprout-module-mailer'), url: cpUrl('sprout/email/audience') }
+] %}
+
+{% block actionButton %}
+
+    <div class="buttons">
+        <div class="btngroup submit">
+            {# If just Subscriber Type, make it a button. If more than one, give options #}
+            {# <a class="btn submit add icon" #}
+            {# href="{{ cpUrl('sprout/email/audiences/subscriber-list/new') }}">{{ "New Audience"|t('sprout-module-mailer') }}</a> #}
+            <div class="btn icon add submit menubtn">{{ "New Audience"|t('sprout-module-mailer') }}</div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a href="{{ cpUrl('sprout/email/audiences/subscriber-list/new') }}">
+                            {{ "Subscriber List"|t('sprout-module-mailer') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ cpUrl('sprout/email/audiences/data-set/new') }}">
+                            {{ "Data Set"|t('sprout-module-mailer') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {# {{ sproutCp.upgradeToProButton(module) }} #}
+    </div>
+
+{% endblock %}
+
+{% block sidebar %}
+
+    {% set customizableSources = false %}
+
+    {{ parent() }}
+
+    {{ sproutCp.sproutGroupAdminButtons(groupId) }}
+
+{% endblock %}
+
+{% js on ready %}
+
+    {{ sproutCp.sproutGroupAdmin(elementType, title) }}
+
+{% endjs %}

@@ -1,0 +1,22 @@
+{% extends "sprout-module-mailer/_layouts/preview" %}
+
+{% block previewBody %}
+
+    <section class="sentemail-pane sentemail-html active">
+        {% if email.htmlBody %}
+            <iframe width='100%' src="data:text/html;charset=utf-8,{{ email.htmlBody|raw|url_encode }}"></iframe>
+        {% else %}
+            <h3>{{ "No HTML Content Found"|t('sprout-module-mailer') }}</h3>
+        {% endif %}
+    </section>
+
+    <section class="sentemail-pane sentemail-text">
+        {% if email.textBody %}
+            <pre>{{ email.textBody }}</pre>
+        {% else %}
+            <h3>{{ "No Text Content Found"|t('sprout-module-mailer') }}</h3>
+        {% endif %}
+    </section>
+
+{% endblock %}
+

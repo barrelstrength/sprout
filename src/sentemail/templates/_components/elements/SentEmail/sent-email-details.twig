@@ -1,0 +1,85 @@
+{% set details = sentEmail.getDetails() %}
+
+<table class='data fullwidth'>
+    <tr>
+        <th colspan="2">
+            <h6>{{ "Delivery Info"|t('sprout-module-sent-email') }}</h6>
+        </th>
+    </tr>
+    <tr>
+        <th style="width:20%;">{{ 'Delivery Status'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.deliveryStatus ?? '–' }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'Message'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.message ?? '–' }}</td>
+    </tr>
+</table>
+
+<hr>
+
+<table class='data fullwidth'>
+    <tr>
+        <th colspan="2">
+            <h6>{{ "Sender Info"|t('sprout-module-sent-email') }}</h6>
+        </th>
+    </tr>
+    <tr>
+        <th style="width:20%;">{{ 'Sender Name'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.senderName ?? '–' }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'Sender Email'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.senderEmail ?? '–' }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'Craft Version'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.craftVersion ?? '–' }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'IP Address'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.ipAddress ?? '–' }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'User Agent'|t('sprout-module-sent-email') }}</th>
+        <td>{{ details.userAgent ?? '–' }}</td>
+    </tr>
+</table>
+
+<hr>
+
+<table class='data fullwidth'>
+    <tr>
+        <th colspan="2">
+            <h6>{{ "Email Settings"|t('sprout-module-sent-email') }}</h6>
+        </th>
+    </tr>
+    {% if details.transportType is defined %}
+        <tr>
+            <th style="width:20%;">{{ 'Transport Type'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.transportType ?? '–' }}</td>
+        </tr>
+    {% endif %}
+    {% if details.transportType == 'SMTP' %}
+        <tr>
+            <th>{{ 'Host Name'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.host ?? '–' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Port'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.port ?? '–' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Username'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.username ?? '–' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Encryption Method'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.encryptionMethod ?? '–' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Timeout'|t('sprout-module-sent-email') }}</th>
+            <td>{{ details.timeout ?? '–' }}</td>
+        </tr>
+    {% endif %}
+</table>

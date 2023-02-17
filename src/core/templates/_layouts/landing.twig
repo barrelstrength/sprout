@@ -1,0 +1,10 @@
+{% extends "_layouts/cp" %}
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+
+{% block content %} <!-- Template: {{ _self }}.twig -->
+{% endblock %}

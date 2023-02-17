@@ -1,0 +1,40 @@
+{% import "_includes/forms" as forms %}
+
+{% set options = sprout.modules.forms.phoneField.getCountries() %}
+
+{% if field.limitToSingleCountry %}
+    <input type="hidden" name="{{ name }}[country]" value="{{ country }}">
+{% endif %}
+
+<div class="sprout-phone-field compoundSelectText-wrapper">
+    <div class="compoundSelectText-dropdown">
+        {{ forms.select({
+            id: countryId,
+            name: name~'[country]',
+            options: options,
+            value: country,
+            disabled: field.limitToSingleCountry == 1 ? true : false
+        }) }}
+    </div>
+    <div class="compoundSelectText-text">
+        {{ forms.text({
+            id: id,
+            name: name~'[phone]',
+            value: value is defined ? value : '',
+            placeholder: field.placeholder ?? null
+        }) }}
+        <span class="sprout-phone-button {{ id }}">
+            <a href="" target="_blank">{{ svg('@Sprout/Assets/dist/static/fields/icons/phone.svg') }}</a>
+        </span>
+    </div>
+</div>
+
+{% js on ready %}
+    new SproutPhoneField("{{ namespaceInputId }}","{{ namespaceCountryId }}");
+{% endjs %}
+
+{% do sprout.modules.core.vite.register('fields/PhoneField.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}

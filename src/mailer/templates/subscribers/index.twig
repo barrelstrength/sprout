@@ -1,0 +1,18 @@
+{% extends "sprout-module-mailer/_layouts/elementindex" %}
+
+{% set title = "Subscribers"|t('sprout-module-mailer') %}
+
+{% set elementType = 'BarrelStrength\\Sprout\\mailer\\components\\elements\\subscriber\\SubscriberElement' %}
+{% set selectedSubnavItem = 'subscribers' %}
+
+{% set crumbs = [
+    { label: "Audience"|t('sprout-module-mailer'), url: cpUrl('sprout/email/audience') },
+    { label: "Subscribers"|t('sprout-module-mailer'), url: cpUrl('sprout/email/subscribers') }
+] %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a x-data="SproutSubscribers" x-on:click.prevent="addUser" class="btn submit add icon"
+            href="{{ cpUrl('sprout/email/subscribers/new') }}">{{ "New Subscriber"|t('sprout-module-mailer') }}</a>
+    </div>
+{% endblock %}

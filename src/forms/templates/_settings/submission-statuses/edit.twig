@@ -1,0 +1,123 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.forms %}
+{% set settings = module.getSettings() %}
+{% set canCreateForm = module.forms.canCreateForm() %}
+{% set currentSubNavKey = 'submission-statuses' %}
+
+{% set crumbs = [
+    { label: "Settings"|t('sprout-module-forms'), url: cpUrl('settings') },
+    { label: "Submission Statuses"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/submission-statuses') }
+] %}
+
+{% if submissionStatusId == 'new' %}
+    {% set submissionStatus = create('BarrelStrength\\Sprout\\forms\\submissions\\SubmissionStatus') %}
+{% else %}
+    {% set submissionStatus = module.submissionStatuses.getSubmissionStatusById(submissionStatusId) %}
+{% endif %}
+
+
+{% set title = submissionStatus.name ?? 'Create New Submission Status'|t('sprout-module-forms') %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
+
+        {% if not canCreateForm %}
+            {{ sproutCp.upgradeToProButton(module) }}
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+    {{ actionInput('sprout-module-forms/submission-statuses/save') }}
+    {{ redirectInput('sprout/settings/forms/submission-statuses') }}
+
+    {% if submissionStatus.id %}
+        {{ hiddenInput('submissionStatusId', submissionStatus.id) }}
+    {% endif %}
+
+    {{ forms.textField({
+        id: "name",
+        name: "name",
+        label: "Name"|t('sprout-module-forms'),
+        value: submissionStatus.name,
+        instructions: "What this product type will be called in the CP."|t('sprout-module-forms'),
+        first: true,
+        autofocus: true,
+        required: true,
+        translatable: true,
+        errors: submissionStatus.getErrors("name")
+    }) }}
+
+    {{ forms.textField({
+        id: "handle",
+        name: "handle",
+        label: "Handle"|t('sprout-module-forms'),
+        class: "code",
+        value: submissionStatus.handle,
+        instructions: "How you’ll refer to this order status type in your templates."|t('sprout-module-forms'),
+        required: true,
+        errors: submissionStatus.getErrors("handle")
+    }) }}
+
+    {{ forms.hidden({
+        id: 'color',
+        name: 'color',
+        value: submissionStatus.color
+    }) }}
+    {% set colorField %}
+        <div>
+            <a id="color-menu-btn" class="btn menubtn" href="#">
+                <span class="status {{ submissionStatus.color }}"></span>{{ submissionStatus.color|t|title }}
+            </a>
+            <div class="menu">
+                <ul class="padded">
+                    {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+                        <li>
+                            <a data-val="{{ color }}" {% if submissionStatus.color == color %}class="sel"{% endif %} href="#"><span class="status {{ color }}"></span>{{ color|t|title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endset %}
+    {{ forms.field({
+        label: 'Color'|t('sprout-module-forms'),
+        instructions: 'Choose a color for the submission status'|t('sprout-module-forms')
+    },colorField) }}
+
+    {{ forms.lightswitchField({
+        label: "Default Submission Status"|t('sprout-module-forms'),
+        instructions: "Use this Submission Status as the default when a form is submitted."|t('sprout-module-forms'),
+        name: 'isDefault',
+        on: submissionStatus.isDefault
+    }) }}
+
+{% endblock %}
+
+{% js %}
+    {% if not submissionStatus.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    $(function () {
+
+    $colorSelect = $('#color-menu-btn');
+
+    new Garnish.MenuBtn($colorSelect, {
+    onOptionSelect: function(data){
+    var val = $(data).data('val');
+    $('#color').val(val);
+    var html = "<span class='status "+val+"'></span>"+Craft.uppercaseFirst(val);
+    $colorSelect.html(html);
+    }
+    });
+    })();
+{% endjs %}

@@ -1,0 +1,44 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'data-studio' %}
+{% set module = sprout.modules.dataStudio %}
+{% set settings = module.getSettings() %}
+
+{% set fieldLayout = settings.getFieldLayout() %}
+
+{% block settings %}
+
+    {{ forms.selectField({
+        label: "Default Results to Display"|t('sprout-module-data-studio'),
+        instructions: "Set the number of results to initially display when a report is run."|t('sprout-module-data-studio'),
+        name: 'defaultPageLength',
+        placeholder: '10',
+        options: [
+            { label: '10', value: '10' },
+            { label: '25', value: '25' },
+            { label: '50', value: '50' },
+            { label: '100', value: '100' },
+            { label: '250', value: '250' }
+        ],
+        value: settings.defaultPageLength,
+        warning: sproutConfigWarning(module, 'defaultPageLength')
+    }) }}
+
+    {{ forms.selectField({
+        label: "Default Export Delimiter"|t('sprout-module-data-studio'),
+        instructions: "Set the default export delimiter setting when creating new data sets."|t('sprout-module-data-studio'),
+        name: 'defaultExportDelimiter',
+        placeholder: ',',
+        options: [
+            { label: 'Comma', value: ',' },
+            { label: 'Semi-colon', value: ';' }
+        ],
+        value: settings.defaultExportDelimiter,
+        warning: sproutConfigWarning(module, 'defaultExportDelimiter')
+    }) }}
+
+{% endblock %}

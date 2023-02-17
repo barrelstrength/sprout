@@ -1,0 +1,5 @@
+{% import "_includes/forms" as forms %}
+
+{% namespace 'audienceSettings' %}
+    {{ audience.getSettingsHtml()|raw }}
+{% endnamespace %}

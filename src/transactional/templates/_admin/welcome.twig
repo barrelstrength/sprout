@@ -1,0 +1,29 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Welcome to Sprout Email"|t('sprout-module-transactional') %}
+{% set bodyClass = 'sprout-landing-page' %}
+{% set pluginStoreLink = currentUser.admin ? cpUrl('plugin-store/sprout-email') : 'https://plugins.craftcms.com/sprout-email' %}
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Intimate, personal communication."|t('sprout-module-transactional'),
+            message: "Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases."|t('sprout-module-transactional'),
+            primaryButtonText: "Get Started"|t('sprout-module-transactional'),
+            primaryButtonLink: cpUrl('sprout-email/transactional'),
+            secondaryButtonText: "Read the Docs"|t('sprout-module-transactional'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/email"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('transactional/screenshots/sprout-email-feature.png'),
+            altText: 'Sprout Email for Craft CMS'|t('sprout-module-transactional')
+        }) }}
+
+    </div>
+
+{% endblock %}

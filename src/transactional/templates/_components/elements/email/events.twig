@@ -1,0 +1,34 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    id: "notificationEvent",
+    name: "emailTypeSettings[eventId]",
+    label: 'Event'|t('sprout-module-mailer'),
+    instructions: 'The event that will trigger your notification.'|t('sprout-module-mailer'),
+    options: eventOptions,
+    value: className(notificationEvent),
+    required: true,
+    toggle: true,
+    targetPrefix: 'notification-event-'
+}) }}
+
+{% for type, event in events %}
+    {% if event.settings is not empty %}
+        <div id="notification-event-{{ className(event)|id }}" class="notification-event-wrapper hidden">
+            {% namespace 'emailTypeSettings[eventSettings][' ~ type ~ ']' %}
+                {% if className(event) is same as className(notificationEvent) %}
+                    {{ notificationEvent.getSettingsHtml()|raw }}
+                {% else %}
+                    {{ event.getSettingsHtml()|raw }}
+                {% endif %}
+            {% endnamespace %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+{% css %}
+    {# Fix spacing while event settings are hidden #}
+    #notificationEvent-field { margin-bottom: 0; }
+    .notification-event-wrapper { margin-top: 24px; }
+{% endcss %}
+

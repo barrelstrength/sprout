@@ -1,0 +1,68 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.mailer %}
+{% set settings = module.getSettings() %}
+
+{% set currentSubNavKey = 'mailers' %}
+
+{% set crumbs = [
+    { label: "Settings"|t('sprout-module-mailer'), url: cpUrl('sprout/settings') },
+    { label: "Mailers"|t('sprout-module-mailer'), url: cpUrl('sprout/settings/mailers') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+
+    {# {% if emailTheme.isEditable() %} #}
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-mailer') }}">
+    </div>
+    {# {% endif %} #}
+
+{% endblock %}
+
+{% block content %}
+
+    {{ actionInput('sprout-module-mailer/mailer/save') }}
+    {{ redirectInput('sprout/settings/mailers') }}
+
+    {% if mailer.id %}
+        {{ hiddenInput('mailerId', mailer.id) }}
+    {% endif %}
+
+    {{ forms.textField({
+        label: "Name"|t('sprout-module-mailer'),
+        instructions: "How you will refer to this Mailer."|t('sprout-module-mailer'),
+        id: 'name',
+        name: 'name',
+        value: mailer.name,
+        warning: sproutConfigWarning(module, 'name'),
+        first: true,
+        required: true,
+    }) }}
+    {# errors: "mailer.getErrors('name')", #}
+    {# disabled: 'not mailer.isEditable()', #}
+
+    {{ forms.selectField({
+        label: 'Mailer Type'|t('sprout-module-mailer'),
+        id: 'mailerType',
+        name: 'mailerType',
+        options: [
+            {
+                label: 'System Mailer',
+                value: 'BarrelStrength\\Sprout\\mailer\\components\\mailers\\SystemMailer',
+            }
+        ],
+        value: className(mailer),
+        errors: [],
+        warning: sproutConfigWarning(module, 'mailerType')
+    }) }}
+
+    {% namespace 'mailerSettings' %}
+        {{ mailer.getSettingsHtml()|raw }}
+    {% endnamespace %}
+
+{% endblock %}

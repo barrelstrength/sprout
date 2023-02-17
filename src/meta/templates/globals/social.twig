@@ -1,0 +1,57 @@
+{% extends "sprout-module-meta/_layouts/global-metadata" %}
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% block content %}
+
+    {{ forms.editableTableField({
+        label: "Social Profiles"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+            label: "Social Profiles"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'globals'
+        }),
+        instructions: "Manage Social Profiles for your website. <a href='https://developers.google.com/search/docs/data-types/social-profile' target='_blank'>Social Profile</a> metadata is automatically detected and displayed in the Google Knowledge panel."|t('sprout-module-meta'),
+        id: 'sites',
+        name: 'meta[globals][contacts]',
+        cols: {
+            url: {
+                type: 'autosuggest',
+                heading: "Social Profile URL"|t('sprout-module-meta'),
+                info: ""|t('sprout-module-meta'),
+                placeholder: 'https://universalprofile.cloud/ABC'|t('sprout-module-meta'),
+                code: true,
+                suggestions: [
+                    {
+                        label: 'Common Services'|t('sprout-module-meta'),
+                        data: [
+                        { name: 'https://www.facebook.com/ProfileName', hint: 'Facebook'|t('sprout-module-meta') },
+                        { name: 'https://twitter.com/ProfileName', hint: 'Twitter'|t('sprout-module-meta') },
+                        { name: 'https://www.instagram.com/ProfileName', hint: 'Instagram'|t('sprout-module-meta') },
+                        { name: 'https://www.youtube.com/c/ChannelName', hint: 'YouTube'|t('sprout-module-meta') },
+                        { name: 'https://www.linkedin.com/in/ProfileName', hint: 'LinkedIn'|t('sprout-module-meta') },
+                        { name: 'https://www.pinterest.com/ProfileName', hint: 'Pinterest'|t('sprout-module-meta') },
+                        { name: 'https://soundcloud.com/ProfileName', hint: 'SoundCloud'|t('sprout-module-meta') },
+                        { name: 'https://profilename.tumblr.com/', hint: 'Tumblr'|t('sprout-module-meta') },
+                        { name: 'https://medium.com/profile-name', hint: 'Medium'|t('sprout-module-meta') },
+                        { name: 'https://publication-name.substack.com/', hint: 'Substack'|t('sprout-module-meta') },
+                    ]
+                    }
+                ]
+            },
+        }|filter,
+        rows: [
+            {
+                url: '',
+            }
+        ],
+        errors: []|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+{% endblock %}

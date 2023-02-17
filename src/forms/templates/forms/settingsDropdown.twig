@@ -1,0 +1,24 @@
+<div class="btngroup submit">
+    <a id="addFormPageBtn" class="btn add icon" href="#" title="New Page">{{ "New page"|t('sprout-module-forms') }}</a>
+    <div id="formPageManagerBtn" class="btn icon" title="{{ 'Edit Pages'|t('sprout-module-forms') }}" data-icon="menu"></div>
+</div>
+
+<div class="btngroup submit">
+    <div class="btn settings icon menubtn" title="{{ 'Edit Settings'|t('sprout-module-forms') }}">{{ "Settings"|t('sprout-module-forms') }}</div>
+    <div class="menu sproutforms-settings-dropdown">
+        <ul>
+            <li>
+                <a class="formsubmit" data-redirect="{{ cpUrl('sprout/forms/edit/'~form.id~'/settings/general')|hash }}">{{ "General"|t('sprout-module-forms') }}</a>
+            </li>
+            <li>
+                <a a class="formsubmit" data-redirect="{{ cpUrl('sprout/forms/edit/'~form.id~'/settings/templates')|hash }}">{{ "Templates"|t('sprout-module-forms') }}</a>
+            </li>
+            <li>
+                <a a class="formsubmit" data-redirect="{{ cpUrl('sprout/forms/edit/'~form.id~'/settings/rules')|hash }}">{{ "Rules"|t('sprout-module-forms') }}</a>
+            </li>
+            <li>
+                <a a class="formsubmit" data-redirect="{{ cpUrl('sprout/forms/edit/'~form.id~'/settings/integrations')|hash }}">{{ "Integrations"|t('sprout-module-forms') }}</a>
+            </li>
+        </ul>
+    </div>
+</div>

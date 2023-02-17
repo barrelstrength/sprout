@@ -1,0 +1,161 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'forms' %}
+{% set module = sprout.modules.forms %}
+{% set settings = module.getSettings() %}
+
+{% block settings %}
+
+    {{ forms.lightswitchField({
+        label: "Save data to the Craft database"|t('sprout-module-forms'),
+        instructions: "Disable this setting to stop Sprout Forms from saving all form submission data to the Craft database and hide the Submissions tab. Existing data will not be deleted, but will no longer be accessible via the Control Panel."|t('sprout-module-forms'),
+        id: 'enableSaveData',
+        name: 'enableSaveData',
+        toggle: 'settings-savedatadetails',
+        on: settings.enableSaveData,
+        onLabel: "Save Data"|t('sprout-module-forms'),
+        offLabel: "Don't Save Data"|t('sprout-module-forms'),
+        warning: sproutConfigWarning(module, 'enableSaveData'),
+    }) }}
+
+    <div id="settings-savedatadetails"
+        class="{{ not settings.enableSaveData ? "hidden" : '' }}">
+
+        {{ forms.lightswitchField({
+            label: "Default behavior for saving data"|t('sprout-module-forms'),
+            instructions: "The default behavior for saving data when a new Form is created."|t('sprout-module-forms'),
+            id: 'enableSaveDataDefaultValue',
+            name: 'enableSaveDataDefaultValue',
+            on: settings.enableSaveDataDefaultValue,
+            onLabel: "Save Data"|t('sprout-module-forms'),
+            offLabel: "Don't Save Data"|t('sprout-module-forms'),
+            warning: sproutConfigWarning(module, 'enableSaveDataDefaultValue'),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Track Remote IP"|t('sprout-module-forms'),
+            instructions: "Enable to capture the IP Address used when a Submission is saved. IP Addresses may be considered personal information."|t('sprout-module-forms'),
+            name: 'trackRemoteIp',
+            on: settings.trackRemoteIp ? true : false,
+            onLabel: "Save Data"|t('sprout-module-forms'),
+            offLabel: "Don't Save Data"|t('sprout-module-forms'),
+            warning: sproutConfigWarning(module, 'trackRemoteIp'),
+        }) }}
+
+        {{ forms.selectField({
+            label: "Default Section"|t('sprout-module-forms'),
+            instructions: "The form section that will be selected by default in the sidebar navigation."|t('sprout-module-forms'),
+            name: 'defaultSection',
+            options: [
+                {
+                    label: 'Submissions'|t('sprout-module-forms'),
+                    value: 'submissions'
+                },
+                {
+                    label: 'Forms'|t('sprout-module-forms'),
+                    value: 'forms'
+                }
+            ],
+            value: not settings.enableSaveData ? 'forms' : settings.defaultSection,
+            warning: sproutConfigWarning(module, 'enableSaveData'),
+        }) }}
+
+    </div>
+
+    <hr>
+
+    {{ forms.selectField({
+        label: 'Default Submission Method'|t('sprout-module-forms'),
+        instructions: 'The method used to submit your forms.'|t('sprout-module-forms'),
+        id: 'defaultSubmissionMethod',
+        name: 'defaultSubmissionMethod',
+        value: settings.defaultSubmissionMethod,
+        options: [{
+            value: "sync",
+            label: "Reload Page (Synchronous)"|t('sprout-module-forms')
+        },{
+            value: "async",
+            label: "AJAX (Asynchronous)"|t('sprout-module-forms'),
+        }],
+        warning: sproutConfigWarning(module, 'defaultSubmissionMethod'),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Default Form Templates"|t('sprout-module-forms'),
+        instructions: "The default templates that will be used to output your forms when using the displayForm tag if no Form Templates are selected for a given form. Add additional form templates via the Form Templates API or providing a custom template path."|t('sprout-module-forms'),
+        id: 'formTemplateId',
+        name: 'formTemplateId',
+        options: [
+            {
+                label: 'Default Form Templates'|t('sprout-module-forms'),
+                value: 'BarrelStrength\\Sprout\\forms\\components\\formtemplates\\DefaultFormTemplateSet',
+            },
+            {
+                label: 'Custom Form Templates'|t('sprout-module-forms'),
+                value: 'custom',
+            }
+        ],
+        value: settings.formTemplateId ?? null,
+        errors: (settings is defined ? settings.getErrors('formTemplateId') : null),
+        warning: sproutConfigWarning(module, 'formTemplateId'),
+        toggle: true,
+        targetPrefix: 'form-templates-',
+    }) }}
+
+    <div id="form-templates-custom"{% if 'field.suggestedTemplates' != 'custom' %} class="hidden"{% endif %}>
+        {{ forms.autosuggestField({
+            label: "Custom Form Template Path"|t('sprout-module-forms'),
+            instructions: "The templates that will be used to display your Form. Add additional Form Templates via the Form Templates API or providing a custom path to your form templates folder."|t('sprout-module-forms'),
+            id: 'formTemplatePath',
+            name: 'formTemplatePath',
+            suggestEnvVars: false,
+            suggestions: sproutTemplateFolderSuggestions(),
+            placeholder: "_forms/custom-form-templates"|t('sprout-module-forms'),
+            value: settings.formTemplatePath ?? null,
+            warning: sproutConfigWarning(module, 'formTemplatePath'),
+        }) }}
+    </div>
+
+    <hr>
+
+    {% set assetField = create('craft\\fields\\Assets') %}
+
+    {{ forms.checkboxSelectField({
+        label: 'Allowed Asset Volumes'|t('sprout-forms'),
+        instructions: 'The asset volumes that will be available to select when adding a File Upload field to a form.'|t('sprout-forms'),
+        name: 'allowedAssetVolumes',
+        options: assetField.getSourceOptions(),
+        values: settings.allowedAssetVolumes,
+        showAllOption: true,
+        warning: sproutConfigWarning(module, 'allowedAssetVolumes'),
+    }) }}
+
+    {{ forms.textField({
+        label: "Default File Upload Location Subpath"|t('sprout-forms'),
+        instructions: "The default subpath will be used whenever a new File Upload field is added to a form. The subfolder path can contain variables like the Form Entry ID <code>{id}</code> or the Form handle <code>{{ object.getForm().handle }}</code>"|t
+            ('sprout-forms'),
+        id: 'defaultUploadLocationSubpath',
+        name: 'defaultUploadLocationSubpath',
+        value: settings.defaultUploadLocationSubpath,
+        placeholder: '{{ object.getForm().handle }}',
+        warning: sproutConfigWarning(module, 'defaultUploadLocationSubpath'),
+    }) }}
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: "Allow Forms to be edited in front-end templates"|t('sprout-module-forms'),
+        instructions: "Enable this setting to allow users to edit existing submissions in front-end templates. Enabling this feature may have some workflow or security considerations as forms allow anonymous submissions."|t('sprout-module-forms'),
+        id: 'enableEditSubmissionViaFrontEnd',
+        name: 'enableEditSubmissionViaFrontEnd',
+        on: settings.enableEditSubmissionViaFrontEnd,
+        onLabel: "Allow Edits"|t('sprout-module-forms'),
+        offLabel: "Don't Allow Edits"|t('sprout-module-forms'),
+        warning: sproutConfigWarning(module, 'enableEditSubmissionViaFrontEnd'),
+    }) }}
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.editableTableField({
+    label: label,
+    instructions: 'Define the available options.'|t('sprout-module-forms'),
+    id: 'options',
+    name: 'options',
+    addRowLabel: 'Add an option'|t('sprout-module-forms'),
+    cols: {
+        label: {
+            type: 'singleline',
+            heading: 'Name'|t('sprout-module-forms'),
+            autopopulate: 'value',
+        },
+        value: {
+            type: 'singleline',
+            heading: 'Email'|t('sprout-module-forms'),
+            class: 'code',
+        },
+        default: {
+            type: 'checkbox',
+            heading: 'Default?'|t('sprout-module-forms'),
+            class: 'thin',
+        },
+    },
+    rows: options,
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}

@@ -1,0 +1,140 @@
+{% extends "sprout-module-sitemaps/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = sitemapSection.name != ''
+    ? sitemapSection.name
+    : "New sitemap page"|t('sprout-module-sitemaps') %}
+
+{% set crumbs = [
+    { label: "Sitemap"|t, url: cpUrl('sprout/sitemaps') }
+] %}
+
+{% set centered = true %}
+
+{% set fullPageForm = true %}
+
+{# Map the `sitemapSection` object to `values` so we can use the same templates for Sitemap Sections and the Optimize Field Type #}
+{% set values = sitemapSection %}
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% block actionButton %}
+
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-sitemaps') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li><a class="formsubmit"
+                        data-redirect="{{ continueEditingUrl|hash }}">{{ "Save and continue editing"|t('sprout-module-sitemaps') }}
+                        <span class="shortcut">⌘S</span></a></li>
+            </ul>
+            <hr>
+            <ul>
+                {% set afterDeleteRedirectUrl = 'sprout/sitemaps' %}
+                <li><a class="formsubmit error"
+                        data-action="sprout-module-sitemaps/sitemaps/delete-sitemap-by-id"
+                        data-confirm="{{ "Are you sure you want to delete this Custom Page?"|t('sprout-module-sitemaps') }}"
+                        data-redirect="{{ afterDeleteRedirectUrl|hash }}">{{ "Delete"|t('sprout-module-sitemaps') }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block header %}
+    {{ block('pageTitle') }}
+
+    {{ block('actionButton') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ actionInput('sprout-module-sitemaps/sitemaps/save-sitemap-section') }}
+    {{ redirectInput('sprout/sitemaps?site=' ~ currentSite.handle) }}
+    {{ hiddenInput('sectionId', sitemapSection.id is defined ? sitemapSection.id : '') }}
+    {{ hiddenInput('urlEnabledSectionId', sitemapSection.urlEnabledSectionId ?? '') }}
+    {{ hiddenInput('type', sitemapSection.type ?? '') }}
+    {{ hiddenInput('siteId', sitemapSection.siteId ?? null) }}
+
+    {{ forms.textField({
+        label: "URI"|t('sprout-module-sitemaps'),
+        instructions: "The relative path of the Custom Page. The Base URL will be appended for you."|t('sprout-module-sitemaps'),
+        id: "uri",
+        name: 'uri',
+        value: (sitemapSection.uri == '__home__') ? "/" : sitemapSection.uri,
+        errors: sitemapSection.getErrors('uri'),
+        first: true,
+        autofocus: true,
+        required: true
+    }) }}
+
+    {% set priorityList = {
+        '1.0': '1.0 ↑ Highest'|t,
+        '0.9': '0.9',
+        '0.8': '0.8',
+        '0.7': '0.7',
+        '0.6': '0.6',
+        '0.5': '0.5',
+        '0.4': '0.4',
+        '0.3': '0.3',
+        '0.2': '0.2',
+        '0.1': '0.1',
+        '0.0': '0.0 ↓ Lowest'|t
+    } %}
+
+    {% set frequencyList = {
+        'always': 'Always'|t,
+        'hourly': 'Hourly'|t,
+        'daily': 'Daily'|t,
+        'weekly': 'Weekly'|t,
+        'monthly': 'Monthly'|t,
+        'yearly': 'Yearly'|t,
+        'never': 'Never'|t
+    } %}
+
+    {{ forms.selectField({
+        label: "Priority"|t,
+        name: 'priority',
+        options: priorityList,
+        value: sitemapSection.priority,
+        errors: "",
+        required: false
+    }) }}
+
+    {{ forms.selectField({
+        label: "Change Frequency"|t,
+        name: 'changeFrequency',
+        options: frequencyList,
+        value: sitemapSection.changeFrequency,
+        errors: "",
+        required: false
+    }) }}
+
+
+{% endblock %}
+
+{% block details %}
+
+    <div class="meta">
+        {{ forms.lightswitchField({
+            label: "Enable"|t,
+            id: 'enabled',
+            name: 'enabled',
+            on:  (sitemapSection.enabled is defined ? sitemapSection.enabled : false)
+        }) }}
+    </div>
+
+    <div class="meta read-only">
+        <div class="data">
+            <div class="heading">{{ "Site"|t('sprout-module-sitemaps') }}</div>
+            <div class="value">{{ currentSite.name }}</div>
+        </div>
+        <div class="data">
+            <div class="heading">{{ "Base URL"|t('sprout-module-sitemaps') }}</div>
+            <div class="value">
+                <input type="text" value="{{ currentSite.baseUrl }}" class="text fullwidth" style="padding-left:0;border:none;box-shadow:none;"/>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

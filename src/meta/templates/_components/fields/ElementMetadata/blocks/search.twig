@@ -1,0 +1,42 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+<div class="sprout-box">
+
+    {{ forms.textField({
+        label: "Title"|t('sprout-module-forms'),
+        instructions: "The Title of your content which will appear in search results"|t('sprout-module-forms'),
+        name: field.handle~'[metadata][title]',
+        showCharsLeft: true,
+        value: meta.title,
+        errors: "",
+        required: false,
+    }) }}
+
+    {{ forms.textField({
+        label: "Description"|t('sprout-module-forms'),
+        instructions: "A description of your content which will appear in search results."|t('sprout-module-forms'),
+        name: field.handle~'[metadata][description]',
+        showCharsLeft: true,
+        value: meta.description,
+        errors: "",
+        required: false,
+    }) }}
+
+    {{ forms.textField({
+        label: "Keywords"|t('sprout-module-forms'),
+        id: 'sprout-searchKeywords',
+        instructions: "A list of keywords that describe your content"|t('sprout-module-forms'),
+        name: field.handle~'[metadata][keywords]',
+        value: meta.keywords,
+        errors: "",
+        required: false
+    }) }}
+
+</div>
+
+{% js on ready %}
+    new SproutMetaKeywordsField({
+    keywordsFieldId: '#fields-sprout-searchKeywords'
+    });
+{% endjs %}

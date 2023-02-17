@@ -1,0 +1,66 @@
+{% extends "sprout-module-meta/_layouts/global-metadata" %}
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% set module = sprout.modules.meta %}
+{% set settings = module.getSettings() %}
+
+{% block content %}
+
+    {{ forms.editableTableField({
+        label: "Contacts"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+            label: "Contacts"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }),
+        instructions: "Manage Contacts for your website. <a href='https://developers.google.com/search/docs/data-types/corporate-contact' target='_blank'>Corporate Contacts</a> metadata is automatically detected and displayed in the Google Knowledge panel."|t('sprout-module-meta'),
+        id: 'sites',
+        name: 'meta[globals][contacts]',
+        cols: {
+            contactType: {
+                type: 'autosuggest',
+                heading: "Contact Type"|t('sprout-module-meta'),
+                info: ""|t('sprout-module-meta'),
+                code: true,
+                suggestions: [
+                    {
+                        label: 'Common Services'|t('sprout-module-meta'),
+                        data: [
+                        { name: 'customer service', hint: 'Customer Service'|t('sprout-module-meta') },
+                        { name: 'technical support', hint: 'Technical Support'|t('sprout-module-meta') },
+                        { name: 'billing support', hint: 'Billing Support'|t('sprout-module-meta') },
+                        { name: 'bill payment', hint: 'Bill Payment'|t('sprout-module-meta') },
+                        { name: 'sales', hint: 'Sales'|t('sprout-module-meta') },
+                        { name: 'reservations', hint: 'Reservations'|t('sprout-module-meta') },
+                        { name: 'credit card support', hint: 'Credit Card Support'|t('sprout-module-meta') },
+                        { name: 'emergency', hint: 'Emergency'|t('sprout-module-meta') },
+                        { name: 'baggage tracking', hint: 'Baggage Tracking'|t('sprout-module-meta') },
+                        { name: 'roadside assistance', hint: 'Roadside Assistance'|t('sprout-module-meta') },
+                        { name: 'package tracking', hint: 'Package Tracking'|t('sprout-module-meta') },
+                    ]
+                    }
+                ]
+            },
+            telephone: {
+                type: 'singleline',
+                heading: "Telephone"|t('sprout-module-meta'),
+                info: ""|t('sprout-module-meta'),
+                placeholder: '+1-800-555-1212 - International Format'|t('sprout-module-meta'),
+                code: true,
+            },
+        }|filter,
+        rows: [
+            {
+                contactType: '',
+                telephone: ''
+            }
+        ],
+        errors: []|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+{% endblock %}

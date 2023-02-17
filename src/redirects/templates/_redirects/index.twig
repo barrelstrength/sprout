@@ -1,0 +1,39 @@
+{% requirePermission 'sprout-module-redirects:editRedirects' %}
+
+{% extends "sprout-module-redirects/_layouts/elementindex" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set module = sprout.modules.redirects %}
+
+{% set title = "Redirects"|t('sprout-module-redirects') %}
+{% set elementType = 'BarrelStrength\\Sprout\\redirects\\components\\elements\\RedirectElement' %}
+{% set bodyClass = 'sprout-redirects-index' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        {{ newRedirectButtonHtml }}
+        {{ sproutCp.upgradeToProButton(module) }}
+    </div>
+{% endblock %}
+
+{% css %}
+    .element.small.hasstatus
+    {
+    word-break: break-all;
+    hyphens: auto;
+    }
+{% endcss %}
+
+{# {% js %} #}
+{#     {% if not module.isPro() and not false %} #}
+{#         $('#sprout-redirects-new-button').on('click', function(e){ #}
+{#         e.preventDefault(); #}
+{#         }) #}
+{#     {% endif %} #}
+{# {% endjs %} #}
+
+{% block initJs %}
+    SproutRedirectElementIndexInit = function() {
+    {{ parent() }}
+    };
+{% endblock %}

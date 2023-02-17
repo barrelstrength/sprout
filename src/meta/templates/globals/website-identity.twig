@@ -1,0 +1,453 @@
+{% extends "sprout-module-meta/_layouts/global-metadata" %}
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% set imageElement = null %}
+{% set elementType = 'craft\\elements\\Asset' %}
+{% set organizationItems = sprout.modules.meta.globalMetadata.getOrganizationOptions() %}
+{% set websiteIdentity = globals.identity %}
+{% set maxDescriptionLength = sprout.modules.meta.elementMetadata.getDescriptionLength() %}
+
+{% set websiteIdentityTypes = [
+    { label: "Organization", value: "Organization" },
+    { label: "Person", value: "Person" }
+] %}
+
+{% set websiteIdentityOptions = {"":""} %}
+
+{% for item in organizationItems %}
+    {% set itemName = sprout.modules.meta.globalMetadata.getJsonName(item.name) %}
+    {% set websiteIdentityOptions = websiteIdentityOptions|merge({
+        (item.name) : itemName
+    }) %}
+{% endfor %}
+
+{% if websiteIdentity.image is defined and websiteIdentity.image %}
+    {% set image = craft.app.elements.getElementById(websiteIdentity.image) %}
+    {% set imageElement = image %}
+{% endif %}
+
+{% block content %}
+
+    <form method="post" accept-charset="UTF-8" data-saveshortcut>
+        {{ csrfInput() }}
+        {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+        {{ hiddenInput('globalColumn', 'identity') }}
+        {{ hiddenInput('siteId', globals.siteId) }}
+        {{ hiddenInput('meta[globals][identity][locationAddressId]', globals.addressModel.id) }}
+
+        {% set redirectUrl = craft.app.request.pathInfo~'?site='~currentSite.handle %}
+        {{ redirectInput(redirectUrl) }}
+
+        {{ forms.textField({
+            label: "Name"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Name"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                openGraph: true,
+                twitterCard: true,
+                priority: 'globals'
+            }),
+            instructions: "The preferred name of your website."|t('sprout-module-meta'),
+            name: 'meta[globals][identity][name]',
+            value: websiteIdentity['name'] is defined ? websiteIdentity.name : null,
+            errors: '',
+            first: true,
+            maxlength: 60,
+            showCharsLeft: true,
+            required: true,
+            placeholder: siteName,
+            class: 'nicetext'
+        }) }}
+
+        {% set hasAlternateName = websiteIdentity['alternateName'] is defined and websiteIdentity.alternateName %}
+
+        {{ forms.checkboxField({
+            label: "Show Alternate Name field"|t('sprout-module-mailer'),
+            name: 'hasNameField',
+            toggle: 'alternate-name-container',
+            reverseToggle: '#alternate-name-container',
+            checked: not hasAlternateName
+        }) }}
+
+        <div id="alternate-name-container"
+            class="{{ (hasAlternateName ?: 'hidden' ) }}">
+            {{ forms.textField({
+                label: "Alternate Name"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                    label: "Alternate Name"|t('sprout-module-meta'),
+                    search: true,
+                    structured: true,
+                    priority: 'globals'
+                }),
+                instructions: "An alternate name you want search engines to consider (i.e. such as a legal name or nickname)."|t('sprout-module-meta'),
+                name: 'meta[globals][identity][alternateName]',
+                value: websiteIdentity['alternateName'] is defined ? websiteIdentity.alternateName : null,
+                errors: '',
+                maxlength: 60,
+                showCharsLeft: true,
+                class: 'nicetext'
+            }) }}
+        </div>
+
+        {{ forms.textareaField({
+            label: "Description"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Description"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                openGraph: true,
+                twitterCard: true,
+                priority: 'globals'
+            }),
+            instructions: "A description of your website."|t('sprout-module-meta'),
+            name: 'meta[globals][identity][description]',
+            value: websiteIdentity['description'] is defined ? websiteIdentity.description : null,
+            errors: '',
+            required: true,
+            maxlength: maxDescriptionLength,
+            showCharsLeft: true,
+            placeholder: "The official website of " ~ siteName
+        }) }}
+
+        {{ forms.field({
+            label: 'Image'|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Image"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                openGraph: true,
+                twitterCard: true,
+                priority: 'globals'
+            }),
+            instructions: "The preferred image or profile picture for your website."|t('sprout-module-meta'),
+            required: true
+        }, forms.elementSelect({
+            elements: [imageElement],
+            sourceElementId: websiteIdentity['image'] is defined and imageElement ? websiteIdentity.image : null,
+            elementType: elementType,
+            id: 'image',
+            name: 'meta[globals][identity][image]',
+            jsClass: 'Craft.AssetSelectInput',
+            addButtonLabel: 'Select Image'|t('sprout-module-meta'),
+            sources: '*',
+            limit: 1,
+            criteria: {kind: ['image'], siteId : null}
+        })) }}
+
+        {% set keywordsValue = websiteIdentity['keywords'] is defined ? websiteIdentity.keywords : null %}
+
+        {{ forms.textField({
+            label: "Keywords"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Keywords"|t('sprout-module-meta'),
+                search: true,
+                priority: 'globals'
+            }),
+            instructions: "The primary keywords or phrases that describe your website."|t('sprout-module-meta'),
+            id: 'keywords',
+            name: 'meta[globals][identity][keywords]',
+            value: keywordsValue,
+            errors: ''
+        }) }}
+
+        {{ forms.textField({
+            label: "Email"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Email"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }),
+            type: 'email',
+            instructions: 'The preferred email address for your website.'|t('sprout-module-meta'),
+            namespaceInputId: 'sprout-websiteidentity-email',
+            id: 'sprout-websiteidentity-email',
+            fieldContext: 'meta',
+            name: 'meta[globals][identity][email]',
+            value: websiteIdentity['email'] is defined ? websiteIdentity.email : null,
+            errors: '',
+            inputAttributes: {
+                data: {lpignore: 'true'},
+            },
+        }) }}
+
+        {{ sproutFields.phoneField({
+            label: "Telephone"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Telephone"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }),
+            instructions: 'The preferred telephone number for your website.'|t('sprout-module-meta'),
+            namespaceInputId: 'sprout-websiteidentity-phone',
+            id: 'sprout-websiteidentity-phone',
+            fieldContext: 'sproutmeta',
+            name: 'meta[globals][identity][telephone]',
+            value: websiteIdentity['telephone']['phone'] is defined ? websiteIdentity.telephone.phone : null,
+            errors: '',
+            field: {
+                limitToSingleCountry: false
+            },
+            country: websiteIdentity['telephone']['country'] is defined ? websiteIdentity.telephone.country : 'US',
+            countryId: 'phoneCountry',
+            namespaceCountryId: 'phoneCountry'
+        }) }}
+
+        {{ forms.field({
+            label: 'Address'|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Address Field"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }),
+            instructions: 'The preferred physical address for your website.'|t('sprout-module-meta'),
+            fieldClass: 'sproutfields-addressfield',
+            required: false
+        }, locationField|raw) }}
+
+        {{ forms.textField({
+            label: "Latitude"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Latitude"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }),
+            instructions: 'The latitude of your address.'|t('sprout-module-meta'),
+            name: 'meta[globals][identity][latitude]',
+            value: websiteIdentity['latitude'] is defined ? websiteIdentity.latitude : null,
+            errors: ''
+        }) }}
+
+        {{ forms.textField({
+            label: "Longitude"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                label: "Longitude"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }),
+            instructions: 'The longitude of your address.'|t('sprout-module-meta'),
+            name: 'meta[globals][identity][longitude]',
+            value: websiteIdentity['longitude'] is defined ? websiteIdentity.longitude : null,
+            errors: ''
+        }) }}
+
+        <hr>
+
+        <div class="field identityType-field-wrapper">
+            <div class="heading">
+                <label for="siteOwnerType">{{ "Website Identity"|t('sprout-module-meta') }}  {{ sproutMetaCp.infoIcon({
+                        label: "Website Identity"|t('sprout-module-meta'),
+                        search: true,
+                        structured: true,
+                        priority: 'globals'
+                    }) }}
+                </label>
+                <div class="instructions">
+                    <p>{{ "Select the primary concept that represents your brand identity." |t('sprout-module-meta') |raw }}</p>
+                </div>
+            </div>
+
+            <div class="input">
+
+                <div class="identitytype-dropdown">
+                    {{ forms.selectField({
+                        id: 'identityType',
+                        name: 'meta[globals][identity][@type]',
+                        options: websiteIdentityTypes,
+                        value: globals.getWebsiteIdentityType(),
+                        errors: "",
+                        required: false
+                    }) }}
+                </div>
+
+                <div id="organization" class="organization-info {% if globals.getWebsiteIdentityType() == 'Person' %}hidden{% endif %}">
+
+                    <div class="identitytype-dropdown organizationinfo-dropdown">
+                        {{ forms.selectField({
+                            id: 'main-entity-first-dropdown',
+                            role: 'listbox',
+                            name: 'meta[globals][identity][organizationSubTypes][0]',
+                            options: websiteIdentityOptions,
+                            value: '',
+                            errors: "",
+                            required: false,
+                        }) }}
+                    </div>
+
+                    <div class="identitytype-dropdown organizationinfo-dropdown hidden">
+                        {{ forms.selectField({
+                            id: 'main-entity-second-dropdown',
+                            role: 'listbox',
+                            name: 'meta[globals][identity][organizationSubTypes][1]',
+                            options: {'':''},
+                            value: '',
+                            errors: '',
+                            required: false,
+                        }) }}
+                    </div>
+
+                    <div class="identitytype-dropdown organizationinfo-dropdown hidden">
+                        {{ forms.selectField({
+                            id: 'main-entity-third-dropdown',
+                            role: 'listbox',
+                            name: 'meta[globals][identity][organizationSubTypes][2]',
+                            options: {'':''},
+                            value: '',
+                            errors: '',
+                            required: false,
+                        }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        {# These fields should only display when 'Organization' is selected #}
+        <div class="organization-info {% if globals.getWebsiteIdentityType() == 'Person' %}hidden{% endif %}">
+
+            {{ forms.dateField({
+                label: "Founding Date"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                    label: "Founding Date"|t('sprout-module-meta'),
+                    search: true,
+                    structured: true,
+                    priority: 'globals'
+                }),
+                id : "foundingDate",
+                instructions: 'The date that this organization was founded.'|t('sprout-module-meta'),
+                name: 'meta[globals][identity][foundingDate]',
+                value: websiteIdentity['foundingDate']['date'] is defined ? sprout.modules.meta.globalMetadata.getDate(websiteIdentity.foundingDate) : null,
+                errors: '',
+                required: false
+            }) }}
+
+            <hr>
+
+            <div id="localbusiness"
+                {% if not globals.isLocalBusiness() %}class="hidden"{% endif %}>
+
+                <div class="field">
+                    <div class="heading">
+                        <label for="siteOwnerType">{{ "Opening Hours"|t('sprout-module-meta') }} {{ sproutMetaCp.infoIcon({
+                                label: "Opening Hours"|t('sprout-module-meta'),
+                                search: true,
+                                structured: true,
+                                priority: 'globals'
+                            }) }}</label>
+                        <div class="instructions">
+                            <p>{{ "The general opening hours for a business. Leave the hours blank to indicate the business is closed on a particular day."    |t('sprout-module-meta') |raw }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="data">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>{{ "Opening Time"|t('sprout-module-meta') }}</th>
+                                <th>{{ "Closing Time"|t('sprout-module-meta') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for day in 0..6 %}
+                                <tr>
+                                    <th>
+                                        {{ craft.app.locale.getWeekDayName(day) }}
+                                    </th>
+                                    <td>
+                                        {{ forms.timeField({
+                                            id: 'openingHours-'~day~'-open',
+                                            name: 'meta[globals][identity][openingHours]['~day~'][open]',
+                                            value: websiteIdentity['openingHours'][day]['open'] is defined ? websiteIdentity['openingHours'][day]['open'].time : null,
+                                        }) }}
+                                    </td>
+                                    <td>
+                                        {{ forms.timeField({
+                                            id: 'openingHours-'~day~'-close',
+                                            name: 'meta[globals][identity][openingHours]['~day~'][close]',
+                                            value: websiteIdentity['openingHours'][day]['close'] is defined ? websiteIdentity['openingHours'][day]['close'].time : null,
+                                        }) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{ forms.autosuggestField({
+                    label: "Price Range"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                        label: "Price Range"|t('sprout-module-meta'),
+                        search: true,
+                        structured: true,
+                        priority: 'globals'
+                    }),
+                    name: 'meta[globals][identity][priceRange]',
+                    suggestions: [
+                        {
+                            label: 'Relative Price Range'|t('sprout-module-meta'),
+                            data: [
+                            { hint: 'Inexpensive'|t('sprout-module-meta'), name: '$' },
+                            { hint: 'Moderate'|t('sprout-module-meta'), name: '$$' },
+                            { hint: 'Expensive'|t('sprout-module-meta'), name: '$$$' },
+                            { hint: 'Very expensive'|t('sprout-module-meta'), name: '$$$$' },
+                        ]
+                        }
+                    ],
+                    value: websiteIdentity['priceRange'] is defined ? websiteIdentity.priceRange : null,
+                    placeholder: '$, $$, $$$, $$$ or Custom Price Range'|t('sprout-module-meta'),
+                }) }}
+
+                <hr>
+
+            </div>
+        </div>
+
+        {# These fields should only display when 'Person' is selected #}
+        <div class="person-info {% if globals.getWebsiteIdentityType() == 'Organization' %}hidden{% endif %}">
+
+            {{ forms.autosuggestField({
+                label: "Gender"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                    label: "Gender"|t('sprout-module-meta'),
+                    search: true,
+                    structured: true,
+                    priority: 'globals'
+                }),
+                name: 'meta[globals][identity][gender]',
+                suggestions: [
+                    {
+                        label: 'Gender'|t('sprout-module-meta'),
+                        data: [
+                        { name: 'Female'|t('sprout-module-meta') },
+                        { name: 'Male'|t('sprout-module-meta') },
+                    ]
+                    }
+                ],
+                value: websiteIdentity['gender'] is defined ? websiteIdentity.gender : null,
+                placeholder: 'None, Female, Male, Custom'|t('sprout-module-meta'),
+            }) }}
+
+            <hr>
+
+        </div>
+
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="Save"/>
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% js on ready %}
+    Craft.SproutFields.initFields($("#content"));
+
+    new SproutMetaWebsiteIdentity({
+    items: {{ organizationItems|json_encode|raw }},
+    websiteIdentity: {{ websiteIdentity|json_encode|raw }},
+    firstDropdownId: '#main-entity-first-dropdown',
+    secondDropdownId: '#main-entity-second-dropdown',
+    thirdDropdownId: '#main-entity-third-dropdown',
+    });
+
+    new SproutMetaKeywordsField({
+    keywordsFieldId: '#keywords-field'
+    });
+{% endjs %}
+

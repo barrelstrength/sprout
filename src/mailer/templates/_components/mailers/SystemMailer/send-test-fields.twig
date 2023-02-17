@@ -1,0 +1,35 @@
+{% import "_includes/forms" as forms %}
+
+{% set mailerInstructionsSettings = email.getMailerInstructionsSettings() %}
+
+<h6>{{ 'Email Details'|t('sprout-module-sent-email') }}</h6>
+<table>
+    <tr>
+        <th>{{ 'Subject Line'|t('sprout-module-sent-email') }}</th>
+        <td>{{ email.subjectLine }}</td>
+    </tr>
+    <tr>
+        <th>{{ 'From Address'|t('sprout-module-sent-email') }}</th>
+        <td>{{ mailerInstructionsSettings.sender }}</td>
+    </tr>
+</table>
+
+<hr>
+
+{% namespace 'mailerInstructionsSettings' %}
+
+    {{ hiddenInput('sender', mailerInstructionsSettings.sender) }}
+    {{ hiddenInput('replyToEmail', mailerInstructionsSettings.replyToEmail) }}
+
+    {% set placeholder = currentUser.email ~ ', ' ~ currentUser.friendlyName ~ ' <' ~ currentUser.email ~ '>' %}
+
+    {{ forms.textField({
+        label: "To"|t('sprout-module-mailer'),
+        instructions: 'Comma-separated list of recipients.'|t('sprout-module-sent-email'),
+        name: 'recipients',
+        placeholder: placeholder,
+        value: '',
+        first: true,
+    }) }}
+
+{% endnamespace %}

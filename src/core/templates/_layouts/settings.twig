@@ -1,0 +1,72 @@
+{% requireAdmin %}
+
+{% extends "_layouts/cp" %}
+
+{% import "_includes/forms" as forms %}
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+
+{% set crumbs = crumbs ?? [
+    { label: "Settings"|t('sprout-module-core'), url: cpUrl('settings') }
+] %}
+
+{% set selectedNavItem = 'settings' %}
+{% set displaySiteMenu = displaySiteMenu ?? false %}
+
+{% set title = "Sprout Settings"|t('sprout-module-core') %}
+
+{% set redirectUrl = currentSection['url'] ?? craft.app.request.url %}
+{% set actionUrl = currentSection['actionUrl'] ?? 'sprout-module-core/settings/save-settings' %}
+
+{% set fullPageForm = true %}
+
+{% set sidebar %} <!-- Template: {{ _self }}.twig -->
+    
+    {% set subnav = sprout.modules.core.coreSettings.getSproutCpSettingsNavItems() %}
+
+    <nav>
+        <ul>
+            {% if subnav|length %}
+                {% for heading, sections in subnav %}
+                    <li class="heading"><span>{{ heading }}</span></li>
+
+                    {% for itemKey, item in sections %}
+                        <li>
+                            <a href="{{ cpUrl(item.url) }}"
+                                {% if currentSubNavKey == itemKey %}class="sel"{% endif %}>
+                                {{ item.label }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </nav>
+{% endset %}
+
+{% block content %} <!-- Template: {{ _self }}.twig -->
+
+    {{ actionInput(actionUrl) }}
+    {{ redirectInput(redirectUrl) }}
+    {{ hiddenInput('moduleId', module.id) }}
+
+    <div id="settings-cp">
+
+        {% namespace 'settings' %}
+            {% block settings %}{% endblock %}
+        {% endnamespace %}
+
+        {% if fieldLayout is defined %}
+            <hr>
+            {{ forms.fieldLayoutDesignerField({
+                fieldLayout: fieldLayout,
+            }) }}
+        {% endif %}
+
+    </div>
+
+{% endblock %}

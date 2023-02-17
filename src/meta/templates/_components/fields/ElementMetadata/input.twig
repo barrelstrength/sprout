@@ -1,0 +1,146 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
+
+{% set displayMetadataField = false %}
+{% set maxDescriptionLength = sprout.modules.meta.elementMetadata.getDescriptionLength() %}
+
+{# Prepare our metadata badge info icons #}
+<div class="sprout-metatitle-info hidden">
+    {{- sproutMetaCp.infoIcon({
+        label: "Meta Title"|t('sprout-module-forms'),
+        search: true,
+        openGraph: true,
+        twitterCard: true,
+        priority: 'elements'
+    }) -}}
+</div>
+
+<div class="sprout-metadescription-info hidden">
+    {{- sproutMetaCp.infoIcon({
+        label: "Meta Description"|t('sprout-module-forms'),
+        search: true,
+        openGraph: true,
+        twitterCard: true,
+        priority: 'elements'
+    }) -}}
+</div>
+
+<div class="sprout-metaimage-info hidden">
+    {{- sproutMetaCp.infoIcon({
+        label: "Meta Image"|t('sprout-module-forms'),
+        search: true,
+        openGraph: true,
+        twitterCard: true,
+        priority: 'elements'
+    }) -}}
+</div>
+
+<div>
+    <div class="sprout-box-optimized">
+        {% if settings is defined %}
+            {{ hiddenInput(field.handle~'[metadata][metaSettings]', settings|json_encode, {
+                class: 'field'
+            }) }}
+        {% endif %}
+
+        {% if settings.editCanonical %}
+
+            {% set displayMetadataField = true %}
+
+            {{ forms.textField({
+                label: "Canonical URL"|t('sprout-module-forms') ~ sproutMetaCp.infoIcon({
+                    label: "Canonical URL"|t('sprout-module-forms'),
+                    search: true,
+                    structured: true,
+                    openGraph: true,
+                    twitterCard: true
+                }),
+                instructions: "The Canonical URL of your web page"|t('sprout-module-forms'),
+                id: 'sprout-canonical',
+                name: field.handle~'[metadata][canonical]',
+                value: values.canonical
+            }) }}
+
+        {% endif %}
+
+    </div>
+
+    {% if settings.enableMetaDetailsFields %}
+
+        {% set displayMetadataField = true %}
+
+        {% set showMetadata =
+            settings.showSearchMeta or
+            settings.showGeo or
+            settings.showRobots or
+            settings.showOpenGraph or
+            settings.showTwitter %}
+
+        {% if showMetadata %}
+            {% set advancedMetaButtons %}
+                <div class="buttons">
+                    <div id="{{ field.handle }}-meta-details-tabs" class="btngroup sprout-advancedoption-btns">
+                        {% for metaType in metaTypes %}
+                            {% if metaType.hasMetaDetails() and metaType.showMetaDetailsTab() %}
+                                <div class="btn" id="btn-{{ metaType.handle }}" data-type="{{ metaType.handle }}">
+                                    <i class="sprout-icon icon-{{ metaType.handle }}">
+                                        {{ svg(metaType.getIconPath()) }}
+                                    </i> {{ metaType.displayName }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endset %}
+
+            {{ forms.field({
+                label: 'Meta Details'|t('sprout-module-forms'),
+                instructions: 'Fine-tune your metadata to your specific metadata needs. Meta Details values will take priority when displaying metadata for this page.'|t('sprout-module-forms'),
+                id: 'sprout-advancedcustomizationfields',
+            }, advancedMetaButtons) }}
+        {% endif %}
+
+        <div id="{{ field.handle }}-meta-details-body" class="matrix matrix-field sprout-matrixfields" style="position: relative;">
+            {% for metaType in metaTypes %}
+                {% if metaType.hasMetaDetails() and metaType.showMetaDetailsTab() %}
+                    <div class="matrixblock fields-{{ metaType.handle }}" style="display:none;">
+                        {{ metaType.getSettingsHtml(field)|raw }}<br>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    {% endif %}
+</div>
+
+{% do sprout.modules.core.vite.register('meta/Meta.js', false) %}
+
+{% css %}
+    {# Hide the Heading of our Field so all our grouped sub-fields
+feel like they are part of the natural flow of fields #}
+    {% if fieldId is defined %}
+        #{{ fieldId }} > .heading:first-of-type { display: none; }
+    {% endif %}
+{% endcss %}
+
+{% js on ready %}
+
+    {% set metaBadgeInfo = sprout.modules.meta.elementMetadata.getMetaBadgeInfo(settings) %}
+
+    new SproutMetaMetadataField({
+    fieldHandle: '{{ field.handle }}',
+    metaBadgeInfo: {{ metaBadgeInfo|json_encode|raw }},
+    maxDescriptionLength: '{{ maxDescriptionLength }}'
+    });
+
+    new MetaDetailsToggle({
+    fieldHandle: '{{ field.handle }}',
+    selectFieldId: '#fields-open-graph select'
+    });
+
+    new MetaDetailsToggle({
+    fieldHandle: '{{ field.handle }}',
+    selectFieldId: '#fields-twitter-card select'
+    });
+
+{% endjs %}

@@ -1,0 +1,130 @@
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.forms %}
+{% set settings = module.getSettings() %}
+
+{{ forms.selectField({
+    label: "Templates"|t('sprout-module-forms'),
+    instructions: "The Form Templates that will be used to output your forms. Update the 'Default Form Templates' in the general settings."|t('sprout-module-forms'),
+    required: true,
+    first: true,
+    errors: (form is defined ? form.getErrors('formTemplateId') : null),
+    options: [
+        {
+            label: 'Default Form Templates'|t('sprout-module-forms'),
+            value: 'BarrelStrength\\Sprout\\forms\\components\\formtemplates\\DefaultFormTemplates',
+        },
+        {
+            label: 'Custom Form Templates'|t('sprout-module-forms'),
+            value: 'custom',
+        }
+    ],
+    value: settings.formTemplateId ?? null,
+    toggle: true,
+    required: true,
+    targetPrefix: 'form-templates-',
+}) }}
+
+{{ forms.autosuggestField({
+    label: "Custom Form Template Path"|t('sprout-module-forms'),
+    instructions: "The templates that will be used to display your Forms. Add additional Form Templates via the Form Templates API or providing a custom path to your form templates folder."|t('sprout-module-forms'),
+    fieldId: 'form-templates-custom',
+    fieldClass: [
+        settings.formTemplateId != 'custom' ? 'hidden'
+    ]|filter,
+    id: 'formTemplatePath',
+    name: 'formTemplatePath',
+    suggestEnvVars: false,
+    suggestions: craft.cp.getTemplateSuggestions(),
+    placeholder: "_emails/custom-folder"|t('sprout-module-forms'),
+    value: settings.formTemplatePath ?? null
+}) }}
+
+{{ forms.selectField({
+    label: 'Submission Method'|t('sprout-module-forms'),
+    instructions: 'The method used to submit your forms.'|t('sprout-module-forms'),
+    id: 'submissionMethod',
+    name: 'submissionMethod',
+    value: form.submissionMethod,
+    options: [{
+        value: "sync",
+        label: "Reload Page (Synchronous)",
+    },{
+        value: "async",
+        label: "AJAX (Asynchronous)",
+    }]
+}) }}
+
+{{ forms.textField({
+    label: "Submit Button"|t('sprout-module-forms'),
+    instructions: "The text displayed for the submit button."|t('sprout-module-forms'),
+    name: 'submitButtonText',
+    placeholder: 'Submit',
+    value: (form is defined ? form.submitButtonText : null),
+    required: false,
+    errors: (form is defined ? form.getErrors('submitButtonText') : null)
+}) }}
+
+{{ forms.textareaField({
+    label: "Success Message"|t('sprout-module-forms'),
+    instructions: "The message displayed after a submission is successfully submitted. Leave blank for no message."|t('sprout-module-forms'),
+    id: 'messageOnSuccess',
+    name: 'messageOnSuccess',
+    class: 'nicetext',
+    rows: 5,
+    placeholder: "Thanks! We'll be in touch."|t('sprout-module-forms'),
+    value: (form is defined ? form.messageOnSuccess : null),
+    errors: (form is defined ? form.getErrors('messageOnSuccess') : null)
+}) }}
+
+{{ forms.textareaField({
+    label: "Error Message"|t('sprout-module-forms'),
+    instructions: "The message displayed when a form submission has errors. This message will display above the error list if 'Globally' is selected as the Error Display Method. Leave blank for no message."|t('sprout-module-forms'),
+    id: 'messageOnError',
+    name: 'messageOnError',
+    class: 'nicetext',
+    rows: 5,
+    placeholder: "We were unable to process your submission. Please correct any errors and submit the form again."|t('sprout-module-forms'),
+    value: (form is defined ? form.messageOnError : null),
+    errors: (form is defined ? form.getErrors('messageOnError') : null)
+}) }}
+
+{{ forms.selectField({
+    label: 'Error Display Method'|t('sprout-module-forms'),
+    instructions: 'The method used to display errors after a form fails validation.'|t('sprout-module-forms'),
+    id: 'errorDisplayMethod',
+    name: 'errorDisplayMethod',
+    value: form.errorDisplayMethod,
+    options: [{
+        value: "inline",
+        label: "Inline - Display errors alongside their respective fields",
+    },{
+        value: "global",
+        label: "Globally - Display errors together in a list",
+    },{
+        value: "both",
+        label: "Inline & Globally - Display errors everywhere!",
+    }]
+}) }}
+
+<hr>
+
+{{ forms.lightswitchField({
+    label: "Enable Captchas"|t('sprout-module-forms'),
+    instructions: "Enable or disable the global captchas for this specific form."|t('sprout-module-forms'),
+    id: 'enableCaptchas',
+    name: 'enableCaptchas',
+    on: form.enableCaptchas,
+    onLabel: "Enable"|t('sprout-module-forms'),
+    offLabel: "Disable"|t('sprout-module-forms')
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Page Titles"|t('sprout-module-forms'),
+    instructions: "Display Page Titles on Forms"|t('sprout-module-forms'),
+    id: 'displaySectionTitles',
+    name: 'displaySectionTitles',
+    on: form.displaySectionTitles,
+    onLabel: "Show"|t('sprout-module-forms'),
+    offLabel: "Hide"|t('sprout-module-forms')
+}) }}

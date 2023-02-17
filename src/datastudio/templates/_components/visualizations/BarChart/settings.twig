@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Label Column"|t('sprout-module-data-studio'),
+    instructions: "Set the column from the report to be used as the labels in the visualization"|t('sprout-module-data-studio'),
+    id: visualization.namespaceInputId('visualizationLabelColumn'),
+    class: 'code',
+    name: visualization.namespaceInputName('labelColumn'),
+    value: visualization.labelColumn
+}) }}
+
+{{ forms.editableTableField({
+    label: 'Data Columns'|t('sprout-module-data-studio'),
+    instructions: 'Define the columns from the report to be used as data in the visualization.'|t('sprout-module-data-studio'),
+    id: visualization.namespaceInputId('dataColumns'),
+    name: visualization.namespaceInputName('dataColumns'),
+    minRows: 1,
+    cols: {
+        dataColumn: {
+            type: 'singleline',
+            heading: 'Data Column'|t('sprout-module-data-studio'),
+        },
+    },
+    rows: visualization.dataColumns,
+    errors: []|unique,
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+}) }}

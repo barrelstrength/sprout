@@ -1,0 +1,25 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{{ forms.checkboxField({
+    label: 'When entry is created?'|t('sprout-module-transactional'),
+    name: 'whenNew',
+    checked: event.whenNew
+}) }}
+
+{{ forms.checkboxField({
+    label: 'When entry is updated?'|t('sprout-module-transactional'),
+    name: 'whenUpdated',
+    checked: event.whenUpdated
+}) }}
+
+{{ forms.checkboxSelectField({
+    label: 'Sections'|t('sprout-module-transactional') ~ sproutCp.infoIcon(
+        'Select which sections will trigger the notification.'|t('sprout-module-transactional')
+    ),
+    name: 'sectionIds',
+    options: event.availableSections,
+    values: event.sectionIds,
+    errors: event is defined ? event.getErrors('sectionIds') : null,
+    showAllOption: true
+}) }}

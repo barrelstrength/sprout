@@ -1,0 +1,9 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightswitchField({
+    first: true,
+    label: 'Enable File Attachments'|t('sprout-module-mailer'),
+    instructions: 'All files submitted with your entries will be attached to the triggered email.'|t('sprout-module-mailer'),
+    name: 'emailTypeSettings[enableFileAttachments]',
+    on: emailType.enableFileAttachments
+}) }}

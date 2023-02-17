@@ -1,0 +1,42 @@
+{
+    "name": "barrelstrength/sprout",
+    "description": "The module that powers all Sprout Plugins",
+    "type": "craft-module",
+    "version": "0.0.3",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Barrel Strength",
+            "homepage": "https://www.barrelstrengthdesign.com/"
+        }
+    ],
+    "support": {
+        "email": "sprout@barrelstrengthdesign.com",
+        "issues": "https://github.com/barrelstrength/craft-sprout/issues?state=open",
+        "source": "https://github.com/barrelstrength/craft-sprout",
+        "docs": "https://github.com/barrelstrength/craft-sprout",
+        "rss": "https://github.com/barrelstrength/craft-sprout/commits/v2.atom"
+    },
+    "require": {
+        "php": ">=8.0",
+        "craftcms/cms": "^4.3",
+        "league/csv": "^9.8",
+        "commerceguys/addressing": "^1.4",
+        "giggsey/libphonenumber-for-php": "^8.13",
+        "league/html-to-markdown": "^5.1",
+        "php-science/textrank": "^1.2.1",
+        "nystudio107/craft-plugin-vite": "^4.0",
+        "twig/cssinliner-extra": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "BarrelStrength\\Sprout\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "craftcms/plugin-installer": true,
+            "yiisoft/yii2-composer": true
+        }
+    }
+}

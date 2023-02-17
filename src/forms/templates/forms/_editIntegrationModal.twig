@@ -1,0 +1,96 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+
+<div id="sprout-content">
+
+    {{ hiddenInput('formId', integration.formId) }}
+
+    {% if integration.id %}
+        {{ hiddenInput('integrationId', integration.id) }}
+    {% endif %}
+
+    {{ forms.lightswitchField({
+        label: 'Enabled'|t('sprout-module-forms'),
+        name: 'enabled',
+        on: integration.enabled,
+        first: true
+    }) }}
+
+    {{ forms.textField({
+        label: 'Integration Name'|t('sprout-module-forms'),
+        id: 'field-name',
+        name: 'name',
+        value: (integration is defined ? integration.name : null),
+        errors: (integration is defined ? integration.getErrors('name') : null),
+        required: true,
+    }) }}
+
+    {% namespace 'settings['~className(integration)~']' %}
+        {{ integration.getSettingsHtml()|raw }}
+    {% endnamespace %}
+
+    {{ forms.selectField({
+        label: 'Send Rule'|t('sprout-module-mailer'),
+        instructions: "Defines how to check a form submission to determine if a user has opted in to have data sent to this Integration. The Integration will be sent if the setting is set to 'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Integration will not be sent."|t('sprout-module-mailer'),
+        required: true,
+        id: 'sendRuleToggle',
+        name: 'sendRuleToggle',
+        options: integration.getSendRuleOptions(),
+        value: integration.sendRule ?? '*',
+        errors: integration.getErrors('sendRule'),
+        toggle: true,
+        required: true,
+        targetPrefix: 'send-rule-',
+    }) }}
+    {#        options: [ #}
+    {#            { #}
+    {#                label: 'Always'|t('sprout-module-mailer'), #}
+    {#                value: '*', #}
+    {#            }, #}
+    {#            { #}
+    {#                label: 'Custom Rule'|t('sprout-module-mailer'), #}
+    {#                value: 'custom', #}
+    {#            } #}
+    {#        ], #}
+
+
+    {{ forms.textField({
+        label: "Custom Rule"|t('sprout-module-mailer'),
+        instructions: "Notification Email will be sent if the Custom Rule evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Event will not trigger a Notification."|t('sprout-module-mailer'),
+        id: 'send-rule-custom',
+        fieldId: 'send-rule-custom',
+        fieldClass: [
+            integration.sendRule != 'custom' ? 'hidden',
+        ]|filter,
+        name: 'sendRule',
+        placeholder: "{% if object.customFieldHandle == 'send' %}true{% else %}false{% endif %}"|t('sprout-module-mailer'),
+        value: integration.sendRule ?? null
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Integration Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'Create a new integration if you need to update your integration type. This value cannot be changed.'|t('sprout-module-forms')
+        ),
+        id: 'type',
+        name: 'selectType',
+        hasOptgroups: true,
+        options: [
+            {
+                label: integration.name,
+                value: className(integration)
+            }
+        ],
+        value: className(integration)|e('html'),
+        errors: integration.getErrors('type') ?? null,
+        disabled: true
+    }) }}
+
+    {{ forms.textField({
+        id: 'type',
+        name: 'type',
+        type: 'hidden',
+        value: className(integration),
+        errors: integration.getErrors('type') ?? null
+    }) }}
+</div>

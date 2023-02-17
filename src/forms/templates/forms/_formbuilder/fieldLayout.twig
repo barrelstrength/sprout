@@ -1,0 +1,207 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{# {% if form.getFirstError('fieldLayoutId') %} #}
+{# {{ forms.errorList(form.getErrors('fieldLayoutId')) }} #}
+{# {% endif %} #}
+
+{% set zilchHtml %}
+    {% set boxBody %}
+        <p>{{ "Drag a field from the right sidebar into the form builder to start building your form."|t('sprout-module-forms')|raw }}</p>
+    {% endset %}
+
+    {{ sproutCp.mediaBox({
+        heading: "A blank canvas. Formidable."|t('sprout-module-forms'),
+        body: boxBody,
+        resourcePath: '@Sprout/Assets/dist/static/forms/icons/icon.svg'
+    }) }}
+{% endset %}
+
+<div x-data="FormBuilder({{ form.id }})"
+    x-ref="formBuilder"
+    class="sprout-form-builder"
+    data-source-fields='{{ form.getSourceFields()|json_encode|raw }}'
+>
+
+    <input id="field-layout-settings" type="hidden" name="submissionFieldLayout" x-bind:value="fieldLayoutInputValue">
+
+    {# Tabs #}
+    <div id="form-builder-tabs">
+        <div class="scrollable" role="tablist" aria-label="Form Pages">
+            <template x-for="tab in tabs">
+                <div
+                    class="form-builder-tab"
+                    href="#tab--content"
+                    data-id="tab--content"
+                    aria-controls="tab--content"
+                    role="tab"
+                    draggable="true"
+                    x-on:dragstart.self="dragPageTabStart"
+                    x-on:dragend.self="dragPageTabEnd"
+                    x-on:dragover="isOverPageTab"
+                    x-on:click="selectedTabId = tab.id"
+                    x-bind:id="tab.id"
+                    x-bind:class="selectedTabId == tab.id ? 'sel' : ''"
+                    x-bind:aria-selected="selectedTabId == tab.id ? true : false"
+                >
+                    <span x-text="tab.name"></span>
+                    <a
+                        x-on:click="editFormTab(tab)"
+                        class="settings icon"
+                    ></a>
+                </div>
+            </template>
+        </div>
+
+        <div id="form-builder-action-buttons" class="btngroup submit">
+            <a
+                id="addFormPageBtn"
+                class="btn add icon"
+                href="#"
+                title="New Page"
+                x-on:click="addFormPageButton"
+            >
+                {{ "New page"|t('sprout-module-forms') }}
+            </a>
+            <div id="formPageManagerBtn" class="btn icon" title="{{ 'Edit Pages'|t('sprout-module-forms') }}" data-icon="menu"></div>
+        </div>
+
+        {{ forms.lightswitch({
+            label: "Enable Captchas"|t('sprout-module-forms'),
+            instructions: "Enable or disable the global captchas for this specific form."|t('sprout-module-forms'),
+            id: 'enableCaptchas',
+            name: 'enableCaptchas',
+            on: false,
+            onLabel: "Accept Submissions"|t('sprout-module-forms'),
+        }) }}
+        {#    <button type="button" class="btn menubtn hidden" title="List all tabs" aria-label="List all tabs" tabindex="0" aria-controls="menu.Garnish926770551" aria-haspopup="listbox" aria-expanded="false"></button> #}
+    </div>
+
+    <div id="form-builder-workspace">
+
+        <div id="form-builder-layout">
+
+            {# Form Builder / Tabs #}
+            <template x-for="tab in tabs">
+
+                <div
+                    class="layout-tab drag-zone"
+                    x-bind:id="'sproutforms-tab-' + tab.id"
+                    x-show="tab.id === selectedTabId"
+
+                    x-on:dragover="dragOverLayoutTab"
+                    x-on:dragenter.prevent.self="dragEnterLayoutTab"
+                    x-on:dragleave.prevent.self="dragLeaveLayoutTab"
+                    x-on:drop.self="dropOnLayoutTab"
+                >
+                    {# Tab with Fields #}
+                    <template x-if="tab.fields.length > 0">
+
+                        <template x-for="field in tab.fields">
+
+                            {# Layout Field #}
+                            <div
+                                class="layout-field drag-target"
+                                x-on:dblclick="editFormField(field)"
+                                x-bind:data-type="field.type"
+                                x-bind:data-field-id="field.id"
+
+                                draggable="true"
+                                x-on:dragover="dragOverLayoutField"
+                                x-on:dragstart="dragLayoutFieldStart"
+                                x-on:dragend="dragLayoutFieldEnd"
+                                x-on:dragenter.prevent="dragEnterLayoutField"
+                                x-on:dragleave.prevent="dragLeaveLayoutField"
+                                x-on:drop.prevent.stop="dropOnExistingLayoutField"
+                            >
+
+                                <div class="layout-field-header">
+                                    <h2 x-bind:class="field.required" x-text="field.name"></h2>
+                                    <p x-show="field.instructions" x-text="field.instructions"></p>
+                                </div>
+
+                                <div class="body" x-html="field.uiSettings.exampleInputHtml"></div>
+                                <div class="form-field-details">
+                                    <span x-text="field.uiSettings.displayName"></span>
+                                    {# <code x-text="field.uiSettings.fieldHandleHtml"></code> #}
+                                </div>
+
+                                <a
+                                    x-on:click="editFormField(field)"
+                                    class="settings icon edit-field-button"
+                                    title="{{ 'Edit'|t('sprout-module-forms') }}"
+                                    role="button"
+                                    aria-label="{{ 'Edit'|t('sprout-module-forms') }}">
+                                </a>
+                            </div>
+
+                        </template>
+
+                    </template>
+
+                    {# Tab with no Fields #}
+                    <template x-if="tab.fields.length === 0">
+
+                        <div class="field placeholder-field">
+                            {{ zilchHtml }}
+                        </div>
+
+                    </template>
+
+                </div>
+
+            </template>
+
+            <template x-for="tab in tabs">
+
+                <template x-for="field in tab.fields">
+                    <div
+                        x-bind:id="'field-settings-slideout-' + field.id"
+                        class="fld-element-settings-body"
+                        x-bind:class="editFieldId == field.id ? '' : 'hidden'"
+                    >
+                        {# <div x-html="field.settingsHtml"></div> #}
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <div id="form-builder-sidebar">
+
+            {# Sidebar #}
+            <div id="form-source-fields">
+                <h6>{{ 'Common Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('standard')">
+                    <div x-data="FormField(field)" x-html="sourceHtml"></div>
+                </template>
+
+                <h6>{{ 'User Data Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('special')">
+                    <div x-data="FormField(field)" x-html="sourceHtml"></div>
+                </template>
+
+                <h6>{{ 'Relations Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('relations')">
+                    <div x-data="FormField(field)" x-html="sourceHtml"></div>
+                </template>
+
+                <h6 x-show="getFieldsByGroup('layoutElements').length">{{ 'Layout Elements'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('layoutElements')">
+                    <div x-data="FormField(field)" x-html="sourceHtml"></div>
+                </template>
+
+                <h6 x-show="getFieldsByGroup('custom').length">{{ 'Custom Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('custom')">
+                    <div x-data="FormField(field)" x-html="sourceHtml"></div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% do sprout.modules.core.vite.register('forms/Forms.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}

@@ -1,0 +1,45 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutCp" as sproutCp %}
+
+{% set currentSubNavKey = 'sent-email' %}
+
+{% set module = sprout.modules.sentEmail %}
+{% set settings = module.getSettings() %}
+
+{% block settings %} <!-- Template: {{ _self }}.twig -->
+
+    <div id="settings-total-sentEmailsLimit">
+        {{ forms.textField({
+            label: "Sent Email Limit"|t('sprout-module-sent-email'),
+            instructions: "The total number of Sent Emails that will be stored in the database per-site. When the limit is reached, the oldest Sent Emails for the site will be deleted. Default limit is 5000."|t('sprout-module-sent-email'),
+            name: 'sentEmailsLimit',
+            size:'10',
+            placeholder: '5000',
+            value: settings.sentEmailsLimit,
+            errors: '',
+            warning: sproutConfigWarning(module, 'sentEmailsLimit'),
+            first: true
+        }) }}
+
+        {{ forms.selectField({
+            label: "Cleanup Probability"|t('sprout-module-sent-email'),
+            id: 'cleanup-probability',
+            name: 'cleanupProbability',
+            instructions: "The probability that the Sent Emails cleanup task will run each time a Sent Email is tracked. A lower probability will trigger a cleanup task less often and the number of Sent Emails stored in the database may be higher than the Sent Emails Limit target until the cleanup task is triggered."|t('sprout-module-sent-email'),
+            options: [
+                { value: '0', label: 'None' },
+                { value: '100000', label: '1 in 10'},
+                { value: '10000', label: '1 in 100' },
+                { value: '1000', label: '1 in 1,000' },
+                { value: '100', label: '1 in 10,000' },
+                { value: '10', label: '1 in 100,000' },
+                { value: '1', label: '1 in 1,000,000' }
+            ],
+            value: settings.cleanupProbability,
+            warning: sproutConfigWarning(module, 'cleanupProbability'),
+        }) }}
+    </div>
+
+{% endblock %}

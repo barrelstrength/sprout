@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Placeholder Text"|t('sprout-module-forms'),
+    instructions: "The text that will be shown if the field doesn’t have a value."|t('sprout-module-forms'),
+    id: 'placeholder',
+    name: 'placeholder',
+    value: field.placeholder
+}) }}
+
+<div id="sproutregularexpressionfield-custom-validation-pattern">
+    {{ forms.textField({
+        label: 'Validation Pattern'|t('sprout-module-forms'),
+        instructions: 'The regular expression to use to validate this field.'|t('sprout-module-forms'),
+        name: 'customPattern',
+        placeholder: '(.*)',
+        value: field.customPattern,
+        errors: field.getErrors('customPattern')
+    }) }}
+
+    {{ forms.textField({
+        label: 'Error Message'|t('sprout-module-forms'),
+        instructions: 'Display this error message when validation fails.'|t('sprout-module-forms'),
+        name: 'customPatternErrorMessage',
+        placeholder: 'Invalid format.'|t('sprout-module-forms'),
+        value: field.customPatternErrorMessage
+    }) }}
+</div>
+

@@ -1,0 +1,69 @@
+{%- import "_includes/forms" as forms -%}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{%- set resultsTemplate = settings.resultsTemplate is defined ? settings.resultsTemplate : "" -%}
+{%- set settingsTemplate = settings.settingsTemplate is defined ? settings.settingsTemplate : "" -%}
+{%- set settingsPage = craft.app.request.getSegment(3) != 'view' ? true : false -%}
+
+{% set twigTemplateQuerySettings %}
+
+    <div class="border-box" style="padding:24px;">
+
+        {{ forms.autosuggestField({
+            name: "settings[resultsTemplate]",
+            label: "Results Template"|t('sprout-module-data-studio'),
+            instructions: "The template that defines the data set results. See docs for an example.",
+            class: "nicetext code",
+            required: true,
+            first: true,
+            placeholder: "_reports/reportname/results",
+            suggestions: craft.cp.getTemplateSuggestions(),
+            value: resultsTemplate,
+            errors: errors['resultsTemplate'] is defined ? errors['resultsTemplate'] : null
+        }) }}
+
+        {{ forms.autosuggestField({
+            name: "settings[settingsTemplate]",
+            label: "Settings Template"|t('sprout-module-data-studio'),
+            instructions: "The template that contains the data set settings. See docs for an example.",
+            class: "nicetext code",
+            placeholder: "_reports/reportname/settings",
+            suggestions: craft.cp.getTemplateSuggestions(),
+            value: settings.settingsTemplate is defined ? settings.settingsTemplate : "",
+            errors: errors['settingsTemplate'] is defined ? errors['settingsTemplate'] : null
+        }) }}
+    </div>
+{% endset %}
+
+{%- if settingsContents %}
+
+    {%- namespace 'settings' %}
+        {{- settingsContents|raw -}}
+    {% endnamespace -%}
+
+    <div class="{{ currentUser.admin and not settingsPage ? 'hidden' }}">
+
+        <hr/>
+
+        <p>
+            <a href='#'
+                class='fieldtoggle settings {{ settingsContents ? 'collapsed' : 'expanded' }}'
+                data-target='toggle-templatesettings'
+                title="{{ "Template Settings"|t('sprout-module-data-studio') }}"
+            >
+                {{ "Template Settings"|t('sprout-module-data-studio') }}
+                <em>{{ "(Only visible to admins)"|t('sprout-module-data-studio') }}</em>
+            </a>
+        </p>
+
+        <div id="toggle-templatesettings" class="{{ settingsContents ? 'hidden' : 'expanded' }}">
+            {{ twigTemplateQuerySettings }}
+        </div>
+
+    </div>
+
+{% else %}
+
+    {{ twigTemplateQuerySettings }}
+
+{%- endif -%}

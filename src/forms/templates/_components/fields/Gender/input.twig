@@ -1,0 +1,31 @@
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "_includes/forms" as forms %}
+
+{{ forms.select({
+    options: [
+        { label: 'Female'|t('sprout-module-forms'), value: 'female' },
+        { label: 'Male'|t('sprout-module-forms'), value: 'male' },
+        { label: 'Prefer not to say'|t('sprout-module-forms'), value: 'decline' },
+        { label: 'Custom'|t('sprout-module-forms'), value: 'custom' },
+    ],
+    value: value,
+    toggle: true,
+    class: 'sprout-gender-select',
+    targetPrefix: 'gender-',
+}) }}
+
+{{ forms.text({
+    id: 'gender-custom',
+    class: [
+        value != 'custom' ? 'hidden',
+        'sprout-gender-custom',
+    ]|filter,
+    name: name,
+    placeholder: 'Add your gender'|t('sprout-module-forms'),
+    value: value ?? null
+}) }}
+
+{% css %}
+    .sprout-gender-select, .sprout-gender-custom { float: left; max-width: 49%; }
+    .sprout-gender-select { margin-right: 1em; }
+{% endcss %}

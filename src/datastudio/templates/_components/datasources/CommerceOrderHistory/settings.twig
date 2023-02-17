@@ -1,0 +1,39 @@
+{% import "_includes/forms" as forms %}
+
+{% set dateRange = settings.dateRange is defined ? settings.dateRange : 'customRange' %}
+
+{{ forms.selectField({
+    id: "dateRange",
+    name: "settings[dateRange]",
+    label: "Date Range"|t('sprout-module-data-studio'),
+    options: dateRanges,
+    value: dateRange,
+    toggle: true,
+    targetPrefix: 'sprout-date-range-',
+    first: true,
+}) }}
+
+<div id="sprout-date-range-customRange" class="field{% if dateRange != 'customRange' %} hidden{% endif %}">
+    {{ forms.dateTimeField({
+        label: "Start Date"|t('sprout-module-data-studio'),
+        instructions: "The start date of the date range you wish to display in your report."|t,
+        id: 'startDate',
+        name: 'settings[startDate]',
+        value: settings.startDate is defined ? settings.startDate : defaultStartDate
+    }) }}
+
+    {{ forms.dateTimeField({
+        label: "End Date"|t('sprout-module-data-studio'),
+        instructions: "The end date of the date range you wish to display in your report."|t,
+        id: 'endDate',
+        name: 'settings[endDate]',
+        value: settings.endDate is defined ? settings.endDate : defaultStartDate
+    }) }}
+</div>
+
+{{ forms.lightswitchField({
+    label: "Calculate Total"|t('sprout-module-data-studio'),
+    instructions: "Display the sum of all results as a single line."|t,
+    name: 'settings[calculateTotals]',
+    on: settings.calculateTotals is defined ? settings.calculateTotals : null
+}) }}

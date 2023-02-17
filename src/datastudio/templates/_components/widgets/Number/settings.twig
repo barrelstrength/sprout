@@ -1,0 +1,33 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: 'Heading'|t('sprout-module-data-studio'),
+    id: 'heading',
+    name: 'heading',
+    value: (widget.heading is defined) ? widget.heading : '',
+    errors: (widget.heading is defined) ? widget.getErrors('heading') : ''
+}) }}
+
+{{ forms.textField({
+    label: 'Description'|t('sprout-module-data-studio'),
+    id: 'description',
+    name: 'description',
+    value: (widget.description is defined) ? widget.description : '',
+    errors: (widget.description is defined) ? widget.getErrors("description") : ''
+}) }}
+
+{{ forms.textField({
+    label: 'Result Prefix'|t('sprout-module-data-studio'),
+    name: 'resultPrefix',
+    value: (widget.resultPrefix is defined) ? widget.resultPrefix : '',
+    errors: (widget.resultPrefix is defined) ? widget.getErrors('resultPrefix') : ''
+}) }}
+
+{{ forms.selectField({
+    label: 'Select Report'|t('sprout-module-data-studio'),
+    id: 'dataSetId',
+    name: 'dataSetId',
+    options: dataSetOptions,
+    value: widget.dataSetId,
+    errors: ''
+}) }}

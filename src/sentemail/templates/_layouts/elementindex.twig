@@ -1,0 +1,7 @@
+{% extends "_layouts/elementindex" %}
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}

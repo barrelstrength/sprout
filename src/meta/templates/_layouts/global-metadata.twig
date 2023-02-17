@@ -1,0 +1,74 @@
+{% extends "_layouts/cp" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set module = sprout.modules.meta %}
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+
+{% do sprout.modules.core.vite.register('meta/Meta.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
+
+{% if title is not defined %}
+    {% set title = "Global Metadata"|t('sprout-module-meta') %}
+{% endif %}
+
+{% set fullPageForm = true %}
+
+{% block contextMenu %}
+    {% if craft.app.getIsMultiSite() %}
+        {% include "_elements/sitemenu" with {
+            selectedSiteId: globals.siteId,
+            urlFormat: "sprout/meta/globals/"~selectedTabHandle~"?site={handle}"
+        } %}
+    {% endif %}
+{% endblock %}
+
+{% set navItems = {
+    'identity-heading': { heading: "Knowledge Graph"|t('sprout-module-meta') },
+    'website-identity': { title: "Website Identity"|t('sprout-module-meta') },
+    'contacts': { title: "Contacts"|t('sprout-module-meta') },
+    'social': { title: "Social Profiles"|t('sprout-module-meta') },
+
+    'ownership-heading': { heading: "Ownership"|t('sprout-module-meta') },
+    'verify-ownership': { title: "Verify Ownership"|t('sprout-module-meta') },
+
+    'preferences': { heading: "Preferences"|t('sprout-module-meta') },
+    'customization': { title: "Customization"|t('sprout-module-meta') },
+    'robots': { title: "Robots"|t('sprout-module-meta') },
+} %}
+
+{% set docTitle = navItems[selectedTabHandle].title~' - '~title %}
+
+{% block actionButton %}
+
+    {% if sprout.modules.meta.isUpgradable() %}
+        <div class="buttons">
+            {{ sproutCp.upgradeToProButton(module) }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for tabHandle, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    {% set selected = tabHandle == selectedTabHandle ? 'sel' : null %}
+                    {% set tabUrl = cpUrl('sprout/meta/globals/'~tabHandle~(currentSite.handle is not null ? '?site=' ~ currentSite.handle)) %}
+                    <li>
+                        <a href="{{ tabUrl }}" class="{{ selected }}">{{ item.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}
