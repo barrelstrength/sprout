@@ -99,6 +99,8 @@ class SettingsController extends Controller
      */
     public function actionPreviewConfigSettingsFile(): Response
     {
+        $this->requireAdmin();
+        
         $this->response->headers->set('Content-Type', 'text/plain');
         $this->response->format = Response::FORMAT_RAW;
 
