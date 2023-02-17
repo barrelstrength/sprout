@@ -5,7 +5,7 @@
 {% set module = sprout.modules.dataStudio %}
 {% set settings = module.getSettings() %}
 
-{% set title  = dataSet.name %}
+{% set title = dataSet.name %}
 {% set bodyClass = 'sprout-reports-content' %}
 {% set selectedSubnavItem = craft.app.request.getSegment(2) %}
 {% if dataSource is defined %}

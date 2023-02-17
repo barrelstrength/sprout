@@ -43,6 +43,8 @@ class RedirectsController extends Controller
         ]);
 
         return $this->renderTemplate('sprout-module-redirects/_redirects/index', [
+            'title' => RedirectElement::pluralDisplayName(),
+            'elementType' => RedirectElement::class,
             'newRedirectButtonHtml' => Template::raw($newRedirectButtonHtml),
         ]);
     }

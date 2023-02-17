@@ -13,7 +13,6 @@
         <a href="{{ url('sprout/settings/email-themes/new') }}" class="btn submit add icon">
             {{ "New Mailer"|t('sprout-module-mailer') }}
         </a>
-
     </div>
 {% endblock %}
 
@@ -31,7 +30,6 @@
             mailerType: mailer.displayName(),
             title: mailer.name|t('sprout-module-mailer')|e,
             url: mailer.getCpSettingsUrl(),
-
         }]) %}
 
     {% endfor %}

@@ -54,7 +54,7 @@ class SubmissionsController extends BaseController
         $config = FormsModule::getInstance()->getSettings();
 
         return $this->renderTemplate('sprout-module-forms/submissions/index', [
-            'config' => $config,
+            'title' => SubmissionElement::pluralDisplayName(),
             'elementType' => SubmissionElement::class,
         ]);
     }

@@ -30,10 +30,8 @@ class SentEmailController extends Controller
             throw new ForbiddenHttpException('Unable to find site');
         }
 
-        $config = SentEmailModule::getInstance()->getSettings();
-
         return $this->renderTemplate('sprout-module-sent-email/_sentemail/index', [
-            'config' => $config,
+            'title' => SentEmailElement::pluralDisplayName(),
             'elementType' => SentEmailElement::class,
         ]);
     }

@@ -53,9 +53,9 @@ class FormsController extends BaseController
         $this->requirePermission(FormsModule::p('editForms'));
 
         return $this->renderTemplate('sprout-module-forms/forms/index', [
+            'title' => FormElement::pluralDisplayName(),
             'elementType' => FormElement::class,
             'groupId' => $groupId,
-            'title' => FormElement::pluralDisplayName(),
         ]);
     }
 
@@ -191,7 +191,6 @@ class FormsController extends BaseController
             throw new ServerErrorHttpException(sprintf('Unable to save report as a draft: %s', implode(', ', $form->getErrorSummary(true))));
         }
 
-        // Redirect to its edit page
         return $this->redirect($form->getCpEditUrl());
     }
 

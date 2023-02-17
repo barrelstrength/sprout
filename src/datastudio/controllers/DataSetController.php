@@ -42,11 +42,11 @@ class DataSetController extends Controller
         }
 
         return $this->renderTemplate('sprout-module-data-studio/_datasets/index', [
+            'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
             'dataSources' => $dataSources,
             'groupId' => $groupId,
             'newDataSetOptions' => $newDataSetOptions,
-            'title' => DataSetElement::pluralDisplayName(),
             'newButtonLabel' => Craft::t('sprout-module-data-studio', 'New {displayName}', [
                 'displayName' => DataSetElement::displayName(),
             ]),
@@ -151,7 +151,6 @@ class DataSetController extends Controller
             throw new ServerErrorHttpException(sprintf('Unable to save data set as a draft: %s', implode(', ', $dataSet->getErrorSummary(true))));
         }
 
-        // Redirect to its edit page
         return $this->redirect($dataSet->getCpEditUrl());
     }
 

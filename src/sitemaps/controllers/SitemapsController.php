@@ -98,6 +98,7 @@ class SitemapsController extends Controller
         $customSections = SitemapsModule::getInstance()->sitemaps->getCustomSitemapSections($currentSite->id);
 
         return $this->renderTemplate('sprout-module-sitemaps/sitemaps/index', [
+            'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
             'currentSite' => $currentSite,
             'firstSiteInGroup' => $firstSiteInGroup,
             'editableSiteIds' => $editableSiteIds,

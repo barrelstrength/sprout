@@ -32,8 +32,8 @@ class AudienceController extends Controller
         $this->requirePermission('sprout-module-mailer:editLists');
 
         return $this->renderTemplate('sprout-module-mailer/audience/index', [
-            'elementType' => AudienceElement::class,
             'title' => AudienceElement::pluralDisplayName(),
+            'elementType' => AudienceElement::class,
             'groupId' => $groupId,
         ]);
     }
@@ -65,7 +65,6 @@ class AudienceController extends Controller
             throw new ServerErrorHttpException(sprintf('Unable to save list as a draft: %s', implode(', ', $listElement->getErrorSummary(true))));
         }
 
-        // Redirect to its edit page
         return $this->redirect($listElement->getCpEditUrl());
     }
 

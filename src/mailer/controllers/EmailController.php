@@ -37,10 +37,11 @@ class EmailController extends Controller
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
 
         return $this->renderTemplate('sprout-module-mailer/email/index', [
-            'elementType' => $elementType,
             'title' => $elementType::pluralDisplayName(),
+            'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
             'newButtonUrl' => $newButtonUrl,
+            'selectedSubNavItem' => $elementType::refHandle(),
         ]);
     }
 

@@ -106,7 +106,6 @@ class SubscribersController extends Controller
             'element' => $element,
         ]);
 
-        // Redirect to its edit page
         return $this->redirect(UrlHelper::actionUrl());
     }
 
