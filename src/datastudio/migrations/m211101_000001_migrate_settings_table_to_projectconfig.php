@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\datastudio\migrations;
 
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
@@ -11,14 +10,16 @@ use craft\helpers\Json;
 class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 {
     public const SPROUT_KEY = 'sprout';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-data-studio';
+    public const MODULE_CLASS = 'BarrelStrength\Sprout\datastudio\DataStudioModule';
     public const OLD_SETTINGS_CLASS = 'barrelstrength\sproutbasereports\models\Settings';
     public const OLD_SETTINGS_TABLE = '{{%sprout_settings_craft3}}';
 
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
-        $coreSettingsKey = $moduleSettingsKey . '.modules.' . DataStudioModule::class;
+        $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
         if (!$this->db->tableExists(self::OLD_SETTINGS_TABLE)) {
             return;
@@ -56,7 +57,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             'Update Sprout Settings for: ' . self::MODULE_ID
         );
 
-        Craft::$app->getProjectConfig()->set($coreSettingsKey, $newCoreSettings,
+        Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, $newCoreSettings,
             'Update Sprout Core Settings for: ' . self::MODULE_ID
         );
 

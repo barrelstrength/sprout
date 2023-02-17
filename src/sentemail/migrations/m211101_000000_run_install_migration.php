@@ -9,6 +9,7 @@ use craft\db\Table;
 class m211101_000000_run_install_migration extends Migration
 {
     public const SPROUT_KEY = 'sprout';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-sent-email.modules';
     public const MODULE_ID = 'sprout-module-sent-email';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\sentemail\SentEmailModule';
     public const SENT_EMAILS_TABLE = '{{%sprout_sent_emails}}';
@@ -16,7 +17,7 @@ class m211101_000000_run_install_migration extends Migration
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
-        $coreModuleSettingsKey = $moduleSettingsKey . '.modules.' . self::MODULE_CLASS;
+        $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
         $this->createTables();
 

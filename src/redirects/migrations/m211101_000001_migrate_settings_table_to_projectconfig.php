@@ -12,6 +12,7 @@ use craft\helpers\Json;
 class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 {
     public const SPROUT_KEY = 'sprout';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-redirects.modules';
     public const MODULE_ID = 'sprout-module-redirects';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\redirects\RedirectsModule';
     public const OLD_SETTINGS_MODEL = 'barrelstrength\sproutbaseredirects\models\Settings';
@@ -20,7 +21,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
-        $coreModuleSettingsKey = $moduleSettingsKey . '.modules.' . self::MODULE_CLASS;
+        $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
         // Table renamed first in core migrations
         if (!$this->db->tableExists(self::OLD_SETTINGS_TABLE)) {

@@ -10,6 +10,7 @@ use craft\db\Table;
 class m211101_000000_run_install_migration extends Migration
 {
     public const SPROUT_KEY = 'sprout';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-redirects';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\redirects\RedirectsModule';
     public const REDIRECTS_TABLE = '{{%sprout_redirects}}';
@@ -24,7 +25,7 @@ class m211101_000000_run_install_migration extends Migration
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
-        $coreModuleSettingsKey = $moduleSettingsKey . '.modules.' . self::MODULE_CLASS;
+        $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
         $this->createTables();
 

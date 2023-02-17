@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\migrations;
 
 use BarrelStrength\Sprout\core\db\SproutTable as SproutTableCore;
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\datastudio\db\SproutTable;
@@ -16,7 +17,7 @@ class Uninstall extends Migration
     public function safeDown(): void
     {
         $moduleSettingsKey = DataStudioModule::projectConfigPath();
-        $coreModuleSettingsKey = DataStudioModule::projectConfigPath('modules.' . DataStudioModule::class);
+        $coreModuleSettingsKey = Sprout::projectConfigPath('modules.' . DataStudioModule::class);
 
         $this->delete(Table::ELEMENTS, ['type' => DataSetElement::class]);
 
