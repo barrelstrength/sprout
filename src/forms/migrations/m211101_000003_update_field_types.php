@@ -22,107 +22,107 @@ class m211101_000003_update_field_types extends Migration
             // Form Fields
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Address',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Address',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\AddressFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Categories',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Categories',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\CategoriesFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Checkboxes',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Checkboxes',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\CheckboxesFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\CustomHtml',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\CustomHtml',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\CustomHtmlFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Date',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Date',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\DateFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Dropdown',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Dropdown',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\DropdownFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Email',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Email',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\EmailFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\EmailDropdown',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\EmailDropdown',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\EmailDropdownFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Entries',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Entries',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\EntriesFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\FileUpload',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\FileUpload',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\FileUploadFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Hidden',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Hidden',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\HiddenFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Invisible',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Invisible',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\InvisibleFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\MultipleChoice',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\MultipleChoice',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\MultipleChoiceFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\MultiSelect',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\MultiSelect',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\MultiSelectFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Name',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Name',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\NameFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Number',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Number',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\NumberFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\OptIn',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\OptIn',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\OptInFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Paragraph',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Paragraph',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\ParagraphFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Phone',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Phone',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\PhoneFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\PrivateNotes',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\PrivateNotes',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\PrivateNotesFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\RegularExpression',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\RegularExpression',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\RegularExpressionFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\SectionHeading',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\SectionHeading',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\SectionHeadingFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\SingleLine',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\SingleLine',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Tags',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Tags',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\TagsFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Url',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Url',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\UrlFormField',
             ],
             [
                 'oldType' => 'barrelstrength\sproutforms\fields\formfields\Users',
-                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\Users',
+                'newType' => 'BarrelStrength\Sprout\forms\components\formfields\UsersFormField',
             ],
         ];
 

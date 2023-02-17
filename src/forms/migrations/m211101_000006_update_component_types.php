@@ -33,14 +33,12 @@ class m211101_000006_update_component_types extends Migration
                 'formTemplateId' => [
                     [
                         'oldType' => 'barrelstrength\sproutforms\formtemplates\AccessibleTemplates',
-                        'newType' => 'BarrelStrength\Sprout\forms\components\formtemplates\AccessibleTemplates',
+                        'newType' => 'BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet',
                     ],
-
-                    // @todo - MOVE TO PLUGIN
-                    //                    [
-                    //                        'oldType' => 'barrelstrength\sproutforms\formtemplates\CustomTemplates',
-                    //                        'newType' => 'BarrelStrength\Sprout\forms\components\formtemplates\CustomTemplateSet',
-                    //                    ],
+                    [
+                        'oldType' => 'barrelstrength\sproutforms\formtemplates\CustomTemplates',
+                        'newType' => 'BarrelStrength\Sprout\forms\components\formtemplates\CustomTemplateSet',
+                    ],
                 ],
             ],
         ];
