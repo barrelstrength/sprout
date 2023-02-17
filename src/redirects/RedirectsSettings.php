@@ -132,10 +132,8 @@ class RedirectsSettings extends BaseConfig
 
     public function getFieldLayout(): FieldLayout
     {
-        $fieldLayouts = Craft::$app->getProjectConfig()->get(RedirectsModule::projectConfigPath('fieldLayouts')) ?? [];
-
         // If there is a field layout, it's saved with a UID key and we just need the first value
-        if ($fieldLayout = reset($fieldLayouts)) {
+        if ($fieldLayout = reset($this->fieldLayouts)) {
             return FieldLayout::createFromConfig($fieldLayout);
         }
 

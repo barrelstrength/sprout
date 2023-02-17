@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\datastudio;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use Craft;
 use craft\config\BaseConfig;
 use craft\models\FieldLayout;
 
@@ -34,10 +33,8 @@ class DataStudioSettings extends BaseConfig
 
     public function getFieldLayout(): FieldLayout
     {
-        $fieldLayouts = Craft::$app->getProjectConfig()->get(DataStudioModule::projectConfigPath('fieldLayouts')) ?? [];
-
         // If there is a field layout, it's saved with a UID key and we just need the first value
-        if ($fieldLayout = reset($fieldLayouts)) {
+        if ($fieldLayout = reset($this->fieldLayouts)) {
             return FieldLayout::createFromConfig($fieldLayout);
         }
 
