@@ -24,9 +24,9 @@
         "commerceguys/addressing": "^1.4",
         "giggsey/libphonenumber-for-php": "^8.13",
         "league/html-to-markdown": "^5.1",
-        "php-science/textrank": "^1.2.1",
+        "php-science/textrank": "^1.2",
         "nystudio107/craft-plugin-vite": "^4.0",
-        "twig/cssinliner-extra": "^3.3"
+        "twig/cssinliner-extra": "^3.5"
     },
     "autoload": {
         "psr-4": {
