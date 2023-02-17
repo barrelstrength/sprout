@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\db\SproutTable;
 use craft\db\Query;
 use yii\base\Component;
-use yii\base\Exception;
 
 class DataSets extends Component
 {
@@ -19,27 +18,6 @@ class DataSets extends Component
             ->all();
 
         return $this->populateDataSets($rows);
-    }
-
-    public function getDataSetByGroupId($groupId): array
-    {
-        $group = DataSetRecord::findOne($groupId);
-
-        if (!$group instanceof DataSetRecord) {
-            throw new Exception('No Data Source Group exists with ID: ' . $groupId);
-        }
-
-        $rows = (new Query())
-            ->select('dataSet.*')
-            ->from(['dataSet' => SproutTable::DATASETS])
-            ->where([
-                'groupId' => $groupId,
-            ])
-            ->all();
-
-        $dataSets = $this->populateDataSets($rows);
-
-        return $dataSets;
     }
 
     public function getDataSetAsSelectFieldOptions(): array
