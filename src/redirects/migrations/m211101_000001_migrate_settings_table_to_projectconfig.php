@@ -84,7 +84,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         return false;
     }
 
-    protected function prepareSettingsForMigration($newSettings, $currentProjectConfig): mixed
+    protected function prepareSettingsForMigration($newSettings, $currentProjectConfig): array
     {
         if (isset($newSettings['redirectMatchStrategy'])) {
             $newSettings['matchDefinition'] = $newSettings['redirectMatchStrategy']

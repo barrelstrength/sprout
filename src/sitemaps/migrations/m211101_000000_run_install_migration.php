@@ -25,9 +25,9 @@ class m211101_000000_run_install_migration extends Migration
         $primarySite = Craft::$app->getSites()->getPrimarySite();
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-            'enableDynamicSitemaps' => true,
-            'sitemapAggregationMethod' => self::SITEMAP_AGGREGATION_METHOD_SETTING,
+            'enableCustomSections' => false,
             'totalElementsPerSitemap' => 3,
+            'sitemapAggregationMethod' => self::SITEMAP_AGGREGATION_METHOD_SETTING,
             'siteSettings' => [$primarySite->id],
             'groupSettings' => [$primarySite->groupId],
         ], "Update Sprout CP Settings for “{$moduleSettingsKey}”");

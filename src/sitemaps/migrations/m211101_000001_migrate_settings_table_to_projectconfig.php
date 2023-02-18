@@ -16,6 +16,9 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     public const OLD_SETTINGS_CLASS = 'barrelstrength\sproutbasesitemaps\models\Settings';
     public const OLD_SETTINGS_TABLE = '{{%sprout_settings_craft3}}';
 
+    public const AGGREGATION_METHOD_SINGLE_LANGUAGE = 'singleLanguageSitemaps';
+    public const AGGREGATION_METHOD_MULTI_LINGUAL = 'multiLingualSitemaps';
+
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
@@ -45,6 +48,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         // Prepare old settings for new settings format
         $newSettings = Json::decode($oldSettings['settings']);
+        $newSettings = $this->prepareSettingsForMigration($newSettings);
 
         $newCoreSettings = [
             'alternateName' => $newSettings['pluginNameOverride'],
@@ -71,6 +75,50 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         echo self::class . " cannot be reverted.\n";
 
         return false;
+    }
+
+    public function prepareSettingsForMigration($newSettings): array
+    {
+        $primarySite = Craft::$app->getSites()->getPrimarySite();
+
+        // Just in case
+        if (empty($newSettings['siteSettings'])) {
+            $newSettings['siteSettings'][$primarySite->id] = $primarySite->id;
+        }
+
+        if (empty($newSettings['groupSettings'])) {
+            $newSettings['groupSettings'][$primarySite->groupId] = $primarySite->groupId;
+        }
+
+        // Ensure proper data types
+        if (!is_int($newSettings['totalElementsPerSitemap'])) {
+            $newSettings['totalElementsPerSitemap'] = (int)$newSettings['totalElementsPerSitemap'];
+        }
+
+        if ($newSettings['enableCustomSections'] === '1') {
+            $newSettings['enableCustomSections'] = true;
+        }
+
+        if ($newSettings['enableCustomSections'] === '') {
+            $newSettings['enableCustomSections'] = false;
+        }
+
+        if ($newSettings['enableMultilingualSitemaps'] === '1') {
+            $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_SINGLE_LANGUAGE;
+        }
+
+        if ($newSettings['enableMultilingualSitemaps'] === '') {
+            $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_MULTI_LINGUAL;
+        }
+
+        // TODO - migrate enableDynamicSitemaps
+
+        unset(
+            $newSettings['enableDynamicSitemaps'],
+            $newSettings['enableMultiLingualSitemaps']
+        );
+
+        return $newSettings;
     }
 
     public function deleteSettingsTableIfEmpty(): void
