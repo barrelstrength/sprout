@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\OldU
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\StatusCodeField;
 use BarrelStrength\Sprout\redirects\editions\EditionHelper;
 use BarrelStrength\Sprout\redirects\redirects\MatchStrategy;
+use BarrelStrength\Sprout\redirects\redirects\PageNotFoundHelper;
 use BarrelStrength\Sprout\redirects\redirects\RedirectHelper;
 use BarrelStrength\Sprout\redirects\redirects\RedirectsRecord;
 use BarrelStrength\Sprout\redirects\redirects\StatusCode;
@@ -349,6 +350,8 @@ class RedirectElement extends Element
             $this->count = 0;
             $this->enabled = false;
         }
+
+        PageNotFoundHelper::remove404RedirectIfExists($this);
 
         return parent::beforeSave($isNew);
     }

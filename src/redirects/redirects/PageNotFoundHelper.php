@@ -5,9 +5,12 @@ namespace BarrelStrength\Sprout\redirects\redirects;
 use BarrelStrength\Sprout\core\jobs\PurgeElementHelper;
 use BarrelStrength\Sprout\core\jobs\PurgeElements;
 use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
+use BarrelStrength\Sprout\redirects\db\SproutTable;
 use BarrelStrength\Sprout\redirects\RedirectsModule;
 use BarrelStrength\Sprout\redirects\RedirectsSettings;
 use Craft;
+use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\DateTimeHelper;
 use craft\models\Site;
 
@@ -57,28 +60,28 @@ class PageNotFoundHelper
         return $redirect;
     }
 
-    //public static function remove404RedirectIfExists(RedirectElement $redirect): void
-    //{
-    //    $existing404RedirectId = (new Query())
-    //        ->select('redirects.id')
-    //        ->from(['redirects' => SproutTable::REDIRECTS])
-    //        ->innerJoin(Table::ELEMENTS_SITES . ' elements_sites', '[[elements_sites.elementId]] = [[redirects.id]]')
-    //        ->where([
-    //            'elements_sites.siteId' => $redirect->siteId,
-    //            'redirects.oldUrl' => $redirect->oldUrl,
-    //            'redirects.statusCode' => StatusCode::PAGE_NOT_FOUND,
-    //        ])
-    //        ->scalar();
-    //
-    //    // Don't delete the 404 if we're currently updating it
-    //    if (!$existing404RedirectId || (int)$existing404RedirectId === $redirect->getId()) {
-    //        return;
-    //    }
-    //
-    //    if ($element = Craft::$app->getElements()->getElementById($existing404RedirectId)) {
-    //        Craft::$app->getElements()->deleteElement($element, true);
-    //    }
-    //}
+    public static function remove404RedirectIfExists(RedirectElement $redirect): void
+    {
+        $existing404RedirectId = (new Query())
+            ->select('redirects.id')
+            ->from(['redirects' => SproutTable::REDIRECTS])
+            ->innerJoin(Table::ELEMENTS_SITES . ' elements_sites', '[[elements_sites.elementId]] = [[redirects.id]]')
+            ->where([
+                'elements_sites.siteId' => $redirect->siteId,
+                'redirects.oldUrl' => $redirect->oldUrl,
+                'redirects.statusCode' => StatusCode::PAGE_NOT_FOUND,
+            ])
+            ->scalar();
+
+        // Don't delete the 404 if we're currently updating it
+        if (!$existing404RedirectId || (int)$existing404RedirectId === $redirect->getId()) {
+            return;
+        }
+
+        if ($element = Craft::$app->getElements()->getElementById($existing404RedirectId)) {
+            Craft::$app->getElements()->deleteElement($element, true);
+        }
+    }
 
     public static function purge404s(array $excludedIds = [], $siteId = null, bool $force = false): void
     {
