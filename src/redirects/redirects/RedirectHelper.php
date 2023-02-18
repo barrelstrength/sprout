@@ -39,27 +39,6 @@ class RedirectHelper
     }
 
     /**
-     * Get Redirect status codes
-     */
-    public static function getStatusCodes(): array
-    {
-        $statusCodes = [
-            Craft::t('sprout-module-redirects', StatusCode::PERMANENT) => 'Permanent',
-            Craft::t('sprout-module-redirects', StatusCode::TEMPORARY) => 'Temporary',
-            Craft::t('sprout-module-redirects', StatusCode::PAGE_NOT_FOUND) => 'Page Not Found',
-        ];
-
-        $newStatusCodes = [];
-
-        foreach ($statusCodes as $key => $value) {
-            $value = preg_replace('#([a-z])([A-Z])#', '$1 $2', $value);
-            $newStatusCodes[$key] = $key . ' - ' . $value;
-        }
-
-        return $newStatusCodes;
-    }
-
-    /**
      * Update the current statusCode in the record
      */
     public static function updateStatusCode($ids, $statusCode): int
@@ -69,21 +48,6 @@ class RedirectHelper
             ['statusCode' => $statusCode],
             ['in', 'id', $ids]
         )->execute();
-    }
-
-    public static function isExcludedUrlPattern($absoluteUrl, array $excludedUrlPatterns): bool
-    {
-        foreach ($excludedUrlPatterns as $excludedUrlPattern) {
-
-            // Use backticks as delimiters as they are invalid characters for URLs
-            $excludedUrlPattern = '`' . $excludedUrlPattern . '`';
-
-            if (preg_match($excludedUrlPattern, $absoluteUrl)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -221,6 +185,21 @@ class RedirectHelper
         ]);
 
         return Template::raw($html);
+    }
+
+    public static function isExcludedUrlPattern($absoluteUrl, array $excludedUrlPatterns): bool
+    {
+        foreach ($excludedUrlPatterns as $excludedUrlPattern) {
+
+            // Use backticks as delimiters as they are invalid characters for URLs
+            $excludedUrlPattern = '`' . $excludedUrlPattern . '`';
+
+            if (preg_match($excludedUrlPattern, $absoluteUrl)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function getExcludeUrlsButtonHtml(Site $site): Markup

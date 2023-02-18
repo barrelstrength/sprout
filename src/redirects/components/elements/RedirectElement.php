@@ -214,7 +214,7 @@ class RedirectElement extends Element
             'heading' => Craft::t('sprout-module-redirects', 'Status Codes'),
         ];
 
-        $statusCodes = RedirectHelper::getStatusCodes();
+        $statusCodes = StatusCode::options();
 
         foreach ($statusCodes as $code => $statusCode) {
 

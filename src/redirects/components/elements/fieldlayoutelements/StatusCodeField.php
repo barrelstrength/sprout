@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements;
 
-use BarrelStrength\Sprout\redirects\redirects\RedirectHelper;
+use BarrelStrength\Sprout\redirects\redirects\StatusCode;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
@@ -29,14 +29,12 @@ class StatusCodeField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
-        $options = RedirectHelper::getStatusCodes();
-
         return Craft::$app->getView()->renderTemplate('_includes/forms/select', [
             'type' => $this->type,
             'describedBy' => $this->describedBy($element, $static),
             'name' => $this->name ?? $this->attribute(),
             'value' => $this->value($element),
-            'options' => $options,
+            'options' => StatusCode::options(),
         ]);
     }
 }
