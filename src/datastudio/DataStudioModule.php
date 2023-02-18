@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -13,11 +14,9 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
-use BarrelStrength\Sprout\datastudio\datasets\DataSets;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
-use BarrelStrength\Sprout\datastudio\reports\Exports;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use Craft;
 use craft\config\BaseConfig;
@@ -39,8 +38,6 @@ use yii\base\Module;
 /**
  * @property CustomTwigTemplates $customTwigTemplates
  * @property DataSources $dataSources
- * @property Exports $exports
- * @property DataSets $dataSets
  * @property Visualizations $visualizations
  */
 class DataStudioModule extends Module
@@ -91,8 +88,6 @@ class DataStudioModule extends Module
         $this->setComponents([
             'customTwigTemplates' => CustomTwigTemplates::class,
             'dataSources' => DataSources::class,
-            'exports' => Exports::class,
-            'dataSets' => DataSets::class,
             'visualizations' => Visualizations::class,
         ]);
 
@@ -192,7 +187,7 @@ class DataStudioModule extends Module
 
     public function getSettings(): DataStudioSettings|BaseConfig
     {
-        return Settings::getSettingsConfig($this, DataStudioSettings::class);
+        return SettingsHelper::getSettingsConfig($this, DataStudioSettings::class);
     }
 
     protected function getCraftCpSettingsNavItems(): array

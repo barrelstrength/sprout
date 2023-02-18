@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -183,7 +184,7 @@ class MailerModule extends Module
 
     public function getSettings(): MailerSettings|BaseConfig
     {
-        return Settings::getSettingsConfig($this, MailerSettings::class);
+        return SettingsHelper::getSettingsConfig($this, MailerSettings::class);
     }
 
     protected function getCraftCpSidebarNavItems(): array

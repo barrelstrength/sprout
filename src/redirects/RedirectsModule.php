@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -17,8 +18,6 @@ use BarrelStrength\Sprout\redirects\redirects\Redirects;
 use Craft;
 use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
-use craft\db\Query;
-use craft\db\Table;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\ExceptionEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -174,18 +173,6 @@ class RedirectsModule extends Module
                 RedirectElement::defineNativeFields($event);
             }
         );
-
-        $uid = (new Query)
-            ->select('uid')
-            ->from(Table::STRUCTURES)
-            ->where([
-                'id' => 7,
-            ])
-            ->scalar();
-
-        //$key = self::projectConfigPath('structureUid');
-        //Craft::$app->getProjectConfig()->set($key, $uid);
-        //die('Shazam!');
     }
 
     public function createSettingsModel(): RedirectsSettings
@@ -195,7 +182,7 @@ class RedirectsModule extends Module
 
     public function getSettings(): RedirectsSettings|BaseConfig
     {
-        return Settings::getSettingsConfig($this, RedirectsSettings::class);
+        return SettingsHelper::getSettingsConfig($this, RedirectsSettings::class);
     }
 
     protected function getCraftCpSidebarNavItems(): array

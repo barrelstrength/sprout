@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\Settings;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -216,7 +217,7 @@ class FormsModule extends Module
 
     public function getSettings(): FormsSettings|BaseConfig
     {
-        return Settings::getSettingsConfig($this, FormsSettings::class);
+        return SettingsHelper::getSettingsConfig($this, FormsSettings::class);
     }
 
     public function getUserPermissions(): array

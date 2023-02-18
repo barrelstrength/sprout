@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\components\widgets;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
 use Craft;
 use craft\base\Widget;
 use Exception;
@@ -37,7 +37,7 @@ class NumberWidget extends Widget
 
     public function getSettingsHtml(): ?string
     {
-        $dataSetOptions = DataStudioModule::getInstance()->dataSets->getDataSetAsSelectFieldOptions();
+        $dataSetOptions = DataSetHelper::getDataSetAsSelectFieldOptions();
 
         return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/settings', [
                 'widget' => $this,

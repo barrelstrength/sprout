@@ -16,6 +16,9 @@ trait SproutModuleTrait
      */
     public static function isEnabled(): bool
     {
+        // NOTE: Do not make this method static, it instantiates the Sprout Core
+        // module which is needed to register sprout-module-core translations
+        // for all modules in the suite.
         $enabledModules = Sprout::getInstance()->coreModules->getEnabledModules();
 
         return in_array(static::class, $enabledModules, true);

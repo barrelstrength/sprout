@@ -3,7 +3,9 @@
 namespace BarrelStrength\Sprout\datastudio\controllers;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\datastudio\reports\ExportHelper;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
@@ -75,7 +77,7 @@ class DataSetController extends Controller
             throw new NotFoundHttpException('Data Source not found.');
         }
 
-        [$labels, $values] = DataStudioModule::getInstance()->dataSets->getLabelsAndValues($dataSet, $dataSource);
+        [$labels, $values] = DataSetHelper::getLabelsAndValues($dataSet, $dataSource);
 
         //$visualizationSettings = $dataSet->getSetting('visualization');
         //
@@ -182,7 +184,7 @@ class DataSetController extends Controller
         $labels = $dataSource->getDefaultLabels($dataSet);
         $values = $dataSource->getResults($dataSet);
 
-        DataStudioModule::getInstance()->exports->toCsv($values, $labels, $filename, $dataSet->delimiter);
+        ExportHelper::toCsv($values, $labels, $filename, $dataSet->delimiter);
     }
 
     public function actionUpdateDataSet(): ?Response

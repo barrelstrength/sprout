@@ -6,11 +6,10 @@ use craft\helpers\Json;
 use League\Csv\ByteSequence;
 use League\Csv\Writer;
 use SplTempFileObject;
-use yii\base\Component;
 
-class Exports extends Component
+class ExportHelper
 {
-    public function toJson(array &$values): string
+    public static function toJson(array &$values): string
     {
         return Json::encode($values);
     }
@@ -18,7 +17,7 @@ class Exports extends Component
     /**
      * Takes an array of values and options labels and creates a downloadable CSV file
      */
-    public function toCsv(array &$values, array $labels = [], string $filename = 'export.csv', $delimiter = null): void
+    public static function toCsv(array &$values, array $labels = [], string $filename = 'export.csv', $delimiter = null): void
     {
         $filename = str_replace('.csv', '', $filename) . '.csv';
 

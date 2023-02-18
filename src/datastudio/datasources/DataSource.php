@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
 use craft\base\SavableComponent;
 
 abstract class DataSource extends SavableComponent implements DataSourceInterface
@@ -67,6 +67,6 @@ abstract class DataSource extends SavableComponent implements DataSourceInterfac
      */
     final public function getDataSetCount(): int
     {
-        return DataStudioModule::getInstance()->dataSets->getCountByDataSourceType(self::class);
+        return DataSetHelper::getCountByDataSourceType(self::class);
     }
 }

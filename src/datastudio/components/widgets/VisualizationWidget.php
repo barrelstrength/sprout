@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\components\widgets;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
 use Craft;
 use craft\base\Widget;
 
@@ -26,7 +26,7 @@ class VisualizationWidget extends Widget
         return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Visualizations/settings',
             [
                 'widget' => $this,
-                'dataSets' => DataStudioModule::getInstance()->dataSets->getAllDataSets(),
+                'dataSets' => DataSetHelper::getAllDataSets(),
                 'dataSetId' => $this->dataSetId,
             ]);
     }

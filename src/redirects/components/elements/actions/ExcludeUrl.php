@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\redirects\components\elements\actions;
 
-use BarrelStrength\Sprout\core\Sprout;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
 use BarrelStrength\Sprout\redirects\RedirectsModule;
 use Craft;
@@ -67,7 +67,7 @@ class ExcludeUrl extends ElementAction
                 'siteExcludedUrlPatterns' => $redirectSettings->getSiteExcludedUrlPatterns($site->id),
             ];
 
-            if (Sprout::getInstance()->coreSettings->saveDbSettings($moduleId, $settings, $site->id) === null) {
+            if (SettingsHelper::saveDbSettings($moduleId, $settings, $site->id) === null) {
                 return false;
             }
 

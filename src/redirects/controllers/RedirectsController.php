@@ -2,9 +2,8 @@
 
 namespace BarrelStrength\Sprout\redirects\controllers;
 
-use BarrelStrength\Sprout\core\Sprout;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
-use BarrelStrength\Sprout\redirects\editions\EditionHelper;
 use BarrelStrength\Sprout\redirects\redirects\RedirectHelper;
 use BarrelStrength\Sprout\redirects\redirects\StatusCode;
 use BarrelStrength\Sprout\redirects\RedirectsModule;
@@ -93,7 +92,7 @@ class RedirectsController extends Controller
         $moduleId = RedirectsModule::getModuleId();
         $settings = Craft::$app->getRequest()->getBodyParam('settings');
 
-        if (($settingsRecord = Sprout::getInstance()->coreSettings->saveDbSettings($moduleId, $settings, $site->id)) === null) {
+        if (($settingsRecord = SettingsHelper::saveDbSettings($moduleId, $settings, $site->id)) === null) {
             Craft::$app->getSession()->setError(Craft::t('sprout-module-redirects', 'Couldn’t save settings.'));
 
             // Send the event back to the template

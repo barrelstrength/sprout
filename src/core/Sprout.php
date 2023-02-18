@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
 use BarrelStrength\Sprout\core\modules\Settings as SettingsService;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\twig\SproutExtension;
@@ -187,7 +188,7 @@ class Sprout extends Module
 
     public function getSettings(): SproutSettings|BaseConfig
     {
-        return SettingsService::getSettingsConfig($this, SproutSettings::class);
+        return SettingsHelper::getSettingsConfig($this, SproutSettings::class);
     }
 
     public function getUserPermissions(): array

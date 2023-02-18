@@ -6,25 +6,33 @@ use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\db\SproutTable;
 use craft\db\Query;
-use yii\base\Component;
 
-class DataSets extends Component
+class DataSetHelper
 {
-    public function getAllDataSets(): array
+    public static function getAllDataSets(): array
     {
         $rows = (new Query())
             ->select('dataSet.*')
             ->from(['dataSet' => SproutTable::DATASETS])
             ->all();
 
-        return $this->populateDataSets($rows);
+        if ($rows) {
+            foreach ($rows as $row) {
+
+                $model = new DataSetElement();
+                $model->setAttributes($row, false);
+                $dataSets[] = $model;
+            }
+        }
+
+        return $dataSets ?? [];
     }
 
-    public function getDataSetAsSelectFieldOptions(): array
+    public static function getDataSetAsSelectFieldOptions(): array
     {
         $options = [];
 
-        $dataSets = $this->getAllDataSets();
+        $dataSets = self::getAllDataSets();
 
         if ($dataSets) {
             foreach ($dataSets as $dataSet) {
@@ -38,7 +46,7 @@ class DataSets extends Component
         return $options;
     }
 
-    public function getCountByDataSourceType(string $type): int
+    public static function getCountByDataSourceType(string $type): int
     {
         $totalDataSetsForDataSource = DataSetRecord::find()
             ->where([
@@ -49,7 +57,7 @@ class DataSets extends Component
         return (int)$totalDataSetsForDataSource;
     }
 
-    public function getLabelsAndValues(DataSetElement $dataSet, DataSource $dataSource): array
+    public static function getLabelsAndValues(DataSetElement $dataSet, DataSource $dataSource): array
     {
         $labels = $dataSource->getDefaultLabels($dataSet);
 
@@ -61,21 +69,5 @@ class DataSets extends Component
         }
 
         return [$labels, $values];
-    }
-
-    private function populateDataSets($rows): array
-    {
-        $dataSets = [];
-
-        if ($rows) {
-            foreach ($rows as $row) {
-
-                $model = new DataSetElement();
-                $model->setAttributes($row, false);
-                $dataSets[] = $model;
-            }
-        }
-
-        return $dataSets;
     }
 }

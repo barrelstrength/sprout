@@ -119,4 +119,46 @@ return [
     'How to treat query strings after processing a redirect. \'Remove query strings\' will remove the query string from the incoming URL entirely. \'Append query strings\' will add any query string from the incoming URL to the New Url.' => 'How to treat query strings after processing a redirect. \'Remove query strings\' will remove the query string from the incoming URL entirely. \'Append query strings\' will add any query string from the incoming URL to the New Url.',
     'How to define request URLs for processing matches. The ‘with query strings’ option matches against the entire URL including query strings. The ‘without query strings’ option removes all parameters from the request URL before attempting to match.' => 'How to define request URLs for processing matches. The ‘with query strings’ option matches against the entire URL including query strings. The ‘without query strings’ option removes all parameters from the request URL before attempting to match.',
     'Edit Redirects' => 'Edit Redirects',
+    'Site Settings' => 'Site Settings',
+    'Permanent' => 'Permanent',
+    'Add any regular expression patterns you wish to exclude when processing redirects for this site. Add each pattern on a new line. Comments can be added by starting a line with the hash # character' => 'Add any regular expression patterns you wish to exclude when processing redirects for this site. Add each pattern on a new line. Comments can be added by starting a line with the hash # character',
+    'Exact Match' => 'Exact Match',
+    'Page Not Found' => 'Page Not Found',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line with the hash #character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line with the hash #character.',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash \(#\) character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash \(#\) character.',
+    '# Exclude URLs bots are visiting that are causing 404s.
+wp-admin' => '# Exclude URLs bots are visiting that are causing 404s.
+wp-admin',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line 
+        with the hash character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line 
+        with the hash character.',
+    'Redirect Settings' => 'Redirect Settings',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line with the hash character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line with the hash character.',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash (#) character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash (#) character.',
+    'Excluded URLs' => 'Excluded URLs',
+    'The patterns below are already being excluded from all site requests. Admins can add additional global patterns in the Redirect settings.' => 'The patterns below are already being excluded from all site requests. Admins can add additional global patterns in the Redirect settings.',
+    'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash character.' => 'Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line
+        with the hash character.',
+    'Add any regular expression patterns you wish to exclude when processing redirects. Add each pattern on a new line. Comments can be added by starting a line with the hash #
+        character.' => 'Add any regular expression patterns you wish to exclude when processing redirects. Add each pattern on a new line. Comments can be added by starting a line with the hash #
+        character.',
+    'Regex Match' => 'Regex Match',
+    'Globally Excluded URL Patterns' => 'Globally Excluded URL Patterns',
+    '# Exclude all requests under a certain directory
+wp-admin(.*)$' => '# Exclude all requests under a certain directory
+wp-admin(.*)$',
+    'Workflows' => 'Workflows',
+    'The patterns below are already being excluded from all site requests. Add additional patterns in the global settings.' => 'The patterns below are already being excluded from all site requests. Add additional patterns in the global settings.',
+    '404 - Page Not Found' => '404 - Page Not Found',
+    '302 - Temporary' => '302 - Temporary',
+    '301 - Permanent' => '301 - Permanent',
+    'Temporary' => 'Temporary',
+    'Sprout Fields adds several common field types to Craft CMS. Sprout Fields focuses on fields for an international community with a Craft-friendly user experience.' => 'Sprout Fields adds several common field types to Craft CMS. Sprout Fields focuses on fields for an international community with a Craft-friendly user experience.',
+    'Manage Excluded URLs' => 'Manage Excluded URLs',
+    'Add any regular expression patterns you wish to exclude when processing redirects. Add each pattern on a new line. Comments can be added by starting a line with the hash # character' => 'Add any regular expression patterns you wish to exclude when processing redirects. Add each pattern on a new line. Comments can be added by starting a line with the hash # character',
 ];

@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\redirects\components\elements\actions;
 
 use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
-use BarrelStrength\Sprout\redirects\editions\EditionHelper;
 use BarrelStrength\Sprout\redirects\redirects\RedirectHelper;
 use Craft;
 use craft\base\ElementAction;

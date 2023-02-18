@@ -2,8 +2,8 @@
 
 namespace BarrelStrength\Sprout\core\controllers\web;
 
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
-use BarrelStrength\Sprout\core\Sprout;
 use Craft;
 use craft\web\Controller;
 use craft\web\twig\variables\Cp as CpVariable;
@@ -45,7 +45,7 @@ class SettingsController extends Controller
 
         $settingsModel->setAttributes($settings, false);
 
-        if (!Sprout::getInstance()->coreSettings->saveSettings($moduleSettingsKey, $settingsModel)) {
+        if (!SettingsHelper::saveSettings($moduleSettingsKey, $settingsModel)) {
             $message = Craft::t('sprout-module-core', 'Couldn’t save settings.');
             Craft::$app->getSession()->setError($message);
 
@@ -100,7 +100,7 @@ class SettingsController extends Controller
     public function actionPreviewConfigSettingsFile(): Response
     {
         $this->requireAdmin();
-        
+
         $this->response->headers->set('Content-Type', 'text/plain');
         $this->response->format = Response::FORMAT_RAW;
 

@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
+use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -204,7 +205,7 @@ class MetaModule extends Module
 
     public function getSettings(): MetaSettings|BaseConfig
     {
-        return Settings::getSettingsConfig($this, MetaSettings::class);
+        return SettingsHelper::getSettingsConfig($this, MetaSettings::class);
     }
 
     protected function getCraftCpSidebarNavItems(): array

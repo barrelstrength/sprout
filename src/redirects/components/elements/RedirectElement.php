@@ -10,7 +10,6 @@ use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\Matc
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\NewUrlField;
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\OldUrlField;
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\StatusCodeField;
-use BarrelStrength\Sprout\redirects\editions\EditionHelper;
 use BarrelStrength\Sprout\redirects\redirects\MatchStrategy;
 use BarrelStrength\Sprout\redirects\redirects\PageNotFoundHelper;
 use BarrelStrength\Sprout\redirects\redirects\RedirectHelper;
