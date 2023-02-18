@@ -48,6 +48,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         // Prepare old settings for new settings format
         $newSettings = Json::decode($oldSettings['settings']);
+        $newSettings = $this->prepareSettingsForMigration($newSettings);
 
         $newCoreSettings = [
             'alternateName' => $newSettings['pluginNameOverride'],
@@ -74,6 +75,20 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         echo self::class . " cannot be reverted.\n";
 
         return false;
+    }
+
+    protected function prepareSettingsForMigration($newSettings): array
+    {
+        // Ensure proper data type
+        if (!is_int($newSettings['cleanupProbability'])) {
+            $newSettings['cleanupProbability'] = (int)$newSettings['cleanupProbability'];
+        }
+
+        if (!is_int($newSettings['sentEmailsLimit'])) {
+            $newSettings['sentEmailsLimit'] = (int)$newSettings['sentEmailsLimit'];
+        }
+
+        return $newSettings;
     }
 
     public function deleteSettingsTableIfEmpty(): void
