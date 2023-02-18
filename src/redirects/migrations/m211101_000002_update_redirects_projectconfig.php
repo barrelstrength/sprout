@@ -32,7 +32,7 @@ class m211101_000002_update_redirects_projectconfig extends Migration
             'trackRemoteIp' => false,
 
             // This will be generated below if still empty after we merge settings
-            'structureId' => null,
+            'structureUid' => null,
         ];
 
         $oldConfig = Craft::$app->getProjectConfig()->get(self::OLD_CONFIG_KEY) ?? [];
@@ -44,18 +44,18 @@ class m211101_000002_update_redirects_projectconfig extends Migration
 
         // Just in case
         if (empty($newConfig['structureId'])) {
-            $this->createStructure();
+            $newConfig['structureUid'] = $this->getStructureUid();
         } else {
             // Query DB for UID and update project config.
             $uid = (new Query)
                 ->select('uid')
                 ->from(Table::STRUCTURES)
                 ->where([
-                    'id' => $newConfig['structureId'],
+                    'id' => (int)$newConfig['structureId'],
                 ])
                 ->scalar();
 
-            $this->saveStructureUidSetting($uid);
+            $newConfig['structureUid'] = $uid;
         }
 
         unset($newConfig['structureId']);
@@ -84,6 +84,9 @@ class m211101_000002_update_redirects_projectconfig extends Migration
             $newConfig['trackRemoteIp'] = false;
         }
 
+        // excludedUrlPatterns
+        // Save to settings db...
+
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newConfig,
             "Update Sprout Settings for “{$moduleSettingsKey}”"
         );
@@ -98,7 +101,7 @@ class m211101_000002_update_redirects_projectconfig extends Migration
         return false;
     }
 
-    public function createStructure(): void
+    public function getStructureUid(): string
     {
         $structure = new Structure();
         $structure->maxLevels = 1;
@@ -107,12 +110,6 @@ class m211101_000002_update_redirects_projectconfig extends Migration
             throw new ElementNotFoundException('Unable to create Structure Element for Redirects.');
         }
 
-        $this->saveStructureUidSetting($structure->uid);
-    }
-
-    public function saveStructureUidSetting($uid): void
-    {
-        $key = self::SPROUT_KEY . '.' . self::MODULE_ID . '.' . self::SETTING_STRUCTURE_UID;
-        Craft::$app->getProjectConfig()->set($key, $uid);
+        return $structure->uid;
     }
 }
