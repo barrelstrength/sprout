@@ -10,6 +10,7 @@ use craft\config\BaseConfig;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 use RecursiveCallbackFilterIterator;
@@ -96,6 +97,11 @@ class TemplateHelper
 
     public static function getConfigWarning(SproutModuleTrait|Module $module, string $setting): string
     {
+        // Get the module Settings class
+        $module = new $module($module::class);
+        $settings = $module->createSettingsModel();
+
+        $envConfig = App::envConfig($settings::class, $module::getEnvPrefix());
         $fileConfigSettings = Craft::$app->getConfig()->getConfigFromFile($module::getModuleId());
 
         $params = [
@@ -105,6 +111,13 @@ class TemplateHelper
                     'target' => '_blank',
                     'style' => 'color: inherit;',
                 ]),
+
+        ];
+
+        $envVariable = $module::getEnvPrefix() . strtoupper(StringHelper::toSnakeCase($setting));
+        $envParams = [
+            'setting' => Html::tag('b', $envVariable),
+            'envFile' => Html::tag('code', '.env'),
         ];
 
         if ($fileConfigSettings instanceof BaseConfig) {
@@ -113,6 +126,10 @@ class TemplateHelper
 
         if (isset($fileConfigSettings[$setting])) {
             return Craft::t('sprout-module-core', 'This setting is defined by the {setting} value in {configFile}', $params);
+        }
+
+        if (isset($envConfig[$setting])) {
+            return Craft::t('sprout-module-core', 'This setting is defined by the {setting} value in the {envFile} file', $envParams);
         }
 
         return '';
