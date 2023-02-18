@@ -1,5 +1,6 @@
 #!/bin/sh
-#
+
+#################################################################
 # Stop a commit where an asset or static asset is modified without
 # a commensurate update to the manifest file in the dist folder
 # which would indicate that new production assets were built and
@@ -25,3 +26,28 @@ if [ -n "$ASSETS_MODIFIED" ] && [ -z "$MANIFEST_MODIFIED" ]; then
     echo "Run production build script before committing."
     exit 1
 fi
+
+#################################################################
+# Stop a commit that modifies a migration file without also indicating
+# that we intentionally want to update the migration file in the commit
+# message. This intends to serve as a reminder that changes to migrations
+# should usually be handled with new migrations, and that changing old
+# migrations can have ripple effects in the chain of migrations.
+
+## Check if something changed in an existing migration files
+if git diff --cached --name-only | grep -E --quiet "migrations\/m[0-9]{6}"
+then
+    MIGRATION_MODIFIED=true
+fi
+
+## Check if MIGRATION_MODIFIED is true and the current commit message does not start with the words "Updates migration" or "Adds migration"
+if [ -n "$MIGRATION_MODIFIED" ] && ! git log -1 --pretty=%B | grep -q "Adds migration" && ! git log -1 --pretty=%B | grep -q "Updates migration"
+then
+    echo "Migration modified but not explicit in commit message."
+    echo "Start commit message with 'Adds migration...' or 'Updates migration...' to commit this change."
+    exit 1
+fi
+
+
+
+
