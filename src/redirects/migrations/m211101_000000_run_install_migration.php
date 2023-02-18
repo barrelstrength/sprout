@@ -6,6 +6,8 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
+use craft\errors\ElementNotFoundException;
+use craft\records\Structure;
 
 class m211101_000000_run_install_migration extends Migration
 {
@@ -19,7 +21,6 @@ class m211101_000000_run_install_migration extends Migration
     public const EXACT_MATCH = 'exactMatch';
     public const REGEX_MATCH = 'regExMatch';
     public const URL_WITHOUT_QUERY_STRINGS = 'urlWithoutQueryStrings';
-
     public const REMOVE_QUERY_STRINGS = 'removeQueryStrings';
 
     public function safeUp(): void
@@ -29,6 +30,9 @@ class m211101_000000_run_install_migration extends Migration
 
         $this->createTables();
 
+        // Create a Structure for new installs, we'll delete it later if upgrading
+        $structureUid = $this->createStructureAndGetUid();
+
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
             'matchDefinition' => self::URL_WITHOUT_QUERY_STRINGS,
             'queryStringStrategy' => self::REMOVE_QUERY_STRINGS,
@@ -36,6 +40,7 @@ class m211101_000000_run_install_migration extends Migration
             'trackRemoteIp' => false,
             'total404Redirects' => 250,
             'cleanupProbability' => 1000,
+            'structureUid' => $structureUid,
         ], 'Update Sprout CP Settings for: ' . $moduleSettingsKey);
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
@@ -49,6 +54,18 @@ class m211101_000000_run_install_migration extends Migration
         echo self::class . " cannot be reverted.\n";
 
         return false;
+    }
+
+    public function createStructureAndGetUid(): string
+    {
+        $structure = new Structure();
+        $structure->maxLevels = 1;
+
+        if (!$structure->save()) {
+            throw new ElementNotFoundException('Unable to create Structure Element for Redirects.');
+        }
+
+        return $structure->uid;
     }
 
     public function createTables(): void
