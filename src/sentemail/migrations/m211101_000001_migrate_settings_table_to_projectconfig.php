@@ -12,7 +12,7 @@ use craft\helpers\Json;
 class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 {
     public const SPROUT_KEY = 'sprout';
-    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-sent-email.modules';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-sent-email';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\sentemail\SentEmailModule';
     public const OLD_SETTINGS_CLASS = 'barrelstrength\sproutbasesentemail\models\Settings';

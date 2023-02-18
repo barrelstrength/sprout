@@ -10,7 +10,7 @@ use craft\db\Table;
 class m211101_000000_run_install_migration extends Migration
 {
     public const SPROUT_KEY = 'sprout';
-    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-meta.modules';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-meta';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\meta\MetaModule';
     public const SETTING_METADATA_VARIABLE = 'metadata';

@@ -9,7 +9,7 @@ use craft\db\Table;
 class m211101_000000_run_install_migration extends Migration
 {
     public const SPROUT_KEY = 'sprout';
-    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-sent-email.modules';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-sent-email';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\sentemail\SentEmailModule';
     public const SENT_EMAILS_TABLE = '{{%sprout_sent_emails}}';

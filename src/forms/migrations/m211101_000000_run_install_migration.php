@@ -10,7 +10,7 @@ use craft\db\Table;
 class m211101_000000_run_install_migration extends Migration
 {
     public const SPROUT_KEY = 'sprout';
-    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-forms.modules';
+    public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-forms';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\forms\FormsModule';
     public const FORM_TEMPLATE_SET = 'BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet';
