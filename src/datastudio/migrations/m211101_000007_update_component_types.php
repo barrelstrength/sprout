@@ -28,10 +28,6 @@ class m211101_000007_update_component_types extends Migration
                         'oldType' => 'barrelstrength\sproutbasereports\datasources\Users',
                         'newType' => 'BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource',
                     ],
-                    [
-                        'oldType' => 'barrelstrength\sproutreportscategories\integrations\sproutreports\datasources\Categories',
-                        'newType' => 'BarrelStrength\Sprout\datastudio\components\datasources\CategoriesDataSource',
-                    ],
 
                     // Forms
                     [

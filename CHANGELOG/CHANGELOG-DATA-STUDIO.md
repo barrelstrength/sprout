@@ -19,6 +19,7 @@
 - Updated variable `craft.sproutReports.addRows` => `sprout.twigDataSet.addRows`
 - Updated DateTime picker syntax in Custom Twig Template Data Sets to use the [date function](https://craftcms.com/docs/4.x/upgrade.html#template-functions)
 - Removed Data Source permissions in favor of Craft User permissions
+- Removed support for the legacy Category report. Migrate manually.
 - Updated Project Config settings from `sprout-reports` => `sprout-module-data-studio`
 - Updated translation category from `sprout-reports` => `sprout-module-data-studio`
 - Date Sources used as email lists will need to be migrated manually to Audience Types
