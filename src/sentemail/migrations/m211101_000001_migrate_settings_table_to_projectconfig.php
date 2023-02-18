@@ -52,7 +52,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         $newCoreSettings = [
             'alternateName' => $newSettings['pluginNameOverride'],
-            'enabled' => true,
+            'enabled' => $newSettings['enableSentEmails'],
         ];
 
         unset($newSettings['pluginNameOverride']);

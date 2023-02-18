@@ -49,9 +49,12 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         // Prepare old settings for new settings format
         $newSettings = Json::decode($oldSettings['settings']);
 
+        // TODO emailTemplateId: migrate Class
+        // enablePerEmailEmailTemplateIdOverride
+
         $newCoreSettings = [
             'alternateName' => $newSettings['pluginNameOverride'],
-            'enabled' => true,
+            'enabled' => $newSettings['enableNotificationEmails'],
         ];
 
         unset($newSettings['pluginNameOverride']);
