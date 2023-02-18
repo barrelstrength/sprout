@@ -21,6 +21,16 @@ class m211101_000004_update_element_types extends Migration
                 'type' => $type['newType'],
             ], ['type' => $type['oldType']], [], false);
         }
+
+        // Update Field Layout Classes from Craft 2
+        $this->update(Table::FIELDLAYOUTS, [
+            'type' => 'BarrelStrength\Sprout\forms\components\elements\SubmissionElement',
+        ], ['type' => 'SproutForms_Form'], [], false);
+
+        // Update Field Layout Classes from Craft 3
+        $this->update(Table::FIELDLAYOUTS, [
+            'type' => 'BarrelStrength\Sprout\forms\components\elements\SubmissionElement',
+        ], ['type' => 'barrelstrength\sproutforms\elements\Form'], [], false);
     }
 
     public function safeDown(): bool
