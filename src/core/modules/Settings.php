@@ -163,24 +163,6 @@ class Settings extends Component
     }
 
     /**
-     * Returns an alternate name for a given module
-     *
-     * Alternate names will only update in key navigation areas. They may not update
-     * in all areas – some modules are grouped by a group name that will not change.
-     * Module names will not be updated in URLs, examples, or the Settings area.
-     */
-    public function getAlternateName(string $class): string
-    {
-        $key = Sprout::projectConfigPath('modules.' . $class . '.alternateName');
-
-        if (!$alternateName = Craft::$app->projectConfig->get($key)) {
-            return '';
-        }
-
-        return $alternateName;
-    }
-
-    /**
      * Returns a settings model and all settings for a given config
      *
      * Settings priorities are as follows:

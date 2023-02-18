@@ -48,14 +48,9 @@ class SentEmailModule extends Module
         return $module;
     }
 
-    public static function getDisplayName(bool $allowAlternate = false): string
+    public static function getDisplayName(): string
     {
         $displayName = Craft::t('sprout-module-core', 'Sent Email');
-
-        if ($allowAlternate &&
-            $alternateName = Sprout::getInstance()->coreSettings->getAlternateName(static::class)) {
-            $displayName = $alternateName;
-        }
 
         return $displayName;
     }
@@ -216,11 +211,10 @@ class SentEmailModule extends Module
 
         return [
             'group' => Craft::t('sprout-module-sent-email', 'Email'),
-            'url' => 'sprout/email',
             'icon' => self::svg('icons/icon-mask.svg'),
             'navItems' => [
                 'sent-email' => [
-                    'label' => self::getDisplayName(true),
+                    'label' => Craft::t('sprout-module-sent-email', 'Email'),
                     'url' => 'sprout/email/sent-email',
                 ],
             ],

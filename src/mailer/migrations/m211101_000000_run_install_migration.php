@@ -28,7 +28,6 @@ class m211101_000000_run_install_migration extends Migration
         MailerSchemaHelper::insertDefaultMailerSettings();
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
-            'alternateName' => '',
             'enabled' => true,
         ]);
     }

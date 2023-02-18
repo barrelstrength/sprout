@@ -25,14 +25,9 @@ class UrisModule extends Module
         return $module;
     }
 
-    public static function getDisplayName(bool $allowAlternate = false): string
+    public static function getDisplayName(): string
     {
         $displayName = Craft::t('sprout-module-core', 'URIs');
-
-        if ($allowAlternate &&
-            $alternateName = Sprout::getInstance()->coreSettings->getAlternateName(static::class)) {
-            $displayName = $alternateName;
-        }
 
         return $displayName;
     }

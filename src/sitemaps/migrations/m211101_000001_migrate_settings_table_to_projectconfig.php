@@ -51,7 +51,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         $newSettings = $this->prepareSettingsForMigration($newSettings);
 
         $newCoreSettings = [
-            'alternateName' => $newSettings['pluginNameOverride'],
             'enabled' => true,
         ];
 
@@ -114,8 +113,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         // TODO - migrate enableDynamicSitemaps
 
         unset(
+            $newSettings['enableMultiLingualSitemaps'],
             $newSettings['enableDynamicSitemaps'],
-            $newSettings['enableMultiLingualSitemaps']
         );
 
         return $newSettings;

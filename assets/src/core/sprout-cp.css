@@ -120,10 +120,12 @@
     position: relative;
     top: -2px;
 }
+
 .sprout-badge-row .btn.sprout-upgrade-to-pro:hover {
     background-color: #333f4d !important;
     opacity: 1;
 }
+
 .sprout-badge-row .btn.sprout-upgrade-to-pro span {
     display: inline-block;
     margin-right: 2px;
@@ -131,6 +133,7 @@
     vertical-align: middle;
     width: 16px;
 }
+
 .sprout-badge-row .btn.sprout-upgrade-to-pro svg {
     height: 14px;
 }
@@ -181,4 +184,11 @@
 
 .sprout-meta-heading h6 {
     color: #333333;
+}
+
+/*
+* Settings
+*/
+#settings-modules tbody tr:hover th {
+    background-color: var(--gray-100);
 }

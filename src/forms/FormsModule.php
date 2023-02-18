@@ -73,14 +73,9 @@ class FormsModule extends Module
         return $module;
     }
 
-    public static function getDisplayName(bool $allowAlternate = false): string
+    public static function getDisplayName(): string
     {
         $displayName = Craft::t('sprout-module-core', 'Forms');
-
-        if ($allowAlternate &&
-            $alternateName = Sprout::getInstance()->coreSettings->getAlternateName(static::class)) {
-            $displayName = $alternateName;
-        }
 
         return $displayName;
     }
@@ -248,7 +243,7 @@ class FormsModule extends Module
         }
 
         return [
-            'group' => self::getDisplayName(true),
+            'group' => Craft::t('sprout-module-forms', 'Forms'),
             'icon' => self::svg('icons/icon-mask.svg'),
             'navItems' => [
                 'forms' => [

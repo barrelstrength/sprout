@@ -64,14 +64,9 @@ class MailerModule extends Module
         return $module;
     }
 
-    public static function getDisplayName(bool $allowAlternate = false): string
+    public static function getDisplayName(): string
     {
         $displayName = Craft::t('sprout-module-core', 'Mailer');
-
-        if ($allowAlternate &&
-            $alternateName = Sprout::getInstance()->coreSettings->getAlternateName(static::class)) {
-            $displayName = $alternateName;
-        }
 
         return $displayName;
     }
@@ -79,6 +74,11 @@ class MailerModule extends Module
     public static function getShortName(): string
     {
         return 'mailer';
+    }
+
+    public static function getDescription(): string
+    {
+        return Craft::t('sprout-module-core', 'Adds support for Audiences, subscribers, previews, and other shared email functionality');
     }
 
     public function init(): void
@@ -194,7 +194,6 @@ class MailerModule extends Module
 
         return [
             'group' => Craft::t('sprout-module-mailer', 'Email'),
-            'url' => 'sprout/email',
             'icon' => self::svg('icons/icon-mask.svg'),
             'navItems' => [
                 'audiences' => [

@@ -47,14 +47,9 @@ class TransactionalModule extends Module
         return $module;
     }
 
-    public static function getDisplayName(bool $allowAlternate = false): string
+    public static function getDisplayName(): string
     {
         $displayName = Craft::t('sprout-module-core', 'Transactional');
-
-        if ($allowAlternate &&
-            $alternateName = Sprout::getInstance()->coreSettings->getAlternateName(static::class)) {
-            $displayName = $alternateName;
-        }
 
         return $displayName;
     }
@@ -191,7 +186,6 @@ class TransactionalModule extends Module
 
         return [
             'group' => Craft::t('sprout-module-transactional', 'Email'),
-            'url' => 'sprout/email',
             'icon' => self::svg('icons/icon-mask.svg'),
             'navItems' => [
                 'transactional-email' => [

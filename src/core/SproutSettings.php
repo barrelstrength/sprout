@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core;
 
+use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use Craft;
 use craft\config\BaseConfig;
 
@@ -30,7 +31,6 @@ class SproutSettings extends BaseConfig
             $projectConfigSettings = $this->modules[$module] ?? null;
 
             $enabledValue = (isset($projectConfigSettings['enabled']) && !empty($projectConfigSettings['enabled'])) ? $projectConfigSettings['enabled'] : false;
-            $alternateNameValue = (isset($projectConfigSettings['alternateName']) && !empty($projectConfigSettings['alternateName'])) ? $projectConfigSettings['alternateName'] : '';
 
             $enabledInputHtml = Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
                 'name' => 'modules[' . $module . '][enabled]',
@@ -52,10 +52,17 @@ class SproutSettings extends BaseConfig
             $cpSettingsRows[$module] = [
                 'heading' => $module::getDisplayName() . $infoHtml,
                 'enabled' => $enabledInputHtml,
-                'alternateName' => $alternateNameValue,
                 'edition' => $editionHtml,
             ];
         }
+
+        uksort($cpSettingsRows, static function($a, $b): int {
+            /**
+             * @var $a SproutModuleTrait
+             * @var $b SproutModuleTrait
+             */
+            return $a::getDisplayName() <=> $b::getDisplayName();
+        });
 
         return $cpSettingsRows;
     }

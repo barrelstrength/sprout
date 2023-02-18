@@ -55,7 +55,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         $newSettings = array_merge($currentProjectConfig, $newSettings);
 
         $newCoreSettings = [
-            'alternateName' => $newSettings['pluginNameOverride'] ?? null,
             'enabled' => $newSettings['enableRedirects'] ?? true,
         ];
 

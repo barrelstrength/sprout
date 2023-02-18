@@ -13,7 +13,7 @@
 {% endif %}
 
 {% set crumbs = [
-    { label: module.displayName(true), url: cpUrl('sprout/data-studio') }
+    { label: module.getDisplayName(), url: cpUrl('sprout/data-studio') }
 ] %}
 
 {% if canEditDataSet %}

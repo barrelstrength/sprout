@@ -44,7 +44,6 @@ class m211101_000000_run_install_migration extends Migration
         ], 'Update Sprout CP Settings for: ' . $moduleSettingsKey);
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
-            'alternateName' => '',
             'enabled' => true,
         ]);
     }
