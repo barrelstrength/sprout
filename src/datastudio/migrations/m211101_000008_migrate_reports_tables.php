@@ -6,6 +6,8 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\StringHelper;
 
 class m211101_000008_migrate_reports_tables extends Migration
 {
@@ -57,22 +59,23 @@ class m211101_000008_migrate_reports_tables extends Migration
         }
 
         $oldTableCols = [
-            'id',
-            'groupId',
-            'name',
-            'nameFormat',
-            'handle',
-            'description',
-            'allowHtml',
-            'sortOrder',
-            'sortColumn',
-            'delimiter',
-            'dataSourceId',
-            'settings',
-            'enabled',
-            'dateCreated',
-            'dateUpdated',
-            'uid',
+            '[[sproutreports_reports.id]] AS id',
+            '[[sproutreports_reports.groupId]] AS groupId',
+            '[[sproutreports_reports.name]] AS name',
+            '[[sproutreports_reports.nameFormat]] AS nameFormat',
+            '[[sproutreports_reports.handle]] AS handle',
+            '[[sproutreports_reports.description]] AS description',
+            '[[sproutreports_reports.allowHtml]] AS allowHtml',
+            '[[sproutreports_reports.sortOrder]] AS sortOrder',
+            '[[sproutreports_reports.sortColumn]] AS sortColumn',
+            '[[sproutreports_reports.delimiter]] AS delimiter',
+            '[[sproutreports_reports.dataSourceId]] AS dataSourceId',
+            '[[sproutreports_reports.settings]] AS settings',
+            '[[sproutreports_reports.enabled]] AS enabled',
+            '[[sproutreports_reports.dateCreated]] AS dateCreated',
+            '[[sproutreports_reports.dateUpdated]] AS dateUpdated',
+            '[[sproutreports_reports.uid]] AS uid',
+            '[[elements_sites.siteId]] AS siteId',
         ];
 
         $newTableCols = [
@@ -106,6 +109,10 @@ class m211101_000008_migrate_reports_tables extends Migration
             $rows = (new Query())
                 ->select($oldTableCols)
                 ->from([self::OLD_REPORTS_TABLE])
+                ->innerJoin(
+                    Table::ELEMENTS_SITES,
+                    '[[sproutreports_reports.id]] = [[elements_sites.elementId]]'
+                )
                 ->all();
 
             foreach ($rows as $key => $row) {
@@ -121,7 +128,19 @@ class m211101_000008_migrate_reports_tables extends Migration
                     unset($rows[$key]);
                 }
 
-                unset($rows[$key]['dataSourceId']);
+                // Create a row in the content table for each element to support custom fields
+                $this->insert(Table::CONTENT, [
+                    'elementId' => $row['id'],
+                    'siteId' => $row['siteId'],
+                    'dateCreated' => DateTimeHelper::toIso8601(DateTimeHelper::now()),
+                    'dateUpdated' => DateTimeHelper::toIso8601(DateTimeHelper::now()),
+                    'uid' => StringHelper::UUID(),
+                ]);
+
+                unset(
+                    $rows[$key]['dataSourceId'],
+                    $rows[$key]['siteId']
+                );
             }
 
             Craft::$app->getDb()->createCommand()
