@@ -51,7 +51,7 @@ class m211101_000002_update_field_settings extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000002_update_field_settings cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

@@ -74,7 +74,7 @@ class m211101_000005_update_access_permissions extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000005_update_user_permissions cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

@@ -18,7 +18,7 @@ class m221014_000001_rename_settings_table_craft3 extends Migration
 
     public function safeDown(): bool
     {
-        echo "m221014_000001_rename_settings_table_craft3 cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

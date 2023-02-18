@@ -148,7 +148,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000006_migrate_notifications_tables cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

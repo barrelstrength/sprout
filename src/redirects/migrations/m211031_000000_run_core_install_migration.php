@@ -16,7 +16,7 @@ class m211031_000000_run_core_install_migration extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211031_000000_run_core_install_migration cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

@@ -40,7 +40,7 @@ class m221014_000002_run_install_migration extends Migration
 
     public function safeDown(): bool
     {
-        echo "m221014_000002_run_install_migration cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

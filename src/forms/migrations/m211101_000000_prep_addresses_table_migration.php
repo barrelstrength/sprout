@@ -33,7 +33,7 @@ class m211101_000000_prep_addresses_table_migration extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000000_prep_addresses_table_migration cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

@@ -42,7 +42,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000004_migrate_sitemaps_tables cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

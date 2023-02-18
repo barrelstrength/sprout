@@ -60,7 +60,7 @@ class m211101_000001_update_seo_projectconfig extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000001_update_seo_projectconfig cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

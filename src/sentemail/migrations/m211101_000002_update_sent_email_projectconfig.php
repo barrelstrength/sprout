@@ -45,7 +45,7 @@ class m211101_000002_update_sent_email_projectconfig extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000002_update_sent_email_projectconfig cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

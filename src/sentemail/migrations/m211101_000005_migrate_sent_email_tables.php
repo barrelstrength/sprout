@@ -60,7 +60,7 @@ class m211101_000005_migrate_sent_email_tables extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000005_migrate_sent_email_tables cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

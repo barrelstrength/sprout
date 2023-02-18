@@ -24,7 +24,7 @@ class m211101_000003_add_reports_editions extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000003_add_reports_editions cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

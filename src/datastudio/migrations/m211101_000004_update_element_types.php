@@ -35,7 +35,7 @@ class m211101_000004_update_element_types extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000004_update_element_types cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

@@ -41,7 +41,7 @@ class m230124_000001_update_user_datasource_settings extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230124_000001_update_user_datasource_settings cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

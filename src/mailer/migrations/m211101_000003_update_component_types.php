@@ -19,7 +19,7 @@ class m211101_000003_update_component_types extends Migration
 
     public function safeDown(): bool
     {
-        echo "m211101_000003_update_component_types cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

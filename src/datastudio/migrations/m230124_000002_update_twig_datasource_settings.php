@@ -47,7 +47,7 @@ class m230124_000002_update_twig_datasource_settings extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230124_000002_update_twig_datasource_settings cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }
