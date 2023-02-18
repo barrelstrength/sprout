@@ -41,6 +41,7 @@ class m211101_000000_run_install_migration extends Migration
             'total404Redirects' => 250,
             'cleanupProbability' => 1000,
             'structureUid' => $structureUid,
+            'globallyExcludedUrlPatterns' => null,
         ], 'Update Sprout CP Settings for: ' . $moduleSettingsKey);
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [

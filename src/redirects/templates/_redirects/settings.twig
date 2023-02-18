@@ -50,18 +50,28 @@
 
             {{ forms.textareaField({
                 label: "Excluded URL Patterns"|t('sprout-module-redirects'),
-                instructions: "Add any regular expression patterns you wish to exclude from the Redirect log. Add each pattern on a new line. Comments can be added by starting a line with the hash # character"|t('sprout-module-redirects'),
-                class: 'nicetext',
-                name: 'excludedUrlPatterns',
-                value: settings.excludedUrlPatterns,
-                placeholder: "# Exclude all CSS and JS files
-\\.(css|js)$"|t('sprout-module-redirects'),
-                errors: settings.getErrors('excludedUrlPatterns'),
-                rows: 10,
-                warning: sproutConfigWarning(module, 'excludedUrlPatterns')
+                instructions: "Add any regular expression patterns you wish to exclude when processing redirects for this site. Add each pattern on a new line. Comments can be added by starting a line with the hash # character"|t('sprout-module-redirects'),
+                class: 'nicetext code',
+                name: 'siteExcludedUrlPatterns',
+                value: settings.getSiteExcludedUrlPatterns(site.id),
+                placeholder: "# Exclude all requests under a certain directory
+wp-admin(.*)$"|t('sprout-module-redirects'),
+                rows: 8,
             }) }}
 
         {% endnamespace %}
+
+
+        {{ forms.textareaField({
+            label: "Globally Excluded URL Patterns"|t('sprout-module-redirects'),
+            instructions: "The patterns below are already being excluded from all site requests. Add additional patterns in the global settings."|t('sprout-module-redirects'),
+            class: 'nicetext code',
+            name: 'globallyExcludedUrlPatterns',
+            value: settings.globallyExcludedUrlPatterns,
+            readonly: true,
+            disabled: true,
+            rows: 8,
+        }) }}
 
     </div>
 

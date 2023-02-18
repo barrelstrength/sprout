@@ -31,6 +31,15 @@ class RedirectsSettings extends BaseConfig
 
     public int $cleanupProbability = 1000;
 
+    /**
+     * Excluded URLs are stored as a string with individual values
+     * separated by a new line character. Global settings are managed here
+     * and site-specific settings are managed in the sprout_settings table.
+     */
+    public ?string $globallyExcludedUrlPatterns = null;
+
+    private ?string $_siteExcludedUrlPatterns = null;
+
     // The Field Layout Config that will be saved to Project Config
     public array $fieldLayouts = [];
 
@@ -42,12 +51,6 @@ class RedirectsSettings extends BaseConfig
      * to a single Site.
      */
     public ?string $structureUid = null;
-
-    /**
-     * Excluded URLs are stored as a string with individual values
-     * separated by a new line character
-     */
-    private ?string $_excludedUrlPatterns = null;
 
     public function enable404RedirectLog(bool $value): self
     {
@@ -112,22 +115,42 @@ class RedirectsSettings extends BaseConfig
         $this->structureUid = $value;
     }
 
-    public function getExcludedUrlPatterns(int $siteId): ?string
+    public function setExcludedUrlPatterns(string $value = null): void
     {
-        if (isset($this->_excludedUrlPatterns)) {
-            return $this->_excludedUrlPatterns;
+        $this->_siteExcludedUrlPatterns = $value;
+    }
+
+    public function getSiteExcludedUrlPatterns(int $siteId): ?string
+    {
+        if ($this->_siteExcludedUrlPatterns) {
+            return $this->_siteExcludedUrlPatterns;
         }
 
-        $this->_excludedUrlPatterns = SettingsRecord::find()
+        $this->_siteExcludedUrlPatterns = SettingsRecord::find()
             ->select('settings')
             ->where([
                 'siteId' => $siteId,
                 'moduleId' => RedirectsModule::getModuleId(),
-                'name' => 'excludedUrlPatterns',
+                'name' => 'siteExcludedUrlPatterns',
             ])
             ->scalar();
 
-        return $this->_excludedUrlPatterns;
+        return $this->_siteExcludedUrlPatterns;
+    }
+
+    public function getExcludedUrlPatterns(int $siteId): array
+    {
+        $siteExcludedUrlPatterns = $this->getSiteExcludedUrlPatterns($siteId);
+        $excludedUrlPatterns = $this->globallyExcludedUrlPatterns . "\n" . $siteExcludedUrlPatterns;
+
+        $excludedUrlPatterns = $excludedUrlPatterns
+            ? array_filter(array_map('trim', explode("\n", $excludedUrlPatterns)))
+            : [];
+
+        // Remove empty lines and comments
+        $excludedUrlPatterns = array_filter($excludedUrlPatterns, static fn($excludedUrlPattern): bool => !empty($excludedUrlPattern) && !str_starts_with($excludedUrlPattern, '#'));
+
+        return $excludedUrlPatterns ?? [];
     }
 
     public function getFieldLayout(): FieldLayout
@@ -140,11 +163,6 @@ class RedirectsSettings extends BaseConfig
         return new FieldLayout([
             'type' => RedirectElement::class,
         ]);
-    }
-
-    public function setExcludedUrlPatterns(string $value = null): void
-    {
-        $this->_excludedUrlPatterns = $value;
     }
 }
 

@@ -54,7 +54,7 @@ class ExcludeUrl extends ElementAction
                 $oldUrl = $redirect->oldUrl;
 
                 // Append the selected Old URL to the Excluded URL Pattern settings array
-                $excludedUrlPatterns = $redirectSettings->getExcludedUrlPatterns($site->id);
+                $excludedUrlPatterns = $redirectSettings->getSiteExcludedUrlPatterns($site->id);
                 $excludedUrlPatterns .= PHP_EOL . $oldUrl;
                 $redirectSettings->setExcludedUrlPatterns($excludedUrlPatterns);
 
@@ -64,7 +64,7 @@ class ExcludeUrl extends ElementAction
 
             $moduleId = RedirectsModule::getModuleId();
             $settings = [
-                'excludedUrlPatterns' => $redirectSettings->getExcludedUrlPatterns($site->id),
+                'siteExcludedUrlPatterns' => $redirectSettings->getSiteExcludedUrlPatterns($site->id),
             ];
 
             if (Sprout::getInstance()->coreSettings->saveDbSettings($moduleId, $settings, $site->id) === null) {

@@ -91,4 +91,16 @@
 
     </div>
 
+    {{ forms.textareaField({
+        label: "Globally Excluded URL Patterns"|t('sprout-module-redirects'),
+        instructions: "Add any regular expression patterns you wish to exclude when processing redirects across all sites. Add each pattern on a new line. Comments can be added by starting a line with the hash character."|t('sprout-module-redirects'),
+        name: "globallyExcludedUrlPatterns",
+        placeholder: "# Exclude all CSS and JS files
+\\.(css|js)$"|t('sprout-module-redirects'),
+        class: "nicetext code",
+        rows: 8,
+        value: settings.globallyExcludedUrlPatterns,
+        warning: sproutConfigWarning(module, 'globallyExcludedUrlPatterns'),
+    }) }}
+
 {% endblock %}

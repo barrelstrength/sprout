@@ -11,9 +11,6 @@ use BarrelStrength\Sprout\redirects\RedirectsModule;
 use Craft;
 use craft\base\Element;
 use craft\helpers\Cp;
-use craft\helpers\Html;
-use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use yii\web\ForbiddenHttpException;
@@ -32,20 +29,11 @@ class RedirectsController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $label = Craft::t('sprout-module-redirects', 'New Redirect');
-        $url = UrlHelper::cpUrl('sprout/redirects/new', [
-            'site' => $site->handle,
-        ]);
-
-        $newRedirectButtonHtml = Html::a($label, $url, [
-            'class' => ['btn', 'submit', 'add', 'icon'],
-            'id' => 'sprout-redirects-new-button',
-        ]);
-
         return $this->renderTemplate('sprout-module-redirects/_redirects/index', [
             'title' => RedirectElement::pluralDisplayName(),
             'elementType' => RedirectElement::class,
-            'newRedirectButtonHtml' => Template::raw($newRedirectButtonHtml),
+            'newRedirectButtonHtml' => RedirectHelper::getNewRedirectButtonHtml($site),
+            'excludeUrlsButtonHtml' => RedirectHelper::getExcludeUrlsButtonHtml($site),
         ]);
     }
 

@@ -14,6 +14,16 @@
     </div>
 {% endblock %}
 
+{% block sidebar %}
+
+    {{ parent() }}
+
+    <div class="buttons">
+        {{ excludeUrlsButtonHtml }}
+    </div>
+
+{% endblock %}
+
 {% css %}
     .element.small.hasstatus
     {

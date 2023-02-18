@@ -212,10 +212,6 @@ class RedirectsModule extends Module
                     'label' => Craft::t('sprout-module-redirects', 'Redirects'),
                     'url' => 'sprout/redirects',
                 ],
-                'redirect-settings' => [
-                    'label' => Craft::t('sprout-module-redirects', 'Settings'),
-                    'url' => 'sprout/redirects/settings',
-                ],
             ],
         ];
     }

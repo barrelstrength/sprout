@@ -114,6 +114,10 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             $newSettings['trackRemoteIp'] = false;
         }
 
+        if (isset($newSettings['excludedUrlPatterns'])) {
+            $newSettings['globallyExcludedUrlPatterns'] = $newSettings['excludedUrlPatterns'];
+        }
+
         // Migrate structureId to structureUid
         if ($newSettings['structureId']) {
 
@@ -140,12 +144,10 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             }
         }
 
-        // excludedUrlPatterns
-        // Save to settings db...
-
         unset(
             $newSettings['structureId'],
-            $newSettings['redirectMatchStrategy']
+            $newSettings['redirectMatchStrategy'],
+            $newSettings['excludedUrlPatterns'],
         );
 
         return $newSettings;
