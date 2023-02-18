@@ -406,10 +406,8 @@ class RedirectElement extends Element
 
         $record->save(false);
 
-        $structureId = RedirectHelper::getStructureId();
-
         if ($isNew) {
-            Craft::$app->structures->appendToRoot($structureId, $this);
+            Craft::$app->structures->appendToRoot($this->structureId, $this);
         }
 
         parent::afterSave($isNew);

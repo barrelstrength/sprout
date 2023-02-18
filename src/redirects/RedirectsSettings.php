@@ -110,11 +110,6 @@ class RedirectsSettings extends BaseConfig
         return $structureId;
     }
 
-    public function setStructureUid(?int $value): void
-    {
-        $this->structureUid = $value;
-    }
-
     public function setExcludedUrlPatterns(string $value = null): void
     {
         $this->_siteExcludedUrlPatterns = $value;
