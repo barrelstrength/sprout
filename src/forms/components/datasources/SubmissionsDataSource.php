@@ -5,6 +5,8 @@ namespace BarrelStrength\Sprout\forms\components\datasources;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DateRangeHelper;
+use BarrelStrength\Sprout\datastudio\datasources\DateRangeInterface;
+use BarrelStrength\Sprout\datastudio\datasources\DateRangeTrait;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\formfields\NameFormFieldData;
@@ -19,12 +21,24 @@ use craft\db\Table;
 use craft\elements\db\ElementQueryInterface;
 use craft\fields\data\MultiOptionsFieldData;
 use craft\fields\data\SingleOptionFieldData;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use DateTime;
 
-class SubmissionsDataSource extends DataSource
+class SubmissionsDataSource extends DataSource implements DateRangeInterface
 {
+    use DateRangeTrait;
+
+    public ?int $formId = null;
+    
+    public array $submissionStatusIds = [];
+
+    public function datetimeAttributes(): array
+    {
+        return [
+            'startDate',
+            'endDate',
+        ];
+    }
+
     public static function getHandle(): string
     {
         return 'forms-submissions';
@@ -42,16 +56,15 @@ class SubmissionsDataSource extends DataSource
 
     public function getResults(DataSetElement $dataSet): array
     {
-        $startEndDate = $dataSet->getStartEndDate();
-        $startDate = $startEndDate->getStartDate();
-        $endDate = $startEndDate->getEndDate();
+        $startDate = $this->getStartDate();
+        $endDate = $this->getEndDate();
 
         $rows = [];
 
-        $formId = $dataSet->getSetting('formId');
+        $formId = $this->formId;
         $form = FormsModule::getInstance()->forms->getFormById($formId);
 
-        $submissionStatusIds = $dataSet->getSetting('submissionStatusIds');
+        $submissionStatusIds = $this->submissionStatusIds;
 
         if (!$form instanceof ElementInterface) {
             return [];
@@ -179,14 +192,10 @@ class SubmissionsDataSource extends DataSource
         return $rows;
     }
 
-    public function getSettingsHtml(array $settings = []): ?string
+    public function getSettingsHtml(): ?string
     {
         /** @var FormElement[] $forms */
         $forms = FormElement::find()->limit(null)->orderBy('name')->all();
-
-        if (empty($settings)) {
-            $settings = $this->dataSet->getSettings();
-        }
 
         $formOptions = [];
 
@@ -197,22 +206,8 @@ class SubmissionsDataSource extends DataSource
             ];
         }
 
-        $defaultStartDate = null;
-        $defaultEndDate = null;
-
-        if ($settings !== []) {
-            if (isset($settings['startDate'])) {
-                $startDateValue = (array)$settings['startDate'];
-
-                $settings['startDate'] = DateTimeHelper::toDateTime($startDateValue);
-            }
-
-            if (isset($settings['endDate'])) {
-                $endDateValue = (array)$settings['endDate'];
-
-                $settings['endDate'] = DateTimeHelper::toDateTime($endDateValue);
-            }
-        }
+        $defaultStartDate = $this->getStartDate();
+        $defaultEndDate = $this->getEndDate();
 
         $dateRanges = DateRangeHelper::getDateRanges(false);
 
@@ -233,21 +228,12 @@ class SubmissionsDataSource extends DataSource
 
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/datasources/SubmissionsDataSource/settings', [
             'formOptions' => $formOptions,
-            'defaultStartDate' => new DateTime($defaultStartDate),
-            'defaultEndDate' => new DateTime($defaultEndDate),
+            'defaultStartDate' => $defaultStartDate,
+            'defaultEndDate' => $defaultEndDate,
             'dateRanges' => $dateRanges,
-            'options' => $settings,
+            'options' => $this->dataSet->getDataSource()->getSettings(),
             'submissionStatusOptions' => $submissionStatusOptions,
             'defaultSelectedSubmissionStatuses' => $defaultSelectedSubmissionStatuses,
         ]);
-    }
-
-    public function prepSettings(array $settings): array
-    {
-        // Convert date strings to DateTime
-        $settings['startDate'] = DateTimeHelper::toDateTime($settings['startDate']) ?: null;
-        $settings['endDate'] = DateTimeHelper::toDateTime($settings['endDate']) ?: null;
-
-        return $settings;
     }
 }

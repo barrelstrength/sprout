@@ -5,15 +5,27 @@ namespace BarrelStrength\Sprout\forms\components\datasources;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DateRangeHelper;
+use BarrelStrength\Sprout\datastudio\datasources\DateRangeInterface;
+use BarrelStrength\Sprout\datastudio\datasources\DateRangeTrait;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use Craft;
 use craft\db\Query;
-use craft\helpers\DateTimeHelper;
-use DateTime;
 
-class IntegrationLogDataSource extends DataSource
+class IntegrationLogDataSource extends DataSource implements DateRangeInterface
 {
+    use DateRangeTrait;
+
+    public ?int $formId = null;
+
+    public function datetimeAttributes(): array
+    {
+        return [
+            'startDate',
+            'endDate',
+        ];
+    }
+
     public static function getHandle(): string
     {
         return 'forms-integration-log';
@@ -31,13 +43,12 @@ class IntegrationLogDataSource extends DataSource
 
     public function getResults(DataSetElement $dataSet): array
     {
-        $startEndDate = $dataSet->getStartEndDate();
-        $startDate = $startEndDate->getStartDate();
-        $endDate = $startEndDate->getEndDate();
+        $startDate = $this->getStartDate();
+        $endDate = $this->getEndDate();
 
         $rows = [];
 
-        $formId = $dataSet->getSetting('formId');
+        $formId = $this->formId;
 
         $query = new Query();
 
@@ -89,13 +100,8 @@ class IntegrationLogDataSource extends DataSource
 
     public function getSettingsHtml(array $settings = []): ?string
     {
-        $formOptions = [];
         /** @var FormElement[] $forms */
         $forms = FormElement::find()->limit(null)->orderBy('name')->all();
-
-        if (empty($settings)) {
-            $settings = $this->dataSet->getSettings();
-        }
 
         $formOptions[] = ['label' => 'All', 'value' => '*'];
 
@@ -106,40 +112,17 @@ class IntegrationLogDataSource extends DataSource
             ];
         }
 
-        $defaultStartDate = null;
-        $defaultEndDate = null;
-
-        if ($settings !== []) {
-            if (isset($settings['startDate'])) {
-                $startDateValue = (array)$settings['startDate'];
-
-                $settings['startDate'] = DateTimeHelper::toDateTime($startDateValue);
-            }
-
-            if (isset($settings['endDate'])) {
-                $endDateValue = (array)$settings['endDate'];
-
-                $settings['endDate'] = DateTimeHelper::toDateTime($endDateValue);
-            }
-        }
+        $defaultStartDate = $this->getStartDate();
+        $defaultEndDate = $this->getEndDate();
 
         $dateRanges = DateRangeHelper::getDateRanges(false);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/datasources/IntegrationLogDataSource/settings', [
             'formOptions' => $formOptions,
-            'defaultStartDate' => new DateTime($defaultStartDate),
-            'defaultEndDate' => new DateTime($defaultEndDate),
+            'defaultStartDate' => $defaultStartDate,
+            'defaultEndDate' => $defaultEndDate,
             'dateRanges' => $dateRanges,
-            'options' => $settings,
+            'options' => $this->dataSet->getDataSource()->getSettings(),
         ]);
-    }
-
-    public function prepSettings(array $settings): array
-    {
-        // Convert date strings to DateTime
-        $settings['startDate'] = DateTimeHelper::toDateTime($settings['startDate']) ?: null;
-        $settings['endDate'] = DateTimeHelper::toDateTime($settings['endDate']) ?: null;
-
-        return $settings;
     }
 }
