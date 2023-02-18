@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
+use BarrelStrength\Sprout\datastudio\components\elements\conditions\DataSourcesConditionRule;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
@@ -19,9 +20,11 @@ use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use Craft;
+use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterConditionRuleTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -161,6 +164,13 @@ class DataStudioModule extends Module
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = DataSetElement::class;
+            });
+
+        Event::on(
+            BaseCondition::class,
+            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
+            static function(RegisterConditionRuleTypesEvent $event): void {
+                $event->conditionRuleTypes[] = DataSourcesConditionRule::class;
             });
 
         Event::on(

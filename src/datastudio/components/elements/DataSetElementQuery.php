@@ -17,7 +17,14 @@ class DataSetElementQuery extends ElementQuery
 
     public ?int $groupId = null;
 
-    public ?string $type = null;
+    public string|array|null $type = null;
+
+    public function type(string|array|null $value = null): self
+    {
+        $this->type = $value;
+
+        return $this;
+    }
 
     public function viewable(?bool $value = true): self
     {
@@ -54,8 +61,8 @@ class DataSetElementQuery extends ElementQuery
         }
 
         if ($this->type) {
-            $this->query->andWhere(Db::parseParam(
-                '[[sprout_datasets.type]]', $this->type)
+            $this->query->andWhere(
+                Db::parseParam('[[sprout_datasets.type]]', $this->type)
             );
         }
 

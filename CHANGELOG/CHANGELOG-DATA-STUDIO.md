@@ -8,6 +8,7 @@
 - Added _Product Revenue Data Source_ for Craft Commerce
 - Added _Order History Data Source_ for Craft Commerce
 - Added Custom Field Layout global setting
+- Added `BarrelStrength\Sprout\datastudio\components\elements\conditions\DataSourceConditionRule`
 - Added `BarrelStrength\Sprout\datastudio\datasources\DateRangeTrait`
 - Added `BarrelStrength\Sprout\datastudio\datasources\DateRangeInterface`
 - Added `BarrelStrength\Sprout\datastudio\datasources\DateRangeHelper`

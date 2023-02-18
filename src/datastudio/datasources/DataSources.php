@@ -121,4 +121,15 @@ class DataSources extends Component
 
         $this->_dataSources = $dataSources;
     }
+
+    public function getDataSourceOptions(): array
+    {
+        $dataSourceOptions = [];
+
+        foreach ($this->getDataSources() as $dataSource) {
+            $dataSourceOptions[$dataSource::class] = $dataSource::displayName();
+        }
+
+        return $dataSourceOptions;
+    }
 }
