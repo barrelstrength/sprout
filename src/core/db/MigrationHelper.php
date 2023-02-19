@@ -125,8 +125,13 @@ class MigrationHelper
             Craft::$app->getProjectConfig()->remove(SproutSettings::ROOT_PROJECT_CONFIG_KEY);
 
             // Remove Sprout Core
+            // @var Migrator $coreUninstall
             $coreUninstall = new Uninstall();
             $coreUninstall->safeDown();
+
+            /** @var MigrationManager $migrator */
+            $coreMigrator = Sprout::getInstance()->getMigrator();
+            $coreMigrator->truncateHistory();
         }
     }
 
