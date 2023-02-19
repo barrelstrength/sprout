@@ -6,6 +6,7 @@ use Craft;
 use craft\config\BaseConfig;
 use craft\helpers\App;
 use craft\helpers\Typecast;
+use Throwable;
 use yii\base\Model;
 use yii\base\Module;
 use yii\db\Exception;

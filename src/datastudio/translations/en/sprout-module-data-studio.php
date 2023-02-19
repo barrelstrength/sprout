@@ -141,7 +141,6 @@ return [
     'HTML Report Settings' => 'HTML Report Settings',
     'Lower CamelCase \'emailAddress\' column' => 'Lower CamelCase \'emailAddress\' column',
     'Email Address' => 'Email Address',
-    'Datsa Studio' => 'Datsa Studio',
     'Migrate to Craft with all of your existing website metadata using Sprout SEO and <a href=\'{url}\' target=\'_blank\'>Sprout Import</a>. Sprout Import makes it easy to keep your Search, Social Sharing, Geo, and Robots metadata, and gives you the opportunity to enhance it with additional Structured Data and improve your workflow.' => 'Migrate to Craft with all of your existing website metadata using Sprout SEO and <a href=\'{url}\' target=\'_blank\'>Sprout Import</a>. Sprout Import makes it easy to keep your Search, Social Sharing, Geo, and Robots metadata, and gives you the opportunity to enhance it with additional Structured Data and improve your workflow.',
     'Lower CamelCase \'firstName\' column' => 'Lower CamelCase \'firstName\' column',
     'Save and add another report' => 'Save and add another report',
@@ -168,4 +167,6 @@ return [
     'Sprout Forms Form Builder for Craft CMS' => 'Sprout Forms Form Builder for Craft CMS',
     'Select...' => 'Select...',
     'Lowercase \'name\' column' => 'Lowercase \'name\' column',
+    'Data Sources' => 'Data Sources',
+    'Datsa Studio' => 'Datsa Studio',
 ];

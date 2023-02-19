@@ -28,7 +28,7 @@ class SubmissionsDataSource extends DataSource implements DateRangeInterface
     use DateRangeTrait;
 
     public ?int $formId = null;
-    
+
     public array $submissionStatusIds = [];
 
     public function datetimeAttributes(): array

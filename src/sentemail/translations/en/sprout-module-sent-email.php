@@ -60,4 +60,7 @@ return [
     'Craft unable to send email.' => 'Craft unable to send email.',
     'Delivery Info' => 'Delivery Info',
     'Sprout Module | Sent Email' => 'Sprout Module | Sent Email',
+    'Emasil' => 'Emasil',
+    'Original Email Info' => 'Original Email Info',
+    'Info' => 'Info',
 ];

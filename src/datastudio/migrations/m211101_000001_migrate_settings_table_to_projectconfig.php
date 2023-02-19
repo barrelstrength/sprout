@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection DuplicatedCode */
-
 namespace BarrelStrength\Sprout\datastudio\migrations;
 
 use Craft;
