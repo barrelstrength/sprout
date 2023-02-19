@@ -209,9 +209,17 @@ class RedirectHelper
             'site' => $site->handle,
         ]);
 
-        $html = Html::a($label, $url, [
-            'class' => ['btn', 'settings', 'icon'],
-        ]);
+        if (!RedirectsModule::isPro()) {
+            $html = Html::a($label, $url, [
+                'class' => ['btn', 'settings', 'icon'],
+            ]);
+        } else {
+            $html = Html::tag('div', $label, [
+                'class' => ['btn', 'settings', 'icon', 'disabled'],
+                'style' => 'cursor: not-allowed;',
+                'title' => RedirectsModule::getUpgradeMessage(),
+            ]);
+        }
 
         return Template::raw($html);
     }

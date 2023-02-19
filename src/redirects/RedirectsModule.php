@@ -72,7 +72,7 @@ class RedirectsModule extends Module
 
     public static function getUpgradeMessage(): string
     {
-        return Craft::t('sprout-module-core', 'Upgrade to Sprout Redirects PRO to manage Unlimited Redirects.');
+        return Craft::t('sprout-module-core', 'Upgrade to Sprout Redirects PRO and improve your workflow using excluded URLs.');
     }
 
     public function init(): void

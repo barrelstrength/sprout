@@ -38,13 +38,17 @@ class RedirectsController extends Controller
 
     public function actionSettingsTemplate(): Response
     {
+        $this->requirePermission(RedirectsModule::p('editRedirects'));
+
+        if (!RedirectsModule::isPro()) {
+            throw new ForbiddenHttpException(RedirectsModule::getUpgradeMessage());
+        }
+
         $site = Cp::requestedSite();
 
         if (!$site instanceof Site) {
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
-
-        $this->requirePermission(RedirectsModule::p('editRedirects'));
 
         $settings = RedirectsModule::getInstance()->getSettings();
 
