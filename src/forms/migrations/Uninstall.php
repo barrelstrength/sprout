@@ -52,7 +52,6 @@ class Uninstall extends Migration
         // Order matters
         $this->dropTableIfExists(SproutTable::FORM_INTEGRATIONS_LOG);
         $this->dropTableIfExists(SproutTable::FORM_INTEGRATIONS);
-        $this->dropTableIfExists(SproutTable::FORM_RULES);
         $this->dropTableIfExists(SproutTable::FORM_SUBMISSIONS_SPAM_LOG);
         $this->dropTableIfExists(SproutTable::FORM_SUBMISSIONS);
         $this->dropTableIfExists(SproutTable::FORM_SUBMISSIONS_STATUSES);

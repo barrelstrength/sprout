@@ -12,7 +12,5 @@ abstract class SproutTable
 
     public const AUDIENCES = '{{%sprout_audiences}}';
 
-    public const AUDIENCE_GROUPS = '{{%sprout_audience_groups}}';
-
     public const SUBSCRIPTIONS = '{{%sprout_subscriptions}}';
 }
