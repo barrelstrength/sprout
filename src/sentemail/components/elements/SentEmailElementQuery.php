@@ -23,7 +23,7 @@ class SentEmailElementQuery extends ElementQuery
             'sprout_sent_emails.toEmail',
             'sprout_sent_emails.textBody',
             'sprout_sent_emails.htmlBody',
-            'sprout_sent_emails.details',
+            'sprout_sent_emails.info',
             'sprout_sent_emails.status',
             'sprout_sent_emails.dateCreated',
             'sprout_sent_emails.dateUpdated',

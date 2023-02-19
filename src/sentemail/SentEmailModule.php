@@ -215,7 +215,7 @@ class SentEmailModule extends Module
             'icon' => self::svg('icons/icon-mask.svg'),
             'navItems' => [
                 'sent-email' => [
-                    'label' => Craft::t('sprout-module-sent-email', 'Email'),
+                    'label' => Craft::t('sprout-module-sent-email', 'Sent Email'),
                     'url' => 'sprout/email/sent-email',
                 ],
             ],

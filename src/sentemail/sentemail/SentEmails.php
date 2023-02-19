@@ -48,7 +48,7 @@ class SentEmails extends Component
         $sentEmail->textBody = $message->getTextBody();
 
         $sentEmailDetails = $this->_prepareDetails($sentEmail, $message, $status);
-        $sentEmail->details = $sentEmailDetails->getAttributes();
+        $sentEmail->info = $sentEmailDetails->getAttributes();
 
         try {
             Craft::$app->getElements()->saveElement($sentEmail);

@@ -16,7 +16,7 @@ use yii\db\ActiveQueryInterface;
  * @property $toEmail string
  * @property $textBody string
  * @property $htmlBody string
- * @property $details string
+ * @property $info string
  * @property $status string
  * @property $dateCreated DateTime
  * @property $dateUpdated DateTime

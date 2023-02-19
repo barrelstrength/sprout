@@ -41,7 +41,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
 
     public string $htmlBody;
 
-    public array $details = [];
+    public array $info = [];
 
     // TODO: define type and default
     public $status;
@@ -126,7 +126,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
             'dateCreated' => ['label' => Craft::t('sprout-module-sent-email', 'Date Sent')],
             'toEmail' => ['label' => Craft::t('sprout-module-sent-email', 'Recipient')],
             'subjectLine' => ['label' => Craft::t('sprout-module-sent-email', 'Subject')],
-            'details' => ['label' => Craft::t('sprout-module-sent-email', 'Details')],
+            'info' => ['label' => Craft::t('sprout-module-sent-email', 'Info')],
         ];
 
         if (Craft::$app->getUser()->checkPermission('sprout-module-sent-email:resendSentEmail')) {
@@ -144,7 +144,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
             'title',
             'subjectLine',
             'dateCreated',
-            'details',
+            'info',
             'resend',
             'preview',
         ];
@@ -168,9 +168,9 @@ class SentEmailElement extends Element implements EmailPreviewInterface
     {
         switch ($attribute) {
 
-            case 'details':
+            case 'info':
 
-                return Html::tag('a', Craft::t('sprout-module-sent-email', 'Details'), [
+                return Html::tag('a', Craft::t('sprout-module-sent-email', 'Info'), [
                     'href' => '#',
                     'class' => 'sprout-sent-email-details-btn btn small formsubmit',
                     'data-email-id' => $this->id,
@@ -229,7 +229,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         $record->toEmail = $this->toEmail;
         $record->textBody = $this->textBody;
         $record->htmlBody = $this->htmlBody;
-        $record->details = $this->details;
+        $record->info = $this->info;
         $record->status = $this->status;
         $record->dateCreated = $this->dateCreated;
         $record->dateUpdated = $this->dateUpdated;
@@ -255,7 +255,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
     public function getDetails(): SentEmailDetails
     {
         $sentEmailDetails = new SentEmailDetails();
-        $sentEmailDetails->setAttributes($this->details, false);
+        $sentEmailDetails->setAttributes($this->info, false);
 
         return $sentEmailDetails;
     }
