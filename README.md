@@ -54,7 +54,7 @@ Include Sprout modules in a Sprout Plugin composer.json file:
 ``` json
 {
   "require": {
-    "barrelstrength/sprout": "^10"
+    "barrelstrength/sprout": "^4.44.444"
   }
 }
 ```

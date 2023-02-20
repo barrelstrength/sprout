@@ -24,3 +24,6 @@
 - Updated `craft.sproutSeo` variable to `sprout.meta`
 - Updated Project Config settings from `sprout-seo` => `sprout-module-meta`
 - Updated translation category from `sprout-seo` => `sprout-module-meta`
+- Removed displayFieldHandles setting. Use Field relabeling now
+- Removed Sprout SEO Element Metadata "Editable Field" option
+  - Migrated data to combo of defaults and Meta Details field
