@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.44.444 - UNRELEASED
+## 4.0.0 - 2023-04-20
 
 ### Added
 
@@ -20,6 +20,3 @@
 ### Removed
 
 - Removed `barrelstrength/sprout-base-redirects` dependency
-
-
-

@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.44.444 - UNRELEASED
+## 4.0.0 - 2023-04-20
 
 ### Added
 
@@ -21,7 +21,7 @@
 - Added `BarrelStrength\Sprout\core\modules\SproutModuleTrait`
 - Added `BarrelStrength\Sprout\core\modules\TranslatableTrait`
 - Added `BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait`
-- Added `barrelstrength/sprout` v4.44.444 (Sprout Framework)
+- Added `barrelstrength/sprout` v4.0.0 (Sprout Framework)
 - Added `nystudio107/craft-plugin-vite` v4.0.0
 - Added namespace `BarrelStrength\Sprout`
 

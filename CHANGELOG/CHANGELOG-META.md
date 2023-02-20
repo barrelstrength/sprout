@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.44.444 - UNRELEASED
+## 4.0.0 - UNRELEASED
 
 ### Added
 
@@ -26,4 +26,4 @@
 - Updated translation category from `sprout-seo` => `sprout-module-meta`
 - Removed displayFieldHandles setting. Use Field relabeling now
 - Removed Sprout SEO Element Metadata "Editable Field" option
-  - Migrated data to combo of defaults and Meta Details field
+    - Migrated data to combo of defaults and Meta Details field
