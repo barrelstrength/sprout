@@ -98,7 +98,7 @@ class Redirects extends Component
         }
 
         if ($redirect->enabled && $redirect->statusCode !== StatusCode::PAGE_NOT_FOUND) {
-            if (UrlHelper::isAbsoluteUrl($redirect->newUrl)) {
+            if (UrlHelper::isAbsoluteUrl($redirect->newUrl ?? RedirectHelper::SLASH_CHARACTER)) {
                 Craft::$app->getResponse()->redirect(
                     $redirect->newUrl . $queryString, $redirect->statusCode
                 );

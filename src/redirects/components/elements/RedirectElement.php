@@ -444,7 +444,7 @@ class RedirectElement extends Element
 
     public function hasTrailingSlashIfAbsolute($attribute): void
     {
-        if (!UrlHelper::isAbsoluteUrl($this->{$attribute})) {
+        if (!UrlHelper::isAbsoluteUrl($this->{$attribute} ?? RedirectHelper::SLASH_CHARACTER)) {
             return;
         }
 

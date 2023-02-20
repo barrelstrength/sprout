@@ -116,14 +116,13 @@ class RedirectHelper
                 if (preg_match($oldUrlPattern, $currentPath)) {
 
                     // Make sure URLs that redirect to another domain end in a slash
-                    if ($redirect['newUrl'] !== null && UrlHelper::isAbsoluteUrl($redirect['newUrl'])) {
+                    if ($redirect['newUrl'] !== null && UrlHelper::isAbsoluteUrl($redirect['newUrl'] ?? self::SLASH_CHARACTER)) {
                         $newUrl = parse_url($redirect['newUrl']);
-
                         // If path is set, we know that the base domain has a slash before the path
                         if (isset($newUrl['path'])) {
                             $newUrlPattern = $redirect['newUrl'];
                         } elseif (!str_contains($newUrl['host'], '$')) {
-                            $newUrlPattern = $redirect['newUrl'] . '/';
+                            $newUrlPattern = $redirect['newUrl'] . self::SLASH_CHARACTER;
                         } else {
 
                             // If the hostname has a $ it probably uses a a capture group
