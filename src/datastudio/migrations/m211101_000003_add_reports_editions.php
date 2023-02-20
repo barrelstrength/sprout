@@ -14,12 +14,10 @@ class m211101_000003_add_reports_editions extends Migration
         $projectConfig = Craft::$app->getProjectConfig();
         $schemaVersion = $projectConfig->get('plugins.sprout-reports.schemaVersion', true);
 
-        if (version_compare($schemaVersion, '4.44.444', '>=')) {
-            return;
+        if ($schemaVersion) {
+            $edition = App::editionHandle(Craft::Pro);
+            Craft::$app->getPlugins()->switchEdition('sprout-data-studio', $edition);
         }
-
-        $edition = App::editionHandle(Craft::Pro);
-        Craft::$app->getPlugins()->switchEdition('sprout-data-studio', $edition);
     }
 
     public function safeDown(): bool

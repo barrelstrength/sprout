@@ -44,4 +44,5 @@
 
 ### Removed
 
+- Removed Plugin _Alternate Name_ setting
 - Removed `barrelstrength/sprout-base` dependency
