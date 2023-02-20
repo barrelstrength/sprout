@@ -76,8 +76,12 @@ class RedirectHelper
             ->leftJoin(['structureelements' => Table::STRUCTUREELEMENTS], '[[redirects.id]] = [[structureelements.elementId]]')
             ->orderBy('[[structureelements.lft]] asc')
             ->where([
+                '[[elements.enabled]]' => 1,
                 '[[elements_sites.siteId]]' => $site->id,
                 '[[structureelements.level]]' => 1,
+            ])
+            ->orWhere([
+                '[[redirects.statusCode]]' => StatusCode::PAGE_NOT_FOUND,
             ])
             ->all();
 
