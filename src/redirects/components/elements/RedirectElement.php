@@ -263,23 +263,24 @@ class RedirectElement extends Element
 
         $actions[] = Duplicate::class;
 
-        // Change Permanent Status Code
-        $actions[] = Craft::$app->getElements()->createAction([
-            'type' => ChangePermanentStatusCode::class,
-            'source' => $source,
-        ]);
-
-        // Change Temporary Status Code
-        $actions[] = Craft::$app->getElements()->createAction([
-            'type' => ChangeTemporaryStatusCode::class,
-            'source' => $source,
-        ]);
-
-        // Delete
-        if ($source === 'statusCode:' . StatusCode::PAGE_NOT_FOUND) {
+        if (RedirectsModule::isPro()) {
+            // Change Permanent Status Code
             $actions[] = Craft::$app->getElements()->createAction([
-                'type' => ExcludeUrl::class,
+                'type' => ChangePermanentStatusCode::class,
+                'source' => $source,
             ]);
+
+            // Change Temporary Status Code
+            $actions[] = Craft::$app->getElements()->createAction([
+                'type' => ChangeTemporaryStatusCode::class,
+                'source' => $source,
+            ]);
+
+            if ($source === 'statusCode:' . StatusCode::PAGE_NOT_FOUND) {
+                $actions[] = Craft::$app->getElements()->createAction([
+                    'type' => ExcludeUrl::class,
+                ]);
+            }
         }
 
         $actions[] = Craft::$app->getElements()->createAction([
