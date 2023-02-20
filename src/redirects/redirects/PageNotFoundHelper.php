@@ -12,6 +12,7 @@ use Craft;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\ElementHelper;
 use craft\models\Site;
 
 class PageNotFoundHelper
@@ -62,6 +63,14 @@ class PageNotFoundHelper
 
     public static function remove404RedirectIfExists(RedirectElement $redirect): void
     {
+        if (ElementHelper::isDraftOrRevision($redirect)) {
+            return;
+        }
+
+        if (!$redirect->enabled) {
+            return;
+        }
+
         // Find an Exact Match redirect that is a 404
         $existing404RedirectId = (new Query())
             ->select('redirects.id')
