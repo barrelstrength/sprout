@@ -62,6 +62,7 @@ class PageNotFoundHelper
 
     public static function remove404RedirectIfExists(RedirectElement $redirect): void
     {
+        // Find an Exact Match redirect that is a 404
         $existing404RedirectId = (new Query())
             ->select('redirects.id')
             ->from(['redirects' => SproutTable::REDIRECTS])
