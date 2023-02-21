@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.1 - 2023-04-20
+
+### Fixed
+
+- Fixed usability issue for Lite users with isPro logic
+
 ## 4.0.0 - 2023-04-20
 
 ### Added
