@@ -212,7 +212,7 @@ class RedirectHelper
             'site' => $site->handle,
         ]);
 
-        if (!RedirectsModule::isPro()) {
+        if (RedirectsModule::isPro()) {
             $html = Html::a($label, $url, [
                 'class' => ['btn', 'settings', 'icon'],
             ]);
