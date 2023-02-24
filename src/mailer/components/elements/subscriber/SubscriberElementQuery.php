@@ -6,18 +6,23 @@ use BarrelStrength\Sprout\mailer\db\SproutTable;
 use craft\elements\db\UserQuery;
 use craft\helpers\Db;
 
-/**
- * Class SubscriberQuery
- *
- * @package BarrelStrength\Sprout\mailer\components\elements\db
- */
 class SubscriberElementQuery extends UserQuery
 {
+    /**
+     * Set to true if we don't want to limit query by any Subscriber conditions
+     * and are just using SubscriberElementQuery to query Users directly
+     */
+    public bool $skipSubscriberElementQuery = false;
+
     public ?int $listId = null;
 
-    /**
-     * @return static self reference
-     */
+    public function skipSubscriberElementQuery(bool $value): SubscriberElementQuery
+    {
+        $this->skipSubscriberElementQuery = $value;
+
+        return $this;
+    }
+
     public function listId(int $value): SubscriberElementQuery
     {
         $this->listId = $value;
@@ -27,14 +32,20 @@ class SubscriberElementQuery extends UserQuery
 
     protected function beforePrepare(): bool
     {
+        if ($this->skipSubscriberElementQuery) {
+            return parent::beforePrepare();
+        }
+
         // Limit query to Users who are subscribed to any list
-        $this->query->innerJoin(
+        $this->subQuery->innerJoin(
             ['subscriptions' => SproutTable::SUBSCRIPTIONS],
-            '[[subscriptions.itemId]] = [[elements.id]]'
+            '[[elements.id]] = [[subscriptions.itemId]]'
         );
 
+        $this->subQuery->groupBy(['subscriptions.itemId']);
+
         if ($this->listId) {
-            $this->query->andWhere(Db::parseParam(
+            $this->subQuery->andWhere(Db::parseParam(
                 'subscriptions.listId', $this->listId
             ));
         }

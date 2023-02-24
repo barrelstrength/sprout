@@ -2,10 +2,14 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\subscriber;
 
+use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
+use BarrelStrength\Sprout\mailer\components\elements\subscriber\fieldlayoutelements\EmailField;
+use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\elements\actions\DeleteUsers;
 use craft\elements\actions\Edit;
+use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
@@ -36,11 +40,6 @@ class SubscriberElement extends User
         return Craft::t('sprout-module-mailer', 'subscribers');
     }
 
-    public static function hasStatuses(): bool
-    {
-        return false;
-    }
-
     /**
      * @return SubscriberElementQuery The newly created [[SubscriberQuery]] instance.
      */
@@ -51,15 +50,19 @@ class SubscriberElement extends User
 
     protected static function defineSources(string $context = null): array
     {
-        $sources = [
-            [
-                'key' => '*',
-                'label' => Craft::t('sprout-module-mailer', 'All Subscribers'),
+        $sources[] = [
+            'key' => '*',
+            'label' => Craft::t('sprout-module-mailer', 'All subscribers'),
+            'data' => [
+                'slug' => 'all',
             ],
+            'defaultSort' => ['dateCreated', 'desc'],
         ];
 
         /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()->all();
+        $lists = AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class)
+            ->all();
 
         if (!empty($lists)) {
             $sources[] = [
@@ -70,17 +73,54 @@ class SubscriberElement extends User
                 $source = [
                     'key' => 'lists:' . $list->getId(),
                     'label' => $list->name,
-                    'data' => ['handle' => $list->handle],
-                    'criteria' => ['listId' => $list->getId()],
+                    'data' => [
+                        'handle' => $list->handle,
+                    ],
+                    'criteria' => [
+                        'listId' => $list->getId(),
+                    ],
                 ];
 
                 $sources[] = $source;
             }
         }
 
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if ($user->admin && $user->can('editUsers')) {
+            $sources[] = [
+                'heading' => Craft::t('app', 'All Users'),
+            ];
+
+            $sources[] = [
+                'key' => 'credentialed',
+                'label' => Craft::t('app', 'Credentialed'),
+                'criteria' => [
+                    'status' => UserQuery::STATUS_CREDENTIALED,
+                    'skipSubscriberElementQuery' => true,
+                ],
+                'hasThumbs' => true,
+                'data' => [
+                    'slug' => 'credentialed',
+                ],
+            ];
+            $sources[] = [
+                'key' => 'inactive',
+                'label' => Craft::t('app', 'Inactive'),
+                'criteria' => [
+                    'status' => self::STATUS_INACTIVE,
+                    'skipSubscriberElementQuery' => true,
+                ],
+                'hasThumbs' => true,
+                'data' => [
+                    'slug' => 'inactive',
+                ],
+            ];
+        }
+
         return $sources;
     }
-
+    
     protected static function defineTableAttributes(): array
     {
         return [
@@ -201,6 +241,31 @@ class SubscriberElement extends User
 
     protected function cpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('sprout/email/subscribers/' . $this->id);
+        return UrlHelper::cpUrl('sprout/email/subscribers/edit/' . $this->id);
+    }
+
+    public function canView(User $user): bool
+    {
+        return $user->can(MailerModule::p('editSubscribers'));
+    }
+
+    public function canSave(User $user): bool
+    {
+        return $user->can(MailerModule::p('editSubscribers'));
+    }
+
+    public function canDelete(User $user): bool
+    {
+        return $user->can(MailerModule::p('editSubscribers'));
+    }
+
+    public function canDuplicate(User $user): bool
+    {
+        return $user->can(MailerModule::p('editSubscribers'));
+    }
+
+    public function canCreateDrafts(User $user): bool
+    {
+        return false;
     }
 }

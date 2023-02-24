@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\subscribers;
 
+use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -20,7 +21,9 @@ class SubscriberLists extends Component
     public function getListOptions(): array
     {
         /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()->all();
+        $lists = AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class)
+            ->all();
 
         $options = [];
 
