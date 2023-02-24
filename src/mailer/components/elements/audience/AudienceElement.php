@@ -99,12 +99,9 @@ class AudienceElement extends Element
     public static function defaultTableAttributes(string $source): array
     {
         return [
-            'name',
-            'handle',
             'type',
-            'elementId',
-            'count',
             'manage',
+            'count',
         ];
     }
 

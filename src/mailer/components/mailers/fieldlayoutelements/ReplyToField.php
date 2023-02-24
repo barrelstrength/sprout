@@ -2,8 +2,10 @@
 
 namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\ElementInterface;
+use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\BaseNativeField;
 
 class ReplyToField extends BaseNativeField
@@ -19,6 +21,10 @@ class ReplyToField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
+        if (!$element instanceof EmailElement) {
+            throw new MissingComponentException('Email Element must exist before rendering edit page.');
+        }
+
         $senderOptions[] = [
             'label' => Craft::t('sprout-module-mailer', 'Same as Sender'),
             'value' => '',
@@ -27,7 +33,7 @@ class ReplyToField extends BaseNativeField
         $mailer = $element->getMailer();
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
 
-        foreach ($mailer->approvedReplyToEmails as $approvedReplyToEmail) {
+        foreach ((array)$mailer->approvedReplyToEmails as $approvedReplyToEmail) {
             $senderOptions[] = [
                 'label' => $approvedReplyToEmail['replyToEmail'],
                 'value' => $approvedReplyToEmail['replyToEmail'],

@@ -34,7 +34,7 @@ class SubscribersController extends Controller
         return $this->asCpScreen()
             ->title('Add Subscriber')
             ->editUrl($user->getCpEditUrl())
-            ->addCrumb(Craft::t('sprout-module-mailer', 'Audience'), 'sprout/email/audience')
+            ->addCrumb(Craft::t('sprout-module-mailer', 'Audiences'), 'sprout/email/audiences')
             ->action('sprout-module-mailer/subscribers/save-subscriber')
             ->redirectUrl('sprout/email/subscribers')
             ->contentTemplate('sprout-module-mailer/subscribers/_fields', [
@@ -46,7 +46,7 @@ class SubscribersController extends Controller
 
     public function actionEditSubscriberTemplate($userId = null, $subscriber = null): Response
     {
-        $this->requirePermission('sprout-module-mailer:editSubscribers');
+        $this->requirePermission(MailerModule::p('editSubscribers'));
 
         if ($userId !== null && $subscriber === null) {
             $subscription = new Subscription();
@@ -112,10 +112,10 @@ class SubscribersController extends Controller
     public function actionSaveSubscriber(): ?Response
     {
         $this->requirePostRequest();
-        $this->requirePermission('sprout-module-mailer:editSubscribers');
+        $this->requirePermission(MailerModule::p('editSubscribers'));
 
         // @todo - review, duplicating post assignments...
-        $subscriber = $this->populateSubscriberFromPost();
+        //$subscriber = $this->populateSubscriberFromPost();
 
         // Create inactive user, or get existing user account
         $email = Craft::$app->getRequest()->getBodyParam('email');
@@ -183,7 +183,7 @@ class SubscribersController extends Controller
     public function actionDeleteSubscriber(): Response
     {
         $this->requirePostRequest();
-        $this->requirePermission('sprout-module-mailer:editSubscribers');
+        $this->requirePermission(MailerModule::p('editSubscribers'));
 
         $subscriber = new SubscriberElement();
         $subscriber->id = Craft::$app->getRequest()->getBodyParam('subscriberId');

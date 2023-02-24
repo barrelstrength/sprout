@@ -2,8 +2,10 @@
 
 namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\ElementInterface;
+use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\TextField;
 
 class ToField extends TextField
@@ -30,6 +32,10 @@ class ToField extends TextField
 
     protected function value(?ElementInterface $element = null): mixed
     {
+        if (!$element instanceof EmailElement) {
+            throw new MissingComponentException('Email Element must exist before rendering edit page.');
+        }
+
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
 
         return $mailerInstructionsSettings->{$this->attribute()} ?? null;

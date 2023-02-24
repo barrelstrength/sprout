@@ -2,11 +2,11 @@
 
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
-{% set selectedSubnavItem = 'subscriber-lists' %}
+{% set selectedSubnavItem = 'audiences' %}
 
 {% set crumbs = [
     { label: "Email"|t('sprout-module-mailer'), url: cpUrl('sprout/email') },
-    { label: "Subscriber Lists"|t('sprout-module-mailer'), url: cpUrl('sprout/email/audience') }
+    { label: "Subscriber Lists"|t('sprout-module-mailer'), url: cpUrl('sprout/email/audiences') }
 ] %}
 
 {% block actionButton %}

@@ -29,8 +29,10 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterUserPermissionsEvent;
 use craft\models\FieldLayout;
 use craft\services\Elements;
+use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use craft\web\View;
 use Twig\Extra\CssInliner\CssInlinerExtension;
@@ -104,6 +106,16 @@ class MailerModule extends Module
             function(Event $event): void {
                 $event->sender->registerModule($this);
                 $event->sender->registerVariable('lists', new SubscriberListsVariable());
+            });
+
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event): void {
+                $event->permissions[] = [
+                    'heading' => 'Sprout Module | Mailer',
+                    'permissions' => $this->getUserPermissions(),
+                ];
             });
 
         Event::on(
@@ -278,6 +290,15 @@ class MailerModule extends Module
             // Preview
             'sprout/email/preview/<emailId:\d+>' =>
                 'sprout-module-mailer/preview/preview',
+        ];
+    }
+
+    protected function getUserPermissions(): array
+    {
+        return [
+            self::p('editSubscribers') => [
+                'label' => Craft::t('sprout-module-mailer', 'Edit Subscribers'),
+            ],
         ];
     }
 
