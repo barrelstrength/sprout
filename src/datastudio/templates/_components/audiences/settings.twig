@@ -1,0 +1,32 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.elementSelectField({
+    label: "Data Sets"|t('sprout-module--data-studio'),
+    instructions: 'Select the data set you wish to use as your audience.'|t('sprout-module-data-studio'),
+    id: 'dataSetIds',
+    name: 'dataSetIds',
+    required: true,
+    elementType: dataSetElementType,
+    selectionLabel: "Choose"|t('sprout-module-data-studio'),
+    limit: 1,
+    elements: [dataSet]
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Email column'|t('sprout-module-data-studio'),
+    instructions: 'The name of the email column in your data set.'|t('sprout-module-data-studio'),
+    name: 'emailColumn',
+    suggestions: [
+        {
+            label: 'Common Email Column Names'|t('sprout-module-data-studio'),
+            data: [
+            { hint: 'Email'|t('sprout-module-data-studio'), name: 'Email' },
+            { hint: 'email'|t('sprout-module-data-studio'), name: 'email' },
+            { hint: 'Email Address'|t('sprout-module-data-studio'), name: 'Email Address' },
+            { hint: 'emailAddress'|t('sprout-module-data-studio'), name: 'emailAddress' },
+        ]
+        }
+    ],
+    value: audienceType.emailColumn,
+    placeholder: 'email'|t('sprout-module-data-studio')
+}) }}

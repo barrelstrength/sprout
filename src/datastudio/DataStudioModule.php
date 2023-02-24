@@ -11,6 +11,7 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\datastudio\components\audiences\DataSetAudienceType;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
 use BarrelStrength\Sprout\datastudio\components\elements\conditions\DataSourcesConditionRule;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
@@ -19,6 +20,7 @@ use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
+use BarrelStrength\Sprout\mailer\audience\Audiences;
 use Craft;
 use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
@@ -186,6 +188,14 @@ class DataStudioModule extends Module
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             static function(DefineFieldLayoutFieldsEvent $event): void {
                 DataSetElement::defineNativeFields($event);
+            }
+        );
+
+        Event::on(
+            Audiences::class,
+            Audiences::EVENT_REGISTER_AUDIENCE_TYPES,
+            static function(RegisterComponentTypesEvent $event): void {
+                $event->types[] = DataSetAudienceType::class;
             }
         );
     }

@@ -49,7 +49,7 @@ class AudienceController extends Controller
         $listElement = Craft::createObject(AudienceElement::class);
         $listElement->siteId = $site->id;
         $listElement->enabled = true;
-
+        
         $audiences = MailerModule::getInstance()->audiences->getAudiences();
 
         foreach ($audiences as $audience) {
