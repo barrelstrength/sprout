@@ -54,7 +54,11 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             'enabled' => true,
         ];
 
-        unset($newSettings['pluginNameOverride']);
+        unset(
+            $newSettings['pluginNameOverride'],
+            $newSettings['enableMultilingualSitemaps'],
+            $newSettings['enableDynamicSitemaps'],
+        );
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newSettings,
             'Update Sprout Settings for “' . $moduleSettingsKey . '”'
@@ -103,19 +107,12 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         }
 
         if ($newSettings['enableMultilingualSitemaps'] === '1') {
-            $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_SINGLE_LANGUAGE;
-        }
-
-        if ($newSettings['enableMultilingualSitemaps'] === '') {
             $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_MULTI_LINGUAL;
         }
 
-        // TODO - migrate enableDynamicSitemaps
-
-        unset(
-            $newSettings['enableMultiLingualSitemaps'],
-            $newSettings['enableDynamicSitemaps'],
-        );
+        if ($newSettings['enableMultilingualSitemaps'] === '') {
+            $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_SINGLE_LANGUAGE;
+        }
 
         return $newSettings;
     }
