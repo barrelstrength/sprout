@@ -18,6 +18,8 @@ use craft\elements\actions\Delete;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\helpers\Cp;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -152,10 +154,8 @@ class AudienceElement extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'name' => ['label' => Craft::t('sprout-module-mailer', 'Name')],
             'handle' => ['label' => Craft::t('sprout-module-mailer', 'List Handle')],
             'id' => ['label' => Craft::t('sprout-module-mailer', 'List ID')],
-            'elementId' => ['label' => Craft::t('sprout-module-mailer', 'Element ID')],
             'view' => ['label' => Craft::t('sprout-module-mailer', 'View Subscribers')],
             'count' => ['label' => Craft::t('sprout-module-mailer', 'Count')],
             'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
@@ -197,6 +197,22 @@ class AudienceElement extends Element
         }
     }
 
+    protected function statusFieldHtml(): string
+    {
+        $statusField = Cp::lightswitchFieldHtml([
+            'id' => 'enabled',
+            'label' => Craft::t('app', 'Enabled'),
+            'name' => 'enabled',
+            'on' => $this->enabled,
+            'disabled' => $this->getIsRevision(),
+            'status' => $this->getAttributeStatus('enabled'),
+        ]);
+
+        $statusHtml = Html::tag('div', $statusField, ['class' => 'meta']);
+
+        return $statusHtml;
+    }
+
     public function getSidebarHtml(bool $static): string
     {
         $groups = self::getSourceGroups();
@@ -230,7 +246,7 @@ class AudienceElement extends Element
 
     public function getPostEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('sprout/email/audience');
+        return UrlHelper::cpUrl('sprout/email/audiences');
     }
 
     public function prepareEditScreen(Response $response, string $containerId): void
@@ -242,7 +258,7 @@ class AudienceElement extends Element
             ],
             [
                 'label' => Craft::t('sprout-module-mailer', 'Audience'),
-                'url' => UrlHelper::url('sprout/email/audience'),
+                'url' => UrlHelper::url('sprout/email/audiences'),
             ],
         ];
 

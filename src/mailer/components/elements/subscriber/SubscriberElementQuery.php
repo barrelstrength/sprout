@@ -28,13 +28,13 @@ class SubscriberElementQuery extends UserQuery
     protected function beforePrepare(): bool
     {
         // Limit query to Users who are subscribed to any list
-        $this->subQuery->innerJoin(
+        $this->query->innerJoin(
             ['subscriptions' => SproutTable::SUBSCRIPTIONS],
             '[[subscriptions.itemId]] = [[elements.id]]'
         );
 
         if ($this->listId) {
-            $this->subQuery->andWhere(Db::parseParam(
+            $this->query->andWhere(Db::parseParam(
                 'subscriptions.listId', $this->listId
             ));
         }
