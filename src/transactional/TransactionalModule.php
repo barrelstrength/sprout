@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional;
 
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
-use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -16,7 +15,6 @@ use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmail
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -96,13 +94,6 @@ class TransactionalModule extends Module
             });
 
         Event::on(
-            Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SIDEBAR_NAV_ITEMS,
-            function(RegisterCpNavItemsEvent $event): void {
-                $event->navItems[] = $this->getCraftCpSidebarNavItems();
-            });
-
-        Event::on(
             SproutVariable::class,
             SproutVariable::EVENT_INIT,
             function(Event $event): void {
@@ -173,25 +164,6 @@ class TransactionalModule extends Module
                     self::p('editTransactionalEmail') => [
                         'label' => Craft::t('sprout-module-transactional', 'Edit Notification Emails'),
                     ],
-                ],
-            ],
-        ];
-    }
-
-    protected function getCraftCpSidebarNavItems(): array
-    {
-        if (!Craft::$app->getUser()->checkPermission(self::p('accessModule'))) {
-            return [];
-        }
-
-        return [
-            'group' => Craft::t('sprout-module-transactional', 'Email'),
-            'icon' => self::svg('icons/icon-mask.svg'),
-            'navItems' => [
-                'transactional-email' => [
-                    'label' => Craft::t('sprout-module-transactional', 'Transactional'),
-                    'url' => 'sprout/email/transactional-email',
-                    'sortOrder' => 2,
                 ],
             ],
         ];

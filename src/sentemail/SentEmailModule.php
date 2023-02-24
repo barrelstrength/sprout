@@ -112,13 +112,6 @@ class SentEmailModule extends Module
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SIDEBAR_NAV_ITEMS,
-            function(RegisterCpNavItemsEvent $event): void {
-                $event->navItems[] = $this->getCraftCpSidebarNavItems();
-            });
-
-        Event::on(
-            Settings::class,
             Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $event->navItems['sprout-module-sent-email'] = $this->getCraftCpSettingsNavItems();
@@ -199,24 +192,6 @@ class SentEmailModule extends Module
                     self::p('resendSentEmail') => [
                         'label' => Craft::t('sprout-module-sent-email', 'Resend Sent Emails'),
                     ],
-                ],
-            ],
-        ];
-    }
-
-    protected function getCraftCpSidebarNavItems(): array
-    {
-        if (!Craft::$app->getUser()->checkPermission(self::p('accessModule'))) {
-            return [];
-        }
-
-        return [
-            'group' => Craft::t('sprout-module-sent-email', 'Email'),
-            'icon' => self::svg('icons/icon-mask.svg'),
-            'navItems' => [
-                'sent-email' => [
-                    'label' => Craft::t('sprout-module-sent-email', 'Sent Email'),
-                    'url' => 'sprout/email/sent-email',
                 ],
             ],
         ];

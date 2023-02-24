@@ -22,6 +22,8 @@ use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberLists;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberListsVariable;
+use BarrelStrength\Sprout\sentemail\SentEmailModule;
+use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -201,23 +203,45 @@ class MailerModule extends Module
 
     protected function getCraftCpSidebarNavItems(): array
     {
-        if (!Craft::$app->getUser()->checkPermission(self::p('accessModule'))) {
-            return [];
+        $navItems = [];
+        
+        $userService = Craft::$app->getUser();
+
+        if (TransactionalModule::isEnabled() &&
+            $userService->checkPermission(TransactionalModule::p('accessModule'))
+        ) {
+            $navItems['transactional-email'] = [
+                'label' => Craft::t('sprout-module-transactional', 'Transactional'),
+                'url' => 'sprout/email/transactional-email',
+            ];
+        }
+
+        if (SentEmailModule::isEnabled() &&
+            $userService->checkPermission(SentEmailModule::p('accessModule'))
+        ) {
+            $navItems['sent-email'] = [
+                'label' => Craft::t('sprout-module-sent-email', 'Sent Email'),
+                'url' => 'sprout/email/sent-email',
+            ];
+        }
+
+        if ($userService->checkPermission(self::p('accessModule'))) {
+            $navItems['subscribers'] = [
+                'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
+                'url' => 'sprout/email/subscribers',
+            ];
+
+            $navItems['audiences'] = [
+                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
+                'url' => 'sprout/email/audiences',
+            ];
         }
 
         return [
             'group' => Craft::t('sprout-module-mailer', 'Email'),
             'icon' => self::svg('icons/icon-mask.svg'),
-            'navItems' => [
-                'audiences' => [
-                    'label' => Craft::t('sprout-module-mailer', 'Audiences'),
-                    'url' => 'sprout/email/audiences',
-                ],
-                'subscribers' => [
-                    'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
-                    'url' => 'sprout/email/subscribers',
-                ],
-            ],
+            'url' => 'sprout/email',
+            'navItems' => $navItems,
         ];
     }
 
