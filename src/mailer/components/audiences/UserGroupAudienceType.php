@@ -8,17 +8,21 @@ use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
+use craft\models\UserGroup;
+use Illuminate\Support\Collection;
 
-class SubscriberListAudienceType extends AudienceType
+class UserGroupAudienceType extends AudienceType
 {
+    public ?string $userGroupUid = null;
+
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-mailer', 'Subscriber List');
+        return Craft::t('sprout-module-mailer', 'User Group');
     }
 
     public function getHandle(): string
     {
-        return 'subscriber-list';
+        return 'user-group';
     }
 
     public function getColumnAttributeHtml(): string
@@ -27,16 +31,26 @@ class SubscriberListAudienceType extends AudienceType
         // https://sprout-dev.ddev.site/admin/users?site=en_us&source=subscriber-lists%3A90
         // https://sprout-dev.ddev.site/admin/users/all?site=en_us&source=*
         $editUrl = UrlHelper::cpUrl('users', [
-            'source' => 'subscriber-lists:' . $this->elementId,
+            'source' => 'group:' . $this->userGroupUid,
         ]);
 
         return '<a href="' . $editUrl . '" class="go">' .
-            Craft::t('sprout-module-mailer', 'Subscriber List') . '</a>';
+            Craft::t('sprout-module-mailer', 'User Group') . '</a>';
     }
 
     public function getSettingsHtml(): ?string
     {
-        return '';
+        $groupOptions = Collection::make(Craft::$app->getUserGroups()->getAllGroups())
+            ->map(fn(UserGroup $group) => [
+                'label' => Craft::t('site', $group->name),
+                'value' => $group->uid,
+            ])
+            ->all();
+
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/audiences/userGroupSettings', [
+            'audienceType' => $this,
+            'groupOptions' => $groupOptions,
+        ]);
     }
 
     public function getRecipients(): array

@@ -179,7 +179,8 @@ class AudienceElement extends Element
 
     public function getAudience(): AudienceType
     {
-        $audience = new $this->audienceType($this->audienceSettings);
+        $audience = new $this->audienceType();
+        $audience->elementId = $this->id;
 
         if ($this->audienceSettings) {
             $audience->setAttributes($this->audienceSettings, false);
@@ -365,17 +366,17 @@ class AudienceElement extends Element
 
     public function canView(User $user): bool
     {
-        return $user->can('sprout-module-mailer:editLists');
+        return $user->can(MailerModule::p('editAudiences'));
     }
 
     public function canSave(User $user): bool
     {
-        return $user->can('sprout-module-mailer:editLists');
+        return $user->can(MailerModule::p('editAudiences'));
     }
 
     public function canDelete(User $user): bool
     {
-        return $user->can('sprout-module-mailer:editLists');
+        return $user->can(MailerModule::p('editAudiences'));
     }
 
     public function canDuplicate(User $user): bool

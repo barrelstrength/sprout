@@ -5,7 +5,10 @@ namespace BarrelStrength\Sprout\transactional\components\emailtypes;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PackageConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\email\EmailType;
+use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\FileAttachmentsField;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\NotificationEventField;
@@ -52,6 +55,16 @@ class TransactionalEmailEmailType extends EmailType
     public static function displayName(): string
     {
         return Craft::t('sprout-module-mailer', 'Transactional Email');
+    }
+
+    public function getMailer(): Mailer
+    {
+        $settings = MailerModule::getInstance()->getSettings();
+
+        $mailer = new SystemMailer();
+        $mailer->setAttributes($settings->systemMailer, false);
+
+        return $mailer;
     }
 
     public static function getElementIndexType(): string

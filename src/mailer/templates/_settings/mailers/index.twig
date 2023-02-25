@@ -41,7 +41,7 @@
         label: "Approved Senders"|t('sprout-module-mailer'),
         instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),
         id: 'approvedSenders',
-        name: 'approvedSenders',
+        name: 'systemMailer[approvedSenders]',
         cols: {
             fromName: {
                 type: 'singleline',
@@ -89,10 +89,20 @@
         on: settings.enableSubscriberLists,
     }) }}
 
-    <div
-        id="admin-table"
-        data-table-data="{{ tableData|json_encode }}">
-    </div>
+    <hr>
+
+    {% set mailerTable %}
+        <div class="sprout-settings-table-wrapper">
+            <div
+                id="admin-table"
+                data-table-data="{{ tableData|json_encode }}">
+            </div>
+        </div>
+    {% endset %}
+
+    {{ forms.field({
+        label: "Mailers"|t('sprout-module-mailer'),
+    }, mailerTable) }}
 
 {% endblock %}
 

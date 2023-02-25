@@ -219,6 +219,14 @@ class MailerModule extends Module
 
         $userService = Craft::$app->getUser();
 
+        // Make sure at least one Audience Types exists
+        if ($userService->checkPermission(self::p('accessModule')) && $this->audiences->getRegisteredAudienceTypes()) {
+            $navItems['audiences'] = [
+                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
+                'url' => 'sprout/email/audiences',
+            ];
+        }
+
         if (TransactionalModule::isEnabled() &&
             $userService->checkPermission(TransactionalModule::p('accessModule'))
         ) {
@@ -234,18 +242,6 @@ class MailerModule extends Module
             $navItems['sent-email'] = [
                 'label' => Craft::t('sprout-module-sent-email', 'Sent Email'),
                 'url' => 'sprout/email/sent-email',
-            ];
-        }
-
-        if ($userService->checkPermission(self::p('accessModule'))) {
-            //$navItems['subscribers'] = [
-            //    'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
-            //    'url' => 'sprout/email/subscribers',
-            //];
-
-            $navItems['audiences'] = [
-                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
-                'url' => 'sprout/email/audiences',
             ];
         }
 
@@ -269,14 +265,18 @@ class MailerModule extends Module
     protected function getSproutCpSettingsNavItems(): array
     {
         return [
+            'system-mailer' => [
+                'label' => Craft::t('sprout-module-mailer', 'System Mailer'),
+                'url' => 'sprout/settings/system-mailer',
+            ],
             'email-themes' => [
                 'label' => Craft::t('sprout-module-mailer', 'Email Themes'),
                 'url' => 'sprout/settings/email-themes',
             ],
-            'mailers' => [
-                'label' => Craft::t('sprout-module-mailer', 'Mailers'),
-                'url' => 'sprout/settings/mailers',
-            ],
+            //'mailers' => [
+            //    'label' => Craft::t('sprout-module-mailer', 'Mailers'),
+            //    'url' => 'sprout/settings/mailers',
+            //],
         ];
     }
 
@@ -323,6 +323,11 @@ class MailerModule extends Module
             'sprout/settings/mailers' =>
                 'sprout-module-mailer/mailer/mailers-index-template',
 
+            // Settings
+            'sprout/settings/system-mailer' => [
+                'template' => 'sprout-module-mailer/_settings/system-mailer',
+            ],
+
             // Preview
             'sprout/email/preview/<emailId:\d+>' =>
                 'sprout-module-mailer/preview/preview',
@@ -332,6 +337,9 @@ class MailerModule extends Module
     protected function getUserPermissions(): array
     {
         return [
+            self::p('editAudiences') => [
+                'label' => Craft::t('sprout-module-mailer', 'Edit Audiences'),
+            ],
             self::p('editSubscribers') => [
                 'label' => Craft::t('sprout-module-mailer', 'Edit Subscribers'),
             ],
@@ -352,12 +360,12 @@ class MailerModule extends Module
 
         // MAILERS
 
-        $key = self::projectConfigPath('mailers.{uid}');
-
-        $mailersService = $this->mailers;
-        $projectConfigService->onAdd($key, [$mailersService, 'handleChangedMailer'])
-            ->onUpdate($key, [$mailersService, 'handleChangedMailer'])
-            ->onRemove($key, [$mailersService, 'handleDeletedMailer']);
+        //$key = self::projectConfigPath('mailers.{uid}');
+        //
+        //$mailersService = $this->mailers;
+        //$projectConfigService->onAdd($key, [$mailersService, 'handleChangedMailer'])
+        //    ->onUpdate($key, [$mailersService, 'handleChangedMailer'])
+        //    ->onRemove($key, [$mailersService, 'handleDeletedMailer']);
 
         //        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, static function(RebuildConfigEvent $event) {
         //            $event->config['commerce'] = ProjectConfigData::rebuildProjectConfig();

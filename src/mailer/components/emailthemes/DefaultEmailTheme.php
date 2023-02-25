@@ -27,9 +27,9 @@ class DefaultEmailTheme extends EmailTheme
         return false;
     }
 
-    public function getTemplateRoot(): string
+    public function getIncludePath(): string
     {
-        return Craft::getAlias('@Sprout/TemplateRoot');
+        return Craft::getAlias('@Sprout/TemplateRoot/email/default');
     }
 
     public function htmlEmailTemplatePath(): string

@@ -232,9 +232,9 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $this->_mailer;
         }
 
-        $this->_mailer = MailerModule::getInstance()->mailers->getMailerById($this->mailerId);
+        $emailTypeSettings = $this->getEmailTypeSettings();
 
-        return $this->_mailer;
+        return $emailTypeSettings->getMailer();
     }
 
     public function setMailer(?Mailer $mailer): void
@@ -257,7 +257,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         return $this->_mailerInstructionsSettingsModel;
     }
 
-    public function getEmailTypeSettings(): ?EmailType
+    public function getEmailTypeSettings(): EmailType
     {
         if ($this->_emailTypeSettingsModel !== null) {
             return $this->_emailTypeSettingsModel;

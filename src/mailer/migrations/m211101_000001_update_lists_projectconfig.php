@@ -27,22 +27,10 @@ class m211101_000001_update_lists_projectconfig extends Migration
             $newConfig[$key] = isset($oldConfig[$key]) ? $oldConfig[$key] ?? $defaultValue : $defaultValue;
         }
 
-        // Ensure proper data types
-        if ($newConfig['enableAutoList'] === '1') {
-            $newConfig['enableAutoList'] = true;
-        }
-
-        if ($newConfig['enableAutoList'] === '') {
-            $newConfig['enableAutoList'] = false;
-        }
-
-        if ($newConfig['enableUserSync'] === '1') {
-            $newConfig['enableUserSync'] = true;
-        }
-
-        if ($newConfig['enableUserSync'] === '') {
-            $newConfig['enableUserSync'] = false;
-        }
+        unset(
+            $newConfig['enableAutoList'],
+            $newConfig['enableUserSync']
+        );
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newConfig,
             "Update Sprout Settings for “{$moduleSettingsKey}”"

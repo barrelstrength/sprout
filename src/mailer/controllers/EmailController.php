@@ -41,7 +41,7 @@ class EmailController extends Controller
             'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
             'newButtonUrl' => $newButtonUrl,
-            'selectedSubNavItem' => $elementType::refHandle(),
+            'selectedSubnavItem' => $elementType::refHandle(),
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\controllers;
 
+use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -13,6 +14,7 @@ use craft\base\Element;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Cp;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
@@ -29,7 +31,7 @@ class SubscribersController extends Controller
     {
         $user = new User();
 
-        $options = MailerModule::getInstance()->subscriberLists->getListOptions();
+        $options = SubscriberHelper::getListOptions();
 
         return $this->asCpScreen()
             ->title('Add Subscriber')
@@ -59,7 +61,9 @@ class SubscribersController extends Controller
             $subscriber = Craft::$app->getUsers()->getUserById($userId);
         }
 
-        $lists = AudienceElement::find()->all();
+        $lists = AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class)
+            ->all();
 
         $options = [];
 
@@ -125,19 +129,14 @@ class SubscribersController extends Controller
         $user->firstName = Craft::$app->getRequest()->getBodyParam('firstName');
         $user->lastName = Craft::$app->getRequest()->getBodyParam('lastName');
 
-        Craft::$app->getElements()->saveElement($user, false);
+        Craft::$app->getElements()->saveElement($user);
 
-        $subscriber = \craft\records\User::findOne($user->id);
-
-        if (!$subscriber) {
-            $record = new \craft\records\User();
-            $record->id = $user->id;
-            $record->save();
-        }
-
-        $listIds = Craft::$app->getRequest()->getBodyParam('listIds');
+        // No lists returns empty string
+        $listIds = (array)Craft::$app->getRequest()->getBodyParam('listIds');
+        $listIds = array_filter($listIds);
 
         foreach ($listIds as $listId) {
+
             $subscription = SubscriptionRecord::find()->where([
                 'listId' => $listId,
                 'itemId' => $user->id,
@@ -152,21 +151,9 @@ class SubscribersController extends Controller
             // Also delete any unselected subscriptions...
         }
 
-        return $this->redirectToPostedUrl($user);
-
-        //        if (!$listType->saveSubscriber($subscriber)) {
-        //            Craft::$app->getSession()->setError(Craft::t('sprout-module-mailer', 'Unable to save subscriber.'));
-        //
-        //            Craft::$app->getUrlManager()->setRouteParams([
-        //                'subscriber' => $subscriber,
-        //            ]);
-        //
-        //            return null;
-        //        }
-        //
-        //        Craft::$app->getSession()->setNotice(Craft::t('sprout-module-mailer', 'Subscriber saved.'));
-        //
-        //        return $this->redirectToPostedUrl($subscriber);
+        return $this->asJson([
+            'success' => true,
+        ]);
     }
 
     public function saveSubscriber(SubscriberElement $subscriber): bool
@@ -247,5 +234,108 @@ class SubscribersController extends Controller
         $subscriber->listIds = Craft::$app->getRequest()->getBodyParam('subscriberList.listIds');
 
         return $subscriber;
+    }
+
+    /**
+     * Adds a subscriber to a list
+     */
+    public function actionAdd(): ?Response
+    {
+        $this->requirePostRequest();
+
+        /** @var Subscription $subscription */
+        $subscription = $this->populateSubscriptionFromPost();
+
+        if (!MailerModule::getInstance()->subscriberLists->add($subscription)) {
+
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
+                    'success' => false,
+                    'errors' => $subscription->getErrors(),
+                ]);
+            }
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'subscription' => $subscription,
+            ]);
+
+            return null;
+        }
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'success' => true,
+            ]);
+        }
+
+        return $this->redirectToPostedUrl();
+    }
+
+    /**
+     * Removes a subscriber from a list
+     */
+    public function actionRemove(): ?Response
+    {
+        $this->requirePostRequest();
+
+        /** @var Subscription $subscription */
+        $subscription = $this->populateSubscriptionFromPost();
+
+        if (!MailerModule::getInstance()->subscriberLists->remove($subscription)) {
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
+                    'success' => false,
+                    'errors' => $subscription->getErrors(),
+                ]);
+            }
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'subscription' => $subscription,
+            ]);
+
+            return null;
+        }
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'success' => true,
+            ]);
+        }
+
+        return $this->redirectToPostedUrl();
+    }
+
+    protected function populateListFromPost()
+    {
+        $listId = Craft::$app->getRequest()->getBodyParam('listId');
+
+        $list = Craft::$app->elements->getElementById($listId);
+
+        if (!$list) {
+            $list = new AudienceElement();
+        }
+
+        $list->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
+        $list->name = Craft::$app->request->getRequiredBodyParam('name');
+        $list->handle = Craft::$app->request->getBodyParam('handle');
+
+        if ($list->handle === null) {
+            $list->handle = StringHelper::toCamelCase($list->name);
+        }
+
+        return $list;
+    }
+
+    protected function populateSubscriptionFromPost(): Subscription
+    {
+        $subscription = new Subscription();
+        $subscription->listId = Craft::$app->getRequest()->getBodyParam('list.id');
+        $subscription->elementId = Craft::$app->getRequest()->getBodyParam('list.elementId');
+        $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('list.handle');
+        $subscription->email = Craft::$app->getRequest()->getBodyParam('subscription.email');
+        $subscription->firstName = Craft::$app->getRequest()->getBodyParam('subscription.firstName');
+        $subscription->lastName = Craft::$app->getRequest()->getBodyParam('subscription.lastName');
+
+        return $subscription;
     }
 }

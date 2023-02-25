@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\audience;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
+use BarrelStrength\Sprout\mailer\components\audiences\UserGroupAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
@@ -19,6 +20,7 @@ class Audiences extends Component
     public function getRegisteredAudienceTypes(): array
     {
         $audienceTypes[] = SubscriberListAudienceType::class;
+        $audienceTypes[] = UserGroupAudienceType::class;
 
         $event = new RegisterComponentTypesEvent([
             'types' => $audienceTypes,
@@ -29,7 +31,7 @@ class Audiences extends Component
         return $event->types;
     }
 
-    public function getAudiences(): array
+    public function getAudienceTypeInstances(): array
     {
         $this->audienceTypes = $this->getRegisteredAudienceTypes();
 

@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\components\emailthemes;
 
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use Craft;
-use craft\web\View;
 
 class CustomEmailTheme extends EmailTheme
 {
@@ -18,14 +17,11 @@ class CustomEmailTheme extends EmailTheme
         return Craft::t('sprout-module-mailer', 'Custom Theme');
     }
 
-    public function getTemplateMode(): string
+    public function getIncludePath(): string
     {
-        return View::TEMPLATE_MODE_SITE;
-    }
+        //$settings = MailerModule::getInstance()->getSettings();
 
-    public function getTemplateRoot(): string
-    {
-        return Craft::$app->path->getSiteTemplatesPath();
+        return Craft::getAlias('@Sprout/TemplateRoot/email/default');
     }
 }
 

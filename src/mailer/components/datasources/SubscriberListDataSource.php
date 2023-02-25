@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\components\datasources;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
-use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElementRecord;
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\db\Query;
@@ -45,14 +44,11 @@ class SubscriberListDataSource extends DataSource
     {
         $reportSettings = $dataSet->getSettings();
 
-        $listRecord = AudienceElementRecord::find()
+        $subscriberRecords = User::find()
             ->where([
-                'id' => $reportSettings['subscriberListId'],
+                'subscriberListId' => $reportSettings['subscriberListId'],
             ])
             ->one();
-
-        /** @var User $subscriberRecords */
-        $subscriberRecords = $listRecord->getSubscribers()->all();
 
         $subscribers = [];
         foreach ($subscriberRecords as $subscriberRecord) {

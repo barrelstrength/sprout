@@ -38,7 +38,7 @@ class DataSetAudienceType extends AudienceType
         $resultsUrl = UrlHelper::cpUrl('sprout/data-studio/view/' . $dataSet->id);
 
         return '<a href="' . $resultsUrl . '" class="go">' .
-            Craft::t('sprout-module-mailer', 'View Data Set') . '</a>';
+            Craft::t('sprout-module-mailer', 'Data Set') . '</a>';
     }
 
     public function getSettingsHtml(): ?string

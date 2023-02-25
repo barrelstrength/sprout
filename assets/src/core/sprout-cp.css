@@ -192,3 +192,8 @@
 #settings-modules tbody tr:hover th {
     background-color: var(--gray-100);
 }
+
+.sprout-settings-table-wrapper {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--large-border-radius);
+}

@@ -8,14 +8,11 @@ class MailerSettings extends BaseConfig
 {
     public bool $enableSubscriberLists = false;
 
-    public ?array $approvedSenders = null;
-
-    public ?array $approvedReplyToEmails = null;
-
     public array $emailThemes = [];
 
-
     public array $mailers = [];
+
+    public array $systemMailer = [];
 
     public function enableSubscriberLists(bool $value): self
     {
@@ -24,16 +21,16 @@ class MailerSettings extends BaseConfig
         return $this;
     }
 
-    public function approvedSenders(array $value): self
+    public function systemMailer(array $value): self
     {
-        $this->approvedSenders = $value;
+        $this->systemMailer = $value;
 
         return $this;
     }
 
-    public function approvedReplyToEmails(array $value): self
+    public function mailers(array $value): self
     {
-        $this->approvedReplyToEmails = $value;
+        $this->mailers = $value;
 
         return $this;
     }

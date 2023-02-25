@@ -19,16 +19,14 @@
             <div class="btn icon add submit menubtn">{{ "New Audience"|t('sprout-module-mailer') }}</div>
             <div class="menu">
                 <ul>
-                    <li>
-                        <a href="{{ cpUrl('sprout/email/audiences/subscriber-list/new') }}">
-                            {{ "Subscriber List"|t('sprout-module-mailer') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ cpUrl('sprout/email/audiences/data-set/new') }}">
-                            {{ "Data Set"|t('sprout-module-mailer') }}
-                        </a>
-                    </li>
+                    {% for audienceType in audienceTypes %}
+                        <li>
+                            {% set newAudienceUrl = cpUrl('sprout/email/audiences/' ~ audienceType.getHandle() ~ '/new') %}
+                            <a href="{{ newAudienceUrl }}">
+                                {{ audienceType.displayName() }}
+                            </a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

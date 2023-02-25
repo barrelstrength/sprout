@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\email;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use craft\base\SavableComponent;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
@@ -30,6 +31,11 @@ abstract class EmailType extends SavableComponent
      * ]
      */
     protected array $_additionalTemplateVariables = [];
+
+    /**
+     * Returns the Mailer this Email Type uses when sending email
+     */
+    abstract public function getMailer(): Mailer;
 
     /**
      * Returns the Element Class being used as the Element Index UI layer for this Email Type

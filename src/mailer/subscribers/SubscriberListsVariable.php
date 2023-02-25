@@ -5,6 +5,8 @@ namespace BarrelStrength\Sprout\mailer\subscribers;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElementQuery;
 use Craft;
+use craft\elements\db\UserQuery;
+use craft\elements\User;
 
 class SubscriberListsVariable
 {
@@ -16,9 +18,10 @@ class SubscriberListsVariable
         return $query;
     }
 
-    public function subscribers(array $criteria = []): SubscriberElementQuery
+    // TODO: update SubscriberQueryBehavior and remove this method
+    public function subscribers(array $criteria = []): UserQuery
     {
-        $query = SubscriberElement::find();
+        $query = User::find();
         Craft::configure($query, $criteria);
 
         return $query;

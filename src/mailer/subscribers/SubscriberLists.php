@@ -4,41 +4,18 @@ namespace BarrelStrength\Sprout\mailer\subscribers;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
 use craft\base\ElementInterface;
+use craft\records\User;
 use Throwable;
 use yii\db\Transaction;
 
 class SubscriberLists extends Component
 {
-    public function getListOptions(): array
-    {
-        /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class)
-            ->all();
-
-        $options = [];
-
-        foreach ($lists as $list) {
-            $options[] = [
-                'label' => $list->name,
-                'value' => $list->getId(),
-            ];
-        }
-
-        // Return a blank template if we have no lists
-        if (empty($options)) {
-            return [];
-        }
-
-        return $options;
-    }
-
+    // TODO - refactor for new Subscriber Users
     public function add(SubscriptionInterface $subscription): bool
     {
         if ($this->requireEmailForSubscription === true) {
@@ -58,8 +35,8 @@ class SubscriberLists extends Component
 
             // If our Subscriber doesn't exist, create a Subscriber Element
             if ($item === null) {
-                $item = new SubscriberElement();
-                $item->userId = $subscription->itemId;
+                $item = new User();
+                $item->id = $subscription->itemId;
                 $item->email = $subscription->email;
                 $item->firstName = $subscription->firstName ?? null;
                 $item->lastName = $subscription->lastName ?? null;
@@ -112,6 +89,7 @@ class SubscriberLists extends Component
         return true;
     }
 
+    // TODO - refactor for new Subscriber Users
     public function remove(SubscriptionInterface $subscription): bool
     {
         $list = $this->getList($subscription);
@@ -143,7 +121,8 @@ class SubscriberLists extends Component
 
     public function getList(SubscriptionInterface $subscription): AudienceElement|ElementInterface|null
     {
-        $query = AudienceElement::find();
+        $query = AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class);
 
         if ($subscription->listId) {
             $query->andWhere([
@@ -178,7 +157,9 @@ class SubscriberLists extends Component
      */
     public function getLists(): array
     {
-        return AudienceElement::find()->all();
+        return AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class)
+            ->subs->all();
     }
 
     public function saveList(AudienceElement $list): bool
@@ -252,7 +233,9 @@ class SubscriberLists extends Component
     public function updateCount($listId = null): bool
     {
         if ($listId === null) {
-            $lists = AudienceElement::find()->all();
+            $lists = AudienceElement::find()
+                ->audienceType(SubscriberListAudienceType::class)
+                ->all();
         } else {
             $list = AudienceElement::findOne($listId);
 

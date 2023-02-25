@@ -46,11 +46,6 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         return true;
     }
 
-    public function getTemplateMode(): string
-    {
-        return View::TEMPLATE_MODE_CP;
-    }
-
     public function htmlEmailTemplatePath(): ?string
     {
         return $this->htmlEmailTemplatePath;
@@ -171,14 +166,12 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         $view = Craft::$app->getView();
 
         $oldTemplateMode = $view->getTemplateMode();
-        $oldTemplatePath = $view->getTemplatesPath();
+        $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
-        $view->setTemplateMode($this->getTemplateMode());
-        $view->setTemplatesPath($this->getTemplateRoot());
-        //        Craft::dd($this->email->getEmailTypeSettings()->getObjectVariable());
+        // Craft::dd($this->email->getEmailTypeSettings()->getObjectVariable());
         // @todo - add dynamic support for objects
         $htmlBody = Craft::$app->getView()->renderTemplate(
-            $this->htmlEmailTemplatePath(),
+            $this->getIncludePath(),
             $this->getTemplateVariables()
         );
 
@@ -202,7 +195,6 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         }
 
         $view->setTemplateMode($oldTemplateMode);
-        $view->setTemplatesPath($oldTemplatePath);
 
         $this->setHtmlBody($htmlBody);
         $this->setTextBody($textBody);

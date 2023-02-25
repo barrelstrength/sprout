@@ -114,4 +114,28 @@ class SubscriberHelper
 
         return $subscriber;
     }
+
+    public static function getListOptions(): array
+    {
+        /** @var AudienceElement[] $lists */
+        $lists = AudienceElement::find()
+            ->audienceType(SubscriberListAudienceType::class)
+            ->all();
+
+        $options = [];
+
+        foreach ($lists as $list) {
+            $options[] = [
+                'label' => $list->name,
+                'value' => $list->getId(),
+            ];
+        }
+
+        // Return a blank template if we have no lists
+        if (empty($options)) {
+            return [];
+        }
+
+        return $options;
+    }
 }

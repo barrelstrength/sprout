@@ -32,7 +32,7 @@ class ReplyToField extends BaseNativeField
 
         $mailer = $element->getMailer();
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
-
+        
         foreach ((array)$mailer->approvedReplyToEmails as $approvedReplyToEmail) {
             $senderOptions[] = [
                 'label' => $approvedReplyToEmail['replyToEmail'],

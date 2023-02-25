@@ -14,7 +14,5 @@ interface EmailThemeInterface
 
     public function copyPasteEmailTemplatePath(): ?string;
 
-    public function getTemplateMode(): string;
-
     public function getFieldLayout(): FieldLayout;
 }

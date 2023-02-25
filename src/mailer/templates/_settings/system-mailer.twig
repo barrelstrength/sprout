@@ -1,0 +1,62 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set currentSubNavKey = 'system-mailer' %}
+{% set module = sprout.modules.mailer %}
+{% set settings = module.getSettings() %}
+
+{% block settings %}
+
+    {{ forms.editableTableField({
+        label: "Approved Senders"|t('sprout-module-mailer'),
+        instructions: 'The senders from which content authors can select when sending emails using the Craft System Email Settings.'|t('sprout-module-mailer'),
+        name: 'systemMailer[approvedSenders]',
+        cols: {
+            fromName: {
+                type: 'singleline',
+                heading: "From Name"|t('sprout-module-mailer'),
+                code: true,
+            },
+            fromEmail: {
+                type: 'singleline',
+                heading: "From Email"|t('sprout-module-mailer'),
+                required: true,
+                code: true,
+            },
+        }|filter,
+        rows: settings.systemMailer.approvedSenders ?? [''],
+        errors: []|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+    {{ forms.editableTableField({
+        label: "Approved Reply-to Addresses"|t('sprout-module-mailer'),
+        instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-mailer'),
+        name: 'systemMailer[approvedReplyToEmails]',
+        cols: {
+            replyToEmail: {
+                type: 'singleline',
+                heading: "Reply To Email"|t('sprout-module-mailer'),
+                info: "From Email will be used if no Reply To Email is provided."|t('sprout-module-mailer'),
+                code: true,
+            },
+        }|filter,
+        rows: settings.systemMailer.approvedReplyToEmails ?? [''],
+        errors: []|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Enable Subscriber Lists",
+        instructions: "Subscriber Lists are layer on top of Craft Users which add a  Subscriber Lists field, Subscriber List Audience Type, and Subscriber List sources in the sources sidebar of the Users Element Index page.",
+        name: 'enableSubscriberLists',
+        on: settings.enableSubscriberLists,
+    }) }}
+
+{% endblock %}
+
