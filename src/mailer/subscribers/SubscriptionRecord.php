@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\subscriptions;
+namespace BarrelStrength\Sprout\mailer\subscribers;
 
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use craft\db\ActiveRecord;

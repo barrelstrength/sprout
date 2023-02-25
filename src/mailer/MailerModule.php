@@ -16,17 +16,18 @@ use BarrelStrength\Sprout\mailer\audience\Audiences;
 use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
 use BarrelStrength\Sprout\mailer\email\EmailTypes;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
+use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberLists;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberListsVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\config\BaseConfig;
-use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\elements\db\UserQuery;
+use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -126,19 +127,18 @@ class MailerModule extends Module
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = EmailElement::class;
                 $event->types[] = AudienceElement::class;
-                $event->types[] = SubscriberElement::class;
             }
         );
 
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            static function(DefineFieldLayoutFieldsEvent $event): void {
-                if ($event->sender->type === AudienceElement::class) {
-                    AudienceElement::defineNativeFields($event);
-                }
-            }
-        );
+            [AudienceElement::class, 'defineNativeFields']);
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
+            [SubscriberHelper::class, 'defineNativeSubscriberField']);
 
         Event::on(
             DataSources::class,
@@ -188,6 +188,18 @@ class MailerModule extends Module
                 $e->roots['sprout-module-mailer'] = $this->getBasePath() . DIRECTORY_SEPARATOR . 'templates';
             });
 
+        Event::on(
+            User::class,
+            User::EVENT_REGISTER_SOURCES,
+            [SubscriberHelper::class, 'defineAdditionalSources']
+        );
+
+        Event::on(
+            UserQuery::class,
+            UserQuery::EVENT_DEFINE_BEHAVIORS,
+            [SubscriberHelper::class, 'attachSubscriberQueryBehavior']
+        );
+
         $this->registerProjectConfigEventListeners();
     }
 
@@ -204,7 +216,7 @@ class MailerModule extends Module
     protected function getCraftCpSidebarNavItems(): array
     {
         $navItems = [];
-        
+
         $userService = Craft::$app->getUser();
 
         if (TransactionalModule::isEnabled() &&
@@ -226,10 +238,10 @@ class MailerModule extends Module
         }
 
         if ($userService->checkPermission(self::p('accessModule'))) {
-            $navItems['subscribers'] = [
-                'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
-                'url' => 'sprout/email/subscribers',
-            ];
+            //$navItems['subscribers'] = [
+            //    'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
+            //    'url' => 'sprout/email/subscribers',
+            //];
 
             $navItems['audiences'] = [
                 'label' => Craft::t('sprout-module-mailer', 'Audiences'),

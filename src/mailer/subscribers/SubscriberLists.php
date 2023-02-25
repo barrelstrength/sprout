@@ -6,9 +6,6 @@ use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscriptions\Subscription;
-use BarrelStrength\Sprout\mailer\subscriptions\SubscriptionInterface;
-use BarrelStrength\Sprout\mailer\subscriptions\SubscriptionRecord;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;

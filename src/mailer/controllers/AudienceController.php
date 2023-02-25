@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\mailer\audience\AudienceGroupRecord;
 use BarrelStrength\Sprout\mailer\audience\AudienceGroupsAdmin;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscriptions\Subscription;
+use BarrelStrength\Sprout\mailer\subscribers\Subscription;
 use Craft;
 use craft\base\Element;
 use craft\helpers\Cp;
@@ -49,7 +49,7 @@ class AudienceController extends Controller
         $listElement = Craft::createObject(AudienceElement::class);
         $listElement->siteId = $site->id;
         $listElement->enabled = true;
-        
+
         $audiences = MailerModule::getInstance()->audiences->getAudiences();
 
         foreach ($audiences as $audience) {

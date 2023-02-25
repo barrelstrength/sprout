@@ -11,4 +11,9 @@ abstract class AudienceType extends SavableComponent implements AudienceTypeInte
     public string $emailColumn = 'email';
 
     public string $nameColumn = 'name';
+
+    public function getColumnAttributeHtml(): string
+    {
+        return '';
+    }
 }

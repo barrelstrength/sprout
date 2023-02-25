@@ -6,11 +6,23 @@ use craft\config\BaseConfig;
 
 class MailerSettings extends BaseConfig
 {
+    public bool $enableSubscriberLists = false;
+
     public ?array $approvedSenders = null;
 
     public ?array $approvedReplyToEmails = null;
 
     public array $emailThemes = [];
+
+
+    public array $mailers = [];
+
+    public function enableSubscriberLists(bool $value): self
+    {
+        $this->enableSubscriberLists = $value;
+
+        return $this;
+    }
 
     public function approvedSenders(array $value): self
     {

@@ -10,7 +10,7 @@ use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelement
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;
-use BarrelStrength\Sprout\mailer\subscriptions\Subscription;
+use BarrelStrength\Sprout\mailer\subscribers\Subscription;
 use Craft;
 use craft\base\Element;
 use craft\db\Query;
@@ -81,16 +81,21 @@ class AudienceElement extends Element
         return true;
     }
 
-    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): DefineFieldLayoutFieldsEvent
     {
-        /** @var FieldLayout $fieldLayout */
-        $fieldLayout = $event->sender;
+        if ($event->sender->type === self::class) {
 
-        if ($fieldLayout->type === self::class) {
-            $event->fields[] = AudienceNameField::class;
-            $event->fields[] = AudienceHandleField::class;
-            $event->fields[] = AudienceSettingsField::class;
+            /** @var FieldLayout $fieldLayout */
+            $fieldLayout = $event->sender;
+
+            if ($fieldLayout->type === self::class) {
+                $event->fields[] = AudienceNameField::class;
+                $event->fields[] = AudienceHandleField::class;
+                $event->fields[] = AudienceSettingsField::class;
+            }
         }
+
+        return $event;
     }
 
     public static function find(): AudienceElementQuery
@@ -174,7 +179,7 @@ class AudienceElement extends Element
 
     public function getAudience(): AudienceType
     {
-        $audience = new $this->audienceType();
+        $audience = new $this->audienceType($this->audienceSettings);
 
         if ($this->audienceSettings) {
             $audience->setAttributes($this->audienceSettings, false);
@@ -311,8 +316,10 @@ class AudienceElement extends Element
                 return '';
 
             case 'manage':
-                return '<a href="' . UrlHelper::cpUrl('sprout/email/subscribers/' . $this->handle) . '" class="go">' .
-                    Craft::t('sprout-module-mailer', 'Subscribers') . '</a>';
+
+                $audience = $this->getAudience();
+
+                return $audience->getColumnAttributeHtml();
         }
 
         return parent::getTableAttributeHtml($attribute);

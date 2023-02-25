@@ -23,7 +23,6 @@ export default ({command}) => ({
                 // forms: '/forms/Forms.js',
                 // notifications: '/notifications/Notifications.js',
                 redirects: '/redirects/Redirects.js',
-                // subscribers: '/lists/Subscribers.js',
                 dataStudio: '/data-studio/DataStudio.js',
                 sitemaps: '/sitemaps/Sitemaps.js',
                 meta: '/meta/Meta.js',

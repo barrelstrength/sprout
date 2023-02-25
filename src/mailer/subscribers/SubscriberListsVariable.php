@@ -4,8 +4,6 @@ namespace BarrelStrength\Sprout\mailer\subscribers;
 
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElementQuery;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElementQuery;
 use Craft;
 
 class SubscriberListsVariable
