@@ -51,14 +51,14 @@
     "src": "core/SproutCp.js"
   },
   "data-studio/DataStudio.css": {
-    "file": "assets/DataStudio-0cc01295.css",
+    "file": "assets/DataStudio-a18bcbd3.css",
     "src": "data-studio/DataStudio.css"
   },
   "data-studio/DataStudio.js": {
     "css": [
-      "assets/DataStudio-0cc01295.css"
+      "assets/DataStudio-a18bcbd3.css"
     ],
-    "file": "assets/dataStudio-7969dff3.js",
+    "file": "assets/dataStudio-2aa522a2.js",
     "isEntry": true,
     "src": "data-studio/DataStudio.js"
   },

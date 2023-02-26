@@ -6,7 +6,7 @@
 {% set settings = module.getSettings() %}
 
 {% set title = dataSet.name %}
-{% set bodyClass = 'sprout-reports-content' %}
+{% set bodyClass = 'sprout-results-page' %}
 {% set selectedSubnavItem = craft.app.request.getSegment(2) %}
 {% if dataSource is defined %}
     {% set settingsHtml = dataSource.getSettingsHtml() %}
@@ -53,7 +53,7 @@
 
         <div id="modify-settings-panel" style="display:none;">
 
-            <form id="report-settings" method="post" accept-charset="UTF-8">
+            <form method="post" accept-charset="UTF-8">
                 {{ csrfInput() }}
                 {{ actionInput('sprout-module-data-studio/data-set/update-data-set') }}
                 {{ redirectInput('sprout/data-studio/view/' ~ dataSet.id) }}
@@ -63,8 +63,7 @@
 
                 <div class="button">
                     <div class="btngroup">
-                        <input type="submit" class="btn submit"
-                            value="{{ 'Run report'|t('sprout-module-data-studio') }}">
+                        <input type="submit" class="btn submit" value="{{ 'Run report'|t('sprout-module-data-studio') }}">
                     </div>
                 </div>
 
@@ -76,7 +75,7 @@
 
     {% endif %}
 
-    <div class="tableview sproutreports">
+    <div class="tableview sprout-results-content">
         {% if values is defined and values is iterable and values|length %}
 
             {% if visualization %}
@@ -135,7 +134,7 @@
 {% endblock %}
 
 {% js on ready %}
-    new SproutReportsDataTables({
+    new SproutDataStudioDataTables({
     dataTableId: "#sprout-results",
     allowHtml: {{ dataSet.allowHtml ? 'true' : 'false' }},
     defaultPageLength: {{ settings.defaultPageLength ?? '10' }},

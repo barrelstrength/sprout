@@ -8,7 +8,7 @@ import DataTable from 'datatables.net';
 /**
  * Initialize and style DataTables on the Sprout Reports results page
  */
-class SproutReportsDataTables {
+class SproutDataStudioDataTables {
 
     constructor(settings) {
         this.dataTableId = settings.dataTableId ?? '';
@@ -105,7 +105,7 @@ class SproutReportsDataTables {
                 // bubbles up after search, sort, filter, etc.
                 self.stylePagination();
                 Craft.initUiElements(self.sproutResultsTable);
-            }
+            },
         });
     }
 
@@ -171,6 +171,6 @@ class ReportSettingsToggleButton {
     }
 }
 
-window.SproutReportsDataTables = SproutReportsDataTables;
+window.SproutDataStudioDataTables = SproutDataStudioDataTables;
 window.ReportSettingsToggleButton = ReportSettingsToggleButton;
 
