@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.3 - 2023-02-20
+
+### Fixed
+
+- Fixed display issue on results page
+- Updated welcome/upgrade assets
+
 ## 4.0.2 - 2023-02-20
 
 ### Added
