@@ -15,12 +15,12 @@
 {# Element may be null for Quick Entry widget #}
 {% js %}
 
-    (function() {
+    window.addEventListener('DOMContentLoaded', () => {
     new Craft.SproutUrlField("{{ namespaceInputId }}", "{{ id }}", "{{ element.id ?? null }}", "{{ name }}", "{{ fieldContext }}");
 
     $('input#{{ namespaceInputId }}').on('input', function () {
     new Craft.SproutUrlField("{{ namespaceInputId }}", "{{ id }}", "{{ element.id ?? null }}", "{{ name }}", "{{ fieldContext }}");
     });
-    })();
+    });
 
 {% endjs %}

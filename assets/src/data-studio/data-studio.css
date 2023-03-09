@@ -1,43 +1,43 @@
-#btn-download-csv {
+.sprout-results-page #btn-download-csv {
     font-size: 14px;
 }
 
 /* BASE STYLES
 -----------------------------------*/
 
-.tablecontent tr {
+.sprout-results-page .tablecontent tr {
     height: 50px;
     max-height: 50px;
     overflow: hidden;
 }
 
-.tablecontent thead tr {
+.sprout-results-page .tablecontent thead tr {
     height: 12px;
 }
 
-.tablecontent td,
-.tablecontent th {
+.sprout-results-page .tablecontent td,
+.sprout-results-page .tablecontent th {
     min-width: 180px;
 }
 
-.tablecontent td {
+.sprout-results-page .tablecontent td {
     border-right: 1px solid #eeeeee;
 }
 
-.tablecontent tr td:last-child {
+.sprout-results-page .tablecontent tr td:last-child {
     border-right: 0 solid transparent;
 }
 
 /* RESULTS DATA
 -----------------------------------*/
 
-.tableview.sproutreports {
+.sprout-results-page .tableview.sprout-results-content {
     height: auto;
     overflow: hidden;
 }
 
-.dataTables_scroll th.sorting_asc,
-.dataTables_scroll th.sorting_desc {
+.sprout-results-page .dataTables_scroll th.sorting_asc,
+.sprout-results-page .dataTables_scroll th.sorting_desc {
     background-attachment: initial;
     background-clip: initial;
     background-color: rgb(242, 242, 242);
@@ -48,16 +48,16 @@
     background-size: 26px;
 }
 
-.dataTables_scroll th.sorting_desc {
+.sprout-results-page .dataTables_scroll th.sorting_desc {
     background-position: 100% -24px;
 }
 
-.dataTables_scroll tr th:focus {
+.sprout-results-page .dataTables_scroll tr th:focus {
     outline: none;
 }
 
-.sproutreports .tablecontent tr th:first-child,
-.sproutreports .tablecontent tr td:first-child {
+.sprout-results-content .tablecontent tr th:first-child,
+.sprout-results-content .tablecontent tr td:first-child {
     padding-left: 10px;
 }
 
@@ -106,21 +106,21 @@
     text-transform: uppercase;
 }
 
-.paginate_button {
+.sprout-results-page .paginate_button {
     border: 1px solid #eeeeee;
     margin-right: 7px;
     outline: none;
 }
 
-.paginate_button.page-link {
+.sprout-results-page .paginate_button.page-link {
     display: inline;
     padding: 6px 15px 10px;
 }
 
-.paginate_button.previous {
+.sprout-results-page .paginate_button.previous {
     margin-left: 0;
 }
 
-.paginate_button.current {
+.sprout-results-page .paginate_button.current {
     font-weight: bold;
 }
