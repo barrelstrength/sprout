@@ -1,4 +1,4 @@
-(function() {
+window.addEventListener('DOMContentLoaded', () => {
     const multilingualToggleDiv = document.getElementById('settings-enableMultilingualSitemaps');
 
     if (multilingualToggleDiv) {
@@ -30,4 +30,4 @@
             attributes: true,
         });
     }
-})();
+});

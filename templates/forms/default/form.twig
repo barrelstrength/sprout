@@ -94,12 +94,12 @@
     {%- for labelId, error in errors %}
         {%- if loop.first %}
             {%- js at endBody %}
-                (function() {
+                window.addEventListener('DOMContentLoaded', () => {
                 var field = document.getElementById('fields-' + '{{ labelId }}');
                 if (field) {
                 field.focus();
                 }
-                })();
+                });
             {% endjs -%}
         {%- endif %}
     {%- endfor %}
@@ -114,12 +114,12 @@
 {% do view.registerJsFile(sproutAssetUrl('forms-frontend/SubmitHandler.js')) %}
 
 {% js at endBody %}
-    (function() {
+    window.addEventListener('DOMContentLoaded', () => {
     window.csrfTokenName = "{{ craft.app.getConfig().getGeneral().csrfTokenName|e('js') }}";
     new SproutFormsAddressField('{{ id }}');
     new SproutFormsCheckableInputs('{{ id }}');
     new SproutFormsDisableSubmitButton('{{ id }}');
     new SproutFormsRules('{{ id }}');
     new SproutFormsSubmitHandler('{{ id }}');
-    })();
+    });
 {% endjs -%}
