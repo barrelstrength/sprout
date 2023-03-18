@@ -4,13 +4,15 @@
 {{ forms.checkboxField({
     label: 'When entry is created?'|t('sprout-module-transactional'),
     name: 'whenNew',
-    checked: event.whenNew
+    checked: event.whenNew,
+    fieldClass: 'sprout-mb-0',
 }) }}
 
 {{ forms.checkboxField({
     label: 'When entry is updated?'|t('sprout-module-transactional'),
     name: 'whenUpdated',
-    checked: event.whenUpdated
+    checked: event.whenUpdated,
+    fieldClass: 'sprout-mt-0',
 }) }}
 
 {{ forms.checkboxSelectField({

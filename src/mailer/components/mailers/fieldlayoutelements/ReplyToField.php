@@ -25,26 +25,29 @@ class ReplyToField extends BaseNativeField
             throw new MissingComponentException('Email Element must exist before rendering edit page.');
         }
 
-        $senderOptions[] = [
+        $replyToOption[] = [
             'label' => Craft::t('sprout-module-mailer', 'Same as Sender'),
             'value' => '',
         ];
 
         $mailer = $element->getMailer();
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
-        
         foreach ((array)$mailer->approvedReplyToEmails as $approvedReplyToEmail) {
-            $senderOptions[] = [
+            if (!$approvedReplyToEmail['replyToEmail']) {
+                continue;
+            }
+
+            $replyToOption[] = [
                 'label' => $approvedReplyToEmail['replyToEmail'],
                 'value' => $approvedReplyToEmail['replyToEmail'],
             ];
         }
-
+        
         $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select', [
             'describedBy' => $this->describedBy($element, $static),
             'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',
             'value' => $mailerInstructionsSettings->replyToEmail,
-            'options' => $senderOptions,
+            'options' => $replyToOption,
         ]);
 
         return $selectField;

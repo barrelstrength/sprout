@@ -8,6 +8,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\BaseNativeField;
+use craft\helpers\Html;
+use craft\helpers\UrlHelper;
 
 class AudienceField extends BaseNativeField
 {
@@ -30,12 +32,19 @@ class AudienceField extends BaseNativeField
         if (!$element instanceof EmailElement) {
             throw new MissingComponentException('Email Element must exist before rendering edit page.');
         }
-        
+
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
 
+        $audiences = $mailerInstructionsSettings->getAudiences();
+        $audiencesExist = AudienceElement::find()->exists();
+
+        $addAudienceLink = Html::a(Craft::t('sprout-module-mailer', 'Add an audience.'), UrlHelper::cpUrl('sprout/email/audiences'));
+
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/audience-field', [
-            'audiences' => $mailerInstructionsSettings->getAudiences(),
             'audienceElementType' => AudienceElement::class,
+            'audiences' => $audiences,
+            'audiencesExist' => $audiencesExist,
+            'addAudienceLink' => $addAudienceLink,
         ]);
     }
 }

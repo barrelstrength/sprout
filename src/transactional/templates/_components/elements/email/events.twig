@@ -26,9 +26,5 @@
     {% endif %}
 {% endfor %}
 
-{% css %}
-    {# Fix spacing while event settings are hidden #}
-    #notificationEvent-field { margin-bottom: 0; }
-    .notification-event-wrapper { margin-top: 24px; }
-{% endcss %}
+{% do sprout.modules.core.vite.register('transactional/NotificationEvents.js', false) %}
 

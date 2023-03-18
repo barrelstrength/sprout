@@ -30,7 +30,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
 
     public ?bool $limitToSingleCountry = null;
 
-    public ?string $country = null;
+    public ?string $country = 'US';
 
     public ?string $placeholder = null;
 

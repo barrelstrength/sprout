@@ -40,6 +40,10 @@ class SenderField extends BaseField
         $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
 
         foreach ((array)$mailer->approvedSenders as $approvedSender) {
+            if (!$approvedSender['fromEmail']) {
+                continue;
+            }
+            
             $sender = $approvedSender['fromName'] . ' <' . $approvedSender['fromEmail'] . '>';
             $senderOptions[] = [
                 'label' => $sender,

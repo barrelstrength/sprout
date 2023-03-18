@@ -100,10 +100,10 @@ class SproutFormsSubmitHandler {
 
         const beforeSproutFormsSubmitEvent = new CustomEvent('beforeSproutFormsSubmit', {
             detail: {
-                promises: []
+                promises: [],
             },
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         });
 
         return new Promise((resolve, reject) => {
@@ -147,10 +147,10 @@ class SproutFormsSubmitHandler {
 
         const sproutFormsSubmitEvent = new CustomEvent('onSproutFormsSubmit', {
             detail: {
-                submitHandler: self
+                submitHandler: self,
             },
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         });
 
         return new Promise((resolve, reject) => {
@@ -172,20 +172,27 @@ class SproutFormsSubmitHandler {
 
         let submissionMethod = self.form.dataset.submissionMethod;
 
-        return new Promise(async (resolve) => {
-            if (submissionMethod === 'async') {
-                await self.submitAsync()
-            } else {
-                self.form.submit();
-            }
+        // TODO - Refactor Promise chain
+        // It's probably better to check if async exists earlier in the process
+        // and to create two paths, async and sync, where sync does not need to
+        // fire after submit behavior
+        if (submissionMethod === 'async') {
+            return new Promise(async (resolve) => {
+                await self.submitAsync();
+                resolve(true);
+            });
+        } else {
+            self.form.submit();
 
-            resolve(true);
-        });
+            // End the promise chain here. The form will redirect
+            // before any after submit behaviors can take place.
+            throw new Error('Form Redirected after Submission');
+        }
     }
 
     onAfterFormSubmitEvent() {
         const afterSproutFormsSubmitEvent = new CustomEvent('afterSproutFormsSubmit', {
-            bubbles: true
+            bubbles: true,
         });
 
         this.form.dispatchEvent(afterSproutFormsSubmitEvent);
@@ -193,7 +200,7 @@ class SproutFormsSubmitHandler {
 
     onFormSubmitCancelledEvent() {
         const cancelSproutFormsSubmitEvent = new CustomEvent('onSproutFormsSubmitCancelled', {
-            bubbles: true
+            bubbles: true,
         });
 
         this.form.dispatchEvent(cancelSproutFormsSubmitEvent);
@@ -238,7 +245,7 @@ class SproutFormsSubmitHandler {
                             self.displayMessageBox({
                                 id: self.messageBoxId,
                                 message: response.message,
-                                messageClass: self.successMessageClass
+                                messageClass: self.successMessageClass,
                             });
                         }
 
@@ -269,7 +276,7 @@ class SproutFormsSubmitHandler {
                                 id: self.messageBoxId,
                                 message: response.message ?? null,
                                 messageClass: self.errorMessageClass,
-                                errors: errorListHtml
+                                errors: errorListHtml,
                             });
                         }
 
@@ -296,14 +303,14 @@ class SproutFormsSubmitHandler {
                     let errors = {};
 
                     if (typeof response.error === 'string') {
-                        errors = self.getErrorList([response.error])
+                        errors = self.getErrorList([response.error]);
                     }
 
                     self.displayMessageBox({
                         id: self.messageBoxId,
                         message: '<p>' + self.failureMessage + '</p>',
                         messageClass: self.errorMessageClass,
-                        errors: errors
+                        errors: errors,
                     });
                 }
 
@@ -353,7 +360,7 @@ class SproutFormsSubmitHandler {
 
         let classesArray = self.getTargetElementClasses(self.errorsContainerElement);
         let errorListClasses = classesArray.map(cssClass => {
-            return '.' + cssClass
+            return '.' + cssClass;
         });
         let fields = document.querySelectorAll(self.fieldWrapperQuerySelector);
         for (const field of fields) {

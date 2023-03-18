@@ -56,7 +56,7 @@ class FormsSettings extends BaseConfig
 
     public string|array $allowedAssetVolumes = '*';
 
-    public ?string $defaultUploadLocationSubpath = null;
+    public string $defaultUploadLocationSubpath = '';
 
     public function defaultSection(string $value): self
     {

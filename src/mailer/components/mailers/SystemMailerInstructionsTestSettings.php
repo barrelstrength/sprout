@@ -3,10 +3,10 @@
 namespace BarrelStrength\Sprout\mailer\components\mailers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\mailers\BaseMailerInstructions;
+use BarrelStrength\Sprout\mailer\mailers\MailerInstructions;
 use BarrelStrength\Sprout\mailer\mailers\SystemMailerInstructionsInterface;
 
-class SystemMailerInstructionsTestSettings extends BaseMailerInstructions implements SystemMailerInstructionsInterface
+class SystemMailerInstructionsTestSettings extends MailerInstructions implements SystemMailerInstructionsInterface
 {
     /**
      * The sender replyTo email, if different than the sender email

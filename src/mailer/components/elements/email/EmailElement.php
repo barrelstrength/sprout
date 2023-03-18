@@ -386,6 +386,10 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailType = $this->getEmailTypeSettings();
         $mailer = $this->getMailer();
 
+        $preheaderText = $settings->enablePreheaderText
+            ? new PreheaderTextField()
+            : [];
+
         $subjectTab = new FieldLayoutTab();
         $subjectTab->layout = $this->_fieldLayout;
         $subjectTab->name = Craft::t('sprout-module-mailer', 'Subject');
@@ -397,7 +401,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             ]),
             new HorizontalRule(),
             new SubjectLineField(),
-            new PreheaderTextField(),
+            $preheaderText,
             new TextField([
                 'type' => 'hidden',
                 'name' => 'mailerId',
@@ -618,8 +622,10 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         $rules = parent::defineRules();
 
+        // Subject
         $rules[] = [['title', 'subjectLine'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
         $rules[] = [['preheaderText'], 'safe'];
+
         $rules[] = [['defaultBody'], 'safe'];
 
         $rules[] = [['emailThemeId'], 'safe'];

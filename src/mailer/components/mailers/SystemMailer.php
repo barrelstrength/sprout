@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\elements\Asset;
 use craft\fieldlayoutelements\HorizontalRule;
+use craft\fieldlayoutelements\Tip;
 use craft\fs\Local;
 use craft\helpers\FileHelper;
 use craft\helpers\UrlHelper;
@@ -58,6 +59,17 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
             ],
         ];
 
+        $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
+
+        $testToEmailAddressField = [];
+        if ($testToEmailAddress) {
+            $testToEmailAddressField = new Tip();
+            $testToEmailAddressField->style = Tip::STYLE_WARNING;
+            $testToEmailAddressField->tip = Craft::t('sprout-module-mailer', 'Test email found in general config. All messages will be sent to the testToEmailAddress: {email}', [
+                'email' => $testToEmailAddress,
+            ]);
+        }
+
         $audienceField = new AudienceField([
             'uid' => 'SPROUT-UID-RECIPIENTS-FIELD',
         ]);
@@ -72,6 +84,7 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
             new SenderField(),
             new ReplyToField(),
             new HorizontalRule(),
+            $testToEmailAddressField,
             new ToField(),
             $audienceField,
         ]);
@@ -100,9 +113,18 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function getSendTestModalHtml(EmailElement $email = null): string
     {
+        $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
+
+        if ($testToEmailAddress) {
+            $warningMessage = Craft::t('sprout-module-mailer', 'Test email found in general config. All messages will be sent to the testToEmailAddress: {email}', [
+                'email' => $testToEmailAddress,
+            ]);
+        }
+
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/send-test-fields', [
             'email' => $email,
             'mailer' => $this,
+            'warningMessage' => $warningMessage ?? '',
         ]);
     }
 

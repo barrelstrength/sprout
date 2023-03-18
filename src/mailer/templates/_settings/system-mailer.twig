@@ -52,6 +52,13 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "Enable Preheader Text",
+        instructions: "Enables a field that displays a preview of the email content in some email clients.",
+        name: 'enablePreheaderText',
+        on: settings.enablePreheaderText,
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Enable Subscriber Lists",
         instructions: "Subscriber Lists are layer on top of Craft Users which add a  Subscriber Lists field, Subscriber List Audience Type, and Subscriber List sources in the sources sidebar of the Users Element Index page.",
         name: 'enableSubscriberLists',

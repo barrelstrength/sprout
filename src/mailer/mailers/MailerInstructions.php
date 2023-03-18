@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\events\SystemMailerBeforeSendEvent;
 use craft\base\Model;
 
-class BaseMailerInstructions extends Model implements MailerInstructionsInterface
+class MailerInstructions extends Model implements MailerInstructionsInterface
 {
     use SystemMailerInstructionsTrait;
 

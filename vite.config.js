@@ -19,6 +19,8 @@ export default ({command}) => ({
                 alpine: '/core/SproutAlpine.js',
                 adminTable: '/core/SproutAdminTable.js',
                 groups: '/core/SourceGroups.js',
+                emailThemes: '/mailer/EmailThemesSettings.js',
+                transactionalEmail: 'transactional/NotificationEvents.js',
                 // copyPaste: '/campaigns/CopyPaste.js',
                 // forms: '/forms/Forms.js',
                 // notifications: '/notifications/Notifications.js',

@@ -6,20 +6,15 @@ use craft\config\BaseConfig;
 
 class MailerSettings extends BaseConfig
 {
-    public bool $enableSubscriberLists = false;
-
     public array $emailThemes = [];
 
     public array $mailers = [];
 
     public array $systemMailer = [];
 
-    public function enableSubscriberLists(bool $value): self
-    {
-        $this->enableSubscriberLists = $value;
+    public bool $enablePreheaderText = true;
 
-        return $this;
-    }
+    public bool $enableSubscriberLists = false;
 
     public function systemMailer(array $value): self
     {
@@ -38,6 +33,20 @@ class MailerSettings extends BaseConfig
     public function emailThemes(array $value): self
     {
         $this->emailThemes = $value;
+
+        return $this;
+    }
+
+    public function enablePreheaderText(bool $value): self
+    {
+        $this->enablePreheaderText = $value;
+
+        return $this;
+    }
+
+    public function enableSubscriberLists(bool $value): self
+    {
+        $this->enableSubscriberLists = $value;
 
         return $this;
     }
