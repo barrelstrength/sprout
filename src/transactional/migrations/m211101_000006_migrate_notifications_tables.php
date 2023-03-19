@@ -24,8 +24,8 @@ class m211101_000006_migrate_notifications_tables extends Migration
         $themeCols = [
             'name',
             'type',
-            'htmlEmailTemplatePath',
-            'copyPasteEmailTemplatePath',
+            'htmlEmailTemplate',
+            'copyPasteEmailTemplate',
             'settings',
             'sortOrder',
         ];
@@ -114,8 +114,8 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     'type' => CustomEmailTheme::class,
 
                     // Check if custom themes are using same template values, may have multiple themes...
-                    'htmlEmailTemplatePath' => $themeRow['emailTemplateId'],
-                    'copyPasteEmailTemplatePath' => $themeRow['emailTemplateId'],
+                    'htmlEmailTemplate' => $themeRow['emailTemplateId'],
+                    'copyPasteEmailTemplate' => $themeRow['emailTemplateId'],
                     'settings' => '',
                     'sortOrder' => $sortOrder++,
                 ];
