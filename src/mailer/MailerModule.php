@@ -199,8 +199,6 @@ class MailerModule extends Module
             UserQuery::EVENT_DEFINE_BEHAVIORS,
             [SubscriberHelper::class, 'attachSubscriberQueryBehavior']
         );
-
-        $this->registerProjectConfigEventListeners();
     }
 
     public function createSettingsModel(): MailerSettings
@@ -344,31 +342,5 @@ class MailerModule extends Module
                 'label' => Craft::t('sprout-module-mailer', 'Edit Subscribers'),
             ],
         ];
-    }
-
-    private function registerProjectConfigEventListeners(): void
-    {
-        $projectConfigService = Craft::$app->getProjectConfig();
-
-        // EMAIL THEMES
-        $key = self::projectConfigPath('emailThemes.{uid}');
-
-        $emailThemesService = $this->emailThemes;
-        $projectConfigService->onAdd($key, [$emailThemesService, 'handleChangedFieldLayout'])
-            ->onUpdate($key, [$emailThemesService, 'handleChangedFieldLayout'])
-            ->onRemove($key, [$emailThemesService, 'handleDeletedFieldLayout']);
-
-        // MAILERS
-
-        //$key = self::projectConfigPath('mailers.{uid}');
-        //
-        //$mailersService = $this->mailers;
-        //$projectConfigService->onAdd($key, [$mailersService, 'handleChangedMailer'])
-        //    ->onUpdate($key, [$mailersService, 'handleChangedMailer'])
-        //    ->onRemove($key, [$mailersService, 'handleDeletedMailer']);
-
-        //        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, static function(RebuildConfigEvent $event) {
-        //            $event->config['commerce'] = ProjectConfigData::rebuildProjectConfig();
-        //        });
     }
 }

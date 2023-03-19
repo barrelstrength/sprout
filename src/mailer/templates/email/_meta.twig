@@ -5,12 +5,12 @@
 
         {{ forms.selectField({
             label: 'Theme'|t('sprout-module-mailer'),
-            id: 'emailThemeId',
-            name: 'emailThemeId',
+            id: 'emailThemeUid',
+            name: 'emailThemeUid',
             placeholder: '_emails/folder',
             options: templateOptions,
-            value: element.emailThemeId,
-            errors: element.getErrors('emailThemeId'),
+            value: element.emailThemeUid,
+            errors: element.getErrors('emailThemeUid'),
         }) }}
 
         {{ forms.selectField({

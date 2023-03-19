@@ -100,4 +100,11 @@ class EmailThemeHelper
 
         return true;
     }
+
+    public static function getDefaultEmailTheme()
+    {
+        $themes = self::getEmailThemes();
+
+        return reset($themes) ?? null;
+    }
 }

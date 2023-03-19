@@ -5,11 +5,7 @@ namespace BarrelStrength\Sprout\mailer\emailthemes;
 use BarrelStrength\Sprout\mailer\components\emailthemes\CustomEmailTheme;
 use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use craft\base\Component;
-use craft\events\ConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
-use craft\helpers\ProjectConfig as ProjectConfigHelper;
-use craft\models\FieldLayout;
-use Throwable;
 
 class EmailThemes extends Component
 {
@@ -29,53 +25,16 @@ class EmailThemes extends Component
         return $event->types;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getEmailThemes(): array
+    public function getEmailThemeTypeInstances(): array
     {
-        //        $emailThemeTypes = $this->getEmailThemeTypes();
-        $themes = [];
+        $emailThemes = $this->getEmailThemeTypes();
 
-        //        foreach ($emailThemeTypes as $emailThemeType) {
-        //            $theme = new $emailThemeType();
-        //            $themes[$theme->handle()] = $theme;
-        //        }
-
-        $configThemes = EmailThemeRecord::find()->all();
-
-        if ($configThemes) {
-            foreach ($configThemes as $configThemeRecord) {
-
-                $type = $configThemeRecord->type;
-                $customTheme = new $type();
-                $customTheme->id = $configThemeRecord->id;
-                $customTheme->fieldLayoutId = $configThemeRecord->fieldLayoutId;
-                $customTheme->name = $configThemeRecord->name;
-                $customTheme->htmlEmailTemplatePath = $configThemeRecord->htmlEmailTemplatePath;
-                $customTheme->copyPasteEmailTemplatePath = $configThemeRecord->copyPasteEmailTemplatePath;
-                //                $customTheme->settings = $configThemeRecord->settings;
-
-                $themes[$customTheme->id] = $customTheme;
-            }
+        $instances = [];
+        foreach ($emailThemes as $emailTheme) {
+            $instances[$emailTheme::getHandle()] = new $emailTheme();
         }
 
-        uasort($themes, static function($a, $b): int {
-            /**
-             * @var EmailTheme $a
-             * @var EmailTheme $b
-             */
-            return $a->name <=> $b->name;
-        });
-
-        return $themes;
-    }
-
-    public function getEmailThemeByHandle(string $handle = null): ?EmailTheme
-    {
-        $emailThemes = $this->getEmailThemes();
-
-        return $emailThemes[$handle] ?? null;
+        return $instances;
     }
 
     public function getEmailThemeById($id): ?EmailTheme
@@ -92,77 +51,5 @@ class EmailThemes extends Component
         $emailTheme->copyPasteEmailTemplate = $emailThemeRecord->copyPasteEmailTemplate;
 
         return $emailTheme;
-    }
-
-    public function getDefaultEmailTheme()
-    {
-        return EmailThemeRecord::find()
-            ->select('id')
-            ->orderBy('sortOrder ASC')
-            ->scalar();
-    }
-
-    /**
-     * Copied from craft/commerce/services/Orders::handleChangedFieldLayout()
-     */
-    public function handleChangedFieldLayout(ConfigEvent $event): void
-    {
-        $emailThemeUid = $event->tokenMatches[0];
-        $data = $event->newValue;
-
-        ProjectConfigHelper::ensureAllSitesProcessed();
-        ProjectConfigHelper::ensureAllFieldsProcessed();
-
-        $emailThemeRecord = EmailThemeRecord::find()
-            ->where(['uid' => $emailThemeUid])
-            ->one();
-
-        if (!$emailThemeRecord) {
-            $emailThemeRecord = new EmailThemeRecord();
-        }
-
-        $transaction = Craft::$app->getDb()->beginTransaction();
-
-        try {
-
-            if (!empty($data['fieldLayouts'])) {
-                // Save the field layout
-                $layout = FieldLayout::createFromConfig(reset($data['fieldLayouts']));
-                $layout->id = $emailThemeRecord->fieldLayoutId;
-                $layout->type = EmailElement::class;
-                $layout->uid = key($data['fieldLayouts']);
-                $layout->reservedFieldHandles = [
-                    'fieldLayoutId',
-                    'name',
-                    'type',
-                    'htmlEmailTemplatePath',
-                    'copyPasteEmailTemplatePath',
-                ];
-                Craft::$app->getFields()->saveLayout($layout, false);
-                $emailThemeRecord->fieldLayoutId = $layout->id;
-            } elseif ($emailThemeRecord->fieldLayoutId) {
-                // Delete the field layout
-                Craft::$app->getFields()->deleteLayoutById($emailThemeRecord->fieldLayoutId);
-                $emailThemeRecord->fieldLayoutId = null;
-            }
-
-            $emailThemeRecord->name = $data['name'];
-            $emailThemeRecord->htmlEmailTemplatePath = $data['htmlEmailTemplatePath'];
-            $emailThemeRecord->copyPasteEmailTemplatePath = $data['copyPasteEmailTemplatePath'];
-            $emailThemeRecord->uid = $emailThemeUid;
-
-            $emailThemeRecord->save();
-
-            $transaction->commit();
-        } catch (Throwable $e) {
-            $transaction->rollBack();
-            throw $e;
-        }
-    }
-
-    public function handleDeletedFieldLayout(ConfigEvent $event): void
-    {
-        //        \Craft::dd($event);
-        //        Craft::$app->getFields()->deleteLayoutsByType(RedirectElement::class);
     }
 }

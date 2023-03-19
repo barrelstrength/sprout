@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\email\EmailType;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Element;
@@ -56,7 +57,8 @@ class EmailController extends Controller
         $email = Craft::createObject(EmailElement::class);
         //        $email->siteId = $site->id;
 
-        $email->emailThemeUid = MailerModule::getInstance()->emailThemes->getDefaultEmailTheme();
+        $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
+        $email->emailThemeUid = $emailTheme->uid;
 
         if (!$email->emailThemeUid) {
             throw new NotFoundHttpException('No email themes exist.');

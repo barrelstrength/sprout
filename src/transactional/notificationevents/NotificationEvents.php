@@ -195,7 +195,7 @@ class NotificationEvents extends Component
             $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
         } else {
             $eventSettings = Json::decode($settingsRecord->settings);
-
+            
             if (!isset($eventSettings[$eventClassName]) ||
                 !in_array($email->id, $eventSettings[$eventClassName][$eventName], true)
             ) {

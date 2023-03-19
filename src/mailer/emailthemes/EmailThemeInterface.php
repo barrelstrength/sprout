@@ -8,11 +8,7 @@ interface EmailThemeInterface
 {
     public function name(): ?string;
 
-    public function isEditable(): bool;
-
-    public function htmlEmailTemplatePath(): ?string;
-
-    public function copyPasteEmailTemplatePath(): ?string;
-
+    public static function isEditable(): bool;
+    
     public function getFieldLayout(): FieldLayout;
 }

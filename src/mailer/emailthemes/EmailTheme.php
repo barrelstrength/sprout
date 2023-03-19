@@ -18,11 +18,11 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 {
     public ?string $name = null;
 
-    public ?int $fieldLayoutId = null;
+    public ?string $htmlEmailTemplate = null;
 
-    public ?string $htmlEmailTemplatePath = null;
+    public ?string $textEmailTemplate = null;
 
-    public ?string $copyPasteEmailTemplatePath = null;
+    public ?string $copyPasteEmailTemplate = null;
 
     public ?EmailElement $email = null;
 
@@ -41,19 +41,11 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         return $this->name;
     }
 
-    public function isEditable(): bool
-    {
-        return true;
-    }
+    abstract public static function getHandle(): string;
 
-    public function htmlEmailTemplatePath(): ?string
+    public static function isEditable(): bool
     {
-        return $this->htmlEmailTemplatePath;
-    }
-
-    public function copyPasteEmailTemplatePath(): ?string
-    {
-        return $this->copyPasteEmailTemplatePath ?? $this->htmlEmailTemplatePath;
+        return false;
     }
 
     public function getTemplateVariables(): array
@@ -77,10 +69,6 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
     {
         if ($this->_fieldLayout) {
             return $this->_fieldLayout;
-        }
-
-        if ($this->fieldLayoutId) {
-            return Craft::$app->getFields()->getLayoutById($this->fieldLayoutId);
         }
 
         return new FieldLayout([
@@ -123,20 +111,18 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     public function getTextEmailTemplate(): ?string
     {
-        $pathInfo = pathinfo($this->htmlEmailTemplatePath());
-
-        $textPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $pathInfo['filename'] . '.txt';
-
-        if (!Craft::$app->getView()->doesTemplateExist($textPath)) {
+        if (!Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate())) {
             return null;
         }
 
-        return $textPath;
+        return $this->textEmailTemplate();
     }
 
     public function hasAtLeastOneField(): void
     {
-        if (!count($this->getFieldLayout()->getCustomFields())) {
+        $tabs = $this->getFieldLayout()->getTabs();
+
+        if (!count($tabs) || !count($tabs[0]->getElements())) {
             $this->addError('fieldLayout', Craft::t('sprout-module-mailer', 'Field layout must have at least one field.'));
         }
     }
@@ -144,10 +130,12 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
     public function getConfig(): array
     {
         $config = [
+            'type' => static::class,
             'name' => $this->name,
-            'handle' => $this->handle,
-            'htmlEmailTemplatePath' => $this->htmlEmailTemplatePath,
-            'copyPasteEmailTemplatePath' => $this->copyPasteEmailTemplatePath,
+            'handle' => $this::getHandle(),
+            'htmlEmailTemplate' => $this->htmlEmailTemplate,
+            'textEmailTemplate' => $this->textEmailTemplate,
+            'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,
         ];
 
         $fieldLayout = $this->getFieldLayout();
@@ -176,9 +164,9 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         );
 
         // Converts html body to text email if no .txt
-        if ($textEmailTemplate = $this->getTextEmailTemplate()) {
+        if (Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate)) {
             $textBody = Craft::$app->getView()->renderTemplate(
-                $textEmailTemplate,
+                $this->textEmailTemplate,
                 $this->getTemplateVariables()
             );
         } else {
@@ -205,7 +193,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         $rules = parent::defineRules();
 
         $rules[] = [['name'], 'required'];
-        $rules[] = [['htmlEmailTemplatePath'], 'required'];
+        $rules[] = [['htmlEmailTemplate'], 'required'];
         $rules[] = [['fieldLayout'], 'hasAtLeastOneField'];
 
         return $rules;

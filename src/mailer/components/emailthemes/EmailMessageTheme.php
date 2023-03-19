@@ -29,21 +29,9 @@ class EmailMessageTheme extends EmailTheme
         return self::displayName();
     }
 
-    //public function init(): void
-    //{
-    //    $this->populateFieldLayoutId();
-    //
-    //    parent::init();
-    //}
-
     public function getIncludePath(): string
     {
         return Craft::getAlias('@Sprout/TemplateRoot/email/default');
-    }
-
-    public function getHtmlEmailTemplate(): string
-    {
-        return 'emailtemplates/default/email.twig';
     }
 
     public function getFieldLayout(): FieldLayout
@@ -77,19 +65,6 @@ class EmailMessageTheme extends EmailTheme
 
         return $fieldLayout;
     }
-
-    //private function populateFieldLayoutId(): void
-    //{
-    //    $fieldLayoutId = SettingsRecord::find()
-    //        ->select('settings')
-    //        ->where([
-    //            'moduleId' => 'sprout-module-mailer',
-    //            'name' => 'defaultEmailTheme.fieldLayoutId',
-    //        ])
-    //        ->scalar();
-    //
-    //    $this->fieldLayoutId = $fieldLayoutId;
-    //}
 }
 
 

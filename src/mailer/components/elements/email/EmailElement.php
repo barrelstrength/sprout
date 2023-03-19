@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\P
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeRecord;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
@@ -68,7 +69,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public string $defaultBody = '';
 
-    public ?int $emailThemeId = null;
+    public null|int|string $emailThemeUid = null;
 
     public ?string $emailType = null;
 
@@ -275,14 +276,19 @@ class EmailElement extends Element implements EmailPreviewInterface
      * Returns the Email Type contract for this email
      *
      * EMAIL TYPE determines:
-     * $fieldLayoutId
-     * $emailThemeId
+     * $fieldLayout
+     * $emailThemeUid
      *
      * @return EmailThemeRecord|null
      */
     public function getEmailTheme(): ?EmailTheme
     {
-        $emailTheme = MailerModule::getInstance()->emailThemes->getEmailThemeById($this->emailThemeId);
+        $emailTheme = EmailThemeHelper::getEmailThemeByUid($this->emailThemeUid);
+
+        if (!$emailTheme) {
+            $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
+        }
+
         $emailTheme->email = $this;
 
         return $emailTheme;
@@ -373,16 +379,14 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $this->_fieldLayout;
         }
 
+        $this->_fieldLayout = new FieldLayout([
+            'type' => self::class,
+        ]);
+
         $emailTheme = $this->getEmailTheme();
+        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
 
-        if ($emailTheme->fieldLayoutId) {
-            $this->_fieldLayout = $emailTheme->getFieldLayout();
-        } else {
-            $this->_fieldLayout = new FieldLayout([
-                'type' => self::class,
-            ]);
-        }
-
+        $settings = MailerModule::getInstance()->getSettings();
         $emailType = $this->getEmailTypeSettings();
         $mailer = $this->getMailer();
 
@@ -424,7 +428,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             [$subjectTab],
             $mailer::getTabs($this->getFieldLayout()),
             $emailType::getTabs($this->getFieldLayout()),
-            $this->_fieldLayout->getTabs()
+            $themeTabs,
         );
 
         $this->_fieldLayout->setTabs($newTabs);
@@ -437,20 +441,19 @@ class EmailElement extends Element implements EmailPreviewInterface
         $mailers = MailerModule::getInstance()->mailers->getRegisteredMailers();
         $mailerTypeOptions = TemplateHelper::optionsFromComponentTypes($mailers);
 
-        $themes = MailerModule::getInstance()->emailThemes->getEmailThemes();
+        $themes = EmailThemeHelper::getEmailThemes();
 
-        $templateOptions = [];
         foreach ($themes as $theme) {
             $templateOptions[] = [
-                'label' => $theme->name,
-                'value' => $theme->id,
+                'label' => $theme->name(),
+                'value' => $theme->uid,
             ];
         }
 
         $meta = Craft::$app->getView()->renderTemplate('sprout-module-mailer/email/_meta', [
             'element' => $this,
             'mailer' => $this->getMailer(),
-            'templateOptions' => $templateOptions,
+            'templateOptions' => $templateOptions ?? [],
             'mailerTypeOptions' => $mailerTypeOptions,
         ]);
 
@@ -475,7 +478,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->preheaderText = $this->preheaderText;
         $emailElementRecord->defaultBody = $this->defaultBody;
 
-        $emailElementRecord->emailThemeId = $this->emailThemeId;
+        $emailElementRecord->emailThemeUid = $this->emailThemeUid;
 
         $emailElementRecord->mailerId = $this->mailerId;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
@@ -579,7 +582,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             'templates/render', [
-                'template' => $this->getEmailTheme()->htmlEmailTemplatePath,
+                'template' => $this->getEmailTheme()->htmlEmailTemplate,
                 'variables' => [
                     'email' => $this,
                 ],
@@ -628,7 +631,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $rules[] = [['defaultBody'], 'safe'];
 
-        $rules[] = [['emailThemeId'], 'safe'];
+        $rules[] = [['emailThemeUid'], 'safe'];
 
         $rules[] = [['emailType'], 'safe'];
         $rules[] = [['emailTypeSettings'], 'safe'];
