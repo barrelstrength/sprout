@@ -310,7 +310,7 @@ class MailerModule extends Module
             // Settings: Email Themes
             'sprout/settings/email-themes/new' =>
                 'sprout-module-mailer/email-themes/edit',
-            'sprout/settings/email-themes/edit/<emailThemeId:\d+>' =>
+            'sprout/settings/email-themes/edit/<emailThemeUid:.*>' =>
                 'sprout-module-mailer/email-themes/edit',
             'sprout/settings/email-themes' =>
                 'sprout-module-mailer/email-themes/entry-types-index-template',

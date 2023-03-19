@@ -17,6 +17,7 @@ use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\components\emailtemplates\FormSummaryEmailTheme;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
@@ -29,6 +30,7 @@ use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplates;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use Craft;
 use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -199,6 +201,13 @@ class FormsModule extends Module
                 $event->types[] = SpamLogDataSource::class;
             });
 
+        Event::on(
+            EmailThemes::class,
+            EmailThemes::EVENT_REGISTER_EMAIL_THEMES,
+            static function(RegisterComponentTypesEvent $event): void {
+                $event->types[] = FormSummaryEmailTheme::class;
+            });
+        
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,

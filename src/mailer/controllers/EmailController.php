@@ -56,9 +56,9 @@ class EmailController extends Controller
         $email = Craft::createObject(EmailElement::class);
         //        $email->siteId = $site->id;
 
-        $email->emailThemeId = MailerModule::getInstance()->emailThemes->getDefaultEmailTheme();
+        $email->emailThemeUid = MailerModule::getInstance()->emailThemes->getDefaultEmailTheme();
 
-        if (!$email->emailThemeId) {
+        if (!$email->emailThemeUid) {
             throw new NotFoundHttpException('No email themes exist.');
         }
 

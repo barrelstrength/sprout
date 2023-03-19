@@ -5,10 +5,26 @@
 
 {% block actionButton %}
     <div class="buttons">
-        <a href="{{ url('sprout/settings/email-themes/new') }}" class="btn submit add icon">
-            {{ "New Email Theme"|t('sprout-module-mailer') }}
-        </a>
-
+        <div class="btngroup submit">
+            <div class="btn menubtn submit add icon">
+                {{ "New Email Theme"|t('sprout-module-mailer') }}
+            </div>
+            <div class="menu">
+                <ul>
+                    {% for emailThemeType in emailThemeTypes %}
+                        <li>
+                            {{ tag('a', {
+                                href: cpUrl('sprout/settings/email-themes/new', {
+                                    handle: emailThemeType.handle,
+                                }),
+                                text: emailThemeType.displayName(),
+                                class: 'menu-option',
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -17,18 +33,18 @@
 {% if emailThemes|length %}
     {% for emailTheme in emailThemes %}
 
-        {% set cpEditUrl = cpUrl('sprout/settings/email-themes/edit/' ~ emailTheme.id) %}
+        {% set cpEditUrl = cpUrl('sprout/settings/email-themes/edit/' ~ emailTheme.uid) %}
 
         {% set tableData = tableData|merge([{
-            id: emailTheme.id,
+            id: emailTheme.uid,
             labelHtml: {
                 url: cpEditUrl,
                 name: emailTheme.name ?? emailTheme.displayName()
             },
-            emailTemplate: emailTheme.htmlEmailTemplatePath,
+            emailThemeType: emailTheme.displayName,
             title: emailTheme.name|t('sprout-module-mailer')|e,
             url: cpEditUrl,
-
+            _showDelete: true,
         }]) %}
 
     {% endfor %}

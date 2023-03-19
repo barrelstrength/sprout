@@ -8,11 +8,11 @@ use craft\gql\types\DateTime;
 
 /**
  * @property int $id
- * @property int $fieldLayoutId
  * @property string $name
  * @property string $type
- * @property string $htmlEmailTemplatePath
- * @property string $copyPasteEmailTemplatePath
+ * @property string $htmlEmailTemplate
+ * @property string $textEmailTemplate
+ * @property string $copyPasteEmailTemplate
  * @property DateTime $dateCreated
  * @property DateTime $dateUpdated
  * @property string $uid

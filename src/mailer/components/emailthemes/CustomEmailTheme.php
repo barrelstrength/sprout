@@ -7,14 +7,19 @@ use Craft;
 
 class CustomEmailTheme extends EmailTheme
 {
-    /**
-     * Handle will be defined in settings
-     */
-    public ?string $handle = '';
-
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-mailer', 'Custom Theme');
+        return Craft::t('sprout-module-mailer', 'Custom');
+    }
+
+    public static function getHandle(): string
+    {
+        return 'custom';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
     }
 
     public function getIncludePath(): string

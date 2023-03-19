@@ -83,9 +83,9 @@ class TemplateHelper
             ];
         }
 
-        foreach ($array as $element) {
-            $label = $element::displayName();
-            $value = get_class($element);
+        foreach ($array as $savableComponent) {
+            $label = $savableComponent::displayName();
+            $value = get_class($savableComponent);
             $result[] = [
                 'label' => $label,
                 'value' => $value,

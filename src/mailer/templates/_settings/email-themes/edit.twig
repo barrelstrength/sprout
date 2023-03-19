@@ -16,11 +16,11 @@
 
 {% block actionButton %}
 
-    {% if emailTheme.isEditable() %}
-        <div class="buttons">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-mailer') }}">
-        </div>
-    {% endif %}
+    {#    {% if emailTheme.isEditable() %} #}
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-mailer') }}">
+    </div>
+    {#    {% endif %} #}
 
 {% endblock %}
 
@@ -29,9 +29,8 @@
     {{ actionInput('sprout-module-mailer/email-themes/save') }}
     {{ redirectInput('sprout/settings/email-themes') }}
 
-    {% if emailTheme.id %}
-        {{ hiddenInput('emailThemeId', emailTheme.id) }}
-    {% endif %}
+    {{ hiddenInput('uid', emailTheme.uid) }}
+    {{ hiddenInput('type', className(emailTheme)) }}
 
     {{ forms.textField({
         label: "Name"|t('sprout-module-mailer'),
@@ -41,47 +40,48 @@
         value: emailTheme.name,
         errors: emailTheme.getErrors('name'),
         warning: sproutConfigWarning(module, 'name'),
+        required: true,
         first: true,
-        required: true,
-        disabled: not emailTheme.isEditable(),
     }) }}
 
-    {# {{ forms.textField({ #}
-    {# label: "Handle"|t('sprout-module-mailer'), #}
-    {# instructions: "A unique handle that represents your theme"|t('sprout-module-mailer'), #}
-    {# id: 'handle', #}
-    {# id: 'handle', #}
-    {# name: 'handle', #}
-    {# value: emailTheme.handle, #}
-    {# errors: emailTheme.getErrors('handle'), #}
-    {# warning: sproutConfigWarning(module, 'handle'), #}
-    {# required: true #}
-    {# }) }} #}
-
     {{ forms.autosuggestField({
-        label: "HTML Email Template Folder"|t('sprout-module-mailer'),
-        instructions: "The templates that will be used to display your email."|t('sprout-module-mailer'),
-        id: 'htmlEmailTemplatePath',
-        name: 'htmlEmailTemplatePath',
+        label: "Email Template (HTML)"|t('sprout-module-mailer'),
+        instructions: "The template that will be used to render your HTML email."|t('sprout-module-mailer'),
+        id: 'htmlEmailTemplate',
+        name: 'htmlEmailTemplate',
         suggestEnvVars: false,
-        suggestions: sproutTemplateFolderSuggestions(),
-        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'),
-        value: emailTheme.htmlEmailTemplatePath ?? null,
+        suggestions: craft.cp.getTemplateSuggestions(),
+        placeholder: "_emails/theme/email.twig"|t('sprout-module-mailer'),
+        value: emailTheme.htmlEmailTemplate() ?? null,
+        errors: emailTheme.getErrors('htmlEmailTemplate'),
         required: true,
         disabled: not emailTheme.isEditable(),
     }) }}
 
     {{ forms.autosuggestField({
-        label: "Copy/Paste Email Template Folder"|t('sprout-module-mailer'),
-        instructions: "The templates that will be used to display your email."|t('sprout-module-mailer'),
-        id: 'copyPasteEmailTemplatePath',
-        name: 'copyPasteEmailTemplatePath',
+        label: "Email Template (Text)"|t('sprout-module-mailer'),
+        instructions: "Leave blank to render the text email by converting the HTML template to Markdown."|t('sprout-module-mailer'),
+        id: 'textEmailTemplate',
+        name: 'textEmailTemplate',
         suggestEnvVars: false,
-        suggestions: sproutTemplateFolderSuggestions(),
-        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'),
-        value: emailTheme.copyPasteEmailTemplatePath ?? null,
+        suggestions: craft.cp.getTemplateSuggestions(),
+        placeholder: emailTheme.isEditable() ? "_emails/theme/email.txt"|t('sprout-module-mailer') : '',
+        value: emailTheme.textEmailTemplate() ?? null,
+        errors: emailTheme.getErrors('textEmailTemplate'),
         disabled: not emailTheme.isEditable(),
     }) }}
+
+    {#    {{ forms.autosuggestField({ #}
+    {#        label: "Copy/Paste Email Template Folder"|t('sprout-module-mailer'), #}
+    {#        instructions: "The templates that will be used to display your email."|t('sprout-module-mailer'), #}
+    {#        id: 'copyPasteEmailTemplatePath', #}
+    {#        name: 'copyPasteEmailTemplatePath', #}
+    {#        suggestEnvVars: false, #}
+    {#        suggestions: sproutTemplateFolderSuggestions(), #}
+    {#        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'), #}
+    {#        value: emailTheme.copyPasteEmailTemplatePath ?? null, #}
+    {#        disabled: not emailTheme.isEditable(), #}
+    {#    }) }} #}
 
     <hr>
 
@@ -127,10 +127,10 @@
                                                     {% endif %}
                                                 </div>
                                                 <div class="fld-attribute">
-                                                    <div class="smalltext light code">{{ element.name }}</div>
+                                                    <div class="smalltext light code">{{ element.attribute }}</div>
                                                 </div>
                                             </div>
-                                            <a role="button" tabindex="0" class="settings icon" title="Edit"></a>
+                                            <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a>
                                         </div>
                                     {% endfor %}
                                 </div>
@@ -142,6 +142,12 @@
         </div>
 
     {% endif %}
+
+    {{ forms.textField({
+        label: "Theme Type"|t('sprout-module-mailer'),
+        value: emailTheme.displayName(),
+        disabled: true,
+    }) }}
 
 {% endblock %}
 
