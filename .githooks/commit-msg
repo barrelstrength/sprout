@@ -15,7 +15,7 @@ then
     MIGRATION_MODIFIED=true
 fi
 
-# Ignore merge commits
+# Ignore merge commits by setting value to "empty"
 if [[ "$COMMIT_MESSAGE" == "Merge branch"* ]]; then
     MIGRATION_MODIFIED=''
 fi
