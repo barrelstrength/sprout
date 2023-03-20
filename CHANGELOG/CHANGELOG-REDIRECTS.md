@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.4 - 2023-03-20
+
+### Fixed
+
+- Fixed datetime syntax in migration
+
 ## 4.0.1 - 2023-04-20
 
 ### Fixed

@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.4 - 2023-03-20
+
+### Fixed
+
+- Fixed datetime syntax in migration ([#2datastudio])
+
+[#2datastudio]: https://github.com/barrelstrength/craft-sprout-data-studio/issues/2
+
 ## 4.0.3 - 2023-02-20
 
 ### Fixed
