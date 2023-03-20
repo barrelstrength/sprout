@@ -7,6 +7,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\helpers\StringHelper;
 
 class m211101_000005_migrate_redirects_tables extends Migration
@@ -63,12 +64,14 @@ class m211101_000005_migrate_redirects_tables extends Migration
 
             foreach ($rows as $key => $row) {
 
+                $now = Db::prepareDateForDb(DateTimeHelper::now());
+                
                 // Create a row in the content table for each element to support custom fields
                 $this->insert(Table::CONTENT, [
                     'elementId' => $row['id'],
                     'siteId' => $row['siteId'],
-                    'dateCreated' => DateTimeHelper::toIso8601(DateTimeHelper::now()),
-                    'dateUpdated' => DateTimeHelper::toIso8601(DateTimeHelper::now()),
+                    'dateCreated' => $now,
+                    'dateUpdated' => $now,
                     'uid' => StringHelper::UUID(),
                 ]);
 
