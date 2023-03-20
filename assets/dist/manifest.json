@@ -132,12 +132,12 @@
     "src": "forms-frontend/Rules.js"
   },
   "forms-frontend/SubmitHandler.js": {
-    "file": "assets/submitHandler-360a0d3b.js",
+    "file": "assets/submitHandler-a675b990.js",
     "isEntry": true,
     "src": "forms-frontend/SubmitHandler.js"
   },
   "mailer/EmailThemesSettings.js": {
-    "file": "assets/emailThemes-0ce82b86.js",
+    "file": "assets/emailThemes-5297ee96.js",
     "isEntry": true,
     "src": "mailer/EmailThemesSettings.js"
   },
@@ -181,5 +181,17 @@
     "file": "assets/sitemaps-458b22ea.js",
     "isEntry": true,
     "src": "sitemaps/Sitemaps.js"
+  },
+  "transactional/NotificationEvents.css": {
+    "file": "assets/NotificationEvents-6d4f710e.css",
+    "src": "transactional/NotificationEvents.css"
+  },
+  "transactional/NotificationEvents.js": {
+    "css": [
+      "assets/NotificationEvents-6d4f710e.css"
+    ],
+    "file": "assets/transactionalEmail-6a5ef255.js",
+    "isEntry": true,
+    "src": "transactional/NotificationEvents.js"
   }
 }
