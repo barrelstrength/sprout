@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fixed datetime syntax in migration ([#2datastudio])
+- Fixed datetime syntax in migration ([#2][#2datastudio])
 
 [#2datastudio]: https://github.com/barrelstrength/craft-sprout-data-studio/issues/2
 
