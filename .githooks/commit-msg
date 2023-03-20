@@ -6,14 +6,19 @@
 # attempts to help prevent accidental changes to existing migrations.
 #
 
+COMMIT_MESSAGE=$(cat "${1}")
+
 # Check if file being committed is a modified migration file
 # diff-filter types [D]eleted, [M]odified, [R]enamed, [T]ype changed
-if git diff --cached --name-only --diff-filter=DMRT | grep -E --quiet "(migrations\/m\d{6}_\d{6})"
+if git diff --cached --name-only --diff-filter=DMRT | grep -E --quiet "(migrations\/m\d{6}_\d{6})";
 then
     MIGRATION_MODIFIED=true
 fi
 
-COMMIT_MESSAGE=$(cat "${1}")
+# Ignore merge commits
+if [[ "$COMMIT_MESSAGE" == "Merge branch"* ]]; then
+    MIGRATION_MODIFIED=''
+fi
 
 if [ -n "$MIGRATION_MODIFIED" ] && [[ "$COMMIT_MESSAGE" != "Updates existing migration"* ]]; then
     echo "Existing migration files should rarely be modified. Update the commit message to explicitly acknowledge that you are making a change to an existing migration. The commit message should begin with:"
