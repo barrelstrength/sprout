@@ -29,7 +29,7 @@ class EmailThemesController extends Controller
     public function actionEdit(EmailTheme $emailTheme = null, string $emailThemeUid = null, string $handle = null): Response
     {
         $this->requireAdmin();
-
+        
         if (!$emailTheme && $handle) {
             $emailTheme = EmailThemeHelper::getEmailThemeByHandle($handle);
         }

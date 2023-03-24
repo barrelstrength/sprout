@@ -111,11 +111,11 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     public function getTextEmailTemplate(): ?string
     {
-        if (!Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate())) {
+        if (!Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate)) {
             return null;
         }
 
-        return $this->textEmailTemplate();
+        return $this->textEmailTemplate;
     }
 
     public function hasAtLeastOneField(): void
