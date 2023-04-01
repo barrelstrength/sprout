@@ -5,32 +5,9 @@
 
 {% block actionButton %}
 
-    <div class="buttons">
+    {{ newDataSetButtonHtml }}
 
-        {% if newDataSetOptions|length > 0 and dataSources %}
-            <div class="newwidget btngroup">
-                <button type="button" class="btn menubtn submit add icon">
-                    {{ newButtonLabel }}
-                </button>
-                <div class="menu">
-                    <ul>
-                        {% for option in newDataSetOptions %}
-                            <li>
-                                {{ tag('a', {
-                                    href: option.url,
-                                    text: option.name,
-                                    class: 'formsubmit',
-                                }) }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        {% endif %}
-
-        {{ sproutCp.upgradeToProButton(module) }}
-
-    </div>
+    {{ sproutCp.upgradeToProButton(module) }}
 
 {% endblock %}
 
@@ -47,3 +24,9 @@
     {{ sproutCp.sproutGroupAdmin(elementType, title) }}
 
 {% endjs %}
+
+{% block initJs %}
+    SproutDataSetElementIndexInit = function() {
+    {{ parent() }}
+    };
+{% endblock %}

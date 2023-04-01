@@ -25,6 +25,7 @@ export default ({command}) => ({
                 redirects: '/redirects/Redirects.js',
                 // subscribers: '/lists/Subscribers.js',
                 dataStudio: '/data-studio/DataStudio.js',
+                dataSetIndex: '/data-studio/DataSetIndex.js',
                 sitemaps: '/sitemaps/Sitemaps.js',
                 meta: '/meta/Meta.js',
                 addressField: '/fields/AddressField.js',

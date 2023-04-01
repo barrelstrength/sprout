@@ -1,5 +1,13 @@
 # Changelog
 
+## UNRELEASED - 2023-04-01
+
+### Fixed
+
+- Improved multi-site support ([#3][#2datastudio])
+
+[#3datastudio]: https://github.com/barrelstrength/sprout-data-studio/issues/3
+
 ## 4.0.4 - 2023-03-20
 
 ### Fixed
