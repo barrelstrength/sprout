@@ -1,5 +1,13 @@
 # Changelog
 
+## UNRELEASED - 2023-03-20
+
+### Fixed
+
+- Fixed filename casing issue ([#40][#40redirects])
+
+[#40redirects]: https://github.com/barrelstrength/sprout-redirects/issues/40
+
 ## 4.0.4 - 2023-03-20
 
 ### Fixed
