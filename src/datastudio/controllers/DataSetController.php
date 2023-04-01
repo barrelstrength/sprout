@@ -65,8 +65,14 @@ class DataSetController extends Controller
 
     public function actionResultsIndexTemplate(DataSetElement $dataSet = null, int $dataSetId = null): Response
     {
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
         if ($dataSet === null && $dataSetId) {
-            $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class);
+            $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class, $site->id);
         }
 
         if (!$dataSet) {
