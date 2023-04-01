@@ -24,6 +24,12 @@ class DataSetController extends Controller
 {
     public function actionDataSetIndexTemplate($groupId = null): Response
     {
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
         $this->requirePermission(DataStudioModule::p('accessModule'));
 
         $dataSources = DataStudioModule::getInstance()->dataSources->getDataSources();
@@ -39,7 +45,9 @@ class DataSetController extends Controller
 
             $newDataSetOptions[] = [
                 'name' => $dataSource::displayName(),
-                'url' => UrlHelper::cpUrl('sprout/data-studio/new/' . $dataSource::getHandle()),
+                'url' => UrlHelper::cpUrl('sprout/data-studio/new/' . $dataSource::getHandle(), [
+                    'site' => $site->handle,
+                ]),
             ];
         }
 
@@ -132,6 +140,7 @@ class DataSetController extends Controller
         }
 
         $dataSet = Craft::createObject(DataSetElement::class);
+        $dataSet->siteId = $site->id;
 
         $dataSourceType = DataStudioModule::getInstance()->dataSources->getDataSourceTypeByHandle($type);
 
