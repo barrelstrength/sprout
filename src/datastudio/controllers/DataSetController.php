@@ -15,6 +15,7 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
+use Twig\Markup;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -24,41 +25,32 @@ class DataSetController extends Controller
 {
     public function actionDataSetIndexTemplate($groupId = null): Response
     {
-        $this->requirePermission(DataStudioModule::p('accessModule'));
+        $site = Cp::requestedSite();
 
-        $dataSources = DataStudioModule::getInstance()->dataSources->getDataSources();
-
-        $newDataSetOptions = [];
-
-        foreach ($dataSources as $dataSource) {
-            $currentUser = Craft::$app->getUser()->getIdentity();
-
-            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSource::class))) {
-                continue;
-            }
-
-            $newDataSetOptions[] = [
-                'name' => $dataSource::displayName(),
-                'url' => UrlHelper::cpUrl('sprout/data-studio/new/' . $dataSource::getHandle()),
-            ];
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
+
+        $this->requirePermission(DataStudioModule::p('accessModule'));
 
         return $this->renderTemplate('sprout-module-data-studio/_datasets/index', [
             'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
-            'dataSources' => $dataSources,
             'groupId' => $groupId,
-            'newDataSetOptions' => $newDataSetOptions,
-            'newButtonLabel' => Craft::t('sprout-module-data-studio', 'New {displayName}', [
-                'displayName' => DataSetElement::displayName(),
-            ]),
+            'newDataSetButtonHtml' => self::getNewDataSetButtonHtml($site),
         ]);
     }
 
     public function actionResultsIndexTemplate(DataSetElement $dataSet = null, int $dataSetId = null): Response
     {
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
         if ($dataSet === null && $dataSetId) {
-            $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class);
+            $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class, $site->id);
         }
 
         if (!$dataSet) {
@@ -132,6 +124,7 @@ class DataSetController extends Controller
         }
 
         $dataSet = Craft::createObject(DataSetElement::class);
+        $dataSet->siteId = $site->id;
 
         $dataSourceType = DataStudioModule::getInstance()->dataSources->getDataSourceTypeByHandle($type);
 
@@ -231,5 +224,72 @@ class DataSetController extends Controller
         Craft::$app->getSession()->setNotice(Craft::t('sprout-module-data-studio', 'Data set updated.'));
 
         return $this->redirectToPostedUrl($dataSet);
+    }
+
+    /**
+     * Because Garnish isn't documented, still.
+     */
+    public function actionGetNewDataSetsButtonHtml(): Response
+    {
+        $this->requireAcceptsJson();
+
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
+        return $this->asJson([
+            'html' => self::getNewDataSetButtonHtml($site),
+        ]);
+    }
+
+    public static function getNewDataSetButtonHtml(Site $site): ?Markup
+    {
+        $dataSources = DataStudioModule::getInstance()->dataSources->getDataSources();
+
+        $newDataSetOptions = [];
+
+        foreach ($dataSources as $dataSource) {
+            $currentUser = Craft::$app->getUser()->getIdentity();
+
+            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSource::class))) {
+                continue;
+            }
+
+            $newDataSetOptions[] = [
+                'name' => $dataSource::displayName(),
+                'url' => UrlHelper::cpUrl('sprout/data-studio/new/' . $dataSource::getHandle(), [
+                    'site' => $site->handle,
+                ]),
+            ];
+        }
+
+        $label = Craft::t('sprout-module-data-studio', 'New {displayName}', [
+            'displayName' => DataSetElement::displayName(),
+        ]);
+
+        $labelHtml = Html::button($label, [
+            'class' => 'btn menubtn submit add icon',
+        ]);
+
+        $menuListHtml = Html::ul($newDataSetOptions, [
+            'item' => function($item) {
+                return Html::tag('li', Html::a($item['name'], $item['url'], [
+                    'class' => 'formsubmit sprout-dataset-new-button',
+                ]));
+            },
+        ]);
+
+        $menuHtml = Html::tag('div', $menuListHtml, [
+            'class' => 'menu',
+        ]);
+
+        $buttonHtml = Html::tag('div', $labelHtml . $menuHtml, [
+            'id' => 'sprout-new-dataset-btn',
+            'class' => 'btngroup',
+        ]);
+
+        return Template::raw($buttonHtml);
     }
 }

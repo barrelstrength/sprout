@@ -26,6 +26,7 @@ export default ({command}) => ({
                 // notifications: '/notifications/Notifications.js',
                 redirects: '/redirects/Redirects.js',
                 dataStudio: '/data-studio/DataStudio.js',
+                dataSetIndex: '/data-studio/DataSetIndex.js',
                 sitemaps: '/sitemaps/Sitemaps.js',
                 meta: '/meta/Meta.js',
                 addressField: '/fields/AddressField.js',

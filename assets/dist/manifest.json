@@ -50,6 +50,11 @@
     "isEntry": true,
     "src": "core/SproutCp.js"
   },
+  "data-studio/DataSetIndex.js": {
+    "file": "assets/dataSetIndex-e3405539.js",
+    "isEntry": true,
+    "src": "data-studio/DataSetIndex.js"
+  },
   "data-studio/DataStudio.css": {
     "file": "assets/DataStudio-a18bcbd3.css",
     "src": "data-studio/DataStudio.css"

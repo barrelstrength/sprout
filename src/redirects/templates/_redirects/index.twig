@@ -32,14 +32,6 @@
     }
 {% endcss %}
 
-{# {% js %} #}
-{#     {% if not module.isPro() and not false %} #}
-{#         $('#sprout-redirects-new-button').on('click', function(e){ #}
-{#         e.preventDefault(); #}
-{#         }) #}
-{#     {% endif %} #}
-{# {% endjs %} #}
-
 {% block initJs %}
     SproutRedirectElementIndexInit = function() {
     {{ parent() }}
