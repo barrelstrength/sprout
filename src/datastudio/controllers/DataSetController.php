@@ -155,11 +155,17 @@ class DataSetController extends Controller
             throw new ForbiddenHttpException('Upgrade to Sprout Data Studio Pro to export data sets.');
         }
 
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to export content in any sites.');
+        }
+
         $currentUser = Craft::$app->getUser()->getIdentity();
         $dataSetId = Craft::$app->getRequest()->getParam('dataSetId');
 
         /** @var DataSetElement $dataSet */
-        $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class);
+        $dataSet = Craft::$app->elements->getElementById($dataSetId, DataSetElement::class, $site->id);
 
         if (!$dataSet) {
             throw new ElementNotFoundException('Data set not found');
@@ -185,6 +191,11 @@ class DataSetController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to update content in any sites.');
+        }
 
         $dataSetId = $request->getBodyParam('dataSetId');
         $settings = $request->getBodyParam('settings');
@@ -193,7 +204,7 @@ class DataSetController extends Controller
 
         if ($dataSetId && $settings) {
             /** @var DataSetElement $dataSet */
-            $dataSet = Craft::$app->getElements()->getElementById($dataSetId, DataSetElement::class);
+            $dataSet = Craft::$app->getElements()->getElementById($dataSetId, DataSetElement::class, $site->id);
 
             if (!$dataSet) {
                 throw new NotFoundHttpException('No data set exists with the ID: ' . $dataSetId);
