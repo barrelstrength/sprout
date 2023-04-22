@@ -110,7 +110,7 @@ class DataSetController extends Controller
             'dataSource' => $dataSource,
             'labels' => $labels,
             'values' => $values,
-            'canEditDataSet' => $currentUser->can(DataStudioModule::p('editDataSet')),
+            'canEditDataSet' => $currentUser->can(DataStudioModule::p('editDataSet:' . $dataSource::class)),
             'disabledExportButtonHtml' => Template::raw($disabledExportButtonHtml),
         ]);
     }
