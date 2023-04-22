@@ -2,9 +2,9 @@
     "name": "sprout",
     "description": "",
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^14.1.0",
+        "@rollup/plugin-node-resolve": "^15.0.1",
         "alpinejs": "^3.11.1",
-        "apexcharts": "^3.37.0",
+        "apexcharts": "^3.37.2",
         "autoprefixer": "^10.4.13",
         "craftcms-sass": "^3.5.7",
         "datatables.net": "^1.13.2",
@@ -12,8 +12,8 @@
         "jquery": "^3.6.3",
         "jquery-tageditor": "^1.0.1",
         "postcss": "^8.4.21",
-        "sass": "^1.58.2",
-        "vite": "^4.1.2",
+        "sass": "^1.60.0",
+        "vite": "^4.2.1",
         "vite-plugin-restart": "^0.3"
     },
     "scripts": {

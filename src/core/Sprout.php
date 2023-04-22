@@ -114,6 +114,7 @@ class Sprout extends Module
         // The `@BarrelStrength/Sprout` syntax is needed for console commands. Resolves to /src
         Craft::setAlias('@BarrelStrength/Sprout', dirname(__DIR__));
         Craft::setAlias('@Sprout/Assets', dirname(__DIR__, 2) . '/assets');
+        Craft::setAlias('@Sprout/TemplatePath', dirname(__DIR__, 2) . '/templates');
         Craft::setAlias('@Sprout/TemplateRoot', TemplateHelper::getSproutSiteTemplateRoot());
 
         if (Craft::$app instanceof ConsoleApplication) {

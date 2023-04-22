@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\datastudio\components\datasources;
 
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
@@ -109,7 +110,14 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         // If settings template exists as setting, look for it on the front-end.
         // If not, return a nice message explain how to handle settings.
         if ($this->settingsTemplate) {
-            $customSettingsTemplatePath = Craft::$app->getPath()->getSiteTemplatesPath() . '/' . $this->settingsTemplate;
+
+            if ($sproutExamplePath = $this->getSproutExampleTemplatePath($this->settingsTemplate)) {
+                // Sprout Example Templates
+                $customSettingsTemplatePath = $sproutExamplePath;
+            } else {
+                // Standard Templates
+                $customSettingsTemplatePath = Craft::$app->getPath()->getSiteTemplatesPath() . DIRECTORY_SEPARATOR . $this->settingsTemplate;
+            }
 
             $customSettingsFileContent = file_get_contents($customSettingsTemplatePath);
 
@@ -191,5 +199,24 @@ class CustomTwigTemplateQueryDataSource extends DataSource
 
             array_unshift($rows, $headerRow);
         }
+    }
+
+    /**
+     * If the template starts with the getSproutSiteTemplateRoot() value, we need to
+     * update it to use the filepath in our module instead of the front end
+     * (because we allow the use of Craft's CP '_include/forms'
+     */
+    protected function getSproutExampleTemplatePath($template): ?string
+    {
+        $sproutExampleTemplateRoot = TemplateHelper::getSproutSiteTemplateRoot() . DIRECTORY_SEPARATOR . 'examples';
+
+        if (!str_starts_with($template, $sproutExampleTemplateRoot)) {
+            return null;
+        }
+
+        // Strip off the template root prefix and leave 'examples/' in the template path
+        $sproutTemplatePath = ltrim($template, TemplateHelper::getSproutSiteTemplateRoot());
+
+        return Craft::getAlias('@Sprout/TemplatePath') . DIRECTORY_SEPARATOR . $sproutTemplatePath;
     }
 }
