@@ -1,18 +1,33 @@
 title: Feature Request
-description: Describe a feature you would like us to add or improve
 labels: [ "cX", "feature" ]
 body:
   - type: markdown
     attributes:
-      label: Description
-      description: A clear and concise description of the idea
+      value: |
+        This is text that will show up in the template!
+  - type: textarea
+    id: improvements
+    attributes:
+      label: Top 3 improvements
+      description: "What are the top 3 improvements we could make to this project?"
+      value: |
+        1.
+        2.
+        3.
+        ...
+      render: bash
     validations:
       required: true
   - type: markdown
     attributes:
-      label: Example
-      description: |
-        A simple example of the new feature in action (include PHP code, Twig variable, YAML config, etc.)
-        If the new feature changes an existing feature, include a simple before/after comparison.
-
+      value: |
+        ## Markdown header
+        And some more markdown
+  - type: input
+    id: has-id
+    attributes:
+      label: Suggestions
+      description: A description about suggestions to help you
+    validations:
+      required: true
 
