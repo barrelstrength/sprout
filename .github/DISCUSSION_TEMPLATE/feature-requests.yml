@@ -1,4 +1,3 @@
-title: Feature Request
 labels: [ "cX", "feature" ]
 body:
   - type: textarea
@@ -16,5 +15,3 @@ body:
       description: |
         A simple example of the new feature in action (include PHP code, Twig variable, YAML config, etc.)
         If the new feature changes an existing feature, include a simple before/after comparison.
-
-
