@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.6 - 2023-04-21
+
+### Fixed
+
+- Fixed edit button permissions ([#8][#8datastudio])
+- Fixed Twig Template Query example template paths
+
+[#8datastudio]: https://github.com/barrelstrength/sprout-data-studio/issues/8
+
 ## 4.0.5 - 2023-04-01
 
 ### Fixed
