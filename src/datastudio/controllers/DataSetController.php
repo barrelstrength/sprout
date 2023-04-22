@@ -61,7 +61,7 @@ class DataSetController extends Controller
 
         $dataSource = $dataSet->getDataSource();
 
-        if (!$currentUser->can(DataStudioModule::p('viewReports:') . $dataSource::class)) {
+        if (!$currentUser->can(DataStudioModule::p('viewReports:' . $dataSource::class))) {
             throw new ForbiddenHttpException('User is not authorized to perform this action.');
         }
 
@@ -167,7 +167,7 @@ class DataSetController extends Controller
 
         $dataSource = $dataSet->getDataSource();
 
-        if (!$currentUser->can(DataStudioModule::p('viewReports:') . $dataSource::class)) {
+        if (!$currentUser->can(DataStudioModule::p('viewReports:' . $dataSource::class))) {
             throw new ForbiddenHttpException('User not authorized to view this data set.');
         }
 
