@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
-use BarrelStrength\Sprout\forms\forms\FormGroupsAdmin;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\Element;
@@ -451,6 +450,8 @@ class FormsController extends BaseController
 
         $request = Craft::$app->getRequest();
         $formId = $request->getBodyParam('formId');
+
+        // @todo - should we rename this to Title as it is stored in the DB?
         $name = $request->getBodyParam('name');
 
         $tab = null;
