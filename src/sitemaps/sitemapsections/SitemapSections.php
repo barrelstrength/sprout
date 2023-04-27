@@ -147,7 +147,7 @@ class SitemapSections extends Component
             return;
         }
 
-        $registeredUrlEnabledSectionsTypes = UrisModule::getInstance()->urlEnabledSections->getRegisteredUrlEnabledSectionsEvent();
+        $registeredUrlEnabledSectionsTypes = UrisModule::getInstance()->urlEnabledSections->getUrlEnabledSectionTypes();
 
         foreach ($registeredUrlEnabledSectionsTypes as $urlEnabledSectionType) {
             /**

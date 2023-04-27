@@ -24,7 +24,7 @@ class UrlEnabledSections extends Component
      *
      * @return UrlEnabledSectionType[]
      */
-    public function getRegisteredUrlEnabledSectionsEvent(): array
+    public function getUrlEnabledSectionTypes(): array
     {
         $urlEnabledSectionTypes = [
             EntrySectionType::class,
@@ -47,7 +47,7 @@ class UrlEnabledSections extends Component
 
     public function getUrlEnabledSectionTypesInstances(): array
     {
-        $urlEnabledSectionTypes = $this->getRegisteredUrlEnabledSectionsEvent();
+        $urlEnabledSectionTypes = $this->getUrlEnabledSectionTypes();
 
         $urlEnabledSections = [];
 
@@ -99,7 +99,7 @@ class UrlEnabledSections extends Component
 
     public function prepareUrlEnabledSectionTypesForMetadataField($siteId): void
     {
-        $registeredUrlEnabledSectionsTypes = $this->getRegisteredUrlEnabledSectionsEvent();
+        $registeredUrlEnabledSectionsTypes = $this->getUrlEnabledSectionTypes();
 
         foreach ($registeredUrlEnabledSectionsTypes as $urlEnabledSectionType) {
 
