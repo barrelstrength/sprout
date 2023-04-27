@@ -45,40 +45,6 @@ class UrlEnabledSections extends Component
         return $event->types;
     }
 
-    public function getUrlEnabledSectionTypesInstances(): array
-    {
-        $urlEnabledSectionTypes = $this->getUrlEnabledSectionTypes();
-
-        $urlEnabledSections = [];
-
-        foreach ($urlEnabledSectionTypes as $urlEnabledSectionType) {
-            $urlEnabledSections[] = new $urlEnabledSectionType();
-        }
-
-        uasort($urlEnabledSections, static function($a, $b): int {
-            /**
-             * @var $a UrlEnabledSectionType
-             * @var $b UrlEnabledSectionType
-             */
-            return $a->getName() <=> $b->getName();
-        });
-
-        return $urlEnabledSections;
-    }
-
-    public function getMatchedElementVariables(): array
-    {
-        $urlEnabledSections = $this->getUrlEnabledSectionTypesInstances();
-
-        $matchedElementVariables = [];
-
-        foreach ($urlEnabledSections as $urlEnabledSection) {
-            $matchedElementVariables[] = $urlEnabledSection->getMatchedElementVariable();
-        }
-
-        return array_filter($matchedElementVariables);
-    }
-
     /**
      * Get the active URL-Enabled Section Type via the Element Type
      */
