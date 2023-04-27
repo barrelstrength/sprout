@@ -1,0 +1,11 @@
+labels: [ "question" ]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Description
+      description: |
+        Ask your question and provide any details that may facilitate a response.
+        Include screenshots, code, step-by-step examples, or wild comparisons as appropriate.
+    validations:
+      required: true
