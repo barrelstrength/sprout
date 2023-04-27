@@ -45,7 +45,7 @@ class UrlEnabledSections extends Component
         return $event->types;
     }
 
-    public function getUrlEnabledSectionTypes(): array
+    public function getUrlEnabledSectionTypesInstances(): array
     {
         $urlEnabledSectionTypes = $this->getRegisteredUrlEnabledSectionsEvent();
 
@@ -68,7 +68,7 @@ class UrlEnabledSections extends Component
 
     public function getMatchedElementVariables(): array
     {
-        $urlEnabledSections = $this->getUrlEnabledSectionTypes();
+        $urlEnabledSections = $this->getUrlEnabledSectionTypesInstances();
 
         $matchedElementVariables = [];
 
