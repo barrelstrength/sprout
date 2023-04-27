@@ -51,27 +51,14 @@ class UrlEnabledSections extends Component
     public function getUrlEnabledSectionTypeByElementType($elementType): ?UrlEnabledSectionType
     {
         $currentSite = Craft::$app->sites->getCurrentSite();
-        $this->prepareUrlEnabledSectionTypesForMetadataField($currentSite->id);
 
-        foreach ($this->urlEnabledSectionTypes as $urlEnabledSectionType) {
+        $urlEnabledSectionsTypes = $this->getUrlEnabledSectionTypes();
 
-            if ($urlEnabledSectionType->getElementType() == $elementType) {
-                return $urlEnabledSectionType;
-            }
-        }
-
-        return null;
-    }
-
-    public function prepareUrlEnabledSectionTypesForMetadataField($siteId): void
-    {
-        $registeredUrlEnabledSectionsTypes = $this->getUrlEnabledSectionTypes();
-
-        foreach ($registeredUrlEnabledSectionsTypes as $urlEnabledSectionType) {
+        foreach ($urlEnabledSectionsTypes as $urlEnabledSectionType) {
 
             /** @var UrlEnabledSectionType $urlEnabledSectionType */
             $urlEnabledSectionType = new $urlEnabledSectionType();
-            $allUrlEnabledSections = $urlEnabledSectionType->getAllUrlEnabledSections($siteId);
+            $allUrlEnabledSections = $urlEnabledSectionType->getAllUrlEnabledSections($currentSite->id);
             $urlEnabledSections = [];
 
             /** @var UrlEnabledSection $urlEnabledSection */
@@ -88,5 +75,13 @@ class UrlEnabledSections extends Component
 
             $this->urlEnabledSectionTypes[$urlEnabledSectionType->getId()] = $urlEnabledSectionType;
         }
+
+        foreach ($this->urlEnabledSectionTypes as $urlEnabledSectionType) {
+            if ($urlEnabledSectionType->getElementType() == $elementType) {
+                return $urlEnabledSectionType;
+            }
+        }
+
+        return null;
     }
 }
