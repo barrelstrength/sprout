@@ -92,16 +92,12 @@ class ElementMetadata extends Component
          */
         $elementType = $fieldLayout->type;
         $fieldLayoutFields = $fieldLayout->getCustomFields();
-        $hasElementMetadataField = false;
 
-        foreach ($fieldLayoutFields as $field) {
-            if ($field instanceof ElementMetadataField) {
-                $hasElementMetadataField = true;
-                break;
-            }
-        }
+        $elementMetadataField = array_filter($fieldLayoutFields, static function($field) {
+            return $field instanceof ElementMetadataField;
+        });
 
-        if ($hasElementMetadataField) {
+        if ($elementMetadataField) {
             // Some Elements, like Commerce_Products
             // also need to save the related Variant field layout which returns as an array
             $this->resaveElementsByUrlEnabledSection($elementType, true, $fieldLayout);
