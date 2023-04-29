@@ -62,9 +62,4 @@ class NoSectionSectionType extends UrlEnabledSectionType
     {
         return '';
     }
-
-    public function resaveElements($elementGroupId = null): bool
-    {
-        return true;
-    }
 }

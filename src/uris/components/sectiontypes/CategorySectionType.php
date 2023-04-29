@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\uris\urlenabledsections\UrlEnabledSectionType;
 use Craft;
 use craft\base\Model;
 use craft\elements\Category as CategoryElement;
-use craft\queue\jobs\ResaveElements;
 
 class CategorySectionType extends UrlEnabledSectionType
 {
@@ -76,45 +75,5 @@ class CategorySectionType extends UrlEnabledSectionType
     public function getTableName(): string
     {
         return 'categorygroups_sites';
-    }
-
-    public function resaveElements($elementGroupId = null): bool
-    {
-        if (!$elementGroupId) {
-            return false;
-        }
-
-        $category = Craft::$app->categories->getGroupById($elementGroupId);
-
-        if (!$category) {
-            return false;
-        }
-
-        $siteSettings = $category->getSiteSettings();
-
-        if (!$siteSettings) {
-            return false;
-        }
-
-        // let's take the first site
-        $primarySite = reset($siteSettings)->siteId ?? null;
-
-        if (!$primarySite) {
-            return false;
-        }
-
-        Craft::$app->getQueue()->push(new ResaveElements([
-            'description' => Craft::t('sprout-module-uris', 'Re-saving Categories and metadata.'),
-            'elementType' => CategoryElement::class,
-            'criteria' => [
-                'siteId' => $primarySite,
-                'groupId' => $elementGroupId,
-                'status' => null,
-                'enabledForSite' => false,
-                'limit' => null,
-            ],
-        ]));
-
-        return true;
     }
 }

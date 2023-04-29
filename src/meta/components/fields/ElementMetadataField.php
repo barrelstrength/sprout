@@ -155,13 +155,6 @@ class ElementMetadataField extends Field
         ]);
     }
 
-    public function afterSave(bool $isNew): void
-    {
-        MetaModule::getInstance()->elementMetadata->resaveElementsIfUsingElementMetadataField($this->id);
-
-        parent::afterSave($isNew);
-    }
-
     protected function defineRules(): array
     {
         $isPro = MetaModule::isPro();

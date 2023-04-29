@@ -122,19 +122,4 @@ abstract class UrlEnabledSectionType
      * @return UrlEnabledSection[]
      */
     abstract public function getAllUrlEnabledSections($siteId): array;
-
-    /**
-     * Disable support for resaving elements when a field layout for this
-     * URL-Enabled Section is saved. Some Elements already do this by default
-     * and you may want to set this to false if they do.
-     */
-    public function resaveElementsAfterFieldLayoutSaved(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Add support for triggering the ResaveElements task for this URL-Enabled Section
-     */
-    abstract public function resaveElements($elementGroupId = null): bool;
 }

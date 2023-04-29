@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\uris\urlenabledsections\UrlEnabledSectionType;
 use Craft;
 use craft\base\Model;
 use craft\elements\Entry as EntryElement;
-use craft\queue\jobs\ResaveElements;
 
 class EntrySectionType extends UrlEnabledSectionType
 {
@@ -87,45 +86,5 @@ class EntrySectionType extends UrlEnabledSectionType
     public function getTableName(): string
     {
         return 'sections_sites';
-    }
-
-    public function resaveElements($elementGroupId = null): bool
-    {
-        if (!$elementGroupId) {
-            return false;
-        }
-
-        $section = Craft::$app->sections->getSectionById($elementGroupId);
-
-        if (!$section) {
-            return false;
-        }
-
-        $siteSettings = $section->getSiteSettings();
-
-        if (!$siteSettings) {
-            return false;
-        }
-
-        // let's take the first site
-        $primarySite = reset($siteSettings)->siteId ?? null;
-
-        if (!$primarySite) {
-            return false;
-        }
-
-        Craft::$app->getQueue()->push(new ResaveElements([
-            'description' => Craft::t('sprout-module-uris', 'Re-saving Entries and metadata'),
-            'elementType' => EntryElement::class,
-            'criteria' => [
-                'siteId' => $primarySite,
-                'sectionId' => $elementGroupId,
-                'status' => null,
-                'enabledForSite' => false,
-                'limit' => null,
-            ],
-        ]));
-
-        return true;
     }
 }

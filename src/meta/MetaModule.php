@@ -22,7 +22,6 @@ use Craft;
 use craft\config\BaseConfig;
 use craft\elements\Address;
 use craft\events\AuthorizationCheckEvent;
-use craft\events\FieldLayoutEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -159,13 +158,6 @@ class MetaModule extends Module
             Fields::EVENT_REGISTER_FIELD_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = ElementMetadataField::class;
-            });
-
-        Event::on(
-            Fields::class,
-            Fields::EVENT_AFTER_SAVE_FIELD_LAYOUT,
-            static function(FieldLayoutEvent $event): void {
-                MetaModule::getInstance()->elementMetadata->handleResaveElementsAfterFieldLayoutIsSaved($event);
             });
 
         Event::on(

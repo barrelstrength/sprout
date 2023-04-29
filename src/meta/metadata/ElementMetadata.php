@@ -4,14 +4,11 @@ namespace BarrelStrength\Sprout\meta\metadata;
 
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
 use BarrelStrength\Sprout\meta\MetaModule;
-use BarrelStrength\Sprout\uris\UrisModule;
-use BarrelStrength\Sprout\uris\urlenabledsections\UrlEnabledSectionType;
 use Craft;
 use craft\base\Element;
 use craft\base\Field;
 use craft\db\Query;
 use craft\db\Table;
-use craft\events\FieldLayoutEvent;
 use craft\models\FieldLayout;
 use yii\base\Component;
 
@@ -65,74 +62,6 @@ class ElementMetadata extends Component
         }
 
         return null;
-    }
-
-    public function handleResaveElementsAfterFieldLayoutIsSaved(FieldLayoutEvent $event): void
-    {
-        if (!MetaModule::isEnabled()) {
-            return;
-        }
-
-        $this->resaveElementsAfterFieldLayoutIsSaved($event->layout);
-    }
-
-    /**
-     * Re-save Elements after a field layout or Element Metadata field is updated
-     *
-     * This is necessary when an Element Metadata field is added to a Field Layout
-     * in a Section that Elements already exist, or if any changes are made to the
-     * Element Metadata field type.
-     */
-    public function resaveElementsAfterFieldLayoutIsSaved(FieldLayout $fieldLayout): void
-    {
-        /**
-         * The Field Layout event identifies the Element Type
-         * that the layout is for:
-         * Category, Entry, Commerce_Product, etc.
-         */
-        $elementType = $fieldLayout->type;
-        $fieldLayoutFields = $fieldLayout->getCustomFields();
-
-        $elementMetadataField = array_filter($fieldLayoutFields, static function($field) {
-            return $field instanceof ElementMetadataField;
-        });
-
-        if ($elementMetadataField) {
-            // Some Elements, like Commerce_Products
-            // also need to save the related Variant field layout which returns as an array
-            $this->resaveElementsByUrlEnabledSection($elementType, true, $fieldLayout);
-        }
-    }
-
-    public function resaveElementsIfUsingElementMetadataField($fieldId): void
-    {
-        //Get all layoutIds where this field is used from craft_fieldlayoutfields.layoutId
-        $fieldLayoutIds = (new Query())
-            ->select('[[layoutId]]')
-            ->from([Table::FIELDLAYOUTFIELDS])
-            ->where(['[[fieldId]]' => $fieldId])
-            ->all();
-
-        $fieldLayoutIds = array_column($fieldLayoutIds, 'layoutId');
-
-        $elementTypes = [];
-
-        foreach ($fieldLayoutIds as $fieldLayoutId) {
-            //Use that id to get the Element Type of each layout via the craft_fieldlayouts.type column
-            $fieldLayout = (new Query())
-                ->select('type')
-                ->from([Table::FIELDLAYOUTS])
-                ->where(['id' => $fieldLayoutId])
-                ->one();
-
-            $elementTypes[] = $fieldLayout['type'];
-        }
-
-        $elementTypes = array_unique($elementTypes);
-
-        foreach ($elementTypes as $elementType) {
-            $this->resaveElementsByUrlEnabledSection($elementType);
-        }
     }
 
     public function getMetaBadgeInfo($settings): array
@@ -268,40 +197,5 @@ class ElementMetadata extends Component
             ->from([Table::FIELDS])
             ->where(['type' => ElementMetadataField::class])
             ->count();
-    }
-
-    /**
-     * Triggers a Resave Elements job for each Url-Enabled Section with an Element Metadata field
-     */
-    protected function resaveElementsByUrlEnabledSection($elementType, bool $afterFieldLayout = false, FieldLayout $fieldLayout = null): bool
-    {
-        $urlEnabledSectionType = UrisModule::getInstance()->urlEnabledSections->getUrlEnabledSectionTypeByElementType($elementType);
-
-        if (!$urlEnabledSectionType instanceof UrlEnabledSectionType) {
-            return false;
-        }
-
-        if ($afterFieldLayout && !$urlEnabledSectionType->resaveElementsAfterFieldLayoutSaved()) {
-            return false;
-        }
-
-        if ($urlEnabledSectionType) {
-            foreach ($urlEnabledSectionType->urlEnabledSections as $urlEnabledSection) {
-                if ($afterFieldLayout && $fieldLayout !== null) {
-                    if ($urlEnabledSection->hasFieldLayoutId($fieldLayout->id)) {
-                        // Need to figure out where to grab sectionId, entryTypeId, categoryGroupId, etc.
-                        $elementGroupId = $urlEnabledSection->id;
-                        $urlEnabledSectionType->resaveElements($elementGroupId);
-
-                        break;
-                    }
-                } elseif ($urlEnabledSection->hasElementMetadataField(false)) {
-                    $elementGroupId = $urlEnabledSection->id;
-                    $urlEnabledSectionType->resaveElements($elementGroupId);
-                }
-            }
-        }
-
-        return true;
     }
 }

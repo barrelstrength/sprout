@@ -44,44 +44,4 @@ class UrlEnabledSections extends Component
 
         return $event->types;
     }
-
-    /**
-     * Get the active URL-Enabled Section Type via the Element Type
-     */
-    public function getUrlEnabledSectionTypeByElementType($elementType): ?UrlEnabledSectionType
-    {
-        $currentSite = Craft::$app->sites->getCurrentSite();
-
-        $urlEnabledSectionsTypes = $this->getUrlEnabledSectionTypes();
-
-        foreach ($urlEnabledSectionsTypes as $urlEnabledSectionType) {
-
-            /** @var UrlEnabledSectionType $urlEnabledSectionType */
-            $urlEnabledSectionType = new $urlEnabledSectionType();
-            $allUrlEnabledSections = $urlEnabledSectionType->getAllUrlEnabledSections($currentSite->id);
-            $urlEnabledSections = [];
-
-            /** @var UrlEnabledSection $urlEnabledSection */
-            foreach ($allUrlEnabledSections as $urlEnabledSection) {
-                $uniqueKey = $urlEnabledSectionType->getId() . '-' . $urlEnabledSection->id;
-                $model = new UrlEnabledSection();
-
-                $model->type = $urlEnabledSectionType;
-                $model->id = $urlEnabledSection->id;
-                $urlEnabledSections[$uniqueKey] = $model;
-            }
-
-            $urlEnabledSectionType->urlEnabledSections = $urlEnabledSections;
-
-            $this->urlEnabledSectionTypes[$urlEnabledSectionType->getId()] = $urlEnabledSectionType;
-        }
-
-        foreach ($this->urlEnabledSectionTypes as $urlEnabledSectionType) {
-            if ($urlEnabledSectionType->getElementType() == $elementType) {
-                return $urlEnabledSectionType;
-            }
-        }
-
-        return null;
-    }
 }
