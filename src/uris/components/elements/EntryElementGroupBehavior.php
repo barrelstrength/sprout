@@ -10,13 +10,13 @@ use craft\models\Section;
 use yii\base\Behavior;
 
 /**
- * Extends Elements with abstracted Element Group behaviors
+ * Extends Elements with Sitemap Metadata behaviors
  *
  * Access directly from the Element:
  * - element.attribute
  * - element.method()
  *
- * @see UrisHelper::attachBehaviors() for initialization
+ * @see SitemapModule::attachElementBehaviors() for initialization
  *
  * @property Entry $owner
  */

@@ -15,7 +15,7 @@ class Uninstall extends Migration
         $moduleSettingsKey = SitemapsModule::projectConfigPath();
         $coreModuleSettingsKey = SitemapsModule::projectConfigPath('modules.' . SitemapsModule::class);
 
-        $this->dropTableIfExists(SproutTable::SITEMAPS);
+        $this->dropTableIfExists(SproutTable::SITEMAPS_METADATA);
 
         Craft::$app->getProjectConfig()->remove($moduleSettingsKey);
         Craft::$app->getProjectConfig()->remove($coreModuleSettingsKey);

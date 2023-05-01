@@ -16,7 +16,7 @@ use yii\base\Behavior;
  * - element.attribute
  * - element.method()
  *
- * @see UrisHelper::attachBehaviors() for initialization
+ * @see UrisModule::attachElementBehaviors() for initialization
  *
  * @property Product $owner
  */

@@ -1,8 +1,8 @@
 {% extends "sprout-module-sitemaps/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = sitemapSection.name != ''
-    ? sitemapSection.name
+{% set title = sitemapMetadata.name != ''
+    ? sitemapMetadata.name
     : "New sitemap page"|t('sprout-module-sitemaps') %}
 
 {% set crumbs = [
@@ -13,8 +13,8 @@
 
 {% set fullPageForm = true %}
 
-{# Map the `sitemapSection` object to `values` so we can use the same templates for Sitemap Sections and the Optimize Field Type #}
-{% set values = sitemapSection %}
+{# Map the `sitemapMetadata` object to `values` so we can use the same templates for Sitemap Sections and the Optimize Field Type #}
+{% set values = sitemapMetadata %}
 {% set saveShortcutRedirect = continueEditingUrl %}
 
 {% block actionButton %}
@@ -49,20 +49,20 @@
 
 {% block content %}
 
-    {{ actionInput('sprout-module-sitemaps/sitemaps/save-sitemap-section') }}
+    {{ actionInput('sprout-module-sitemaps/sitemaps/save-sitemap-metadata') }}
     {{ redirectInput('sprout/sitemaps?site=' ~ currentSite.handle) }}
-    {{ hiddenInput('sectionId', sitemapSection.id is defined ? sitemapSection.id : '') }}
-    {{ hiddenInput('urlEnabledSectionId', sitemapSection.urlEnabledSectionId ?? '') }}
-    {{ hiddenInput('type', sitemapSection.type ?? '') }}
-    {{ hiddenInput('siteId', sitemapSection.siteId ?? null) }}
+    {{ hiddenInput('sectionId', sitemapMetadata.id is defined ? sitemapMetadata.id : '') }}
+    {{ hiddenInput('elementGroupId', sitemapMetadata.elementGroupId ?? '') }}
+    {{ hiddenInput('type', sitemapMetadata.type ?? '') }}
+    {{ hiddenInput('siteId', sitemapMetadata.siteId ?? null) }}
 
     {{ forms.textField({
         label: "URI"|t('sprout-module-sitemaps'),
         instructions: "The relative path of the Custom Page. The Base URL will be appended for you."|t('sprout-module-sitemaps'),
         id: "uri",
         name: 'uri',
-        value: (sitemapSection.uri == '__home__') ? "/" : sitemapSection.uri,
-        errors: sitemapSection.getErrors('uri'),
+        value: (sitemapMetadata.uri == '__home__') ? "/" : sitemapMetadata.uri,
+        errors: sitemapMetadata.getErrors('uri'),
         first: true,
         autofocus: true,
         required: true
@@ -96,7 +96,7 @@
         label: "Priority"|t,
         name: 'priority',
         options: priorityList,
-        value: sitemapSection.priority,
+        value: sitemapMetadata.priority,
         errors: "",
         required: false
     }) }}
@@ -105,7 +105,7 @@
         label: "Change Frequency"|t,
         name: 'changeFrequency',
         options: frequencyList,
-        value: sitemapSection.changeFrequency,
+        value: sitemapMetadata.changeFrequency,
         errors: "",
         required: false
     }) }}
@@ -120,7 +120,7 @@
             label: "Enable"|t,
             id: 'enabled',
             name: 'enabled',
-            on:  (sitemapSection.enabled is defined ? sitemapSection.enabled : false)
+            on:  (sitemapMetadata.enabled is defined ? sitemapMetadata.enabled : false)
         }) }}
     </div>
 

@@ -41,9 +41,9 @@ class SproutSeoSitemapIndex {
         let status = $('tr[data-rowid="' + rowId + '"] td span.status');
 
         let data = {
-            'id': $row.data('id'),
+            'sitemapMetadataId': $row.data('sitemap-metadata-id'),
             'type': $row.data('type'),
-            'urlEnabledSectionId': $row.data('urlEnabledSectionId'),
+            'elementGroupId': $row.data('elementGroupId'),
             'uri': uri,
             'priority': $('select[name="sitemaps[sections][' + rowId + '][priority]"]').val(),
             'changeFrequency': $('select[name="sitemaps[sections][' + rowId + '][changeFrequency]"]').val(),
@@ -51,7 +51,7 @@ class SproutSeoSitemapIndex {
             'siteId': siteId,
         };
 
-        Craft.postActionRequest('sprout-module-sitemaps/sitemaps/save-sitemap-section', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-sitemaps/sitemaps/save-sitemap-metadata', data, $.proxy(function(response, textStatus) {
             if (textStatus === 'success') {
                 if (response.success) {
 
@@ -59,20 +59,20 @@ class SproutSeoSitemapIndex {
                     let type = keys[0];
                     let newRowId = null;
 
-                    if (response.sitemapSection.urlEnabledSectionId) {
-                        newRowId = type + '-' + response.sitemapSection.urlEnabledSectionId;
+                    if (response.sitemapMetadata.elementGroupId) {
+                        newRowId = type + '-' + response.sitemapMetadata.elementGroupId;
                     } else {
-                        newRowId = type + '-' + response.sitemapSection.id;
+                        newRowId = type + '-' + response.sitemapMetadata.id;
                     }
 
                     let $changedElementRow = $(changedElement).closest('tr');
                     let $changedElementTitleLink = $changedElementRow.find('a.sprout-sectiontitle');
 
                     if ($changedElementRow.data('isNew')) {
-                        $changedElementTitleLink.attr('href', 'sections/' + response.sitemapSection.id);
+                        $changedElementTitleLink.attr('href', 'sections/' + response.sitemapMetadata.id);
                         $changedElementRow.removeClass('sitemapsection-isnew');
                         $changedElementRow.data('isNew', 0);
-                        $changedElementRow.data('id', response.sitemapSection.id);
+                        $changedElementRow.data('sitemapMetadataId', response.sitemapMetadata.id);
 
                         $changedElementTitleLink.unbind('click');
                     }
@@ -81,7 +81,7 @@ class SproutSeoSitemapIndex {
 
                     $($sectionInputBase + '[id]"]').val(newRowId);
                     $($sectionInputBase + '[id]"]').attr('name', 'sitemaps[sections][' + newRowId + '][id]');
-                    $($sectionInputBase + '[urlEnabledSectionId]"]').attr('name', 'sitemaps[sections][' + newRowId + '][urlEnabledSectionId]');
+                    $($sectionInputBase + '[elementGroupId]"]').attr('name', 'sitemaps[sections][' + newRowId + '][elementGroupId]');
                     $($sectionInputBase + '[priority]"]').attr('name', 'sitemaps[sections][' + newRowId + '][priority]');
                     $($sectionInputBase + '[changeFrequency]"]').attr('name', 'sitemaps[sections][' + newRowId + '][changeFrequency]');
                     $($sectionInputBase + '[enabled]"]').attr('name', 'sitemaps[sections][' + newRowId + '][enabled]');
@@ -106,7 +106,7 @@ class SproutSeoSitemapIndex {
 
         let linkElement = event.target;
         let row = linkElement.parentElement.parentElement;
-        let customPageId = row.getAttribute('data-id');
+        let customPageId = row.getAttribute('data-sitemap-metadata-id');
 
         let data = {
             id: customPageId,

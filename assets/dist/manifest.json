@@ -46,7 +46,7 @@
     "css": [
       "assets/SproutCp-1ceb4572.css"
     ],
-    "file": "assets/cp-26eede7f.js",
+    "file": "assets/cp-5310f0aa.js",
     "isEntry": true,
     "src": "core/SproutCp.js"
   },
@@ -183,7 +183,7 @@
     "css": [
       "assets/Sitemaps-ee93e5c4.css"
     ],
-    "file": "assets/sitemaps-458b22ea.js",
+    "file": "assets/sitemaps-2027389d.js",
     "isEntry": true,
     "src": "sitemaps/Sitemaps.js"
   },

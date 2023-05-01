@@ -2,10 +2,13 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
-use BarrelStrength\Sprout\sitemaps\sitemapsections\SitemapSectionRecord;
+use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\metadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
-use BarrelStrength\Sprout\uris\components\sectiontypes\NoSectionSectionType;
 use Craft;
+use craft\helpers\Cp;
+use craft\models\Site;
 use craft\web\Controller;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -19,9 +22,13 @@ class SitemapsController extends Controller
      */
     public function actionSitemapIndexTemplate(): Response
     {
-        $this->requirePermission(SitemapsModule::p('editSitemaps'));
+        $site = Cp::requestedSite();
 
-        $siteHandle = Craft::$app->getRequest()->getQueryParam('site');
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
+        $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
         $settings = SitemapsModule::getInstance()->getSettings();
         $isMultiSite = Craft::$app->getIsMultiSite();
@@ -60,49 +67,49 @@ class SitemapsController extends Controller
 
         if ($isMultiSite) {
             // Form Multi-Site we have to figure out which Site and Site Group matter
-            if ($siteHandle !== null) {
+            //if ($siteHandle !== null) {
 
-                // If we have a handle, the Current Site and First Site in Group may be different
-                $currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+            //If we have a handle, the Current Site and First Site in Group may be different
+            //$currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
-                if (!$currentSite) {
-                    throw new NotFoundHttpException('Invalid site handle: ' . $siteHandle);
-                }
+            //if (!$currentSite) {
+            //    throw new NotFoundHttpException('Invalid site handle: ' . $siteHandle);
+            //}
 
-                $currentSiteGroup = Craft::$app->sites->getGroupById($currentSite->groupId);
+            $currentSiteGroup = Craft::$app->sites->getGroupById($site->groupId);
 
-                if (!$currentSiteGroup) {
-                    throw new NotFoundHttpException('Site group not found.');
-                }
-
-                $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-                $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-            } else {
-                // If we don't have a handle, we'll load the first site in the first group
-                // We assume at least one site group and the Current Site will be the same as the First Site
-
-                $allSiteGroups = Craft::$app->sites->getAllGroups();
-                $currentSiteGroup = $allSiteGroups[0];
-                $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-                $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-                $currentSite = $firstSiteInGroup;
+            if (!$currentSiteGroup) {
+                throw new NotFoundHttpException('Site group not found.');
             }
+
+            $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
+            $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
+            //} else {
+            // If we don't have a handle, we'll load the first site in the first group
+            // We assume at least one site group and the Current Site will be the same as the First Site
+
+            //$allSiteGroups = Craft::$app->sites->getAllGroups();
+            //$currentSiteGroup = $allSiteGroups[0];
+            //$sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
+            //$firstSiteInGroup = $sitesInCurrentSiteGroup[0];
+            //$currentSite = $firstSiteInGroup;
+            //}
         } else {
             // For a single site, the primary site ID will do
-            $currentSite = Craft::$app->getSites()->getPrimarySite();
-            $firstSiteInGroup = $currentSite;
+            //$currentSite = Craft::$app->getSites()->getPrimarySite();
+            $firstSiteInGroup = $site;
         }
 
-        $urlEnabledSectionTypes = SitemapsModule::getInstance()->sitemaps->getUrlEnabledSectionTypesForSitemaps($currentSite->id);
+        $elementsWithUris = SitemapsModule::getInstance()->sitemaps->getElementWithUris();
 
-        $customSections = SitemapsModule::getInstance()->sitemaps->getCustomSitemapSections($currentSite->id);
+        $customSections = SitemapsModule::getInstance()->sitemaps->getCustomSitemapMetadata($site->id);
 
         return $this->renderTemplate('sprout-module-sitemaps/sitemaps/index', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
-            'currentSite' => $currentSite,
+            'currentSite' => $site,
             'firstSiteInGroup' => $firstSiteInGroup,
             'editableSiteIds' => $editableSiteIds,
-            'urlEnabledSectionTypes' => $urlEnabledSectionTypes,
+            'elementsWithUris' => $elementsWithUris,
             'customSections' => $customSections,
             'settings' => $settings,
         ]);
@@ -111,36 +118,42 @@ class SitemapsController extends Controller
     /**
      * Renders a Sitemap Edit Page
      */
-    public function actionSitemapEditTemplate(int $sitemapSectionId = null, SitemapSectionRecord $sitemapSectionRecord = null): Response
+    public function actionSitemapEditTemplate(int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
     {
-        $this->requirePermission(SitemapsModule::p('editSitemaps'));
+        $site = Cp::requestedSite();
 
-        $siteHandle = Craft::$app->getRequest()->getRequiredQueryParam('site');
-
-        if ($siteHandle === null) {
-            throw new NotFoundHttpException('Unable to find site with handle: ' . $siteHandle);
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+        $this->requirePermission(SitemapsModule::p('editSitemaps'));
+
+        //$siteHandle = Craft::$app->getRequest()->getRequiredQueryParam('site');
+        //
+        //if ($siteHandle === null) {
+        //    throw new NotFoundHttpException('Unable to find site with handle: ' . $siteHandle);
+        //}
+
+        //$currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
         $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
 
         // Make sure the user has permission to edit that site
-        if ($currentSite !== null && !in_array($currentSite->id, $editableSiteIds, false)) {
+        if (!in_array($site->id, $editableSiteIds, false)) {
             throw new ForbiddenHttpException('User not permitted to edit content for this site.');
         }
 
-        if (!$sitemapSectionRecord instanceof ActiveRecord) {
-            if ($sitemapSectionId) {
-                $sitemapSectionRecord = SitemapsModule::getInstance()->sitemaps->getSitemapSectionById($sitemapSectionId);
+        if (!$sitemapMetadataRecord instanceof ActiveRecord) {
+            if ($sitemapMetadataId) {
+                $sitemapMetadataRecord = SitemapsMetadataHelper::getSitemapMetadataById($sitemapMetadataId);
             } else {
-                $sitemapSectionRecord = new SitemapSectionRecord();
-                $sitemapSectionRecord->siteId = $currentSite->id;
-                $sitemapSectionRecord->type = NoSectionSectionType::class;
+                $sitemapMetadataRecord = new SitemapMetadataRecord();
+                $sitemapMetadataRecord->siteId = $site->id;
+                $sitemapMetadataRecord->type = SitemapMetadata::NO_ELEMENT_TYPE;
             }
         }
 
-        $continueEditingUrl = 'sprout/sitemaps/edit/{id}?site=' . $currentSite->handle;
+        $continueEditingUrl = 'sprout/sitemaps/edit/{id}?site=' . $site->handle;
 
         $tabs = [
             [
@@ -151,47 +164,47 @@ class SitemapsController extends Controller
         ];
 
         return $this->renderTemplate('sprout-module-sitemaps/sitemaps/_edit', [
-            'currentSite' => $currentSite,
-            'sitemapSection' => $sitemapSectionRecord,
+            'currentSite' => $site,
+            'sitemapMetadata' => $sitemapMetadataRecord,
             'continueEditingUrl' => $continueEditingUrl,
             'tabs' => $tabs,
         ]);
     }
 
-    public function actionSaveSitemapSection(): ?Response
+    public function actionSaveSitemapMetadata(): ?Response
     {
         $this->requirePostRequest();
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
-        $id = Craft::$app->getRequest()->getBodyParam('id');
+        $sitemapMetadataId = Craft::$app->getRequest()->getBodyParam('sitemapMetadataId');
 
-        $sitemapSectionRecord = SitemapSectionRecord::findOne($id);
+        $sitemapMetadataRecord = SitemapMetadataRecord::findOne($sitemapMetadataId);
 
-        if ($sitemapSectionRecord === null) {
-            $sitemapSectionRecord = new SitemapSectionRecord();
+        if ($sitemapMetadataRecord === null) {
+            $sitemapMetadataRecord = new SitemapMetadataRecord();
         }
 
         $request = Craft::$app->getRequest();
 
-        $sitemapSectionRecord->siteId = $request->getBodyParam('siteId');
-        $sitemapSectionRecord->urlEnabledSectionId = $request->getBodyParam('urlEnabledSectionId');
-        $sitemapSectionRecord->uri = $request->getBodyParam('uri');
-        $sitemapSectionRecord->type = $request->getBodyParam('type');
-        $sitemapSectionRecord->priority = $request->getBodyParam('priority');
-        $sitemapSectionRecord->changeFrequency = $request->getBodyParam('changeFrequency');
-        $sitemapSectionRecord->enabled = $request->getBodyParam('enabled');
+        $sitemapMetadataRecord->siteId = $request->getBodyParam('siteId');
+        $sitemapMetadataRecord->elementGroupId = $request->getBodyParam('elementGroupId');
+        $sitemapMetadataRecord->uri = $request->getBodyParam('uri');
+        $sitemapMetadataRecord->type = $request->getBodyParam('type');
+        $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
+        $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
+        $sitemapMetadataRecord->enabled = $request->getBodyParam('enabled');
 
-        if (!SitemapsModule::getInstance()->sitemaps->saveSitemapSection($sitemapSectionRecord)) {
+        if (!SitemapsModule::getInstance()->sitemaps->saveSitemapMetadata($sitemapMetadataRecord)) {
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([
-                    'errors' => $sitemapSectionRecord->getErrors(),
+                    'errors' => $sitemapMetadataRecord->getErrors(),
                 ]);
             }
 
             Craft::$app->getSession()->setError(Craft::t('sprout-module-sitemaps', "Couldn't save the Sitemap."));
 
             Craft::$app->getUrlManager()->setRouteParams([
-                'sitemapSection' => $sitemapSectionRecord,
+                'sitemapMetadata' => $sitemapMetadataRecord,
             ]);
 
             return null;
@@ -200,26 +213,23 @@ class SitemapsController extends Controller
         if (Craft::$app->request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
-                'sitemapSection' => $sitemapSectionRecord,
+                'sitemapMetadata' => $sitemapMetadataRecord,
             ]);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('sprout-module-sitemaps', 'Sitemap saved.'));
 
-        return $this->redirectToPostedUrl($sitemapSectionRecord);
+        return $this->redirectToPostedUrl($sitemapMetadataRecord);
     }
 
-    /**
-     * Deletes a Sitemap Section
-     */
     public function actionDeleteSitemapById(): Response
     {
         $this->requirePostRequest();
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
-        $sitemapSectionId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $sitemapMetadataId = Craft::$app->getRequest()->getRequiredBodyParam('id');
 
-        $result = SitemapsModule::getInstance()->sitemaps->deleteSitemapSectionById($sitemapSectionId);
+        $result = SitemapsModule::getInstance()->sitemaps->deleteSitemapMetadataById($sitemapMetadataId);
 
         if (Craft::$app->request->getAcceptsJson()) {
             return $this->asJson([

@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\sitemaps\sitemapsections;
+namespace BarrelStrength\Sprout\sitemaps\metadata;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use Craft;
@@ -13,14 +13,14 @@ use craft\models\Site;
  * @property int $id
  * @property int $siteId
  * @property string $uniqueKey
- * @property int $urlEnabledSectionId
+ * @property int $elementGroupId
  * @property int enabled
  * @property string $type
  * @property string $uri
  * @property int $priority
  * @property string $changeFrequency
  */
-class SitemapSectionRecord extends ActiveRecord
+class SitemapMetadataRecord extends ActiveRecord
 {
     public const SCENARIO_CUSTOM_SECTION = 'customSection';
 
@@ -31,7 +31,7 @@ class SitemapSectionRecord extends ActiveRecord
 
     public static function tableName(): string
     {
-        return SproutTable::SITEMAPS;
+        return SproutTable::SITEMAPS_METADATA;
     }
 
     public function rules(): array
@@ -59,7 +59,7 @@ class SitemapSectionRecord extends ActiveRecord
 
         $result = (new Query())
             ->select('[[uniqueKey]]')
-            ->from([SproutTable::SITEMAPS])
+            ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['[[uniqueKey]]' => $key])
             ->scalar();
 
@@ -88,25 +88,4 @@ class SitemapSectionRecord extends ActiveRecord
             ]));
         }
     }
-
-    //    public function behaviors(): array
-    //    {
-    //        return [
-    //            'typecast' => [
-    //                'class' => AttributeTypecastBehavior::class,
-    //                'attributeTypes' => [
-    //                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
-    //                    'siteId' => AttributeTypecastBehavior::TYPE_INTEGER,
-    //                    'uniqueKey' => AttributeTypecastBehavior::TYPE_STRING,
-    //                    'urlEnabledSectionId' => AttributeTypecastBehavior::TYPE_INTEGER,
-    //                    'enabled' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-    //                    'type' => AttributeTypecastBehavior::TYPE_STRING,
-    //                    'uri' => AttributeTypecastBehavior::TYPE_STRING,
-    //                    'priority' => AttributeTypecastBehavior::TYPE_FLOAT,
-    //                    'changeFrequency' => AttributeTypecastBehavior::TYPE_STRING,
-    //                ],
-    //            ],
-    //            'typecastAfterFind' => true
-    //        ];
-    //    }
 }

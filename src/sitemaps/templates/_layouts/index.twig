@@ -14,7 +14,7 @@
     ]
 }) %}
 
-{% set sectionLayout = craft.app.request.getSegment(2) %}
+{% set module = sprout.modules.sitemaps %}
 {% set siteGroup = craft.app.sites.getGroupById(firstSiteInGroup.groupId) %}
 
 {% block main %}
@@ -46,40 +46,41 @@
 
         {% if not settings.aggregateBySiteGroup() or (craft.app.getIsMultiSite() and currentSite.id == firstSiteInGroup.id) %}
 
-            {% for urlEnabledSectionTypeKey, urlEnabledSectionType in urlEnabledSectionTypes %}
+            {% for elementWithUri in elementsWithUris %}
 
-                {% for urlEnabledSectionKey, urlEnabledSection in urlEnabledSectionType.urlEnabledSections %}
+                {% set elementGroups = module.sitemaps.getElementGroups(elementWithUri, currentSite.id) %}
+                {% for elementGroupKey, elementGroup in elementGroups %}
 
-                    {% set sitemapSection = urlEnabledSection.sitemapSection %}
-                    {% set isNewSitemapSection = not sitemapSection.id %}
+                    {% set sitemapMetadata = elementGroup.sitemapMetadata %}
+                    {% set isNewSitemapSection = not sitemapMetadata.id %}
 
                     {% if loop.first %}
 
-                        {% set name = urlEnabledSectionType.getName() %}
+                        {% set name = elementWithUri.displayName() %}
 
                         <table class="data fullwidth sitemap-settings">
                         <thead>
 
-                        {% block sitemapSectionTableRowHead %}{% endblock %}
+                        {% block sitemapMetadataTableRowHead %}{% endblock %}
 
                         </thead>
                         <tbody>
 
                     {% endif %}
-                    {% if sitemapSection.name is defined %}
-                        {% set elementTableName = urlEnabledSectionType.getElementTableName() %}
-                        {% set sproutSeoHandle = elementTableName~':'~sitemapSection.handle %}
+                    {% if sitemapMetadata.name is defined %}
+                        {% set elementName = elementWithUri.pluralLowerDisplayName() %}
+                        {% set sproutSeoHandle = elementName~':'~sitemapMetadata.handle %}
 
                         <tr class="{{ isNewSitemapSection ? 'sitemapsection-isnew' : null }}"
-                            data-rowid="{{ urlEnabledSectionKey }}"
-                            data-id="{{ sitemapSection.id ? sitemapSection.id : null }}"
-                            data-type="{{ urlEnabledSectionType.getType() }}"
-                            data-url-enabled-section-id="{{ sitemapSection.urlEnabledSectionId }}"
-                            data-uri="{{ sitemapSection.uri }}"
+                            data-rowid="{{ elementGroupKey }}"
+                            data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
+                            data-type="{{ className(elementWithUri) }}"
+                            data-element-group-id="{{ sitemapMetadata.elementGroupId }}"
+                            data-uri="{{ sitemapMetadata.uri }}"
                             data-is-new="{{ isNewSitemapSection }}"
                             data-plugin-handle="{{ craft.app.getRequest().getSegment(1) }}">
 
-                            {% block sitemapSectionTableRow %}{% endblock %}
+                            {% block sitemapMetadataTableRow %}{% endblock %}
 
                         </tr>
                     {% endif %}
@@ -145,7 +146,7 @@
                         {% set customSectionId = "customUrl-" ~ customSection.id %}
 
                         <tr data-rowid="{{ customSectionId }}"
-                            data-id="{{ customSection.id }}"
+                            data-sitemap-metadata-id="{{ customSection.id }}"
                             data-type="{{ customSection.type }}"
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}"
                             data-plugin-handle="{{ craft.app.getRequest().getSegment(1) }}">

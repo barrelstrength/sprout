@@ -53,7 +53,7 @@
     'never': 'Never'|t
 } %}
 
-{% block sitemapSectionTableRowHead %}
+{% block sitemapMetadataTableRowHead %}
 
     <th style="padding-left:9px;width:30%;">{{ name }} <span
             class="info">{{ "All of your " ~name~" that have unique URLs are listed here.  Enable each "~name~" you want to include in your sitemap."|t }}</span>
@@ -72,55 +72,55 @@
 
 {% endblock %}
 
-{% block sitemapSectionTableRow %}
+{% block sitemapMetadataTableRow %}
 
     <td>
         {% include "sprout-module-sitemaps/sitemaps/_titlecolumn" with {
-            sitemapSection: sitemapSection
+            sitemapMetadata: sitemapMetadata
         } %}
     </td>
     <td>
-        {% if sitemapSection.uri == '__home__' %}
+        {% if sitemapMetadata.uri == '__home__' %}
             <span data-icon="home" title="Homepage"></span>
         {% else %}
-            {% if module.sitemaps.uriHasTags(sitemapSection.uri) %}
+            {% if module.sitemaps.uriHasTags(sitemapMetadata.uri) %}
                 <code>
                     {{ "Dynamic URL"|t('sprout-module-sitemaps') }}
                     <span class="info">
                         <h6>{{ "Dynamic URL details"|t('sprout-module-sitemaps') }}</h6>
-                        <p>{{ sitemapSection.uri }}</p>
+                        <p>{{ sitemapMetadata.uri }}</p>
                     </span>
                 </code>
             {% else %}
-                <code>{{ sitemapSection.uri }}</code>
+                <code>{{ sitemapMetadata.uri }}</code>
             {% endif %}
 
         {% endif %}
 
-        {{ hiddenInput('sitemaps[sections]['~urlEnabledSectionKey~'][uri]', sitemapSection.uri) }}
+        {{ hiddenInput('sitemaps[sections]['~elementGroupKey~'][uri]', sitemapMetadata.uri) }}
     </td>
     <td>
         {{ forms.selectField({
-            name: 'sitemaps[sections][' ~ urlEnabledSectionKey ~ '][priority]',
+            name: 'sitemaps[sections][' ~ elementGroupKey ~ '][priority]',
             options: priorityList,
-            value: sitemapSection.priority,
+            value: sitemapMetadata.priority,
             errors: "",
             required: false
         }) }}
     </td>
     <td>
         {{ forms.selectField({
-            name: 'sitemaps[sections][' ~ urlEnabledSectionKey ~ '][changeFrequency]',
+            name: 'sitemaps[sections][' ~ elementGroupKey ~ '][changeFrequency]',
             options: frequencyList,
-            value: sitemapSection.changeFrequency,
+            value: sitemapMetadata.changeFrequency,
             errors: "",
             required: false
         }) }}
     </td>
     <td style="text-align: center;">
         {{ forms.lightswitch({
-            name: 'sitemaps[sections][' ~ urlEnabledSectionKey ~ '][enabled]',
-            on: sitemapSection.enabled == 1 ?? false
+            name: 'sitemaps[sections][' ~ elementGroupKey ~ '][enabled]',
+            on: sitemapMetadata.enabled == 1 ?? false
         }) }}
     </td>
     <td>
@@ -148,7 +148,7 @@
 
     <td colspan="2">
         {% include "sprout-module-sitemaps/sitemaps/_titlecolumn" with {
-            sitemapSection: customSection,
+            sitemapMetadata: customSection,
             isCustom: true
         } %}
 

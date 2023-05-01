@@ -11,10 +11,19 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
-use BarrelStrength\Sprout\sitemaps\sitemapsections\SitemapSections;
+use BarrelStrength\Sprout\sitemaps\components\elements\CategorySitemapMetadataBehavior;
+use BarrelStrength\Sprout\sitemaps\components\elements\EntrySitemapMetadataBehavior;
+use BarrelStrength\Sprout\sitemaps\components\elements\ProductSitemapMetadataBehavior;
+use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\metadata\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
+use craft\base\Element;
+use craft\commerce\elements\Product;
 use craft\config\BaseConfig;
+use craft\elements\Category;
+use craft\elements\Entry;
+use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -26,7 +35,7 @@ use yii\base\Event;
 use yii\base\Module;
 
 /**
- * @property SitemapSections $sitemaps
+ * @property SitemapMetadata $sitemaps
  * @property XmlSitemap $xmlSitemap
  */
 class SitemapsModule extends Module
@@ -75,7 +84,7 @@ class SitemapsModule extends Module
         $this->registerTranslations();
 
         $this->setComponents([
-            'sitemaps' => SitemapSections::class,
+            'sitemaps' => SitemapMetadata::class,
             'xmlSitemap' => XmlSitemap::class,
         ]);
 
@@ -143,6 +152,12 @@ class SitemapsModule extends Module
                     'permissions' => $this->getUserPermissions(),
                 ];
             });
+
+        Event::on(
+            Element::class,
+            Element::EVENT_DEFINE_BEHAVIORS,
+            [self::class, 'attachElementBehaviors']
+        );
     }
 
     public function createSettingsModel(): SitemapsSettings
@@ -195,7 +210,7 @@ class SitemapsModule extends Module
     protected function getCpUrlRules(): array
     {
         return [
-            'sprout/sitemaps/edit/<sitemapSectionId:\d+>' =>
+            'sprout/sitemaps/edit/<sitemapMetadataId:\d+>' =>
                 'sprout-module-sitemaps/sitemaps/sitemap-edit-template',
             'sprout/sitemaps/new' =>
                 'sprout-module-sitemaps/sitemaps/sitemap-edit-template',
@@ -231,7 +246,7 @@ class SitemapsModule extends Module
      * Sitemap Index Page
      * - sitemap.xml
      *
-     * URL-Enabled Sections
+     * Element Groups
      * - sitemap-t6PLT5o43IFG-1.xml
      * - sitemap-t6PLT5o43IFG-2.xml
      *
@@ -251,5 +266,23 @@ class SitemapsModule extends Module
             'sitemap-?<sitemapKey:.*>.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
         ];
+    }
+
+    public static function attachElementBehaviors(DefineBehaviorsEvent $event): void
+    {
+        /** @var Element $element */
+        $element = $event->sender;
+
+        if ($element instanceof Entry) {
+            $event->behaviors[EntrySitemapMetadataBehavior::class] = EntrySitemapMetadataBehavior::class;
+        }
+
+        if ($element instanceof Category) {
+            $event->behaviors[CategorySitemapMetadataBehavior::class] = CategorySitemapMetadataBehavior::class;
+        }
+
+        if ($element instanceof Product) {
+            $event->behaviors[ProductSitemapMetadataBehavior::class] = ProductSitemapMetadataBehavior::class;
+        }
     }
 }

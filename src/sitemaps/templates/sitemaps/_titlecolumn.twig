@@ -1,31 +1,31 @@
 <strong style="display:inline-block;padding:7px 10px;">
 
-    {% if sitemapSection.enabled %}
+    {% if sitemapMetadata.enabled %}
         <span class="status live"></span>
     {% else %}
         <span class="status disabled"></span>
     {% endif %}
 
     {% if isCustom is defined and isCustom %}
-        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapSection.id, {
-            site: sitemapSection.getSite().handle
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapMetadata.id, {
+            site: sitemapMetadata.getSite().handle
         }) }}"
             class="sprout-sectiontitle">
-            <code>{{ sitemapSection.uri }}</code>
+            <code>{{ sitemapMetadata.uri }}</code>
         </a>
     {% else %}
-        {{ sitemapSection.name }}
+        {{ sitemapMetadata.name }}
 
-        {% if sitemapSection.uri == '__home__' %}
+        {% if sitemapMetadata.uri == '__home__' %}
             <span data-icon="home" title="Homepage"></span>
         {% endif %}
 
-        {{ hiddenInput('sitemaps[sections]['~urlEnabledSectionKey~'][uri]', sitemapSection.uri) }}
+        {{ hiddenInput('sitemaps[sections]['~elementGroupKey~'][uri]', sitemapMetadata.uri) }}
     {% endif %}
 
 
-    {% if urlEnabledSectionKey is defined %}
-        {{ hiddenInput('sitemaps[sections]['~urlEnabledSectionKey~'][id]', urlEnabledSectionKey) }}
+    {% if elementGroupKey is defined %}
+        {{ hiddenInput('sitemaps[sections]['~elementGroupKey~'][id]', elementGroupKey) }}
     {% endif %}
 
 </strong>
