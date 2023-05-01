@@ -8,7 +8,7 @@ use craft\db\Query;
 
 class m211101_000004_migrate_sitemaps_tables extends Migration
 {
-    public const SITEMAPS_TABLE = '{{%sprout_sitemaps}}';
+    public const SITEMAPS_TABLE = '{{%sprout_sitemaps_metadata}}';
     public const OLD_SITEMAPS_TABLE = '{{%sproutseo_sitemaps}}';
 
     public function safeUp(): void
@@ -17,7 +17,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'id',
             'siteId',
             'uniqueKey',
-            'urlEnabledSectionId',
+            'elementGroupId',
             'enabled',
             'type',
             'uri',

@@ -13,7 +13,7 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULE_ID = 'sprout-module-sitemaps';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\sitemaps\SitemapsModule';
     public const SITEMAP_AGGREGATION_METHOD_SETTING = 'singleLanguageSitemaps';
-    public const SITEMAPS_TABLE = '{{%sprout_sitemaps}}';
+    public const SITEMAPS_TABLE = '{{%sprout_sitemaps_metadata}}';
 
     public function safeUp(): void
     {
@@ -51,7 +51,7 @@ class m211101_000000_run_install_migration extends Migration
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
                 'uniqueKey' => $this->string(),
-                'urlEnabledSectionId' => $this->integer(),
+                'elementGroupId' => $this->integer(),
                 'enabled' => $this->boolean()->defaultValue(false),
                 'type' => $this->string(),
                 'uri' => $this->string(),
