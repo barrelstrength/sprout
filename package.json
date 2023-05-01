@@ -5,7 +5,7 @@
         "@rollup/plugin-node-resolve": "^15.0.1",
         "alpinejs": "^3.11.1",
         "apexcharts": "^3.37.2",
-        "autoprefixer": "^10.4.13",
+        "autoprefixer": "^10.4.14",
         "craftcms-sass": "^3.5.7",
         "datatables.net": "^1.13.2",
         "dom-autoscroller": "^2.3.4",
