@@ -4,8 +4,12 @@ namespace BarrelStrength\Sprout\sitemaps\metadata;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use Craft;
+use craft\base\Element;
 use craft\db\ActiveRecord;
 use craft\db\Query;
+use craft\elements\Category;
+use craft\elements\db\ElementQuery;
+use craft\elements\Entry;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 
@@ -28,6 +32,23 @@ class SitemapMetadataRecord extends ActiveRecord
     public string $name = '';
 
     public string $handle = '';
+
+    public function getElementQuery(): ElementQuery
+    {
+        /** @var Element $elementType */
+        $elementType = $this->type;
+
+        $query = $elementType::find()
+            ->siteId($this->siteId);
+
+        // Defaults to just returning ALL elements on an unknown Element Type
+        return match ($elementType) {
+            Entry::class => $query->sectionId($this->elementGroupId),
+            Category::class => $query->groupId($this->elementGroupId),
+            default => $query
+        };
+
+    }
 
     public static function tableName(): string
     {

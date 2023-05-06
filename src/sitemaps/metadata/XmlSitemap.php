@@ -39,7 +39,8 @@ class XmlSitemap extends Component
                     continue;
                 }
 
-                $totalElements = $elementWithUri->getSitemapMetadataTotalElements();
+                $elementQuery = $sitemapMetadata->getElementQuery();
+                $totalElements = $elementQuery->count();
 
                 // Is this a Singles Section?
                 $isSingle = SitemapsMetadataHelper::isSinglesSection($elementWithUri);
@@ -118,12 +119,11 @@ class XmlSitemap extends Component
                     continue;
                 }
 
-                $elements = $elementWithUri->getSitemapMetadataElements(
-                    $sitemapMetadata->elementGroupId,
-                    $offset,
-                    $totalElementsPerSitemap,
-                    $site
-                );
+                $elementQuery = $sitemapMetadata->getElementQuery();
+                $elements = $elementQuery
+                    ->offset($offset)
+                    ->limit($totalElementsPerSitemap)
+                    ->all();
 
                 if (!$elements) {
                     continue;

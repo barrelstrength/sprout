@@ -11,19 +11,11 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
-use BarrelStrength\Sprout\sitemaps\components\elements\CategorySitemapMetadataBehavior;
-use BarrelStrength\Sprout\sitemaps\components\elements\EntrySitemapMetadataBehavior;
-use BarrelStrength\Sprout\sitemaps\components\elements\ProductSitemapMetadataBehavior;
 use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\metadata\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\base\Element;
-use craft\commerce\elements\Product;
 use craft\config\BaseConfig;
-use craft\elements\Category;
-use craft\elements\Entry;
-use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -152,12 +144,6 @@ class SitemapsModule extends Module
                     'permissions' => $this->getUserPermissions(),
                 ];
             });
-
-        Event::on(
-            Element::class,
-            Element::EVENT_DEFINE_BEHAVIORS,
-            [self::class, 'attachElementBehaviors']
-        );
     }
 
     public function createSettingsModel(): SitemapsSettings
@@ -266,23 +252,5 @@ class SitemapsModule extends Module
             'sitemap-?<sitemapKey:.*>.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
         ];
-    }
-
-    public static function attachElementBehaviors(DefineBehaviorsEvent $event): void
-    {
-        /** @var Element $element */
-        $element = $event->sender;
-
-        if ($element instanceof Entry) {
-            $event->behaviors[EntrySitemapMetadataBehavior::class] = EntrySitemapMetadataBehavior::class;
-        }
-
-        if ($element instanceof Category) {
-            $event->behaviors[CategorySitemapMetadataBehavior::class] = CategorySitemapMetadataBehavior::class;
-        }
-
-        if ($element instanceof Product) {
-            $event->behaviors[ProductSitemapMetadataBehavior::class] = ProductSitemapMetadataBehavior::class;
-        }
     }
 }
