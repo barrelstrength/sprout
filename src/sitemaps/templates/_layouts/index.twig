@@ -20,7 +20,9 @@
 {% block main %}
 
     <div class="content-pane">
-        {{ hiddenInput('siteId', currentSite.id) }}
+        {{ hiddenInput('siteId', currentSite.id, {
+            id: 'current-site-id'
+        }) }}
 
         <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and currentSite.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
             <div style="flex-grow: 1;">
@@ -48,10 +50,8 @@
 
             {% for elementWithUri in elementsWithUris %}
 
-                {% set elementGroups = module.sitemaps.getElementGroups(elementWithUri, currentSite.id) %}
-                {% for elementGroupKey, elementGroup in elementGroups %}
+                {% for sourceKey, sitemapMetadata in sitemapMetadataByKey %}
 
-                    {% set sitemapMetadata = elementGroup.sitemapMetadata %}
                     {% set isNewSitemapSection = not sitemapMetadata.id %}
 
                     {% if loop.first %}
@@ -67,12 +67,12 @@
                         <tbody>
 
                     {% endif %}
-                    {% if sitemapMetadata.name is defined %}
+                    {% if sitemapMetadata.name is defined and className(elementWithUri) == sitemapMetadata.type %}
                         {% set elementName = elementWithUri.pluralLowerDisplayName() %}
                         {% set sproutSeoHandle = elementName~':'~sitemapMetadata.handle %}
 
                         <tr class="{{ isNewSitemapSection ? 'sitemapsection-isnew' : null }}"
-                            data-rowid="{{ elementGroupKey }}"
+                            data-source-key="{{ sourceKey }}"
                             data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
                             data-type="{{ className(elementWithUri) }}"
                             data-element-group-id="{{ sitemapMetadata.elementGroupId }}"
@@ -143,9 +143,9 @@
 
                     {% for customSection in customSections %}
 
-                        {% set customSectionId = "customUrl-" ~ customSection.id %}
+                        {% set customPageSourceKey = 'custom-pages' %}
 
-                        <tr data-rowid="{{ customSectionId }}"
+                        <tr data-source-key="{{ customPageSourceKey }}"
                             data-sitemap-metadata-id="{{ customSection.id }}"
                             data-type="{{ customSection.type }}"
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}"

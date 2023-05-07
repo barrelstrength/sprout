@@ -2,21 +2,64 @@
 
 namespace BarrelStrength\Sprout\sitemaps\metadata;
 
+use BarrelStrength\Sprout\sitemaps\components\CategorySitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\components\EntrySitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\components\ProductSitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
-use BarrelStrength\Sprout\uris\elementgroups\ElementGroup;
 use BarrelStrength\Sprout\uris\elementgroups\ElementGroupInterface;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\base\Element;
+use craft\commerce\elements\Product;
+use craft\elements\Category;
+use craft\elements\Entry;
 use yii\base\Component;
+use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
 
 class SitemapMetadata extends Component
 {
+    public const EVENT_REGISTER_ELEMENT_SITEMAP_METADATA = 'registerSproutElementSitemapMetadata';
+
     public const NO_ELEMENT_TYPE = null;
 
     private array $_elementsWithUris = [];
+
+    public function getSitemapMetadataIntegrations(): array
+    {
+        $metadataRules = [
+            Entry::class => EntrySitemapMetadata::class,
+            Category::class => CategorySitemapMetadata::class,
+        ];
+
+        if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
+            $metadataRules[Product::class] = ProductSitemapMetadata::class;
+        }
+
+        $event = new RegisterElementSitemapMetadataEvent([
+            'metadataRules' => $metadataRules,
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_ELEMENT_SITEMAP_METADATA, $event);
+
+        return $event->metadataRules;
+    }
+
+    public function getSourceDetails(): array
+    {
+        $sitemapMetadataIntegrations = $this->getSitemapMetadataIntegrations();
+
+        $sourceDetails = [];
+
+        foreach ($sitemapMetadataIntegrations as $sitemapMetadataIntegration) {
+            foreach ($sitemapMetadataIntegration::getSourceDetails() as $sourceKey => $sourceDetail) {
+                $sourceDetails[$sourceKey] = $sourceDetail;
+            }
+        }
+
+        return $sourceDetails;
+    }
 
     public function initElementsWithUris(): void
     {
@@ -42,9 +85,6 @@ class SitemapMetadata extends Component
         }
     }
 
-    /**
-     * Get all registered Element Groups
-     */
     public function getElementWithUris(): array
     {
         $this->initElementsWithUris();
@@ -67,9 +107,61 @@ class SitemapMetadata extends Component
         return null;
     }
 
+    public function getSitemapMetadataById($id): SitemapMetadataRecord|ActiveRecord|null
+    {
+        return SitemapMetadataRecord::find()
+            ->where([
+                'id' => $id,
+            ])
+            ->one();
+    }
+
+    /**
+     * Get Sitemap Metadata related to all Element Groups
+     *
+     * Index results by Element Group ID: type-id
+     * Example: entries-5, categories-12
+     */
+    public function getSitemapMetadataByKey($siteId): array
+    {
+        $sourceDetails = $this->getSourceDetails();
+
+        $sitemapMetadataRecords = SitemapMetadataRecord::find()
+            ->where(['[[siteId]]' => $siteId])
+            ->andWhere(['not', ['[[type]]' => self::NO_ELEMENT_TYPE]])
+            ->indexBy('sourceKey')
+            ->all();
+
+        $sitemapMetadata = [];
+
+        foreach ($sourceDetails as $sourceKey => $sourceDetail) {
+
+            $record = $sitemapMetadataRecords[$sourceKey] ?? new SitemapMetadataRecord();
+
+            $record->type = $sourceDetail['type'] ?? null;
+            $record->name = $sourceDetail['name'] ?? null;
+            $record->uri = $sourceDetail['urlPattern'] ?? null;
+
+            $sitemapMetadata[$sourceKey] = $record;
+        }
+
+        return $sitemapMetadata;
+    }
+
+    public function getSitemapPagesMetadata($siteId): array
+    {
+        return SitemapMetadataRecord::find()
+            ->where([
+                '[[type]]' => self::NO_ELEMENT_TYPE,
+                '[[siteId]]' => $siteId,
+            ])
+            ->all();
+    }
+
     public function saveSitemapMetadata(SitemapMetadataRecord $sitemapMetadata): bool
     {
         if ($sitemapMetadata->type === self::NO_ELEMENT_TYPE) {
+
             $sitemapMetadata->setScenario('customSection');
         }
 
@@ -112,61 +204,6 @@ class SitemapMetadata extends Component
         return (bool)$affectedRows;
     }
 
-    /**
-     * Returns all Custom Sitemap Sections
-     */
-    public function getCustomSitemapMetadata($siteId): array
-    {
-        return SitemapMetadataRecord::find()
-            ->where([
-                '[[type]]' => self::NO_ELEMENT_TYPE,
-                '[[siteId]]' => $siteId,
-            ])
-            ->all();
-    }
-
-    public function getElementGroups(Element $element, $siteId): array
-    {
-        $sources = $element->defineElementGroups($siteId);
-
-        $sitemapMetadataByKey = SitemapsMetadataHelper::getSitemapMetadataIndexedByElementGroupKey($element, $siteId);
-
-        // Prepare a list of all Element Groups for this Element
-        // if we have an existing Sitemap, use it, otherwise fallback to a new model
-        $elementGroups = [];
-
-        foreach ($sources as $source) {
-
-            $elementGroup = new ElementGroup();
-            $elementGroupKey = $element::pluralLowerDisplayName() . '-' . $source->id;
-
-            if (isset($sitemapMetadataByKey[$elementGroupKey])) {
-
-                // If an Element Group exists as Sitemap, use it
-                $sitemapMetadata = $sitemapMetadataByKey[$elementGroupKey];
-                $sitemapMetadata->id = $sitemapMetadataByKey[$elementGroupKey]->id;
-            } else {
-                // If no Element Group exists, create a new one
-                $sitemapMetadata = new SitemapMetadataRecord();
-                $sitemapMetadata->elementGroupId = $source->id;
-            }
-
-            $elementGroup->id = $source->id;
-            $sitemapMetadata->name = $source->name;
-            $sitemapMetadata->handle = $source->handle;
-
-            $element->setElementGroupId($source);
-
-            $sitemapMetadata->uri = $element->getUriFormat();
-
-            $elementGroup->sitemapMetadata = $sitemapMetadata;
-
-            $elementGroups[$elementGroupKey] = $elementGroup;
-        }
-
-        return $elementGroups;
-    }
-
     public function uriHasTags($uri = null): bool
     {
         if (str_contains($uri, '{{')) {
@@ -189,15 +226,21 @@ class SitemapMetadata extends Component
         $siteIds = [];
 
         foreach ($sitesInGroup as $siteInGroup) {
+            if ($siteInGroup->id === (int)$sitemapMetadata->siteId) {
+                continue;
+            }
+
             $siteIds[] = $siteInGroup->id;
+        }
+
+        if (empty($siteIds)) {
+            return;
         }
 
         // all sections saved for this site
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['in', 'siteId', $siteIds])
-            ->andWhere([
-                'elementGroupId' => $sitemapMetadata->elementGroupId,
-            ])
+            ->andWhere(['elementGroupId' => $sitemapMetadata->elementGroupId])
             ->indexBy('siteId')
             ->all();
 

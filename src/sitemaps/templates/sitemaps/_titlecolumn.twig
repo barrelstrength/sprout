@@ -20,12 +20,12 @@
             <span data-icon="home" title="Homepage"></span>
         {% endif %}
 
-        {{ hiddenInput('sitemaps[sections]['~elementGroupKey~'][uri]', sitemapMetadata.uri) }}
+        {{ hiddenInput('sitemaps['~sourceKey~'][uri]', sitemapMetadata.uri) }}
     {% endif %}
 
 
-    {% if elementGroupKey is defined %}
-        {{ hiddenInput('sitemaps[sections]['~elementGroupKey~'][id]', elementGroupKey) }}
+    {% if sourceKey is defined %}
+        {{ hiddenInput('sitemaps['~sourceKey~'][id]', sourceKey) }}
     {% endif %}
 
 </strong>

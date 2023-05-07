@@ -27,15 +27,16 @@ class XmlSitemap extends Component
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
 
+        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($siteId);
+
         foreach ($elementsWithUris as $elementWithUri) {
 
-            $elementGroups = $sitemapsService->getElementGroups($elementWithUri, $siteId);
-
-            foreach ($elementGroups as $elementGroup) {
-
-                $sitemapMetadata = $elementGroup->sitemapMetadata;
-
+            foreach ($sitemapMetadataByKey as $sourceKey => $sitemapMetadata) {
                 if (!$sitemapMetadata->enabled) {
+                    continue;
+                }
+
+                if ($sitemapMetadata->type !== $elementWithUri::class) {
                     continue;
                 }
 
@@ -43,7 +44,7 @@ class XmlSitemap extends Component
                 $totalElements = $elementQuery->count();
 
                 // Is this a Singles Section?
-                $isSingle = SitemapsMetadataHelper::isSinglesSection($elementWithUri);
+                $isSingle = SitemapsMetadataHelper::isSinglesSection($sitemapMetadata);
 
                 // Make sure we don't add Singles more than once
                 if ($isSingle && $hasSingles) {
@@ -108,9 +109,12 @@ class XmlSitemap extends Component
 
         $enabledSitemapSections = $this->getEnabledSitemapSections($sitemapKey, $siteId);
 
-        foreach ($enabledSitemapSections as $sitemapMetadata) {
+        foreach ($enabledSitemapSections as $sourceKey => $sitemapMetadata) {
 
-            /** @var SitemapMetadataInterface $elementWithUri */
+            if (!$sitemapMetadata->enabled) {
+                continue;
+            }
+
             $elementWithUri = $sitemapsService->getElementWithUriByType($sitemapMetadata->type);
 
             foreach ($currentSitemapSites as $site) {
@@ -294,7 +298,7 @@ class XmlSitemap extends Component
         $query = SitemapMetadataRecord::find()
             ->where(['enabled' => true])
             ->andWhere(['siteId' => $siteId])
-            ->andWhere(['not', ['elementGroupId' => SitemapMetadata::NO_ELEMENT_TYPE]]);
+            ->andWhere(['not', ['type' => SitemapMetadata::NO_ELEMENT_TYPE]]);
 
         // @todo - review this logic
         if ($sitemapKey == SitemapType::SINGLES) {

@@ -51,7 +51,8 @@
 
     {{ actionInput('sprout-module-sitemaps/sitemaps/save-sitemap-metadata') }}
     {{ redirectInput('sprout/sitemaps?site=' ~ currentSite.handle) }}
-    {{ hiddenInput('sectionId', sitemapMetadata.id is defined ? sitemapMetadata.id : '') }}
+    {{ hiddenInput('sitemapMetadataId', sitemapMetadata.id ?? '') }}
+    {{ hiddenInput('sourceKey', 'custom-pages') }}
     {{ hiddenInput('elementGroupId', sitemapMetadata.elementGroupId ?? '') }}
     {{ hiddenInput('type', sitemapMetadata.type ?? '') }}
     {{ hiddenInput('siteId', sitemapMetadata.siteId ?? null) }}

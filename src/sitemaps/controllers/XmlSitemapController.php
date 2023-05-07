@@ -25,7 +25,7 @@ class XmlSitemapController extends Controller
         $siteId = Craft::$app->sites->getCurrentSite()->id;
         $multiSiteSiteIds = [];
         $sitesInGroup = [];
-
+        
         if (!SitemapsModule::isEnabled()) {
             throw new NotFoundHttpException('XML Sitemap not enabled.');
         }

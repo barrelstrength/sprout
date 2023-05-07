@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\sitemaps\controllers;
 
 use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\metadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\helpers\Cp;
@@ -100,9 +99,11 @@ class SitemapsController extends Controller
             $firstSiteInGroup = $site;
         }
 
-        $elementsWithUris = SitemapsModule::getInstance()->sitemaps->getElementWithUris();
+        $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
-        $customSections = SitemapsModule::getInstance()->sitemaps->getCustomSitemapMetadata($site->id);
+        $elementsWithUris = $sitemapsService->getElementWithUris();
+        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site->id);
+        $customSections = $sitemapsService->getSitemapPagesMetadata($site->id);
 
         return $this->renderTemplate('sprout-module-sitemaps/sitemaps/index', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
@@ -110,6 +111,7 @@ class SitemapsController extends Controller
             'firstSiteInGroup' => $firstSiteInGroup,
             'editableSiteIds' => $editableSiteIds,
             'elementsWithUris' => $elementsWithUris,
+            'sitemapMetadataByKey' => $sitemapMetadataByKey,
             'customSections' => $customSections,
             'settings' => $settings,
         ]);
@@ -145,7 +147,7 @@ class SitemapsController extends Controller
 
         if (!$sitemapMetadataRecord instanceof ActiveRecord) {
             if ($sitemapMetadataId) {
-                $sitemapMetadataRecord = SitemapsMetadataHelper::getSitemapMetadataById($sitemapMetadataId);
+                $sitemapMetadataRecord = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataById($sitemapMetadataId);
             } else {
                 $sitemapMetadataRecord = new SitemapMetadataRecord();
                 $sitemapMetadataRecord->siteId = $site->id;
@@ -186,14 +188,18 @@ class SitemapsController extends Controller
 
         $request = Craft::$app->getRequest();
 
+        $type = $request->getBodyParam('type');
+        $type = empty($type) ? SitemapMetadata::NO_ELEMENT_TYPE : $type;
+
         $sitemapMetadataRecord->siteId = $request->getBodyParam('siteId');
+        $sitemapMetadataRecord->sourceKey = $request->getBodyParam('sourceKey');
         $sitemapMetadataRecord->elementGroupId = $request->getBodyParam('elementGroupId');
         $sitemapMetadataRecord->uri = $request->getBodyParam('uri');
-        $sitemapMetadataRecord->type = $request->getBodyParam('type');
+        $sitemapMetadataRecord->type = $type;
         $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
         $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
         $sitemapMetadataRecord->enabled = $request->getBodyParam('enabled');
-
+        
         if (!SitemapsModule::getInstance()->sitemaps->saveSitemapMetadata($sitemapMetadataRecord)) {
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([
