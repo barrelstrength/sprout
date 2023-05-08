@@ -1,0 +1,9 @@
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% if relations %}
+
+    <div class="body">
+        {{ sproutCp.relationsTable(relations) }}
+    </div>
+
+{% endif %}

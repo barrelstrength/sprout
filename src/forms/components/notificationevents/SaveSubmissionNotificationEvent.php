@@ -39,7 +39,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-forms', 'When a submission is saved (Sprout)');
+        return Craft::t('sprout-module-forms', 'When a form submission is saved (Sprout)');
     }
 
     public function getSettingsHtml($context = []): ?string

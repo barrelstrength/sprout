@@ -1,0 +1,15 @@
+{% if relations %}
+
+    {{ tag('a', {
+        'id': 'sprout-relations-btn',
+        'class': 'view-btn btn',
+        'href': '#',
+        'text': 'Relations (' ~ relations|length ~ ')',
+        'data': {
+            'element-id': elementId,
+        }
+    }) }}
+
+    <div id="sprout-relations-modal" class="modal elementselectormodal" style="display:none;"></div>
+
+{% endif %}

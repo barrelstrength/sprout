@@ -195,7 +195,7 @@ class NotificationEvents extends Component
             $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
         } else {
             $eventSettings = Json::decode($settingsRecord->settings);
-            
+
             if (!isset($eventSettings[$eventClassName]) ||
                 !in_array($email->id, $eventSettings[$eventClassName][$eventName], true)
             ) {
@@ -241,7 +241,7 @@ class NotificationEvents extends Component
         return $notificationEventTypes;
     }
 
-    private function getActiveNotificationEventEmails($triggeredNotificationEventType): array
+    public function getActiveNotificationEventEmails($triggeredNotificationEventType): array
     {
         $triggeredEventClassName = $triggeredNotificationEventType::getEventClassName();
         $triggeredEventName = $triggeredNotificationEventType::getEventName();

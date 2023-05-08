@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
+use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
@@ -11,6 +12,7 @@ use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use Craft;
 use craft\base\Element;
 use craft\base\FieldInterface;
@@ -400,7 +402,17 @@ class FormElement extends Element
             'module' => FormsModule::getInstance(),
         ]);
 
-        return $html . parent::getAdditionalButtons();
+        // @todo - this doesn't work yet, TransactionalEmails are related via Event
+        $relations = RelationsHelper::getSourceElementRelations($this, [
+            TransactionalEmailElement::class,
+        ]);
+
+        $relationsBtnHtml = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/relations/button', [
+            'elementId' => $this->id,
+            'relations' => $relations,
+        ]);
+
+        return $relationsBtnHtml . $html . parent::getAdditionalButtons();
     }
 
     public function prepareEditScreen(Response $response, string $containerId): void
@@ -691,6 +703,14 @@ class FormElement extends Element
         }
 
         return $defaultFormTemplates;
+    }
+
+    public function getNotifications(): array
+    {
+        // @todo - this doens't work yet because Transactional Emails aren't directly related
+        return RelationsHelper::getSourceElementRelations($this, [], [
+            TransactionalEmailElement::class,
+        ]);
     }
 
     public string|array $additionalTemplates = [];

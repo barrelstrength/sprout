@@ -363,7 +363,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         $emailTypeSlug = $this->getEmailTypeSettings()->handle;
 
-        return 'sprout/email/' . $emailTypeSlug . '/edit/' . $this->getCanonicalId();
+        return UrlHelper::cpUrl('sprout/email/' . $emailTypeSlug . '/edit/' . $this->getCanonicalId());
     }
 
     public function getPostEditUrl(): ?string

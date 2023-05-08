@@ -6,12 +6,15 @@ use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
+use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\email\EmailTypes;
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\notificationevents\NotificationEventHelper;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
@@ -128,6 +131,22 @@ class TransactionalModule extends Module
             EmailElement::class,
             EmailElement::EVENT_AFTER_SAVE,
             [$this->notificationEvents, 'handleActiveNotificationEventSettings']
+        );
+
+        Event::on(
+            RelationsHelper::class,
+            RelationsHelper::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES,
+            static function(RegisterComponentTypesEvent $event) {
+                $event->types[] = TransactionalEmailElement::class;
+            }
+        );
+
+        Event::on(
+            RelationsHelper::class,
+            RelationsHelper::EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS,
+            [NotificationEventHelper::class, 'getSourceElementRelations'], [
+                'sourceElementType' => TransactionalEmailElement::class,
+            ]
         );
     }
 

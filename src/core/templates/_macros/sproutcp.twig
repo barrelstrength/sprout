@@ -156,6 +156,38 @@
 
 {% endmacro %}
 
+{% macro relationsTable(relations) %}
+    <table class="data fullwidth">
+        <thead>
+        <tr>
+            <th>{{ "Title"|t('sprout-module-core') }}</th>
+            <th>{{ "Type"|t('sprout-module-core') }}</th>
+            <th data-icon="world"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for relation in relations %}
+            <tr>
+                <td>
+                    <a href="{{ relation.getCpEditUrl() }}" target="_blank">
+                        {{ relation.title }}
+                    </a>
+                </td>
+                <td>{{ relation.displayName() }}</td>
+                <td>
+                    {% if relation.getUrl() %}
+                        <a href="{{ relation.getUrl() }}" target="_blank">
+                            <span data-icon="world"></span>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+
 
 
 

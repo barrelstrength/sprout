@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
+use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
@@ -20,10 +21,12 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\emailtemplates\FormSummaryEmailTheme;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
+use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
 use BarrelStrength\Sprout\forms\formfields\FormFields;
 use BarrelStrength\Sprout\forms\formfields\FrontEndFields;
+use BarrelStrength\Sprout\forms\forms\FormHelper;
 use BarrelStrength\Sprout\forms\forms\Forms;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
@@ -31,6 +34,8 @@ use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplates;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -207,7 +212,31 @@ class FormsModule extends Module
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = FormSummaryEmailTheme::class;
             });
-        
+
+        Event::on(
+            NotificationEvents::class,
+            NotificationEvents::EVENT_REGISTER_SPROUT_NOTIFICATION_EVENT_TYPES,
+            static function(RegisterComponentTypesEvent $event): void {
+                $event->types[] = SaveSubmissionNotificationEvent::class;
+            });
+
+        Event::on(
+            RelationsHelper::class,
+            RelationsHelper::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES,
+            static function(RegisterComponentTypesEvent $event) {
+                $event->types[] = FormElement::class;
+                $event->types[] = SubmissionElement::class;
+            }
+        );
+
+        Event::on(
+            RelationsHelper::class,
+            RelationsHelper::EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS,
+            [FormHelper::class, 'getSourceElementRelations'], [
+                'sourceElementType' => TransactionalEmailElement::class,
+            ]
+        );
+
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,

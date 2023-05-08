@@ -66,7 +66,7 @@ class SchemaMetadata extends Component
             PlaceSchema::class,
         ];
 
-        if (Craft::$app->getPlugins()->getPlugin('commerce')) {
+        if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
             $schemas[] = ProductSchema::class;
         }
 
