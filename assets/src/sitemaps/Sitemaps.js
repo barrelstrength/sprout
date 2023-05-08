@@ -32,21 +32,22 @@ class SproutSeoSitemapIndex {
 
     updateSitemap(event) {
         let changedElement = event.target;
-        let $row = $(changedElement).closest('tr');
-        let rowId = $row.data('rowid');
-        let isNew = $row.data('isNew');
-        let enabled = $('input[name="sitemaps[sections][' + rowId + '][enabled]"]').val();
-        let siteId = $('input[name="siteId"]').val();
-        let uri = $('input[name="sitemaps[sections][' + rowId + '][uri]"]').val();
-        let status = $('tr[data-rowid="' + rowId + '"] td span.status');
+        let row = changedElement.closest('tr');
+        let sourceKey = row.dataset.sourceKey;
+        let isNew = row.dataset.isNew;
+        let enabled = row.querySelector('.enabled-status input').value;
+        let siteId = document.getElementById('current-site-id').value;
+        let uri = row.querySelector('.sitemap-metadata-uri').value;
+        let status = row.querySelector('span.status');
 
         let data = {
-            'sitemapMetadataId': $row.data('sitemap-metadata-id'),
-            'type': $row.data('type'),
-            'elementGroupId': $row.data('elementGroupId'),
+            'sitemapMetadataId': row.dataset.sitemapMetadataId,
+            'sourceKey': sourceKey,
+            'type': row.dataset.type,
+            'elementGroupId': row.dataset.elementGroupId,
             'uri': uri,
-            'priority': $('select[name="sitemaps[sections][' + rowId + '][priority]"]').val(),
-            'changeFrequency': $('select[name="sitemaps[sections][' + rowId + '][changeFrequency]"]').val(),
+            'priority': row.querySelector('.sitemap-priority select').value,
+            'changeFrequency': row.querySelector('.sitemap-change-frequency select').value,
             'enabled': enabled,
             'siteId': siteId,
         };
@@ -55,14 +56,14 @@ class SproutSeoSitemapIndex {
             if (textStatus === 'success') {
                 if (response.success) {
 
-                    let keys = rowId.split('-');
+                    let keys = sourceKey.split('-');
                     let type = keys[0];
-                    let newRowId = null;
+                    let newSourceKey = null;
 
                     if (response.sitemapMetadata.elementGroupId) {
-                        newRowId = type + '-' + response.sitemapMetadata.elementGroupId;
+                        newSourceKey = type + '-' + response.sitemapMetadata.elementGroupId;
                     } else {
-                        newRowId = type + '-' + response.sitemapMetadata.id;
+                        newSourceKey = type + '-' + response.sitemapMetadata.id;
                     }
 
                     let $changedElementRow = $(changedElement).closest('tr');
@@ -77,14 +78,14 @@ class SproutSeoSitemapIndex {
                         $changedElementTitleLink.unbind('click');
                     }
 
-                    let $sectionInputBase = 'input[name="sitemaps[sections][' + rowId + ']';
+                    let $sectionInputBase = 'input[name="sitemaps[' + newSourceKey + ']';
 
-                    $($sectionInputBase + '[id]"]').val(newRowId);
-                    $($sectionInputBase + '[id]"]').attr('name', 'sitemaps[sections][' + newRowId + '][id]');
-                    $($sectionInputBase + '[elementGroupId]"]').attr('name', 'sitemaps[sections][' + newRowId + '][elementGroupId]');
-                    $($sectionInputBase + '[priority]"]').attr('name', 'sitemaps[sections][' + newRowId + '][priority]');
-                    $($sectionInputBase + '[changeFrequency]"]').attr('name', 'sitemaps[sections][' + newRowId + '][changeFrequency]');
-                    $($sectionInputBase + '[enabled]"]').attr('name', 'sitemaps[sections][' + newRowId + '][enabled]');
+                    $($sectionInputBase + '[id]"]').val(newSourceKey);
+                    $($sectionInputBase + '[id]"]').attr('name', 'sitemaps[' + newSourceKey + '][id]');
+                    $($sectionInputBase + '[elementGroupId]"]').attr('name', 'sitemaps[' + newSourceKey + '][elementGroupId]');
+                    $($sectionInputBase + '[priority]"]').attr('name', 'sitemaps[' + newSourceKey + '][priority]');
+                    $($sectionInputBase + '[changeFrequency]"]').attr('name', 'sitemaps[' + newSourceKey + '][changeFrequency]');
+                    $($sectionInputBase + '[enabled]"]').attr('name', 'sitemaps[' + newSourceKey + '][enabled]');
 
                     Craft.cp.displayNotice(Craft.t('sprout-module-sitemaps', 'Sitemap metadata saved.'));
                 } else {
@@ -94,11 +95,11 @@ class SproutSeoSitemapIndex {
         }, this));
 
         if (enabled) {
-            status.removeClass('disabled');
-            status.addClass('live');
+            status.classList.remove('disabled');
+            status.classList.add('live');
         } else {
-            status.removeClass('live');
-            status.addClass('disabled');
+            status.classList.remove('live');
+            status.classList.add('disabled');
         }
     }
 
