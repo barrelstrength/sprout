@@ -1,0 +1,76 @@
+/*
+ * Sprout Styles for Enhanced Link Field
+ */
+
+.sprout-link-field {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--large-border-radius);
+    margin-bottom: 10px;
+}
+
+.sprout-link-field .action-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 16px;
+    background-color: #ebf2fa;
+    border-radius: 0 0 calc(var(--large-border-radius) - 1px) calc(var(--large-border-radius) - 1px);
+    box-sizing: border-box;
+    color: var(--light-text-color);
+}
+
+.sprout-link-field .action-bar h6 {
+    margin: 0;
+}
+
+.sprout-link-field .action-bar .link-type-select-container {
+    flex-grow: 1;
+}
+
+.sprout-link-field .fields {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+}
+
+.sprout-link-field .lightswitch-inner-container {
+    border: none;
+}
+
+body .sprout-link-field .lightswitch-outer-container .lightswitch-inner-container span[data-toggle="on"] {
+    padding: 0;
+}
+
+/**
+ *  Sometimes we don't need fields, we just want the URL option
+ */
+.sprout-link-field .fields .sprout-link-type-link-only-toggle,
+.sprout-link-field .fields .link-text-field,
+.sprout-link-field .fields .link-settings {
+    flex-grow: 1;
+    margin-top: 0;
+}
+
+.sprout-link-field .fields .link-settings {
+    width: 60%;
+}
+
+.sprout-link-field .fields.link-only .link-settings {
+    width: 100%;
+}
+
+.sprout-link-field.link-only {
+    border: none;
+}
+
+.sprout-link-field.link-only .fields {
+    padding: 0;
+}
+
+

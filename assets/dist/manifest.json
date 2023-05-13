@@ -39,14 +39,14 @@
     "src": "core/SproutAlpine.js"
   },
   "core/SproutCp.css": {
-    "file": "assets/SproutCp-1ceb4572.css",
+    "file": "assets/SproutCp-6b73f5bc.css",
     "src": "core/SproutCp.css"
   },
   "core/SproutCp.js": {
     "css": [
-      "assets/SproutCp-1ceb4572.css"
+      "assets/SproutCp-6b73f5bc.css"
     ],
-    "file": "assets/cp-26eede7f.js",
+    "file": "assets/cp-e547b1e4.js",
     "isEntry": true,
     "src": "core/SproutCp.js"
   },
