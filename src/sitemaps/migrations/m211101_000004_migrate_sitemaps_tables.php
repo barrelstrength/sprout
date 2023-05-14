@@ -45,9 +45,9 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
         ];
 
         $sourceKeyMapping = [
-            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata' => 'entries',
-            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMetadata' => 'categories',
-            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata' => 'products',
+            'craft\elements\Entry' => 'entries',
+            'craft\elements\Category' => 'categories',
+            'barrelstrength\sproutbaseuris\sectiontypes\Product' => 'products',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_SITEMAPS_TABLE)) {
@@ -60,11 +60,17 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             foreach ($rows as &$row) {
                 // Only modify Element Sitemap Metadata
                 if (!empty($row['type'])) {
-                    $sourceKey = $sourceKeyMapping[$row['type']] . '-' . $row['urlEnabledSectionId'];
+                    if (isset($sourceKeyMapping[$row['type']])) {
+                        $sourceKey = $sourceKeyMapping[$row['type']] . '-' . $row['urlEnabledSectionId'];
+                    } else {
+                        $sourceKey = 'unknown';
+                    }
 
                     $row['sourceKey'] = $sourceKey;
+                    $row['uri'] = null;
                 } else {
                     $row['sourceKey'] = 'custom-pages';
+                    $row['type'] = null;
                 }
 
                 $row['priority'] = (float)$row['priority'];
