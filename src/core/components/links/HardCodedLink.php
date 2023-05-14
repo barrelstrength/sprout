@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\uris\components\links;
+namespace BarrelStrength\Sprout\core\components\links;
 
 use Craft;
 use craft\helpers\Cp;

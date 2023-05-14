@@ -13,7 +13,6 @@ use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
-use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\config\BaseConfig;
 use craft\events\RegisterCpNavItemsEvent;
@@ -39,8 +38,6 @@ class SitemapsModule extends Module
 
     public static function getInstance(): SitemapsModule
     {
-        UrisModule::getInstance();
-
         /** @var SitemapsModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-sitemaps');
 

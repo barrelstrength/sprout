@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\uris\links;
+namespace BarrelStrength\Sprout\core\links;
 
 interface LinkInterface
 {

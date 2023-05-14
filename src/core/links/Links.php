@@ -1,11 +1,11 @@
 <?php
 
-namespace BarrelStrength\Sprout\uris\links;
+namespace BarrelStrength\Sprout\core\links;
 
-use BarrelStrength\Sprout\uris\components\links\CategoryElementLink;
-use BarrelStrength\Sprout\uris\components\links\EmailLink;
-use BarrelStrength\Sprout\uris\components\links\EntryElementLink;
-use BarrelStrength\Sprout\uris\components\links\HardCodedLink;
+use BarrelStrength\Sprout\core\components\links\CategoryElementLink;
+use BarrelStrength\Sprout\core\components\links\EmailLink;
+use BarrelStrength\Sprout\core\components\links\EntryElementLink;
+use BarrelStrength\Sprout\core\components\links\HardCodedLink;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
