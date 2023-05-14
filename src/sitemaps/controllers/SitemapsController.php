@@ -105,7 +105,7 @@ class SitemapsController extends Controller
         $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site->id);
         $customSections = $sitemapsService->getSitemapPagesMetadata($site->id);
 
-        return $this->renderTemplate('sprout-module-sitemaps/sitemaps/index', [
+        return $this->renderTemplate('sprout-module-sitemaps/_sitemaps/index', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
             'currentSite' => $site,
             'firstSiteInGroup' => $firstSiteInGroup,
@@ -165,7 +165,7 @@ class SitemapsController extends Controller
             ],
         ];
 
-        return $this->renderTemplate('sprout-module-sitemaps/sitemaps/_edit', [
+        return $this->renderTemplate('sprout-module-sitemaps/_sitemaps/edit', [
             'currentSite' => $site,
             'sitemapMetadata' => $sitemapMetadataRecord,
             'continueEditingUrl' => $continueEditingUrl,
@@ -199,7 +199,7 @@ class SitemapsController extends Controller
         $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
         $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
         $sitemapMetadataRecord->enabled = $request->getBodyParam('enabled');
-        
+
         if (!SitemapsModule::getInstance()->sitemaps->saveSitemapMetadata($sitemapMetadataRecord)) {
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([

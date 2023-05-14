@@ -1,0 +1,60 @@
+{% import "_includes/forms" as forms %}
+
+<td>
+    {% include "sprout-module-sitemaps/_sitemaps/titlecolumn" with {
+        sitemapMetadata: sitemapMetadata,
+        sourceKey: sourceKey,
+    } only %}
+</td>
+<td>
+    {% if sitemapMetadata.uri == '__home__' %}
+        <span data-icon="home" title="Homepage"></span>
+    {% else %}
+        {% if hasUriTags %}
+            <code>
+                {{ "Dynamic URL"|t('sprout-module-sitemaps') }}
+                <span class="info">
+                        <h6>{{ "Dynamic URL details"|t('sprout-module-sitemaps') }}</h6>
+                        <p>{{ sitemapMetadata.uri }}</p>
+                    </span>
+            </code>
+        {% else %}
+            <code>{{ sitemapMetadata.uri }}</code>
+        {% endif %}
+
+    {% endif %}
+
+    {{ hiddenInput('sitemaps['~sourceKey~'][uri]', sitemapMetadata.uri, {
+        class: 'sitemap-metadata-uri',
+    }) }}
+</td>
+<td>
+    {{ forms.selectField({
+        name: 'sitemaps[' ~ sourceKey ~ '][priority]',
+        options: priorityList,
+        value: sitemapMetadata.priority,
+        class: 'sitemap-priority',
+        errors: "",
+        required: false
+    }) }}
+</td>
+<td>
+    {{ forms.selectField({
+        name: 'sitemaps[' ~ sourceKey ~ '][changeFrequency]',
+        options: frequencyList,
+        value: sitemapMetadata.changeFrequency,
+        class: 'sitemap-change-frequency',
+        errors: "",
+        required: false
+    }) }}
+</td>
+<td class="enabled-status" style="text-align: center;">
+    {{ forms.lightswitch({
+        name: 'sitemaps[' ~ sourceKey ~ '][enabled]',
+        on: sitemapMetadata.enabled == 1 ?? false
+    }) }}
+</td>
+<td>
+    {# Empty but serving role to make columns even #}
+    <span style="display: inline-block;width:13px;"></span>
+</td>
