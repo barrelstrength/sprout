@@ -8,7 +8,7 @@
 
 {% block contextMenu %}
     {% if settings.aggregateBySiteGroup() %}
-        {% include "sprout-module-sitemaps/_sitemaps/sitegroupmenu" with {
+        {% include "sprout-module-sitemaps/_sitemapmetadata/sitegroupmenu" with {
             selectedSiteId: currentSite.id,
             siteIds: editableSiteIds,
             urlFormat: "sprout/sitemaps?site={handle}"
@@ -152,7 +152,7 @@
 
                             {% set hasUriTags = module.sitemaps.uriHasTags(sitemapMetadata.uri) %}
 
-                            {% include "sprout-module-sitemaps/_sitemaps/row-metadata" with {
+                            {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata" with {
                                 sitemapMetadata: sitemapMetadata,
                                 sourceKey: sourceKey,
                                 hasUriTags: hasUriTags,
@@ -237,7 +237,7 @@
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}"
                             data-plugin-handle="{{ craft.app.getRequest().getSegment(1) }}">
 
-                            {% include "sprout-module-sitemaps/_sitemaps/row-metadata-custom" with {
+                            {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-custom" with {
                                 customSection: customSection,
                                 customPageSourceKey: customPageSourceKey,
                                 priorityList: priorityList,
