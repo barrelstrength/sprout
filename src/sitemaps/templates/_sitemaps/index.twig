@@ -20,13 +20,25 @@
             urlFormat: "sprout/sitemaps?site={handle}"
         } %}
     {% endif %}
+
 {% endblock %}
 
 {% block actionButton %}
     {% if not module.isEnabled() %}
-        <div><strong>{{ "Sitemap Disabled."|t('sprout-module-sitemaps') }}</strong>
-            <a href="{{ cpUrl('sprout/settings/sitemaps') }}">{{ "Enable in Settings"|t('sprout-module-sitemaps') }}</a>
+        <div>
+            <strong>{{ "Sitemap Disabled."|t('sprout-module-sitemaps') }}</strong>
+            <a href="{{ cpUrl('sprout/settings/sitemaps') }}">
+                {{ "Enable in Settings"|t('sprout-module-sitemaps') }}
+            </a>
         </div>
+    {% else %}
+        <a
+            href="{{ siteUrl('sitemap.xml') }}"
+            target="_blank"
+            class="view-btn btn"
+            aria-label="View">
+            {{ "View sitemap.xml"|t('sprout-module-sitemaps') }}
+        </a>
     {% endif %}
 {% endblock %}
 
