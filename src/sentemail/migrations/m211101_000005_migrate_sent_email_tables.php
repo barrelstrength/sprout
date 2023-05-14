@@ -45,7 +45,6 @@ class m211101_000005_migrate_sent_email_tables extends Migration
             'uid',
         ];
 
-        // @todo - make a command line utility to migrate these, or a config setting to exclude them?
         if ($this->getDb()->tableExists(self::OLD_SENT_EMAIL_TABLE)) {
             $rows = (new Query())
                 ->select($oldCols)
