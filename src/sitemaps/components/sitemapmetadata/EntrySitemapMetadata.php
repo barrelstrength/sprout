@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\sitemaps\components\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementSitemapMetadataInterface;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SourceKeyHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use Craft;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
@@ -36,7 +36,7 @@ class EntrySitemapMetadata implements ElementSitemapMetadataInterface
 
     public function getElementQuery(ElementQuery $query, SitemapMetadataRecord $sitemapMetadata): ElementQuery
     {
-        $sectionId = SourceKeyHelper::findElementGroupId($sitemapMetadata->sourceKey);
+        $sectionId = SitemapsMetadataHelper::findElementGroupId($sitemapMetadata->sourceKey);
 
         return $query->sectionId($sectionId);
     }

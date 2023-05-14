@@ -1,11 +1,11 @@
-import './sitemaps.css';
+import './sitemap-metadata.css';
 
 /* global Craft */
 
 /**
  * Manages the dynamic updating of Sitemap attributes from the Sitemap page.
  */
-class SproutSeoSitemapIndex {
+class SproutSitemapMetadataIndex {
 
     constructor() {
         const lightswitches = document.querySelectorAll('.sitemap-settings .lightswitch');
@@ -113,7 +113,7 @@ class SproutSeoSitemapIndex {
             id: customPageId,
         };
 
-        Craft.postActionRequest('sprout-module-sitemaps/sitemap-metadata/delete-sitemap-by-id', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-sitemaps/sitemap-metadata/delete-sitemap-metadata-by-id', data, $.proxy(function(response, textStatus) {
             if (response.success) {
                 row.remove();
             }
@@ -128,4 +128,4 @@ class SproutSeoSitemapIndex {
     }
 }
 
-window.SproutSeoSitemapIndex = SproutSeoSitemapIndex;
+window.SproutSitemapMetadataIndex = SproutSitemapMetadataIndex;

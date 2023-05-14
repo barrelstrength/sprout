@@ -197,11 +197,11 @@ class SitemapsModule extends Module
     {
         return [
             'sprout/sitemaps/edit/<sitemapMetadataId:\d+>' =>
-                'sprout-module-sitemaps/sitemap-metadata/sitemap-edit-template',
+                'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-edit-template',
             'sprout/sitemaps/new' =>
-                'sprout-module-sitemaps/sitemap-metadata/sitemap-edit-template',
+                'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-edit-template',
             'sprout/sitemaps' =>
-                'sprout-module-sitemaps/sitemap-metadata/sitemap-index-template',
+                'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-index-template',
 
             // Settings
             'sprout/settings/sitemaps' => [

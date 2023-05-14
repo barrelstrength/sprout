@@ -9,13 +9,13 @@
 {% block contextMenu %}
     {% if settings.aggregateBySiteGroup() %}
         {% include "sprout-module-sitemaps/_sitemapmetadata/sitegroupmenu" with {
-            selectedSiteId: currentSite.id,
+            selectedSiteId: site.id,
             siteIds: editableSiteIds,
             urlFormat: "sprout/sitemaps?site={handle}"
         } %}
     {% else %}
         {% include "_elements/sitemenu" with {
-            selectedSiteId: currentSite.id,
+            selectedSiteId: site.id,
             siteIds: editableSiteIds,
             urlFormat: "sprout/sitemaps?site={handle}"
         } %}
@@ -69,18 +69,18 @@
 {% block main %}
 
     <div class="content-pane">
-        {{ hiddenInput('siteId', currentSite.id, {
+        {{ hiddenInput('siteId', site.id, {
             id: 'current-site-id'
         }) }}
 
-        <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and currentSite.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
+        <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
             <div style="flex-grow: 1;">
                 <h3 style="text-transform: uppercase;">{{ "Sections"|t('sprout-module-sitemaps') }}
                     <span class="info">{{ "Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data."|t('sprout-module-sitemaps') }}</span>
                 </h3>
             </div>
             <div style="flex-shrink: 0;">
-                {% if craft.app.getIsMultiSite() and currentSite.id != firstSiteInGroup.id %}
+                {% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}
                     <div class="buttons right">
                         <a class="btn submit icon"
                             href="{{ cpUrl('sprout/sitemaps', {
@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        {% if not settings.aggregateBySiteGroup() or (craft.app.getIsMultiSite() and currentSite.id == firstSiteInGroup.id) %}
+        {% if not settings.aggregateBySiteGroup() or (craft.app.getIsMultiSite() and site.id == firstSiteInGroup.id) %}
 
             {% for elementWithUri in elementsWithUris %}
 
@@ -203,7 +203,9 @@
                 </div>
                 <div style="flex-shrink: 0;">
                     <div class="buttons right">
-                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/new', { 'site': currentSite.handle }) }}">{{ "Custom URL"|t('sprout-module-sitemaps') }}</a>
+                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/new') }}">
+                            {{ "Custom URL"|t('sprout-module-sitemaps') }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -271,5 +273,5 @@
 {% endblock %}
 
 {% js on ready %}
-    new SproutSeoSitemapIndex();
+    new SproutSitemapMetadataIndex();
 {% endjs %}

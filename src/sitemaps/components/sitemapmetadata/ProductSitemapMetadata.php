@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\sitemaps\components\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementSitemapMetadataInterface;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SourceKeyHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use craft\commerce\elements\Product;
 use craft\commerce\Plugin as CraftCommerce;
 use craft\elements\db\ElementQuery;
@@ -36,7 +36,7 @@ class ProductSitemapMetadata implements ElementSitemapMetadataInterface
 
     public function getElementQuery(ElementQuery $query, SitemapMetadataRecord $sitemapMetadata): ElementQuery
     {
-        $productTypeId = SourceKeyHelper::findElementGroupId($sitemapMetadata->sourceKey);
+        $productTypeId = SitemapsMetadataHelper::findElementGroupId($sitemapMetadata->sourceKey);
 
         return $query->typeId($productTypeId);
     }

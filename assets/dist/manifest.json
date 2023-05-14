@@ -175,17 +175,17 @@
     "isEntry": true,
     "src": "redirects/Redirects.js"
   },
-  "sitemaps/Sitemaps.css": {
-    "file": "assets/Sitemaps-ee93e5c4.css",
-    "src": "sitemaps/Sitemaps.css"
+  "sitemaps/SitemapMetadata.css": {
+    "file": "assets/SitemapMetadata-ee93e5c4.css",
+    "src": "sitemaps/SitemapMetadata.css"
   },
-  "sitemaps/Sitemaps.js": {
+  "sitemaps/SitemapMetadata.js": {
     "css": [
-      "assets/Sitemaps-ee93e5c4.css"
+      "assets/SitemapMetadata-ee93e5c4.css"
     ],
-    "file": "assets/sitemaps-e9bff86d.js",
+    "file": "assets/sitemapMetadata-c440c97f.js",
     "isEntry": true,
-    "src": "sitemaps/Sitemaps.js"
+    "src": "sitemaps/SitemapMetadata.js"
   },
   "transactional/NotificationEvents.css": {
     "file": "assets/NotificationEvents-6d4f710e.css",

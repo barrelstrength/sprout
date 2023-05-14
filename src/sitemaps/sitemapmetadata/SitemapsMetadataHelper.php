@@ -10,6 +10,15 @@ use craft\models\Site;
 
 class SitemapsMetadataHelper
 {
+    public static function findElementGroupId($sourceKey): ?int
+    {
+        $parts = explode('-', $sourceKey);
+
+        $elementGroupId = (int)$parts[1];
+
+        return $elementGroupId > 0 ? $elementGroupId : null;
+    }
+
     public static function isSinglesSection(SitemapMetadataRecord $sitemapMetadata): bool
     {
         $element = new $sitemapMetadata->type();
@@ -18,7 +27,7 @@ class SitemapsMetadataHelper
             return false;
         }
 
-        $sectionId = SourceKeyHelper::findElementGroupId($sitemapMetadata->sourceKey);
+        $sectionId = self::findElementGroupId($sitemapMetadata->sourceKey);
 
         if ($sectionId > 0) {
             $element->sectionId = $sectionId;

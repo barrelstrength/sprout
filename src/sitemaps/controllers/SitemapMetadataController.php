@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\helpers\Cp;
+use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use yii\db\ActiveRecord;
@@ -19,7 +20,7 @@ class SitemapMetadataController extends Controller
     /**
      * Renders the Sitemap Index Page
      */
-    public function actionSitemapIndexTemplate(): Response
+    public function actionSitemapMetadataIndexTemplate(): Response
     {
         $site = Cp::requestedSite();
 
@@ -65,16 +66,7 @@ class SitemapMetadataController extends Controller
         }
 
         if ($isMultiSite) {
-            // Form Multi-Site we have to figure out which Site and Site Group matter
-            //if ($siteHandle !== null) {
-
-            //If we have a handle, the Current Site and First Site in Group may be different
-            //$currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-            //if (!$currentSite) {
-            //    throw new NotFoundHttpException('Invalid site handle: ' . $siteHandle);
-            //}
-
+            // For Multi-Site we have to figure out which Site and Site Group matter
             $currentSiteGroup = Craft::$app->sites->getGroupById($site->groupId);
 
             if (!$currentSiteGroup) {
@@ -83,19 +75,8 @@ class SitemapMetadataController extends Controller
 
             $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
             $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-            //} else {
-            // If we don't have a handle, we'll load the first site in the first group
-            // We assume at least one site group and the Current Site will be the same as the First Site
-
-            //$allSiteGroups = Craft::$app->sites->getAllGroups();
-            //$currentSiteGroup = $allSiteGroups[0];
-            //$sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-            //$firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-            //$currentSite = $firstSiteInGroup;
-            //}
         } else {
             // For a single site, the primary site ID will do
-            //$currentSite = Craft::$app->getSites()->getPrimarySite();
             $firstSiteInGroup = $site;
         }
 
@@ -107,7 +88,7 @@ class SitemapMetadataController extends Controller
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/index', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
-            'currentSite' => $site,
+            'site' => $site,
             'firstSiteInGroup' => $firstSiteInGroup,
             'editableSiteIds' => $editableSiteIds,
             'elementsWithUris' => $elementsWithUris,
@@ -120,7 +101,7 @@ class SitemapMetadataController extends Controller
     /**
      * Renders a Sitemap Edit Page
      */
-    public function actionSitemapEditTemplate(int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
+    public function actionSitemapMetadataEditTemplate(int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -129,14 +110,6 @@ class SitemapMetadataController extends Controller
         }
 
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
-
-        //$siteHandle = Craft::$app->getRequest()->getRequiredQueryParam('site');
-        //
-        //if ($siteHandle === null) {
-        //    throw new NotFoundHttpException('Unable to find site with handle: ' . $siteHandle);
-        //}
-
-        //$currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
         $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
 
@@ -155,7 +128,7 @@ class SitemapMetadataController extends Controller
             }
         }
 
-        $continueEditingUrl = 'sprout/sitemaps/edit/{id}?site=' . $site->handle;
+        $continueEditingUrl = UrlHelper::cpUrl('sprout/sitemaps/edit/{id}');
 
         $tabs = [
             [
@@ -166,7 +139,7 @@ class SitemapMetadataController extends Controller
         ];
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit', [
-            'currentSite' => $site,
+            'site' => $site,
             'sitemapMetadata' => $sitemapMetadataRecord,
             'continueEditingUrl' => $continueEditingUrl,
             'tabs' => $tabs,
@@ -207,7 +180,9 @@ class SitemapMetadataController extends Controller
                 ]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('sprout-module-sitemaps', "Couldn't save the Sitemap."));
+            Craft::$app->getSession()->setError(
+                Craft::t('sprout-module-sitemaps', "Couldn't save the Sitemap.")
+            );
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'sitemapMetadata' => $sitemapMetadataRecord,
@@ -228,7 +203,7 @@ class SitemapMetadataController extends Controller
         return $this->redirectToPostedUrl($sitemapMetadataRecord);
     }
 
-    public function actionDeleteSitemapById(): Response
+    public function actionDeleteSitemapMetadataById(): Response
     {
         $this->requirePostRequest();
         $this->requirePermission(SitemapsModule::p('editSitemaps'));

@@ -139,32 +139,6 @@ class XmlSitemap extends Component
 
                 // Add each Element with a URL to the Sitemap
                 foreach ($elements as $element) {
-                    // @todo figure out how handle this code
-                    /*
-                    if ($elementMetadataFieldHandle === null) {
-                        $elementMetadataFieldHandle = MetaModule::getInstance()->elementMetadata->getElementMetadataFieldHandle($element);
-                    }
-
-                    $robots = null;
-
-                    // If we have an Element Metadata field, allow it to override robots
-                    if ($elementMetadataFieldHandle) {
-                        $metadata = $element->{$elementMetadataFieldHandle};
-
-                        if (isset($metadata['enableMetaDetailsRobots']) && !empty($metadata['enableMetaDetailsRobots'])) {
-                            $robots = $metadata['robots'] ?? null;
-                            $robots = OptimizeMetadataHelper::prepareRobotsMetadataForSettings($robots);
-                        }
-                    }
-
-                    $noIndex = $robots['noindex'] ?? $globalMetadata['robots']['noindex'] ?? null;
-                    $noFollow = $robots['nofollow'] ?? $globalMetadata['robots']['nofollow'] ?? null;
-
-                    if ($noIndex == 1 OR $noFollow == 1) {
-                        Craft::info('Element ID '.$element->id.' not added to sitemap. Element Metadata field `noindex` or `nofollow` settings are enabled.', __METHOD__);
-                        continue;
-                    }
-                    * */
 
                     $canonicalOverride = $metadata['canonical'] ?? null;
 
