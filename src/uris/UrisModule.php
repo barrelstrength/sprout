@@ -6,16 +6,9 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
-use BarrelStrength\Sprout\uris\components\elements\CategoryElementGroupBehavior;
-use BarrelStrength\Sprout\uris\components\elements\EntryElementGroupBehavior;
-use BarrelStrength\Sprout\uris\components\elements\ProductElementGroupBehavior;
 use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
-use craft\commerce\elements\Product;
-use craft\elements\Category;
-use craft\elements\Entry;
-use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\web\View;
 use yii\base\Event;
@@ -72,12 +65,6 @@ class UrisModule extends Module
             function(Event $event): void {
                 $event->sender->registerModule($this);
             });
-        
-        Event::on(
-            Element::class,
-            Element::EVENT_DEFINE_BEHAVIORS,
-            [self::class, 'attachElementBehaviors']
-        );
     }
 
     public static function getElementsWithUris(): array
@@ -96,23 +83,5 @@ class UrisModule extends Module
         }
 
         return $uriTypes;
-    }
-
-    public static function attachElementBehaviors(DefineBehaviorsEvent $event): void
-    {
-        /** @var Element $element */
-        $element = $event->sender;
-
-        if ($element instanceof Entry) {
-            $event->behaviors[EntryElementGroupBehavior::class] = EntryElementGroupBehavior::class;
-        }
-
-        if ($element instanceof Category) {
-            $event->behaviors[CategoryElementGroupBehavior::class] = CategoryElementGroupBehavior::class;
-        }
-
-        if ($element instanceof Product) {
-            $event->behaviors[ProductElementGroupBehavior::class] = ProductElementGroupBehavior::class;
-        }
     }
 }

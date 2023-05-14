@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetada
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
-use BarrelStrength\Sprout\uris\elementgroups\ElementGroupInterface;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\base\Element;
@@ -27,7 +26,7 @@ class SitemapMetadata extends Component
 
     private array $_elementsWithUris = [];
 
-    public function getSitemapMetadataIntegrations(): array
+    public function getSitemapMetadataTypes(): array
     {
         $metadataRules = [
             Entry::class => EntrySitemapMetadata::class,
@@ -49,11 +48,11 @@ class SitemapMetadata extends Component
 
     public function getSourceDetails(Site $site): array
     {
-        $sitemapMetadataIntegrations = $this->getSitemapMetadataIntegrations();
+        $sitemapMetadataTypes = $this->getSitemapMetadataTypes();
 
         $sourceDetails = [];
 
-        foreach ($sitemapMetadataIntegrations as $sitemapMetadataIntegration) {
+        foreach ($sitemapMetadataTypes as $sitemapMetadataIntegration) {
             foreach ($sitemapMetadataIntegration::getSourceDetails($site) as $sourceKey => $sourceDetail) {
                 $sourceDetails[$sourceKey] = $sourceDetail;
             }
@@ -69,14 +68,10 @@ class SitemapMetadata extends Component
         }
 
         $elementTypes = UrisModule::getElementsWithUris();
+        $sitemapMetadataTypes = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataTypes();
 
-        $elementTypesWithUris = array_filter($elementTypes, static function($elementType) {
-            $element = new $elementType();
-            $behaviors = $element->getBehaviors();
-
-            return array_filter($behaviors, static function($behavior) {
-                return $behavior instanceof ElementGroupInterface;
-            });
+        $elementTypesWithUris = array_filter($elementTypes, static function($elementType) use ($sitemapMetadataTypes) {
+            return array_key_exists($elementType, $sitemapMetadataTypes);
         });
 
         foreach ($elementTypesWithUris as $elementTypeWithUri) {

@@ -41,10 +41,10 @@ class SitemapMetadataRecord extends ActiveRecord
         $query = $elementType::find()
             ->siteId($this->siteId);
 
-        $sitemapMetadataIntegrations = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataIntegrations();
+        $sitemapMetadataTypes = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataTypes();
 
-        if (isset($sitemapMetadataIntegrations[$elementType])) {
-            $integration = new $sitemapMetadataIntegrations[$elementType]();
+        if (isset($sitemapMetadataTypes[$elementType])) {
+            $integration = new $sitemapMetadataTypes[$elementType]();
 
             return $integration->getElementQuery($query, $this);
         }

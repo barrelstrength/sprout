@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\uris\components\links;
 
+use craft\base\ElementInterface;
 use craft\helpers\Cp;
 
 abstract class AbstractElementLink extends AbstractLink
@@ -10,6 +11,7 @@ abstract class AbstractElementLink extends AbstractLink
 
     public static function displayName(): string
     {
+        /** @var ElementInterface|string $elementType */
         $elementType = static::elementType();
 
         return $elementType::displayName();
@@ -19,6 +21,7 @@ abstract class AbstractElementLink extends AbstractLink
     {
         $element = null;
 
+        /** @var ElementInterface|string $elementType */
         $elementType = static::elementType();
 
         return Cp::elementSelectHtml([
