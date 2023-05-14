@@ -8,7 +8,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
 
-class m211101_000003_update_user_permissions extends Migration
+class m211101_000002_update_user_permissions extends Migration
 {
     public function safeUp(): void
     {

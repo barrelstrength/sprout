@@ -20,7 +20,7 @@ class m211101_000000_run_install_migration extends Migration
 
         // @todo - fix default settings to import
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-            'emailTemplateId' => self::DEFAULT_EMAIL_THEME,
+            'emailTemplateId' => self::DEFAULT_EMAIL_THEME, // @todo - this needs to be a UID now
             'enablePerEmailEmailTemplateIdOverride' => false,
         ], "Update Sprout CP Settings for “{$moduleSettingsKey}”");
 

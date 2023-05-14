@@ -51,7 +51,7 @@ class m211101_000000_run_install_migration extends Migration
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
                 'sitemapKey' => $this->string(),
-                'elementGroupId' => $this->integer(),
+                'sourceKey' => $this->string(),
                 'enabled' => $this->boolean()->defaultValue(false),
                 'type' => $this->string(),
                 'uri' => $this->string(),

@@ -68,7 +68,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'dateUpdated',
             'uid',
 
-            'emailTemplateId', // Remap to emailThemeId
+            'emailTemplateId', // Remap to emailThemeUid
             'preheaderText', // Hard code default
             'emailType', // Hard code as 'notification' ?
         ];
@@ -85,7 +85,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'dateUpdated',
             'uid',
 
-            'emailThemeId', // Remap to emailThemeId
+            'emailThemeUid',
             'preheaderText', // Hard code default
             'emailType', // Hard code as 'notification' ?
         ];

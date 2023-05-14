@@ -17,7 +17,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'id',
             'siteId',
             'uniqueKey',
-            'elementGroupId',
+            'urlEnabledSectionId',
             'enabled',
             'type',
             'uri',
@@ -32,7 +32,6 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'id',
             'siteId',
             'sitemapKey',
-            'elementGroupId',
             'enabled',
             'type',
             'uri',
@@ -41,6 +40,14 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'dateCreated',
             'dateUpdated',
             'uid',
+
+            'sourceKey',
+        ];
+
+        $sourceKeyMapping = [
+            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata' => 'entries',
+            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMetadata' => 'categories',
+            'BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata' => 'products',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_SITEMAPS_TABLE)) {
@@ -48,6 +55,23 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
                 ->select($oldCols)
                 ->from([self::OLD_SITEMAPS_TABLE])
                 ->all();
+
+            // update urlEnabledSectionId to sourceKey
+            foreach ($rows as &$row) {
+                // Only modify Element Sitemap Metadata
+                if (!empty($row['type'])) {
+                    $sourceKey = $sourceKeyMapping[$row['type']] . '-' . $row['urlEnabledSectionId'];
+
+                    $row['sourceKey'] = $sourceKey;
+                } else {
+                    $row['sourceKey'] = 'custom-pages';
+                }
+
+                $row['priority'] = (float)$row['priority'];
+
+                // Unset old column on all rows
+                unset($row['urlEnabledSectionId']);
+            }
 
             Craft::$app->getDb()->createCommand()
                 ->batchInsert(self::SITEMAPS_TABLE, $newCols, $rows)
