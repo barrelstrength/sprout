@@ -13,7 +13,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
 
     public function safeUp(): void
     {
-        $cols = [
+        $oldCols = [
             'id',
             'siteId',
             'uniqueKey',
@@ -28,14 +28,29 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'uid',
         ];
 
+        $newCols = [
+            'id',
+            'siteId',
+            'sitemapKey',
+            'elementGroupId',
+            'enabled',
+            'type',
+            'uri',
+            'priority',
+            'changeFrequency',
+            'dateCreated',
+            'dateUpdated',
+            'uid',
+        ];
+
         if ($this->getDb()->tableExists(self::OLD_SITEMAPS_TABLE)) {
             $rows = (new Query())
-                ->select($cols)
+                ->select($oldCols)
                 ->from([self::OLD_SITEMAPS_TABLE])
                 ->all();
 
             Craft::$app->getDb()->createCommand()
-                ->batchInsert(self::SITEMAPS_TABLE, $cols, $rows)
+                ->batchInsert(self::SITEMAPS_TABLE, $newCols, $rows)
                 ->execute();
         }
     }

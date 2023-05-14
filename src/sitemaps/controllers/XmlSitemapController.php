@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
-use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapType;
+use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\models\Site;
@@ -51,12 +51,12 @@ class XmlSitemapController extends Controller
 
         switch ($sitemapKey) {
             // Generate Sitemap Index
-            case SitemapType::INDEX:
+            case SitemapKey::INDEX:
                 $sitemapIndexUrls = $xmlSitemapService->getSitemapIndex($site);
                 break;
 
             // Prepare Singles Sitemap
-            case SitemapType::SINGLES:
+            case SitemapKey::SINGLES:
                 $elements = $xmlSitemapService->getDynamicSitemapElements(
                     'singles',
                     $pageNumber,
@@ -65,7 +65,7 @@ class XmlSitemapController extends Controller
                 break;
 
             // Prepare Custom Pages Sitemap
-            case SitemapType::CUSTOM_PAGES:
+            case SitemapKey::CUSTOM_PAGES:
                 if ($multiSiteSiteIds !== []) {
                     $elements = $xmlSitemapService->getCustomSectionUrlsForMultipleIds(
                         $multiSiteSiteIds,

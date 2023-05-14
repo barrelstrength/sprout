@@ -50,7 +50,7 @@ class m211101_000000_run_install_migration extends Migration
             $this->createTable(self::SITEMAPS_TABLE, [
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
-                'uniqueKey' => $this->string(),
+                'sitemapKey' => $this->string(),
                 'elementGroupId' => $this->integer(),
                 'enabled' => $this->boolean()->defaultValue(false),
                 'type' => $this->string(),

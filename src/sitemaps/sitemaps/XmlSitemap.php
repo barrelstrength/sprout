@@ -81,7 +81,7 @@ class XmlSitemap extends Component
 
                     // Build Sitemap Index URLs
                     for ($i = 1; $i <= $totalSitemaps; $i++) {
-                        $sitemapIndexUrl = UrlHelper::siteUrl() . 'sitemap-' . $sitemapMetadata->uniqueKey . '-' . $i . '.xml' . $debugString;
+                        $sitemapIndexUrl = UrlHelper::siteUrl() . 'sitemap-' . $sitemapMetadata->sitemapKey . '-' . $i . '.xml' . $debugString;
 
                         $sitemapIndexPages[] = $sitemapIndexUrl;
                     }
@@ -279,10 +279,10 @@ class XmlSitemap extends Component
             ->andWhere(['not', ['type' => SitemapMetadata::NO_ELEMENT_TYPE]]);
 
         // @todo - review this logic
-        if ($sitemapKey == SitemapType::SINGLES) {
+        if ($sitemapKey == SitemapKey::SINGLES) {
             $query->andWhere(['type' => Entry::class]);
         } else {
-            $query->andWhere(['uniqueKey' => $sitemapKey]);
+            $query->andWhere(['sitemapKey' => $sitemapKey]);
         }
 
         return $query->all();

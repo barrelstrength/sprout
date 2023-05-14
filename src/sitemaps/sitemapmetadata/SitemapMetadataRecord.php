@@ -16,7 +16,7 @@ use craft\models\Site;
  * @property int $id
  * @property int $siteId
  * @property string $sourceKey
- * @property string $uniqueKey
+ * @property string $sitemapKey
  * @property int $elementGroupId
  * @property int enabled
  * @property string $type
@@ -70,8 +70,8 @@ class SitemapMetadataRecord extends ActiveRecord
 
     public function beforeSave($insert): bool
     {
-        if (!$this->uniqueKey) {
-            $this->uniqueKey = $this->generateUniqueKey();
+        if (!$this->sitemapKey) {
+            $this->sitemapKey = $this->generateUniqueKey();
         }
 
         return parent::beforeSave($insert);
@@ -79,20 +79,20 @@ class SitemapMetadataRecord extends ActiveRecord
 
     public function generateUniqueKey(): string
     {
-        $key = Craft::$app->getSecurity()->generateRandomString(12);
+        $sitemapKey = Craft::$app->getSecurity()->generateRandomString(12);
 
         $result = (new Query())
-            ->select('[[uniqueKey]]')
+            ->select('[[sitemapKey]]')
             ->from([SproutTable::SITEMAPS_METADATA])
-            ->where(['[[uniqueKey]]' => $key])
+            ->where(['[[sitemapKey]]' => $sitemapKey])
             ->scalar();
 
         if ($result) {
             // Try again until we have a unique key
-            $this->generateUniqueKey();
+            $sitemapKey = $this->generateUniqueKey();
         }
 
-        return $key;
+        return $sitemapKey;
     }
 
     public function getSite(): ?Site

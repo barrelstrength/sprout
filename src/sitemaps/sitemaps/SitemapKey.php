@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
-abstract class SitemapType
+abstract class SitemapKey
 {
     public const INDEX = '';
     public const SINGLES = 'singles';
