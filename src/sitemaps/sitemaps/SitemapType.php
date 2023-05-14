@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\sitemaps\metadata;
+namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
 abstract class SitemapType
 {

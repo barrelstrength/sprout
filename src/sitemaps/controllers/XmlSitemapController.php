@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
-use BarrelStrength\Sprout\sitemaps\metadata\SitemapType;
+use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapType;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\models\Site;
@@ -22,10 +22,10 @@ class XmlSitemapController extends Controller
      */
     public function actionRenderXmlSitemap($sitemapKey = null, int $pageNumber = null): Response
     {
-        $siteId = Craft::$app->sites->getCurrentSite()->id;
+        $site = Craft::$app->sites->getCurrentSite();
         $multiSiteSiteIds = [];
         $sitesInGroup = [];
-        
+
         if (!SitemapsModule::isEnabled()) {
             throw new NotFoundHttpException('XML Sitemap not enabled.');
         }
@@ -35,7 +35,7 @@ class XmlSitemapController extends Controller
             $firstSiteInGroup = $sitesInGroup[0] ?? null;
 
             // Only render sitemaps for the primary site in a group
-            if (!$firstSiteInGroup instanceof Site || $siteId !== $firstSiteInGroup->id) {
+            if (!$firstSiteInGroup instanceof Site || $site->id !== $firstSiteInGroup->id) {
                 throw new HttpException(404);
             }
 
@@ -50,12 +50,12 @@ class XmlSitemapController extends Controller
         switch ($sitemapKey) {
             // Generate Sitemap Index
             case SitemapType::INDEX:
-                $sitemapIndexUrls = SitemapsModule::getInstance()->xmlSitemap->getSitemapIndex($siteId);
+                $sitemapIndexUrls = SitemapsModule::getInstance()->xmlSitemap->getSitemapIndex($site);
                 break;
 
             // Prepare Singles Sitemap
             case SitemapType::SINGLES:
-                $elements = SitemapsModule::getInstance()->xmlSitemap->getDynamicSitemapElements('singles', $pageNumber, $siteId);
+                $elements = SitemapsModule::getInstance()->xmlSitemap->getDynamicSitemapElements('singles', $pageNumber, $site);
                 break;
 
             // Prepare Custom Pages Sitemap
@@ -63,14 +63,14 @@ class XmlSitemapController extends Controller
                 if ($multiSiteSiteIds !== []) {
                     $elements = SitemapsModule::getInstance()->xmlSitemap->getCustomSectionUrlsForMultipleIds($multiSiteSiteIds, $sitesInGroup);
                 } else {
-                    $elements = SitemapsModule::getInstance()->xmlSitemap->getCustomSectionUrls($siteId);
+                    $elements = SitemapsModule::getInstance()->xmlSitemap->getCustomSectionUrls($site);
                 }
 
                 break;
 
             // Prepare Element Group Sitemap
             default:
-                $elements = SitemapsModule::getInstance()->xmlSitemap->getDynamicSitemapElements($sitemapKey, $pageNumber, $siteId);
+                $elements = SitemapsModule::getInstance()->xmlSitemap->getDynamicSitemapElements($sitemapKey, $pageNumber, $site);
         }
 
         $headers = Craft::$app->getResponse()->getHeaders();

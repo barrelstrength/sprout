@@ -1,10 +1,11 @@
 <?php
 
-namespace BarrelStrength\Sprout\sitemaps\metadata;
+namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
+use craft\base\Element;
 use craft\db\ActiveRecord;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
@@ -34,6 +35,7 @@ class SitemapMetadataRecord extends ActiveRecord
 
     public function getElementQuery(): ElementQuery
     {
+        /** @var Element|string $elementType */
         $elementType = $this->type;
 
         $query = $elementType::find()

@@ -1,13 +1,17 @@
 <?php
 
-namespace BarrelStrength\Sprout\sitemaps\metadata;
+namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\db\Query;
 use craft\elements\Entry;
 use craft\helpers\UrlHelper;
+use craft\models\Site;
 use DateTime;
 use yii\base\Component;
 
@@ -16,7 +20,7 @@ class XmlSitemap extends Component
     /**
      * Prepares sitemaps for a sitemapindex
      */
-    public function getSitemapIndex($siteId = null): array
+    public function getSitemapIndex(Site $site): array
     {
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
@@ -27,11 +31,11 @@ class XmlSitemap extends Component
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
 
-        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($siteId);
+        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site);
 
         foreach ($elementsWithUris as $elementWithUri) {
 
-            foreach ($sitemapMetadataByKey as $sourceKey => $sitemapMetadata) {
+            foreach ($sitemapMetadataByKey as $sitemapMetadata) {
                 if (!$sitemapMetadata->enabled) {
                     continue;
                 }
@@ -85,7 +89,7 @@ class XmlSitemap extends Component
             }
         }
 
-        if (SitemapsMetadataHelper::hasCustomPages($siteId)) {
+        if (SitemapsMetadataHelper::hasCustomPages($site)) {
             $sitemapIndexPages[] = UrlHelper::siteUrl('sitemap-custom-pages.xml');
         }
 
@@ -95,7 +99,7 @@ class XmlSitemap extends Component
     /**
      * Prepares urls for a dynamic sitemap
      */
-    public function getDynamicSitemapElements($sitemapKey, $pageNumber, $siteId): array
+    public function getDynamicSitemapElements($sitemapKey, $pageNumber, Site $site): array
     {
         $urls = [];
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
@@ -107,9 +111,9 @@ class XmlSitemap extends Component
         // Our offset should be zero for the first page
         $offset = ($totalElementsPerSitemap * $pageNumber) - $totalElementsPerSitemap;
 
-        $enabledSitemapSections = $this->getEnabledSitemapSections($sitemapKey, $siteId);
+        $enabledSitemapSections = $this->getEnabledSitemapSections($sitemapKey, $site);
 
-        foreach ($enabledSitemapSections as $sourceKey => $sitemapMetadata) {
+        foreach ($enabledSitemapSections as $sitemapMetadata) {
 
             if (!$sitemapMetadata->enabled) {
                 continue;
@@ -117,7 +121,7 @@ class XmlSitemap extends Component
 
             $elementWithUri = $sitemapsService->getElementWithUriByType($sitemapMetadata->type);
 
-            foreach ($currentSitemapSites as $site) {
+            foreach ($currentSitemapSites as $currentSitemapSite) {
 
                 if (!$elementWithUri) {
                     continue;
@@ -178,7 +182,7 @@ class XmlSitemap extends Component
                     $urls[$element->id][] = [
                         'id' => $element->id,
                         'url' => $element->getUrl(),
-                        'locale' => $site->language,
+                        'locale' => $currentSitemapSite->language,
                         'modified' => $element->dateUpdated->format('Y-m-d\Th:i:s\Z'),
                         'priority' => $sitemapMetadata['priority'],
                         'changeFrequency' => $sitemapMetadata['changeFrequency'],
@@ -216,7 +220,7 @@ class XmlSitemap extends Component
     /**
      * Returns all Custom Section URLs
      */
-    public function getCustomSectionUrls($siteId): array
+    public function getCustomSectionUrls(Site $site): array
     {
         $urls = [];
 
@@ -225,7 +229,7 @@ class XmlSitemap extends Component
             ->select('uri, priority, [[changeFrequency]], [[dateUpdated]]')
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
-            ->andWhere(['[[siteId]]' => $siteId])
+            ->andWhere(['[[siteId]]' => $site->id])
             ->andWhere(['[[type]]' => SitemapMetadata::NO_ELEMENT_TYPE])
             ->all();
 
@@ -293,11 +297,11 @@ class XmlSitemap extends Component
         return $settings->totalElementsPerSitemap ?? $total;
     }
 
-    protected function getEnabledSitemapSections($sitemapKey, $siteId): array
+    protected function getEnabledSitemapSections($sitemapKey, Site $site): array
     {
         $query = SitemapMetadataRecord::find()
             ->where(['enabled' => true])
-            ->andWhere(['siteId' => $siteId])
+            ->andWhere(['siteId' => $site->id])
             ->andWhere(['not', ['type' => SitemapMetadata::NO_ELEMENT_TYPE]]);
 
         // @todo - review this logic

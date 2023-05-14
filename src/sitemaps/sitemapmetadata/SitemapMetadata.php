@@ -1,10 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\sitemaps\metadata;
+namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
-use BarrelStrength\Sprout\sitemaps\components\CategorySitemapMetadata;
-use BarrelStrength\Sprout\sitemaps\components\EntrySitemapMetadata;
-use BarrelStrength\Sprout\sitemaps\components\ProductSitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use BarrelStrength\Sprout\uris\elementgroups\ElementGroupInterface;
@@ -14,6 +14,7 @@ use craft\base\Element;
 use craft\commerce\elements\Product;
 use craft\elements\Category;
 use craft\elements\Entry;
+use craft\models\Site;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
@@ -46,14 +47,14 @@ class SitemapMetadata extends Component
         return $event->metadataRules;
     }
 
-    public function getSourceDetails(): array
+    public function getSourceDetails(Site $site): array
     {
         $sitemapMetadataIntegrations = $this->getSitemapMetadataIntegrations();
 
         $sourceDetails = [];
 
         foreach ($sitemapMetadataIntegrations as $sitemapMetadataIntegration) {
-            foreach ($sitemapMetadataIntegration::getSourceDetails() as $sourceKey => $sourceDetail) {
+            foreach ($sitemapMetadataIntegration::getSourceDetails($site) as $sourceKey => $sourceDetail) {
                 $sourceDetails[$sourceKey] = $sourceDetail;
             }
         }
@@ -122,12 +123,12 @@ class SitemapMetadata extends Component
      * Index results by Element Group ID: type-id
      * Example: entries-5, categories-12
      */
-    public function getSitemapMetadataByKey($siteId): array
+    public function getSitemapMetadataByKey(Site $site): array
     {
-        $sourceDetails = $this->getSourceDetails();
+        $sourceDetails = $this->getSourceDetails($site);
 
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
-            ->where(['[[siteId]]' => $siteId])
+            ->where(['[[siteId]]' => $site->id])
             ->andWhere(['not', ['[[type]]' => self::NO_ELEMENT_TYPE]])
             ->indexBy('sourceKey')
             ->all();

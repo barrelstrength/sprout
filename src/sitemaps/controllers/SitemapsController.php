@@ -2,8 +2,8 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
-use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadata;
-use BarrelStrength\Sprout\sitemaps\metadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\helpers\Cp;
@@ -102,7 +102,7 @@ class SitemapsController extends Controller
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
-        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site->id);
+        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site);
         $customSections = $sitemapsService->getSitemapPagesMetadata($site->id);
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemaps/index', [
