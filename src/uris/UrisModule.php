@@ -8,7 +8,6 @@ use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
-use craft\base\Element;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\web\View;
 use yii\base\Event;
@@ -65,23 +64,5 @@ class UrisModule extends Module
             function(Event $event): void {
                 $event->sender->registerModule($this);
             });
-    }
-
-    public static function getElementsWithUris(): array
-    {
-        /** @var Element[] $types */
-        $types = Craft::$app->getElements()->getAllElementTypes();
-
-        $uriTypes = [];
-
-        foreach ($types as $type) {
-            if (!$type::hasUris()) {
-                continue;
-            }
-
-            $uriTypes[] = $type;
-        }
-
-        return $uriTypes;
     }
 }
