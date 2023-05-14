@@ -14,7 +14,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class SitemapsController extends Controller
+class SitemapMetadataController extends Controller
 {
     /**
      * Renders the Sitemap Index Page

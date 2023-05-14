@@ -52,7 +52,7 @@ class SproutSeoSitemapIndex {
             'siteId': siteId,
         };
 
-        Craft.postActionRequest('sprout-module-sitemaps/sitemaps/save-sitemap-metadata', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-sitemaps/sitemap-metadata/save-sitemap-metadata', data, $.proxy(function(response, textStatus) {
             if (textStatus === 'success') {
                 if (response.success) {
 
@@ -113,7 +113,7 @@ class SproutSeoSitemapIndex {
             id: customPageId,
         };
 
-        Craft.postActionRequest('sprout-module-sitemaps/sitemaps/delete-sitemap-by-id', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-sitemaps/sitemap-metadata/delete-sitemap-by-id', data, $.proxy(function(response, textStatus) {
             if (response.success) {
                 row.remove();
             }
