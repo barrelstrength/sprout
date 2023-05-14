@@ -17,7 +17,6 @@ return [
     'User Agent' => 'User Agent',
     'Delivery Status' => 'Delivery Status',
     'Learn More' => 'Learn More',
-    'Details' => 'Details',
     'Transport Type' => 'Transport Type',
     'Craft Version' => 'Craft Version',
     'Message' => 'Message',
@@ -49,7 +48,6 @@ return [
     'Subject Line' => 'Subject Line',
     'From Address' => 'From Address',
     'Comma-separated list of recipients.' => 'Comma-separated list of recipients.',
-    'Original Email Details' => 'Original Email Details',
     'Email Details' => 'Email Details',
     'To Address' => 'To Address',
     'Resend to a single recipient. Repeat to resend more than once.' => 'Resend to a single recipient. Repeat to resend more than once.',
@@ -60,7 +58,6 @@ return [
     'Craft unable to send email.' => 'Craft unable to send email.',
     'Delivery Info' => 'Delivery Info',
     'Sprout Module | Sent Email' => 'Sprout Module | Sent Email',
-    'Emasil' => 'Emasil',
     'Original Email Info' => 'Original Email Info',
     'Info' => 'Info',
 ];
