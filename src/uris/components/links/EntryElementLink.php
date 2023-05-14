@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\core\components\links;
+namespace BarrelStrength\Sprout\uris\components\links;
 
 use craft\elements\Entry;
 

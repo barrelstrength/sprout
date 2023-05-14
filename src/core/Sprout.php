@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\core;
 
 use BarrelStrength\Sprout\core\db\MigrationTrait;
-use BarrelStrength\Sprout\core\links\Links;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
@@ -34,9 +33,8 @@ use yii\base\Event;
 use yii\base\Module;
 
 /**
- * @property Links $links
- * @property ModulesService $coreModules
  * @property SettingsService $coreSettings
+ * @property ModulesService $coreModules
  * @property VitePluginService $vite
  */
 class Sprout extends Module
@@ -99,9 +97,8 @@ class Sprout extends Module
         $this->registerTranslations();
 
         $this->setComponents([
-            'coreModules' => ModulesService::class,
             'coreSettings' => SettingsService::class,
-            'links' => Links::class,
+            'coreModules' => ModulesService::class,
 
             // Register the vite service
             'vite' => [

@@ -17,6 +17,7 @@ use BarrelStrength\Sprout\meta\metadata\ElementMetadata;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\metadata\OptimizeMetadata;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
+use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\config\BaseConfig;
 use craft\elements\Address;
@@ -50,6 +51,8 @@ class MetaModule extends Module
 
     public static function getInstance(): MetaModule
     {
+        UrisModule::getInstance();
+
         /** @var MetaModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-meta');
 

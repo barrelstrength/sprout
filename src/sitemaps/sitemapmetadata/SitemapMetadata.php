@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetada
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
+use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\base\Element;
 use craft\commerce\elements\Product;
@@ -60,31 +61,13 @@ class SitemapMetadata extends Component
         return $sourceDetails;
     }
 
-    public static function getElementTypesWithUris(): array
-    {
-        /** @var Element[] $types */
-        $types = Craft::$app->getElements()->getAllElementTypes();
-
-        $uriTypes = [];
-
-        foreach ($types as $type) {
-            if (!$type::hasUris()) {
-                continue;
-            }
-
-            $uriTypes[] = $type;
-        }
-
-        return $uriTypes;
-    }
-
     public function initElementsWithUris(): void
     {
         if ($this->_elementsWithUris) {
             return;
         }
 
-        $elementTypes = self::getElementTypesWithUris();
+        $elementTypes = UrisModule::getElementsWithUris();
         $sitemapMetadataTypes = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataTypes();
 
         $elementTypesWithUris = array_filter($elementTypes, static function($elementType) use ($sitemapMetadataTypes) {
