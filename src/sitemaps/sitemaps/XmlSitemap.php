@@ -74,7 +74,7 @@ class XmlSitemap extends Component
                             '?devMode=true'
                             . '&siteId=' . $sitemapMetadata->siteId
                             . '&element=' . $elementWithUri::displayName()
-                            . '&elementGroupId=' . $sitemapMetadata->elementGroupId
+                            . '&sourceKey=' . $sitemapMetadata->sourceKey
                             . '&sitemapMetadataId=' . $sitemapMetadata->id
                             . '&handle=' . $sitemapMetadata->handle;
                     }

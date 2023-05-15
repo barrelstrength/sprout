@@ -166,12 +166,11 @@ class SitemapMetadataController extends Controller
 
         $sitemapMetadataRecord->siteId = $request->getBodyParam('siteId');
         $sitemapMetadataRecord->sourceKey = $request->getBodyParam('sourceKey');
-        $sitemapMetadataRecord->elementGroupId = $request->getBodyParam('elementGroupId');
-        $sitemapMetadataRecord->uri = $request->getBodyParam('uri');
+        $sitemapMetadataRecord->uri = $request->getBodyParam('uri', $sitemapMetadataRecord->uri);
         $sitemapMetadataRecord->type = $type;
         $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
         $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
-        $sitemapMetadataRecord->enabled = $request->getBodyParam('enabled');
+        $sitemapMetadataRecord->enabled = (bool)$request->getBodyParam('enabled');
 
         if (!SitemapsModule::getInstance()->sitemaps->saveSitemapMetadata($sitemapMetadataRecord)) {
             if (Craft::$app->request->getAcceptsJson()) {
@@ -208,7 +207,7 @@ class SitemapMetadataController extends Controller
         $this->requirePostRequest();
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
-        $sitemapMetadataId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $sitemapMetadataId = Craft::$app->getRequest()->getRequiredBodyParam('sitemapMetadataId');
 
         $result = SitemapsModule::getInstance()->sitemaps->deleteSitemapMetadataById($sitemapMetadataId);
 

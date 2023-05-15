@@ -183,7 +183,10 @@
     "css": [
       "assets/SitemapMetadata-ee93e5c4.css"
     ],
-    "file": "assets/sitemapMetadata-c440c97f.js",
+    "file": "assets/sitemapMetadata-753fe0c6.js",
+    "imports": [
+      "_module.esm-86abea30.js"
+    ],
     "isEntry": true,
     "src": "sitemaps/SitemapMetadata.js"
   },

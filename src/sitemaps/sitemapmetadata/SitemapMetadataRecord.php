@@ -17,7 +17,6 @@ use craft\models\Site;
  * @property int $siteId
  * @property string $sourceKey
  * @property string $sitemapKey
- * @property int $elementGroupId
  * @property int enabled
  * @property string $type
  * @property string $uri

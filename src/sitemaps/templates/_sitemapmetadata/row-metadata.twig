@@ -12,46 +12,55 @@
     {% else %}
         {% if hasUriTags %}
             <code>
-                {{ "Dynamic URL"|t('sprout-module-sitemaps') }}
+                {{ "Conditional URL"|t('sprout-module-sitemaps') }}
                 <span class="info">
-                        <h6>{{ "Dynamic URL details"|t('sprout-module-sitemaps') }}</h6>
-                        <p>{{ sitemapMetadata.uri }}</p>
-                    </span>
+                    <h6>{{ "Conditional URL details"|t('sprout-module-sitemaps') }}</h6>
+                    <p>{{ sitemapMetadata.uri }}</p>
+                </span>
             </code>
         {% else %}
             <code>{{ sitemapMetadata.uri }}</code>
         {% endif %}
 
     {% endif %}
-
-    {{ hiddenInput('sitemaps['~sourceKey~'][uri]', sitemapMetadata.uri, {
-        class: 'sitemap-metadata-uri',
-    }) }}
 </td>
 <td>
     {{ forms.selectField({
-        name: 'sitemaps[' ~ sourceKey ~ '][priority]',
         options: priorityList,
         value: sitemapMetadata.priority,
         class: 'sitemap-priority',
         errors: "",
-        required: false
+        required: false,
+        inputAttributes: {
+            'x-on:change': 'saveSitemapMetadata',
+            'x-model': 'priority',
+            'x-bind:value': 'priority',
+        },
     }) }}
 </td>
 <td>
     {{ forms.selectField({
-        name: 'sitemaps[' ~ sourceKey ~ '][changeFrequency]',
         options: frequencyList,
         value: sitemapMetadata.changeFrequency,
         class: 'sitemap-change-frequency',
         errors: "",
-        required: false
+        required: false,
+        inputAttributes: {
+            'x-on:change': 'saveSitemapMetadata',
+            'x-model': 'changeFrequency',
+            'x-bind:value': 'changeFrequency',
+        },
     }) }}
 </td>
+
 <td class="enabled-status" style="text-align: center;">
     {{ forms.lightswitch({
-        name: 'sitemaps[' ~ sourceKey ~ '][enabled]',
-        on: sitemapMetadata.enabled == 1 ?? false
+        on: sitemapMetadata.enabled == 1 ?? false,
+        containerAttributes: {
+            'x-on:click': 'toggleEnabledAndSaveSitemapMetadata',
+            'x-model': 'enabled',
+            'x-bind:value': 'enabled',
+        },
     }) }}
 </td>
 <td>

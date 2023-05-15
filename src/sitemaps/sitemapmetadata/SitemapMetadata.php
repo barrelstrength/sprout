@@ -176,6 +176,9 @@ class SitemapMetadata extends Component
         if ($sitemapMetadata->type === self::NO_ELEMENT_TYPE) {
 
             $sitemapMetadata->setScenario('customSection');
+        } else {
+            // No need to store URI for Element SitemapMetadata
+            $sitemapMetadata->uri = null;
         }
 
         if (!$sitemapMetadata->save(true)) {
@@ -194,8 +197,8 @@ class SitemapMetadata extends Component
             return true;
         }
 
-        // If aggregating by Site Group, copy URL-Enabled Sitemap rules to the whole group
-        $this->copySitemapSectionRulesToAllSites($sitemapMetadata);
+        // If aggregating by Site Group, copy Sitemap Metadata to the whole group
+        $this->copySitemapMetadataToAllSitesInGroup($sitemapMetadata);
 
         return true;
     }
@@ -226,7 +229,7 @@ class SitemapMetadata extends Component
         return str_contains($uri, '{%');
     }
 
-    private function copySitemapSectionRulesToAllSites(SitemapMetadataRecord $sitemapMetadata): void
+    private function copySitemapMetadataToAllSitesInGroup(SitemapMetadataRecord $sitemapMetadata): void
     {
         $site = Craft::$app->getSites()->getSiteById($sitemapMetadata->siteId);
 
@@ -253,7 +256,7 @@ class SitemapMetadata extends Component
         // all sections saved for this site
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['in', 'siteId', $siteIds])
-            ->andWhere(['elementGroupId' => $sitemapMetadata->elementGroupId])
+            ->andWhere(['sourceKey' => $sitemapMetadata->sourceKey])
             ->indexBy('siteId')
             ->all();
 
@@ -263,8 +266,8 @@ class SitemapMetadata extends Component
                 ?? new SitemapMetadataRecord($sitemapMetadata->getAttributes());
 
             $sitemapMetadataRecord->siteId = $siteInGroup->id;
+            $sitemapMetadataRecord->sourceKey = $sitemapMetadata->sourceKey;
             $sitemapMetadataRecord->type = $sitemapMetadata->type;
-            $sitemapMetadataRecord->elementGroupId = $sitemapMetadata->elementGroupId;
             $sitemapMetadataRecord->uri = $sitemapMetadata->uri;
             $sitemapMetadataRecord->priority = $sitemapMetadata->priority;
             $sitemapMetadataRecord->changeFrequency = $sitemapMetadata->changeFrequency;

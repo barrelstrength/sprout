@@ -5,38 +5,50 @@
         sitemapMetadata: customSection,
         isCustom: true,
     } only %}
-
-    {{ hiddenInput('sitemaps['~customPageSourceKey~'][id]', customSection.id) }}
-    {{ hiddenInput('sitemaps['~customPageSourceKey~'][uri]', customSection.uri, {
-        class: 'sitemap-metadata-uri',
-    }) }}
 </td>
 <td>
     {{ forms.selectField({
-        name: 'sitemaps[' ~ customPageSourceKey ~ '][priority]',
         options: priorityList,
         value: customSection.priority,
         class: 'sitemap-priority',
         errors: "",
-        required: false
+        required: false,
+        inputAttributes: {
+            'x-on:change': 'saveSitemapMetadata',
+            'x-model': 'priority',
+            'x-bind:value': 'priority',
+        },
     }) }}
 </td>
 <td>
     {{ forms.selectField({
-        name: 'sitemaps[' ~ customPageSourceKey ~ '][changeFrequency]',
         options: frequencyList,
         value: customSection.changeFrequency,
         class: 'sitemap-change-frequency',
         errors: "",
-        required: false
+        required: false,
+        inputAttributes: {
+            'x-on:change': 'saveSitemapMetadata',
+            'x-model': 'changeFrequency',
+            'x-bind:value': 'changeFrequency',
+        },
     }) }}
 </td>
 <td class="enabled-status" style="text-align: center;">
     {{ forms.lightswitch({
-        name: 'sitemaps[' ~ customPageSourceKey ~ '][enabled]',
-        on: customSection.enabled == 1 ?? false
+        on: customSection.enabled == 1 ?? false,
+        containerAttributes: {
+            'x-on:click': 'toggleEnabledAndSaveSitemapMetadata',
+            'x-model': 'enabled',
+            'x-bind:value': 'enabled',
+        },
     }) }}
 </td>
 <td>
-    <a class="delete icon" title="Delete"></a>
+    {{ tag('a', {
+        class: 'delete icon',
+        title: 'Delete'|t('sprout-module-sitemaps'),
+        'x-on:click': 'deleteSitemapMetadata',
+    }) }}
+    <a class="" title="Delete"></a>
 </td>

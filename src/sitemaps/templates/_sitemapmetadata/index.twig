@@ -69,9 +69,6 @@
 {% block main %}
 
     <div class="content-pane">
-        {{ hiddenInput('siteId', site.id, {
-            id: 'current-site-id'
-        }) }}
 
         <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
             <div style="flex-grow: 1;">
@@ -100,8 +97,6 @@
             {% for elementWithUri in elementsWithUris %}
 
                 {% for sourceKey, sitemapMetadata in sitemapMetadataByKey %}
-
-                    {% set isNewSitemapSection = not sitemapMetadata.id %}
 
                     {% if loop.first %}
 
@@ -141,14 +136,16 @@
                         {% set elementName = elementWithUri.pluralLowerDisplayName() %}
                         {% set sproutSeoHandle = elementName~':'~sitemapMetadata.handle %}
 
-                        <tr class="{{ isNewSitemapSection ? 'sitemapsection-isnew' : null }}"
+                        <tr
+                            x-data="SitemapMetadataRow"
+                            x-ref="sitemapMetadataRow"
                             data-source-key="{{ sourceKey }}"
                             data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
+                            data-site-id="{{ site.id }}"
                             data-type="{{ className(elementWithUri) }}"
-                            data-element-group-id="{{ sitemapMetadata.elementGroupId }}"
-                            data-uri="{{ sitemapMetadata.uri }}"
-                            data-is-new="{{ isNewSitemapSection }}"
-                            data-plugin-handle="{{ craft.app.getRequest().getSegment(1) }}">
+                            data-priority="{{ sitemapMetadata.priority ?? 0.5 }}"
+                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? 'monthly' }}"
+                            data-enabled="{{ sitemapMetadata.enabled ?? '0' }}">
 
                             {% set hasUriTags = module.sitemaps.uriHasTags(sitemapMetadata.uri) %}
 
@@ -231,17 +228,21 @@
 
                     {% for customSection in customSections %}
 
-                        {% set customPageSourceKey = 'custom-pages' %}
+                        <tr
+                            x-data="SitemapMetadataRow"
+                            x-ref="sitemapMetadataRow"
+                            data-source-key="custom-pages"
+                            data-sitemap-metadata-id="{{ customSection.id ?? null }}"
+                            data-site-id="{{ site.id }}"
+                            data-uri="{{ customSection.uri }}"
+                            data-priority="{{ customSection.priority ?? 0.5 }}"
+                            data-change-frequency="{{ customSection.changeFrequency ?? 'monthly' }}"
+                            data-enabled="{{ customSection.enabled ?? '0' }}"
 
-                        <tr data-source-key="{{ customPageSourceKey }}"
-                            data-sitemap-metadata-id="{{ customSection.id }}"
-                            data-type="{{ customSection.type }}"
-                            data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}"
-                            data-plugin-handle="{{ craft.app.getRequest().getSegment(1) }}">
+                            data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
 
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-custom" with {
                                 customSection: customSection,
-                                customPageSourceKey: customPageSourceKey,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
                             } only %}
@@ -262,7 +263,7 @@
                 {{ sproutCp.mediaBox({
                     heading: "Custom Pages"|t('sprout-module-sitemaps'),
                     body: boxBody,
-                    resourcePath: '@BarrelStrength/Sprout/web/assets/sprout/icons/sitemaps/icon.svg'
+                    resourcePath: '@Sprout/Assets/dist/static/sitemaps/icons/icon.svg'
                 }) }}
 
             {% endif %}
@@ -271,7 +272,3 @@
     {% endif %}
 
 {% endblock %}
-
-{% js on ready %}
-    new SproutSitemapMetadataIndex();
-{% endjs %}
