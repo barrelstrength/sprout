@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\formfields;
+namespace BarrelStrength\Sprout\core\helpers;
 
 use CommerceGuys\Addressing\Country\CountryRepository;
 use libphonenumber\PhoneNumberUtil;

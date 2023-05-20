@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\core;
 
 use BarrelStrength\Sprout\core\db\MigrationTrait;
+use BarrelStrength\Sprout\core\helpers\PhoneHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
@@ -99,6 +100,7 @@ class Sprout extends Module
         $this->setComponents([
             'coreSettings' => SettingsService::class,
             'coreModules' => ModulesService::class,
+            'phoneHelper' => PhoneHelper::class,
 
             // Register the vite service
             'vite' => [
