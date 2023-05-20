@@ -37,7 +37,9 @@ class AudienceElement extends Element
 {
     public ?int $elementId = null;
 
-    public ?string $audienceType = null;
+    public ?string $type = null;
+
+    public array $settings = [];
 
     public string $name = '';
 
@@ -45,11 +47,9 @@ class AudienceElement extends Element
 
     public int $count = 0;
 
-    public ?array $audienceSettings = [];
-
     public function __construct($config = [])
     {
-        $this->audienceSettings = Json::decodeIfJson($config['audienceSettings'] ?? []);
+        $this->settings = Json::decodeIfJson($config['settings'] ?? []);
 
         parent::__construct($config);
     }
@@ -131,7 +131,7 @@ class AudienceElement extends Element
             $sources[] = [
                 'key' => $key,
                 'label' => Craft::t('sprout-module-mailer', $audienceType::displayName()),
-                'criteria' => ['audienceType' => $audienceType],
+                'criteria' => ['type' => $audienceType],
             ];
         }
 
@@ -181,11 +181,11 @@ class AudienceElement extends Element
 
     public function getAudience(): AudienceType
     {
-        $audience = new $this->audienceType();
+        $audience = new $this->type();
         $audience->elementId = $this->id;
 
-        if ($this->audienceSettings) {
-            $audience->setAttributes($this->audienceSettings, false);
+        if ($this->settings) {
+            $audience->setAttributes($this->settings, false);
         }
 
         return $audience;
@@ -300,24 +300,19 @@ class AudienceElement extends Element
     public function getTableAttributeHtml(string $attribute): string
     {
         $count = $this->count;
+        $audience = $this->getAudience();
 
         switch ($attribute) {
             case 'handle':
                 return '<code>' . $this->handle . '</code>';
 
-            case 'view':
-                if ($this->id && $count > 0) {
-                    return '<a href="' . UrlHelper::cpUrl('sprout/email/subscribers/' . $this->handle) . '" class="go">' .
-                        Craft::t('sprout-module-mailer', 'View Subscribers') . '</a>';
-                }
-
-                return '';
-
             case 'manage':
 
-                $audience = $this->getAudience();
-
                 return $audience->getColumnAttributeHtml();
+
+            case $audience->getCount():
+
+                return '';
         }
 
         return parent::getTableAttributeHtml($attribute);
@@ -348,8 +343,8 @@ class AudienceElement extends Element
 
         $record->name = $this->name;
         $record->handle = $this->handle;
-        $record->audienceType = $this->audienceType;
-        $record->audienceSettings = Json::encode($this->audienceSettings);
+        $record->type = $this->type;
+        $record->settings = Json::encode($this->settings);
         $record->count = $this->count;
 
         $record->save(false);
@@ -383,7 +378,7 @@ class AudienceElement extends Element
     protected function metadata(): array
     {
         return [
-            Craft::t('sprout-module-mailer', 'Audience Type') => $this->audienceType::displayName(),
+            Craft::t('sprout-module-mailer', 'Audience Type') => $this->type::displayName(),
         ];
     }
 
@@ -393,8 +388,8 @@ class AudienceElement extends Element
 
         $rules[] = [['name'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
         $rules[] = [['handle'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
-        $rules[] = [['audienceType'], 'safe'];
-        $rules[] = [['audienceSettings'], 'safe'];
+        $rules[] = [['type'], 'safe'];
+        $rules[] = [['settings'], 'safe'];
 
         $rules[] = [
             ['handle'],

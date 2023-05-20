@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\audience;
 
+use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
+use BarrelStrength\Sprout\mailer\MailerModule;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 
@@ -11,7 +13,7 @@ class AudienceElementQuery extends ElementQuery
 
     public string $handle = '';
 
-    public mixed $audienceType = null;
+    public mixed $type = null;
 
     public function __set($name, $value)
     {
@@ -47,9 +49,9 @@ class AudienceElementQuery extends ElementQuery
         return $this;
     }
 
-    public function audienceType(string $value): AudienceElementQuery
+    public function type(string $value): AudienceElementQuery
     {
-        $this->audienceType = $value;
+        $this->type = $value;
 
         return $this;
     }
@@ -60,8 +62,8 @@ class AudienceElementQuery extends ElementQuery
 
         $this->query->select([
             'sprout_audiences.elementId',
-            'sprout_audiences.audienceType',
-            'sprout_audiences.audienceSettings',
+            'sprout_audiences.type',
+            'sprout_audiences.settings',
             'sprout_audiences.name',
             'sprout_audiences.handle',
             'sprout_audiences.count',
@@ -79,9 +81,17 @@ class AudienceElementQuery extends ElementQuery
             ));
         }
 
-        if ($this->audienceType) {
+        if ($this->type) {
             $this->subQuery->andWhere(Db::parseParam(
-                'sprout_audiences.audienceType', $this->audienceType
+                'sprout_audiences.type', $this->type
+            ));
+        }
+
+        $settings = MailerModule::getInstance()->getSettings();
+
+        if (!$settings->enableSubscriberLists) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_audiences.type', SubscriberListAudienceType::class, 'not'
             ));
         }
 

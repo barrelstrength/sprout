@@ -10,8 +10,8 @@ use yii\db\ActiveQueryInterface;
 /**
  * @property int $id
  * @property int $elementId
- * @property string $audienceType
- * @property string $audienceSettings
+ * @property string $type
+ * @property string $settings
  * @property string $name
  * @property string $handle
  * @property int $count

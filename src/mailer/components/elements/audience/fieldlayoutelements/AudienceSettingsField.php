@@ -8,7 +8,7 @@ use craft\fieldlayoutelements\TextField;
 
 class AudienceSettingsField extends TextField
 {
-    public string $attribute = 'audienceSettings';
+    public string $attribute = 'settings';
 
     public bool $mandatory = true;
 
@@ -26,7 +26,7 @@ class AudienceSettingsField extends TextField
 
     protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/_audienceSettings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/settings', [
             'audience' => $element->getAudience(),
             'static' => $static,
         ]);

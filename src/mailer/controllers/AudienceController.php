@@ -59,7 +59,7 @@ class AudienceController extends Controller
 
         foreach ($audiences as $audience) {
             if ($audience->getHandle() === $audienceTypeHandle) {
-                $element->audienceType = $audience::class;
+                $element->type = $audience::class;
                 break;
             }
         }
