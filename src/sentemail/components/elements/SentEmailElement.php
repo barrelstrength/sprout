@@ -191,9 +191,9 @@ class SentEmailElement extends Element implements EmailPreviewInterface
             case 'preview':
 
                 return Html::tag('a', Craft::t('sprout-module-mailer', ''), [
-                    'href' => $this->getPreviewUrl(),
+                    'href' => '#',
+                    'onClick' => 'window.open("' . $this->getPreviewUrl() . '", "_blank", "width=800,height=600,scrollbars=yes,resizable=yes"); return false;',
                     'rel' => 'noopener',
-                    'target' => '_blank',
                     'class' => 'email-preview',
                     'data-icon' => 'view',
                     'data-element-type' => self::class,
