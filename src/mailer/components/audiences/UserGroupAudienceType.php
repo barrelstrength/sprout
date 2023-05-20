@@ -4,11 +4,11 @@ namespace BarrelStrength\Sprout\mailer\components\audiences;
 
 use BarrelStrength\Sprout\mailer\audience\AudienceType;
 use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
-use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\UserGroup;
+use craft\records\UserGroup as UserGroupRecord;
 use Illuminate\Support\Collection;
 
 class UserGroupAudienceType extends AudienceType
@@ -55,10 +55,13 @@ class UserGroupAudienceType extends AudienceType
 
     public function getRecipients(): array
     {
+        $userGroupId = UserGroupRecord::find()
+            ->select('id')
+            ->where(['uid' => $this->userGroupUid])
+            ->scalar();
+
         $users = User::find()
-            ->innerJoin([
-                'subscriptions' => SproutTable::SUBSCRIPTIONS,
-            ], '[[users.id]] = [[subscriptions.itemId]]')
+            ->groupId($userGroupId)
             ->all();
 
         $recipients = array_map(static function($user) {
