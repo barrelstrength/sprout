@@ -45,32 +45,32 @@ class AudienceController extends Controller
     public function actionCreateAudience(string $audienceTypeHandle = null): Response
     {
         $this->requirePermission(MailerModule::p('editAudiences'));
-        
+
         $site = Cp::requestedSite();
 
         if (!$site instanceof Site) {
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $listElement = Craft::createObject(AudienceElement::class);
-        $listElement->siteId = $site->id;
-        $listElement->enabled = true;
+        $element = Craft::createObject(AudienceElement::class);
+        $element->siteId = $site->id;
+        $element->enabled = true;
 
         $audiences = MailerModule::getInstance()->audiences->getAudienceTypeInstances();
 
         foreach ($audiences as $audience) {
             if ($audience->getHandle() === $audienceTypeHandle) {
-                $listElement->audienceType = $audience::class;
+                $element->audienceType = $audience::class;
                 break;
             }
         }
 
         // Save it
-        $listElement->setScenario(Element::SCENARIO_ESSENTIALS);
-        if (!Craft::$app->getDrafts()->saveElementAsDraft($listElement, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save list as a draft: %s', implode(', ', $listElement->getErrorSummary(true))));
+        $element->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($element, Craft::$app->getUser()->getId(), null, null, false)) {
+            throw new ServerErrorHttpException(sprintf('Unable to save list as a draft: %s', implode(', ', $element->getErrorSummary(true))));
         }
 
-        return $this->redirect($listElement->getCpEditUrl());
+        return $this->redirect($element->getCpEditUrl());
     }
 }
