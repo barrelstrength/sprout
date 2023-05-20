@@ -38,8 +38,8 @@ class m211101_000000_run_install_migration extends Migration
             $this->createTable(self::AUDIENCES_TABLE, [
                 'id' => $this->primaryKey(),
                 'elementId' => $this->integer()->notNull(),
-                'audienceType' => $this->string()->notNull(),
-                'audienceSettings' => $this->text(),
+                'type' => $this->string()->notNull(),
+                'settings' => $this->text(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'count' => $this->integer()->notNull()->defaultValue(0),
