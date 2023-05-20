@@ -228,7 +228,7 @@ class MailerModule extends Module
         $userService = Craft::$app->getUser();
 
         // Make sure at least one Audience Types exists
-        if ($userService->checkPermission(self::p('accessModule')) && $this->audiences->getRegisteredAudienceTypes()) {
+        if ($userService->checkPermission(self::p('accessModule')) && $this->audiences->getAudienceTypes()) {
             $navItems['audiences'] = [
                 'label' => Craft::t('sprout-module-mailer', 'Audiences'),
                 'url' => 'sprout/email/audiences',

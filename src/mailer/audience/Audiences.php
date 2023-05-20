@@ -18,12 +18,12 @@ class Audiences extends Component
      */
     protected array $audienceTypes = [];
 
-    public function getRegisteredAudienceTypes(): array
+    public function getAudienceTypes(): array
     {
         $audienceTypes[] = UserGroupAudienceType::class;
 
         $settings = MailerModule::getInstance()->getSettings();
-        
+
         if ($settings->enableSubscriberLists) {
             $audienceTypes[] = SubscriberListAudienceType::class;
         }
@@ -39,7 +39,7 @@ class Audiences extends Component
 
     public function getAudienceTypeInstances(): array
     {
-        $this->audienceTypes = $this->getRegisteredAudienceTypes();
+        $this->audienceTypes = $this->getAudienceTypes();
 
         $audiences = [];
 

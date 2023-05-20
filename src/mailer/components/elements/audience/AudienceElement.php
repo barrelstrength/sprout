@@ -120,7 +120,7 @@ class AudienceElement extends Element
             'heading' => Craft::t('sprout-module-mailer', 'Audience Type'),
         ];
 
-        $audienceTypes = MailerModule::getInstance()->audiences->getRegisteredAudienceTypes();
+        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();
 
         foreach ($audienceTypes as $audienceType) {
             $key = 'type:' . $audienceType;
