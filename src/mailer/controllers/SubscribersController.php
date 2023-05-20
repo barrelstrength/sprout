@@ -62,7 +62,7 @@ class SubscribersController extends Controller
         }
 
         $lists = AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class)
+            ->type(SubscriberListAudienceType::class)
             ->all();
 
         $options = [];

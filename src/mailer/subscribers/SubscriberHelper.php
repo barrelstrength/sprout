@@ -47,7 +47,7 @@ class SubscriberHelper
 
         /** @var AudienceElement[] $lists */
         $lists = AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class)
+            ->type(SubscriberListAudienceType::class)
             ->all();
 
         $sources = [];
@@ -119,7 +119,7 @@ class SubscriberHelper
     {
         /** @var AudienceElement[] $lists */
         $lists = AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class)
+            ->type(SubscriberListAudienceType::class)
             ->all();
 
         $options = [];

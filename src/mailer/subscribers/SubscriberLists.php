@@ -117,7 +117,7 @@ class SubscriberLists extends Component
     public function getList(SubscriptionInterface $subscription): AudienceElement|ElementInterface|null
     {
         $query = AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class);
+            ->type(SubscriberListAudienceType::class);
 
         if ($subscription->listId) {
             $query->andWhere([
@@ -153,7 +153,7 @@ class SubscriberLists extends Component
     public function getLists(): array
     {
         return AudienceElement::find()
-            ->audienceType(SubscriberListAudienceType::class)
+            ->type(SubscriberListAudienceType::class)
             ->subs->all();
     }
 
