@@ -14,10 +14,10 @@
 {# </div> #}
 {# </fieldset> #}
 
-<fieldset>
-    <div class="meta">
+{% if groups | length %}
 
-        {% if groups | length %}
+    <fieldset>
+        <div class="meta">
 
             {% set groupOptions = [] %}
             {% set groupOptions = groupOptions|merge([{ label: 'None'|t('sprout-module-mailer'), value: '' }]) %}
@@ -34,7 +34,7 @@
                 value: element.groupId
             }) }}
 
-        {% endif %}
+        </div>
+    </fieldset>
 
-    </div>
-</fieldset>
+{% endif %}
