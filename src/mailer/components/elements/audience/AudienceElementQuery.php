@@ -11,8 +11,6 @@ class AudienceElementQuery extends ElementQuery
 
     public string $handle = '';
 
-    public mixed $groupId = null;
-
     public mixed $audienceType = null;
 
     public function __set($name, $value)
@@ -49,13 +47,6 @@ class AudienceElementQuery extends ElementQuery
         return $this;
     }
 
-    public function groupId($value): AudienceElementQuery
-    {
-        $this->groupId = $value;
-
-        return $this;
-    }
-
     public function audienceType(string $value): AudienceElementQuery
     {
         $this->audienceType = $value;
@@ -69,7 +60,6 @@ class AudienceElementQuery extends ElementQuery
 
         $this->query->select([
             'sprout_audiences.elementId',
-            'sprout_audiences.groupId',
             'sprout_audiences.audienceType',
             'sprout_audiences.audienceSettings',
             'sprout_audiences.name',
@@ -86,12 +76,6 @@ class AudienceElementQuery extends ElementQuery
         if ($this->handle) {
             $this->subQuery->andWhere(Db::parseParam(
                 'sprout_audiences.handle', $this->handle
-            ));
-        }
-
-        if ($this->groupId) {
-            $this->subQuery->andWhere(Db::parseParam(
-                'sprout_audiences.groupId', $this->groupId
             ));
         }
 

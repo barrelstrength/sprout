@@ -24,7 +24,7 @@ class AudienceController extends Controller
         'remove',
     ];
 
-    public function actionAudienceIndexTemplate($groupId = null): Response
+    public function actionAudienceIndexTemplate(): Response
     {
         $this->requirePermission(MailerModule::p('editAudiences'));
 
@@ -38,7 +38,6 @@ class AudienceController extends Controller
             'title' => AudienceElement::pluralDisplayName(),
             'elementType' => AudienceElement::class,
             'audienceTypes' => $audienceTypes,
-            'groupId' => $groupId,
         ]);
     }
 

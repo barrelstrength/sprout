@@ -10,7 +10,6 @@ use yii\db\ActiveQueryInterface;
 /**
  * @property int $id
  * @property int $elementId
- * @property int $groupId
  * @property string $audienceType
  * @property string $audienceSettings
  * @property string $name

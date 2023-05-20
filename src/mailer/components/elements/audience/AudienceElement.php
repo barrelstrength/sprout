@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\audience;
 
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\mailer\audience\AudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceHandleField;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceNameField;
@@ -35,8 +34,6 @@ use yii\web\Response;
  */
 class AudienceElement extends Element
 {
-    use SourceGroupTrait;
-
     public ?int $elementId = null;
 
     public ?string $audienceType = null;
@@ -121,16 +118,19 @@ class AudienceElement extends Element
             ],
         ];
 
-        $groups = self::getSourceGroups();
+        $sources[] = [
+            'heading' => Craft::t('sprout-module-mailer', 'Audience Type'),
+        ];
 
-        foreach ($groups as $group) {
-            $key = 'group:' . $group->id;
+        $audienceTypes = MailerModule::getInstance()->audiences->getRegisteredAudienceTypes();
+
+        foreach ($audienceTypes as $audienceType) {
+            $key = 'type:' . $audienceType;
 
             $sources[] = [
                 'key' => $key,
-                'label' => Craft::t('sprout-module-mailer', $group->name),
-                'data' => ['id' => $group->id],
-                'criteria' => ['groupId' => $group->id],
+                'label' => Craft::t('sprout-module-mailer', $audienceType::displayName()),
+                'criteria' => ['audienceType' => $audienceType],
             ];
         }
 
@@ -219,24 +219,6 @@ class AudienceElement extends Element
         return $statusHtml;
     }
 
-    public function getSidebarHtml(bool $static): string
-    {
-        $groups = self::getSourceGroups();
-
-        //        $audiences = MailerModule::getInstance()->audiences->getAudiences();
-
-        //        $audienceTypes = TemplateHelper::optionsFromComponentTypes($audiences);
-
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/_details', [
-            'element' => $this,
-            'static' => $static,
-            'groups' => $groups,
-            //            'audienceTypeOptions' => $audienceTypes,
-        ]);
-
-        return $html . parent::getSidebarHtml($static);
-    }
-
     public function cpEditUrl(): ?string
     {
         $path = UrlHelper::cpUrl('sprout/email/audiences/edit/' . $this->id);
@@ -270,6 +252,19 @@ class AudienceElement extends Element
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->crumbs($crumbs);
+
+        // This is easier than creating a custom Element Edit template
+        // like for User Elements when all we want is to disable the
+        // revisions dropdown that isn't appropriate for this use case
+        // Another solution could be requesting support for
+        // $response->showDrafts = true (or something like this)
+        // So a custom element can disable draft details in the UI
+        // when only using drafts for the initial Element creation step.
+        Craft::$app->getView()->registerCss('
+            .context-btngroup {
+                display: none;
+            }
+        ', [], 'context-btn-no-drafts-hack');
     }
 
     public function hasItem(array $criteria): bool
@@ -349,7 +344,6 @@ class AudienceElement extends Element
             $record->elementId = $this->elementId ?? $this->id;
         }
 
-        $record->groupId = $this->groupId;
         $record->name = $this->name;
         $record->handle = $this->handle;
         $record->audienceType = $this->audienceType;
@@ -397,7 +391,6 @@ class AudienceElement extends Element
 
         $rules[] = [['name'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
         $rules[] = [['handle'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
-        $rules[] = [['groupId'], 'safe'];
         $rules[] = [['audienceType'], 'safe'];
         $rules[] = [['audienceSettings'], 'safe'];
 
