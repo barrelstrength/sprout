@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\subscribers;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
-use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
@@ -72,9 +71,7 @@ class SubscriberLists extends Component
             $subscriptionRecord->listId = $list->id;
             $subscriptionRecord->itemId = $item->getId();
 
-            if ($subscriptionRecord->save()) {
-                $this->updateCount($subscriptionRecord->listId);
-            } else {
+            if (!$subscriptionRecord->save()) {
                 Craft::warning('List Item ' . $item->getId() . ' already exists on List ID ' . $list->id . '.', __METHOD__);
             }
 
@@ -111,8 +108,6 @@ class SubscriberLists extends Component
         ]);
 
         if ($subscriptions !== null) {
-            $this->updateCount();
-
             return true;
         }
 
@@ -216,49 +211,5 @@ class SubscriberLists extends Component
             'listId' => $list->id,
             'itemId' => $item->id,
         ])->exists();
-    }
-
-    /**
-     */
-    public function getCount(AudienceElement $list): int
-    {
-        $items = $this->getSubscriptions($list);
-
-        return count($items);
-    }
-
-    /**
-     * @todo - delegate this to the queue
-     */
-    public function updateCount($listId = null): bool
-    {
-        if ($listId === null) {
-            $lists = AudienceElement::find()
-                ->audienceType(SubscriberListAudienceType::class)
-                ->all();
-        } else {
-            $list = AudienceElement::findOne($listId);
-
-            $lists = [$list];
-        }
-
-        if ($lists === []) {
-            return false;
-        }
-
-        /** @var AudienceElement[] $lists */
-        foreach ($lists as $list) {
-
-            if (!$list) {
-                continue;
-            }
-
-            $count = MailerModule::getInstance()->subscriberLists->getCount($list);
-            $list->count = $count;
-
-            MailerModule::getInstance()->subscriberLists->saveList($list);
-        }
-
-        return true;
     }
 }

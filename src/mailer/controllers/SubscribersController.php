@@ -159,8 +159,6 @@ class SubscribersController extends Controller
     public function saveSubscriber(SubscriberElement $subscriber): bool
     {
         if (Craft::$app->getElements()->saveElement($subscriber)) {
-            $this->updateCount();
-
             return true;
         }
 
@@ -204,8 +202,6 @@ class SubscribersController extends Controller
             SubscriptionRecord::deleteAll('[[listId]] = :listId', [
                 ':listId' => $subscriber->id,
             ]);
-
-            $this->updateCount();
 
             $transaction->commit();
         } catch (Exception) {

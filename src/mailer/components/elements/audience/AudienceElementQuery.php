@@ -66,7 +66,6 @@ class AudienceElementQuery extends ElementQuery
             'sprout_audiences.settings',
             'sprout_audiences.name',
             'sprout_audiences.handle',
-            'sprout_audiences.count',
         ]);
 
         if ($this->elementId) {

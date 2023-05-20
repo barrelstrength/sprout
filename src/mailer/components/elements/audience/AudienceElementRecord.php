@@ -14,7 +14,6 @@ use yii\db\ActiveQueryInterface;
  * @property string $settings
  * @property string $name
  * @property string $handle
- * @property int $count
  * @property ActiveQueryInterface $element
  */
 class AudienceElementRecord extends ActiveRecord

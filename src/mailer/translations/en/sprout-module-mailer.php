@@ -27,7 +27,6 @@ return [
     'Delete' => 'Delete',
     'Show Alternate Name field' => 'Show Alternate Name field',
     'User not permitted to create List.' => 'User not permitted to create List.',
-    'Count' => 'Count',
     'List Handle' => 'List Handle',
     'How you will refer to this Email Theme.' => 'How you will refer to this Email Theme.',
     'A unique handle that represents your theme' => 'A unique handle that represents your theme',

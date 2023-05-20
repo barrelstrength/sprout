@@ -45,8 +45,6 @@ class AudienceElement extends Element
 
     public string $handle = '';
 
-    public int $count = 0;
-
     public function __construct($config = [])
     {
         $this->settings = Json::decodeIfJson($config['settings'] ?? []);
@@ -106,7 +104,6 @@ class AudienceElement extends Element
         return [
             'type',
             'manage',
-            'count',
         ];
     }
 
@@ -143,12 +140,6 @@ class AudienceElement extends Element
         return [
             'name' => Craft::t('sprout-module-mailer', 'Name'),
             [
-                'label' => Craft::t('sprout-module-mailer', 'Count'),
-                'orderBy' => 'count',
-                'attribute' => 'count',
-                'defaultDir' => 'desc',
-            ],
-            [
                 'label' => Craft::t('sprout-module-mailer', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
                 'attribute' => 'dateUpdated',
@@ -163,7 +154,6 @@ class AudienceElement extends Element
             'handle' => ['label' => Craft::t('sprout-module-mailer', 'List Handle')],
             'id' => ['label' => Craft::t('sprout-module-mailer', 'List ID')],
             'view' => ['label' => Craft::t('sprout-module-mailer', 'View Subscribers')],
-            'count' => ['label' => Craft::t('sprout-module-mailer', 'Count')],
             'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
             'manage' => ['label' => Craft::t('sprout-module-mailer', 'Manage')],
         ];
@@ -299,7 +289,6 @@ class AudienceElement extends Element
 
     public function getTableAttributeHtml(string $attribute): string
     {
-        $count = $this->count;
         $audience = $this->getAudience();
 
         switch ($attribute) {
@@ -309,10 +298,6 @@ class AudienceElement extends Element
             case 'manage':
 
                 return $audience->getColumnAttributeHtml();
-
-            case $audience->getCount():
-
-                return '';
         }
 
         return parent::getTableAttributeHtml($attribute);
@@ -345,7 +330,6 @@ class AudienceElement extends Element
         $record->handle = $this->handle;
         $record->type = $this->type;
         $record->settings = Json::encode($this->settings);
-        $record->count = $this->count;
 
         $record->save(false);
 
