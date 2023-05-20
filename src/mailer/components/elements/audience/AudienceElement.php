@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Element;
 use craft\db\Query;
 use craft\elements\actions\Delete;
+use craft\elements\actions\SetStatus;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -172,6 +173,7 @@ class AudienceElement extends Element
     {
         $actions = parent::defineActions($source);
 
+        $actions[] = SetStatus::class;
         $actions[] = Delete::class;
 
         return $actions;
