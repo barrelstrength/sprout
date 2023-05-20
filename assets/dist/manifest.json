@@ -175,6 +175,11 @@
     "isEntry": true,
     "src": "redirects/Redirects.js"
   },
+  "sent-email/SentEmailDetailsModal.js": {
+    "file": "assets/sentEmailDetailsModal-5b82aba7.js",
+    "isEntry": true,
+    "src": "sent-email/SentEmailDetailsModal.js"
+  },
   "sitemaps/SitemapMetadata.css": {
     "file": "assets/SitemapMetadata-ee93e5c4.css",
     "src": "sitemaps/SitemapMetadata.css"

@@ -20,6 +20,7 @@ export default ({command}) => ({
                 adminTable: '/core/SproutAdminTable.js',
                 groups: '/core/SourceGroups.js',
                 emailThemes: '/mailer/EmailThemesSettings.js',
+                sentEmailDetailsModal: '/sent-email/SentEmailDetailsModal.js',
                 transactionalEmail: '/transactional/NotificationEvents.js',
                 // copyPaste: '/campaigns/CopyPaste.js',
                 // forms: '/forms/Forms.js',
