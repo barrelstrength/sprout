@@ -38,7 +38,6 @@ class m211101_000000_run_install_migration extends Migration
             $this->createTable(self::AUDIENCES_TABLE, [
                 'id' => $this->primaryKey(),
                 'elementId' => $this->integer()->notNull(),
-                'groupId' => $this->integer(),
                 'audienceType' => $this->string()->notNull(),
                 'audienceSettings' => $this->text(),
                 'name' => $this->string()->notNull(),
@@ -54,7 +53,6 @@ class m211101_000000_run_install_migration extends Migration
             $this->createIndex(null, self::AUDIENCES_TABLE, ['handle']);
 
             $this->addForeignKey(null, self::AUDIENCES_TABLE, ['elementId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
-            $this->addForeignKey(null, self::AUDIENCES_TABLE, ['groupId'], self::SOURCE_GROUPS_TABLE, ['id'], 'SET NULL');
         }
 
         if (!$this->getDb()->tableExists(self::SUBSCRIPTIONS_TABLE)) {
