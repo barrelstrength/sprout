@@ -34,7 +34,7 @@ class AudienceController extends Controller
             throw new MissingComponentException('No Audience Types are enabled. Enable the Subscriber Audience Type in the settings to get started.');
         }
 
-        return $this->renderTemplate('sprout-module-mailer/audience/index', [
+        return $this->renderTemplate('sprout-module-mailer/audience/index.twig', [
             'title' => AudienceElement::pluralDisplayName(),
             'elementType' => AudienceElement::class,
             'audienceTypes' => $audienceTypes,

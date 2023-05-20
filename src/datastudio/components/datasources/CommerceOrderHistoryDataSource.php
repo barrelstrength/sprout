@@ -55,7 +55,7 @@ class CommerceOrderHistoryDataSource extends DataSource implements DateRangeInte
     {
         $dateRanges = DateRangeHelper::getDateRanges();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CommerceOrderHistory/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CommerceOrderHistory/settings.twig', [
             'defaultStartDate' => new DateTime(),
             'defaultEndDate' => new DateTime(),
             'dateRanges' => $dateRanges,

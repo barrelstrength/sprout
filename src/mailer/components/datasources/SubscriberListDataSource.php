@@ -72,7 +72,7 @@ class SubscriberListDataSource extends DataSource
             ])
             ->all();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/datasources/SubscriberList/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/datasources/SubscriberList/settings.twig', [
             'subscriberListOptions' => $subscriberListOptions,
         ]);
     }

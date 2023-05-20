@@ -30,7 +30,7 @@ class SentEmailController extends Controller
             throw new ForbiddenHttpException('Unable to find site');
         }
 
-        return $this->renderTemplate('sprout-module-sent-email/_sentemail/index', [
+        return $this->renderTemplate('sprout-module-sent-email/_sentemail/index.twig', [
             'title' => SentEmailElement::pluralDisplayName(),
             'elementType' => SentEmailElement::class,
         ]);
@@ -45,7 +45,7 @@ class SentEmailController extends Controller
 
         $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class);
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/sent-email-details', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/sent-email-details.twig', [
             'sentEmail' => $sentEmail,
         ]);
 
@@ -64,7 +64,7 @@ class SentEmailController extends Controller
 
         $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class);
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/resend-email-fields', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/resend-email-fields.twig', [
             'sentEmail' => $sentEmail,
         ]);
 

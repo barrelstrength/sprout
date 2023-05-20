@@ -46,7 +46,7 @@ class EntriesSaveNotificationEvent extends NotificationEvent
             $this->availableSections = $this->getAllSections();
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/events/saveEntry', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/events/saveEntry.twig', [
             'event' => $this,
             //            'settings' => $settings,
         ]);

@@ -27,7 +27,7 @@ class SendRuleField extends BaseNativeField
     {
         $notificationEvent = TransactionalEmailEmailType::getNotificationEvent($element);
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/sendRule', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/sendRule.twig', [
             'element' => $element,
             'notificationEvent' => $notificationEvent,
             'emailType' => $element->getEmailTypeSettings(),

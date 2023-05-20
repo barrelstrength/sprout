@@ -32,7 +32,7 @@ class SproutSettings extends BaseConfig
 
             $enabledValue = (isset($projectConfigSettings['enabled']) && !empty($projectConfigSettings['enabled'])) ? $projectConfigSettings['enabled'] : false;
 
-            $enabledInputHtml = Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
+            $enabledInputHtml = Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
                 'name' => 'modules[' . $module . '][enabled]',
                 'on' => $enabledValue,
                 'small' => true,

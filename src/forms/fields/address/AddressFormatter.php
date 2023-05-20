@@ -222,21 +222,21 @@ class AddressFormatter
             $addressLayout = preg_replace('#%sortingCode#', $this->getSortingCodeInputHtml(), $addressLayout);
         }
 
-        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden', [
+        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden.twig', [
             'class' => 'sprout-address-delete',
             'name' => $this->namespace,
             'inputName' => 'delete',
             'value' => null,
         ]);
 
-        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden', [
+        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden.twig', [
             'class' => 'sprout-address-field-id',
             'name' => $this->namespace,
             'inputName' => 'fieldId',
             'value' => $this->getAddressModel()->fieldId,
         ]);
 
-        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden', [
+        $addressLayout .= Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/hidden.twig', [
             'class' => 'sprout-address-id',
             'name' => $this->namespace,
             'inputName' => 'id',
@@ -251,7 +251,7 @@ class AddressFormatter
         $countryRepository = new CountryRepository();
         $countries = $countryRepository->getList($this->language);
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/select-country', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/select-country.twig', [
                 'fieldClass' => 'sprout-address-country-select',
                 'label' => $this->renderAddressLabel('Country'),
                 'name' => $this->namespace,
@@ -269,7 +269,7 @@ class AddressFormatter
     {
         $value = $this->getAddressModel()->postalCode;
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $this->renderAddressLabel($this->addressFormat->getPostalCodeType()),
                 'name' => $this->namespace,
@@ -297,7 +297,7 @@ class AddressFormatter
             $autocomplete = 'address-line2';
         }
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $label,
                 'name' => $this->namespace,
@@ -312,7 +312,7 @@ class AddressFormatter
     {
         $value = $this->getAddressModel()->sortingCode;
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $this->renderAddressLabel('Sorting Code'),
                 'name' => $this->namespace,
@@ -327,7 +327,7 @@ class AddressFormatter
     {
         $value = $this->getAddressModel()->locality;
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $this->renderAddressLabel($this->addressFormat->getLocalityType()),
                 'name' => $this->namespace,
@@ -342,7 +342,7 @@ class AddressFormatter
     {
         $value = $this->getAddressModel()->dependentLocality;
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $this->renderAddressLabel($this->addressFormat->getDependentLocalityType()),
                 'name' => $this->namespace,
@@ -360,7 +360,7 @@ class AddressFormatter
         $states = $this->subdivisionRepository->getList([$this->countryCode], $this->language);
 
         if ($states && !empty($states)) {
-            return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/select', [
+            return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/select.twig', [
                     'fieldClass' => 'sprout-address-onchange-country',
                     'label' => $this->renderAddressLabel($this->addressFormat->getAdministrativeAreaType()),
                     'name' => $this->namespace,
@@ -372,7 +372,7 @@ class AddressFormatter
             );
         }
 
-        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text', [
+        return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/text.twig', [
                 'fieldClass' => 'sprout-address-onchange-country',
                 'label' => $this->renderAddressLabel($this->addressFormat->getAdministrativeAreaType()),
                 'name' => $this->namespace,

@@ -70,7 +70,7 @@ class RobotsMetaType extends MetaType
         $robotsNamespace = $field->handle . '[metadata][robots]';
         $robots = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataForSettings($this->robots);
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-meta/_components/fields/elementmetadata/blocks/robots', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-meta/_components/fields/elementmetadata/blocks/robots.twig', [
             'meta' => $this,
             'field' => $field,
             'robotsNamespace' => $robotsNamespace,

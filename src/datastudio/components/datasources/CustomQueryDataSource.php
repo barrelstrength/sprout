@@ -52,7 +52,7 @@ class CustomQueryDataSource extends DataSource
         $settingsErrors = $this->dataSet->getErrors('settings');
         $settingsErrors = array_shift($settingsErrors);
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CustomQuery/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CustomQuery/settings.twig', [
             'settings' => $this->dataSet->getDataSource()->getSettings(),
             'errors' => $settingsErrors,
         ]);

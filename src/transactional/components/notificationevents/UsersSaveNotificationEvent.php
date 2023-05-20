@@ -48,7 +48,7 @@ class UsersSaveNotificationEvent extends NotificationEvent
             $this->groups = $this->getAllGroups();
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/events/saveUser', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/events/saveUser.twig', [
             'event' => $this,
             '',
         ]);

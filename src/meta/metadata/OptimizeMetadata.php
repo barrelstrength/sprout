@@ -259,7 +259,7 @@ class OptimizeMetadata extends Component
 
         Craft::$app->view->setTemplatesPath($metaTemplatesPath);
 
-        $frontEndMetadataTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/metadata');
+        $frontEndMetadataTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/metadata.twig');
 
         $output = Craft::$app->view->renderTemplate($frontEndMetadataTemplate, [
             'metadata' => $metadata,

@@ -322,7 +322,7 @@ class DataSetElement extends Element
             ];
         }
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_datasets/details', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_datasets/details.twig', [
             'dataSet' => $this,
             'groups' => $groupOptions,
             'static' => $static,
@@ -351,7 +351,7 @@ class DataSetElement extends Element
 
     public function getAdditionalButtons(): string
     {
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/upgrade/button', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/upgrade/button.twig', [
             'module' => DataStudioModule::getInstance(),
         ]);
 

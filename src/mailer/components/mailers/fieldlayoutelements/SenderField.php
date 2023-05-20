@@ -43,7 +43,7 @@ class SenderField extends BaseField
             if (!$approvedSender['fromEmail']) {
                 continue;
             }
-            
+
             $sender = $approvedSender['fromName'] . ' <' . $approvedSender['fromEmail'] . '>';
             $senderOptions[] = [
                 'label' => $sender,
@@ -55,7 +55,7 @@ class SenderField extends BaseField
             $this->warning = Craft::t('sprout-module-mailer', 'Approved Senders must be added in global settings');
         }
 
-        $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select', [
+        $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select.twig', [
             'type' => $this->type,
             'describedBy' => $this->describedBy($element, $static),
             'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',

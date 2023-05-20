@@ -37,7 +37,7 @@ class EmailController extends Controller
         $newButtonUrl = UrlHelper::cpUrl('sprout/email/' . $elementType::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
 
-        return $this->renderTemplate('sprout-module-mailer/email/index', [
+        return $this->renderTemplate('sprout-module-mailer/email/index.twig', [
             'title' => $elementType::pluralDisplayName(),
             'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
@@ -97,7 +97,7 @@ class EmailController extends Controller
             throw new ElementNotFoundException();
         }
 
-        return $this->renderTemplate('sprout-module-mailer/email/prepare', [
+        return $this->renderTemplate('sprout-module-mailer/email/prepare.twig', [
             'element' => $element,
         ]);
     }

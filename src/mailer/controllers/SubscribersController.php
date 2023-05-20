@@ -79,7 +79,7 @@ class SubscribersController extends Controller
             ->where(['itemId' => $subscriber->id])
             ->column();
 
-        return $this->renderTemplate('sprout-module-mailer/subscribers/_edit', [
+        return $this->renderTemplate('sprout-module-mailer/subscribers/_edit.twig', [
             'user' => $subscriber,
             'options' => $options,
             'values' => $subscriptionListIds,

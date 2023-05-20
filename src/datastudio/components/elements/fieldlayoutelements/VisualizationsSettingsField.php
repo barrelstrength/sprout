@@ -36,7 +36,7 @@ class VisualizationsSettingsField extends BaseNativeField
         $visualizationTypes = DataStudioModule::getInstance()->visualizations->getVisualizationTypes();
         $visualizationOptions = DataStudioModule::getInstance()->visualizations->getVisualizationOptions();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_datasets/visualizations', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_datasets/visualizations.twig', [
             'dataSet' => $element,
             'visualizationTypes' => $visualizationTypes,
             'visualizationOptions' => $visualizationOptions,

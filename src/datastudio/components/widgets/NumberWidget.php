@@ -39,7 +39,7 @@ class NumberWidget extends Widget
     {
         $dataSetOptions = DataSetHelper::getDataSetAsSelectFieldOptions();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/settings.twig', [
                 'widget' => $this,
                 'dataSetOptions' => $dataSetOptions,
             ]
@@ -58,7 +58,7 @@ class NumberWidget extends Widget
                 try {
                     $result = $dataSource->getResults($dataSet);
 
-                    return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/body',
+                    return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/body.twig',
                         [
                             'widget' => $this,
                             'result' => $this->getScalarValue($result),
@@ -72,7 +72,7 @@ class NumberWidget extends Widget
             }
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/body',
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Number/body.twig',
             [
                 'widget' => $this,
                 'result' => Craft::t('sprout-module-data-studio', 'NaN'),

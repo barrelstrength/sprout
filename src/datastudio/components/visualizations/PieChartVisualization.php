@@ -23,14 +23,14 @@ class PieChartVisualization extends Visualization
 
     public function getSettingsHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/PieChart/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/PieChart/settings.twig', [
             'visualization' => $this,
         ]);
     }
 
     public function getVisualizationHtml(array $options = []): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/PieChart/visualization', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/PieChart/visualization.twig', [
             'visualization' => $this,
             'options' => $options,
         ]);

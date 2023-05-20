@@ -47,7 +47,7 @@ class CommerceProductRevenueDataSource extends DataSource implements DateRangeIn
     {
         $dateRanges = DateRangeHelper::getDateRanges();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CommerceProductRevenue/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CommerceProductRevenue/settings.twig', [
             'defaultStartDate' => new DateTime(),
             'defaultEndDate' => new DateTime(),
             'dateRanges' => $dateRanges,

@@ -42,8 +42,8 @@ class ReplyToField extends BaseNativeField
                 'value' => $approvedReplyToEmail['replyToEmail'],
             ];
         }
-        
-        $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select', [
+
+        $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select.twig', [
             'describedBy' => $this->describedBy($element, $static),
             'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',
             'value' => $mailerInstructionsSettings->replyToEmail,

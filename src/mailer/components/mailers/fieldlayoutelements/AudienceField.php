@@ -40,7 +40,7 @@ class AudienceField extends BaseNativeField
 
         $addAudienceLink = Html::a(Craft::t('sprout-module-mailer', 'Add an audience.'), UrlHelper::cpUrl('sprout/email/audiences'));
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/audience-field', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/audience-field.twig', [
             'audienceElementType' => AudienceElement::class,
             'audiences' => $audiences,
             'audiencesExist' => $audiencesExist,

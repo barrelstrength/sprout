@@ -111,7 +111,7 @@ class OpenGraphMetaType extends MetaType
 
     public function getSettingsHtml(Field $field): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-meta/_components/fields/elementmetadata/blocks/open-graph', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-meta/_components/fields/elementmetadata/blocks/open-graph.twig', [
             'meta' => $this,
             'field' => $field,
         ]);

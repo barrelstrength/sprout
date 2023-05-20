@@ -133,7 +133,7 @@ class CustomTwigTemplateQueryDataSource extends DataSource
             }
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CustomTwigTemplate/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/CustomTwigTemplate/settings.twig', [
             'settings' => $this->getSettings(),
             'errors' => $settingsErrors,
             'settingsContents' => $customSettingsHtml ?? null,

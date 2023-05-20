@@ -128,7 +128,7 @@ class UsersDataSource extends DataSource
         $settingsErrors = $this->dataSet->getErrors('settings');
         $settingsErrors = array_shift($settingsErrors);
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/Users/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/datasources/Users/settings.twig', [
             'userGroupSettings' => $userGroupSettings,
             'settings' => $this->dataSet->getDataSource()->getSettings(),
             'errors' => $settingsErrors,

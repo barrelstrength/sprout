@@ -23,14 +23,14 @@ class BarChartVisualization extends Visualization
 
     public function getSettingsHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/BarChart/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/BarChart/settings.twig', [
             'visualization' => $this,
         ]);
     }
 
     public function getVisualizationHtml(array $options = []): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/BarChart/visualization', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/BarChart/visualization.twig', [
             'visualization' => $this,
             'options' => $options,
         ]);

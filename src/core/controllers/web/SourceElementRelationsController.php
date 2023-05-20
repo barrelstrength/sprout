@@ -20,7 +20,7 @@ class SourceElementRelationsController extends Controller
             TransactionalEmailElement::class,
         ]);
 
-        $relationsModalHtml = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/relations/modal', [
+        $relationsModalHtml = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/relations/modal.twig', [
             'elementId' => $this->id,
             'relations' => $relations,
         ]);

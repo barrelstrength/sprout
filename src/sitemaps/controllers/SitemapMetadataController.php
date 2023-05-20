@@ -86,7 +86,7 @@ class SitemapMetadataController extends Controller
         $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site);
         $customSections = $sitemapsService->getSitemapPagesMetadata($site->id);
 
-        return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/index', [
+        return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/index.twig', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
             'site' => $site,
             'firstSiteInGroup' => $firstSiteInGroup,
@@ -138,7 +138,7 @@ class SitemapMetadataController extends Controller
             ],
         ];
 
-        return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit', [
+        return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit.twig', [
             'site' => $site,
             'sitemapMetadata' => $sitemapMetadataRecord,
             'continueEditingUrl' => $continueEditingUrl,

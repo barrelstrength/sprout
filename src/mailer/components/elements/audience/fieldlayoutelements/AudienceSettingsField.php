@@ -26,7 +26,7 @@ class AudienceSettingsField extends TextField
 
     protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/settings.twig', [
             'audience' => $element->getAudience(),
             'static' => $static,
         ]);

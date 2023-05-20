@@ -320,7 +320,7 @@ class RedirectElement extends Element
 
     public function getAdditionalButtons(): string
     {
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/upgrade/button', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/upgrade/button.twig', [
             'module' => RedirectsModule::getInstance(),
         ]);
 

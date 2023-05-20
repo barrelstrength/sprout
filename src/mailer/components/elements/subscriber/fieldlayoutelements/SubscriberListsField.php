@@ -28,7 +28,7 @@ class SubscriberListsField extends TextField
     {
         $options = SubscriberHelper::getListOptions();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/subscribers/_fields', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/subscribers/_fields.twig', [
             'options' => $options,
             'values' => [],
         ]);

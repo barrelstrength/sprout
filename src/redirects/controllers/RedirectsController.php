@@ -28,7 +28,7 @@ class RedirectsController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        return $this->renderTemplate('sprout-module-redirects/_redirects/index', [
+        return $this->renderTemplate('sprout-module-redirects/_redirects/index.twig', [
             'title' => RedirectElement::pluralDisplayName(),
             'elementType' => RedirectElement::class,
             'newRedirectButtonHtml' => RedirectHelper::getNewRedirectButtonHtml($site),
@@ -52,7 +52,7 @@ class RedirectsController extends Controller
 
         $settings = RedirectsModule::getInstance()->getSettings();
 
-        return $this->renderTemplate('sprout-module-redirects/_redirects/settings', [
+        return $this->renderTemplate('sprout-module-redirects/_redirects/settings.twig', [
             'settings' => $settings,
             'site' => $site,
         ]);

@@ -91,7 +91,7 @@ class XmlSitemapController extends Controller
 
         // Render a specific sitemap
         if ($sitemapKey) {
-            $sitemapTemplate = Craft::getAlias('@Sprout/TemplateRoot/sitemaps/sitemap');
+            $sitemapTemplate = Craft::getAlias('@Sprout/TemplateRoot/sitemaps/sitemap.twig');
 
             return $this->renderTemplate($sitemapTemplate, [
                 'elements' => $elements,
@@ -99,7 +99,7 @@ class XmlSitemapController extends Controller
         }
 
         // Render the sitemapindex if no specific sitemap is defined
-        $sitemapIndexTemplate = Craft::getAlias('@Sprout/TemplateRoot/sitemaps/sitemapindex');
+        $sitemapIndexTemplate = Craft::getAlias('@Sprout/TemplateRoot/sitemaps/sitemapindex.twig');
 
         return $this->renderTemplate($sitemapIndexTemplate, [
             'sitemapIndexUrls' => $sitemapIndexUrls,

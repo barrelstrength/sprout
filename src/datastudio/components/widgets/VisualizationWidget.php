@@ -23,7 +23,7 @@ class VisualizationWidget extends Widget
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Visualizations/settings',
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Visualizations/settings.twig',
             [
                 'widget' => $this,
                 'dataSets' => DataSetHelper::getAllDataSets(),
@@ -62,7 +62,7 @@ class VisualizationWidget extends Widget
             $visualization->setValues($values);
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Visualizations/body', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/widgets/Visualizations/body.twig', [
             'title' => 'Data Set Title',
             'visualization' => $visualization,
         ]);

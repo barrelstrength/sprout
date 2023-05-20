@@ -20,7 +20,7 @@ class EmailThemesController extends Controller
 
         $themes = EmailThemeHelper::getEmailThemes();
 
-        return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/index', [
+        return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/index.twig', [
             'emailThemes' => $themes,
             'emailThemeTypes' => $themeTypes,
         ]);
@@ -29,7 +29,7 @@ class EmailThemesController extends Controller
     public function actionEdit(EmailTheme $emailTheme = null, string $emailThemeUid = null, string $handle = null): Response
     {
         $this->requireAdmin();
-        
+
         if (!$emailTheme && $handle) {
             $emailTheme = EmailThemeHelper::getEmailThemeByHandle($handle);
         }
@@ -38,7 +38,7 @@ class EmailThemesController extends Controller
             $emailTheme = EmailThemeHelper::getEmailThemeByUid($emailThemeUid);
         }
 
-        return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/edit', [
+        return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/edit.twig', [
             'emailTheme' => $emailTheme,
         ]);
     }

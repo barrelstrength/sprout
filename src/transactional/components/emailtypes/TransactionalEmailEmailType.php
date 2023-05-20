@@ -106,7 +106,7 @@ class TransactionalEmailEmailType extends EmailType
             return '';
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/emailtypes/sendTestButton', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/emailtypes/sendTestButton.twig', [
             'email' => $email,
         ]);
     }

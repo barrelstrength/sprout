@@ -117,7 +117,7 @@ class ElementMetadataField extends Field
         $schemas = MetaModule::getInstance()->schemaMetadata->getSchemaOptions();
         $schemaSubtypes = MetaModule::getInstance()->schemaMetadata->getSchemaSubtypes($schemas);
 
-        return Craft::$app->view->renderTemplate('sprout-module-meta/_components/fields/ElementMetadata/settings', [
+        return Craft::$app->view->renderTemplate('sprout-module-meta/_components/fields/ElementMetadata/settings.twig', [
             'fieldId' => $this->id,
             'settings' => $this->getAttributes(),
             'field' => $this,
@@ -143,7 +143,7 @@ class ElementMetadataField extends Field
 
         $settings = $this->getAttributes();
 
-        return Craft::$app->view->renderTemplate('sprout-module-meta/_components/fields/ElementMetadata/input', [
+        return Craft::$app->view->renderTemplate('sprout-module-meta/_components/fields/ElementMetadata/input.twig', [
             'field' => $this,
             'name' => $name,
             'namespaceInputName' => $namespaceInputName,

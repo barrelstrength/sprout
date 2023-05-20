@@ -33,7 +33,7 @@ class DataSetController extends Controller
 
         $this->requirePermission(DataStudioModule::p('accessModule'));
 
-        return $this->renderTemplate('sprout-module-data-studio/_datasets/index', [
+        return $this->renderTemplate('sprout-module-data-studio/_datasets/index.twig', [
             'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
             'groupId' => $groupId,
@@ -104,7 +104,7 @@ class DataSetController extends Controller
             'disabled' => 'disabled',
         ]);
 
-        return $this->renderTemplate('sprout-module-data-studio/_datasets/results', [
+        return $this->renderTemplate('sprout-module-data-studio/_datasets/results.twig', [
             'dataSet' => $dataSet,
             'visualization' => $visualization,
             'dataSource' => $dataSource,

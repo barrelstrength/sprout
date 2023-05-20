@@ -47,7 +47,7 @@ class UserGroupAudienceType extends AudienceType
             ])
             ->all();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/audiences/userGroupSettings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/audiences/userGroupSettings.twig', [
             'audienceType' => $this,
             'groupOptions' => $groupOptions,
         ]);

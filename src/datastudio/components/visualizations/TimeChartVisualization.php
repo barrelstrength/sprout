@@ -30,7 +30,7 @@ class TimeChartVisualization extends Visualization
     {
         $visualizationAggregateOptions = DataStudioModule::getInstance()->visualizations->getAggregates();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/TimeChart/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/TimeChart/settings.twig', [
             'visualization' => $this,
             'visualizationAggregateOptions' => $visualizationAggregateOptions,
         ]);
@@ -38,7 +38,7 @@ class TimeChartVisualization extends Visualization
 
     public function getVisualizationHtml(array $options = []): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/TimeChart/visualization', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/TimeChart/visualization.twig', [
             'visualization' => $this,
             'options' => $options,
         ]);

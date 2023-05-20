@@ -450,7 +450,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             ];
         }
 
-        $meta = Craft::$app->getView()->renderTemplate('sprout-module-mailer/email/_meta', [
+        $meta = Craft::$app->getView()->renderTemplate('sprout-module-mailer/email/_meta.twig', [
             'element' => $this,
             'mailer' => $this->getMailer(),
             'templateOptions' => $templateOptions ?? [],

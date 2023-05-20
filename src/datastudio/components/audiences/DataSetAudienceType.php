@@ -43,7 +43,7 @@ class DataSetAudienceType extends AudienceType
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/audiences/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/audiences/settings.twig', [
             'audienceType' => $this,
             'dataSetElementType' => DataSetElement::class,
             'dataSet' => $this->getDataSet(),

@@ -18,7 +18,7 @@ class MailerController extends Controller
     {
         $mailers = MailerModule::getInstance()->mailers->getMailers();
 
-        return $this->renderTemplate('sprout-module-mailer/_settings/mailers/index', [
+        return $this->renderTemplate('sprout-module-mailer/_settings/mailers/index.twig', [
             'mailers' => $mailers,
         ]);
     }
@@ -31,7 +31,7 @@ class MailerController extends Controller
             $mailer = MailerModule::getInstance()->mailers->getMailerById($mailerId);
         }
 
-        return $this->renderTemplate('sprout-module-mailer/_settings/mailers/edit', [
+        return $this->renderTemplate('sprout-module-mailer/_settings/mailers/edit.twig', [
             'mailer' => $mailer,
         ]);
     }

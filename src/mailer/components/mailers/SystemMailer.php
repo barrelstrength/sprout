@@ -94,7 +94,7 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function getSettingsHtml(): ?string
     {
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/settings', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/settings.twig', [
             'settings' => $this,
         ]);
 
@@ -121,7 +121,7 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
             ]);
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/send-test-fields', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/send-test-fields.twig', [
             'email' => $email,
             'mailer' => $this,
             'warningMessage' => $warningMessage ?? '',

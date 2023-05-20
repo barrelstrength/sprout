@@ -23,14 +23,14 @@ class LineChartVisualization extends Visualization
 
     public function getSettingsHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/LineChart/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/LineChart/settings.twig', [
             'visualization' => $this,
         ]);
     }
 
     public function getVisualizationHtml(array $options = []): string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/LineChart/visualization', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/LineChart/visualization.twig', [
             'visualization' => $this,
             'options' => $options,
         ]);

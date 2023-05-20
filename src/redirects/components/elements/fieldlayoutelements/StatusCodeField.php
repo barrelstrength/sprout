@@ -29,7 +29,7 @@ class StatusCodeField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->getView()->renderTemplate('_includes/forms/select', [
+        return Craft::$app->getView()->renderTemplate('_includes/forms/select.twig', [
             'type' => $this->type,
             'describedBy' => $this->describedBy($element, $static),
             'name' => $this->name ?? $this->attribute(),
