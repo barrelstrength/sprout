@@ -42,7 +42,6 @@ class m211101_000000_run_install_migration extends Migration
                 'settings' => $this->text(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
-                'count' => $this->integer()->notNull()->defaultValue(0),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

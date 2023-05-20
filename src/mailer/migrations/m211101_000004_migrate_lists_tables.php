@@ -23,7 +23,6 @@ class m211101_000004_migrate_lists_tables extends Migration
             'type',
             'name',
             'handle',
-            'count',
             'dateCreated',
             'dateUpdated',
             'uid',
