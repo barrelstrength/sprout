@@ -51,7 +51,7 @@ class m211101_000000_run_install_migration extends Migration
                 'textBody' => $this->mediumText(),
                 'htmlBody' => $this->mediumText(),
                 'info' => $this->text(),
-                'status' => $this->string(),
+                'sent' => $this->boolean()->notNull(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

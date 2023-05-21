@@ -39,10 +39,11 @@ class m211101_000005_migrate_sent_email_tables extends Migration
             'textBody',
             'htmlBody',
             'info',
-            'status',
             'dateCreated',
             'dateUpdated',
             'uid',
+
+            'sent',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_SENT_EMAIL_TABLE)) {
@@ -50,6 +51,11 @@ class m211101_000005_migrate_sent_email_tables extends Migration
                 ->select($oldCols)
                 ->from([self::OLD_SENT_EMAIL_TABLE])
                 ->all();
+
+            foreach ($rows as &$row) {
+                $row['sent'] = $row['status'] === 'sent';
+                unset($row['status']);
+            }
 
             Craft::$app->getDb()->createCommand()
                 ->batchInsert(self::SENT_EMAILS_TABLE, $newCols, $rows)
