@@ -8,8 +8,8 @@ class FieldLayoutConfigHelper
     {
         foreach ($layoutConfigs as $uid => $layoutConfig) {
             $layout = new FieldLayout();
-
         }
+
         return [];
     }
 }
