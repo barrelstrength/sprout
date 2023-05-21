@@ -43,8 +43,4 @@ class SentEmailDetails extends Model
     public ?string $port = null;
 
     public ?string $username = null;
-
-    public ?string $encryptionMethod = null;
-
-    public ?string $timeout = null;
 }

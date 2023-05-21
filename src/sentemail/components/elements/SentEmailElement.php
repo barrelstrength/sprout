@@ -21,9 +21,9 @@ class SentEmailElement extends Element implements EmailPreviewInterface
 {
     use EmailPreviewTrait;
 
-    public const SENT = 'sent';
+    public const STATUS_SENT = 'sent';
 
-    public const FAILED = 'failed';
+    public const STATUS_FAILED = 'failed';
 
     public string $subjectLine;
 
@@ -43,8 +43,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
 
     public array $info = [];
 
-    // TODO: define type and default
-    public $status;
+    public bool $sent = false;
 
     protected array $fields = [];
 
@@ -71,6 +70,34 @@ class SentEmailElement extends Element implements EmailPreviewInterface
     public static function hasTitles(): bool
     {
         return true;
+    }
+
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_SENT => [
+                'label' => Craft::t('sprout-module-sent-email', 'Sent'),
+                'color' => 'green',
+            ],
+            self::STATUS_FAILED => [
+                'label' => Craft::t('sprout-module-sent-email', 'Failed'),
+                'color' => 'red',
+            ],
+        ];
+    }
+
+    public function getStatus(): ?string
+    {
+        if ($this->sent) {
+            return self::STATUS_SENT;
+        }
+
+        return self::STATUS_FAILED;
     }
 
     public static function find(): ElementQueryInterface
@@ -230,7 +257,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         $record->textBody = $this->textBody;
         $record->htmlBody = $this->htmlBody;
         $record->info = $this->info;
-        $record->status = $this->status;
+        $record->sent = $this->sent;
         $record->dateCreated = $this->dateCreated;
         $record->dateUpdated = $this->dateUpdated;
 

@@ -25,8 +25,8 @@ class SentEmails extends Component
 
         $message = $event->message;
         $status = $event->isSuccessful
-            ? SentEmailElement::SENT
-            : SentEmailElement::FAILED;
+            ? SentEmailElement::STATUS_SENT
+            : SentEmailElement::STATUS_FAILED;
 
         $this->logSentEmail($message, $status);
     }
@@ -100,12 +100,12 @@ class SentEmails extends Component
         // GENERAL INFO
         // ------------------------------------------------------------
 
-        if ($status === SentEmailElement::SENT) {
-            $sentEmail->status = SentEmailElement::SENT;
+        if ($status === SentEmailElement::STATUS_SENT) {
+            $sentEmail->sent = true;
             $sentEmailDetails->deliveryStatus = Craft::t('sprout-module-sent-email', 'Sent');
             $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Email sent by Craft to the service defined in the email settings.');
         } else {
-            $sentEmail->status = SentEmailElement::FAILED;
+            $sentEmail->sent = false;
             $sentEmailDetails->deliveryStatus = Craft::t('sprout-module-sent-email', 'Error');
             $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Craft unable to send email.');
         }
@@ -148,8 +148,6 @@ class SentEmails extends Component
             $sentEmailDetails->host = $transportType->host;
             $sentEmailDetails->port = $transportType->port;
             $sentEmailDetails->username = $transportType->username;
-            $sentEmailDetails->encryptionMethod = $transportType->encryptionMethod;
-            $sentEmailDetails->timeout = $transportType->timeout;
         }
 
         return $sentEmailDetails;

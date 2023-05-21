@@ -10,7 +10,6 @@ return [
     'Sprout Sent Email [pro] takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.' => 'Sprout Sent Email [pro] takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.',
     'Sent Emails' => 'Sent Emails',
     'Sent' => 'Sent',
-    'Timeout' => 'Timeout',
     'Recipient' => 'Recipient',
     'sent emails' => 'sent emails',
     'Host Name' => 'Host Name',
@@ -20,7 +19,6 @@ return [
     'Transport Type' => 'Transport Type',
     'Craft Version' => 'Craft Version',
     'Message' => 'Message',
-    'Encryption Method' => 'Encryption Method',
     'Get Started' => 'Get Started',
     'All Sent Emails' => 'All Sent Emails',
     'View Sent Email' => 'View Sent Email',
@@ -60,4 +58,5 @@ return [
     'Sprout Module | Sent Email' => 'Sprout Module | Sent Email',
     'Original Email Info' => 'Original Email Info',
     'Info' => 'Info',
+    'Delivery&nbsp;Info' => 'Delivery&nbsp;Info',
 ];
