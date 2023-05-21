@@ -145,7 +145,7 @@ class RedirectsSettings extends BaseConfig
         // Remove empty lines and comments
         $excludedUrlPatterns = array_filter($excludedUrlPatterns, static fn($excludedUrlPattern): bool => !empty($excludedUrlPattern) && !str_starts_with($excludedUrlPattern, '#'));
 
-        return $excludedUrlPatterns ?? [];
+        return $excludedUrlPatterns;
     }
 
     public function getFieldLayout(): FieldLayout

@@ -17,10 +17,7 @@ class PhoneHelper
             $code = $phoneUtil->getCountryCodeForRegion($countryCode);
             $countryRepository = new CountryRepository();
             $country = $countryRepository->get($countryCode);
-
-            if ($country) {
-                $countries[$countryCode] = $country->getName() . ' +' . $code;
-            }
+            $countries[$countryCode] = $country->getName() . ' +' . $code;
         }
 
         asort($countries);

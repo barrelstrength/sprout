@@ -40,7 +40,7 @@ class SettingsHelper
 
         $fileConfig = $fileConfigSettings instanceof BaseConfig
             ? $fileConfigSettings->toArray()
-            : $fileConfigSettings ?? [];
+            : $fileConfigSettings;
 
         // Update Project Config values with File Config overrides
         $config = array_merge($config, $fileConfig);

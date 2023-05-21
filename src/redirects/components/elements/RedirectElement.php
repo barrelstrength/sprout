@@ -452,7 +452,7 @@ class RedirectElement extends Element
 
         if (isset($newUrl['host']) && str_contains($newUrl['host'], '$')) {
             $this->addError($attribute, Craft::t('sprout-module-redirects', 'The host name ({host}) of an absolute URL cannot contain capture groups.', [
-                'host' => $newUrl['host'] ?? null,
+                'host' => $newUrl['host'],
             ]));
         }
 

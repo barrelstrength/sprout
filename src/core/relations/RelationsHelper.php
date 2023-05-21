@@ -75,6 +75,10 @@ class RelationsHelper
     {
         $element = Craft::$app->getElements()->getElementById($elementId);
 
+        if (!$element) {
+            return [];
+        }
+
         return self::getSourceElementRelations($element, $excludeSourceElementTypes, $onlySourceElementTypes);
     }
 }

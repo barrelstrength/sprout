@@ -56,4 +56,9 @@ return [
     'Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data.' => 'Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data.',
     'View sitemap.xml' => 'View sitemap.xml',
     'Make the content in this section appear in your sitemap.' => 'Make the content in this section appear in your sitemap.',
+    'Advanced' => 'Advanced',
+    'Conditional URL' => 'Conditional URL',
+    'Conditional URL details' => 'Conditional URL details',
+    'Advanced URL Pattern' => 'Advanced URL Pattern',
+    'Advanced pattern' => 'Advanced pattern',
 ];

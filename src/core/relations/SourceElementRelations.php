@@ -18,7 +18,7 @@ class SourceElementRelations extends Component
 
         $this->trigger(self::EVENT_REGISTER_SPROUT_REVERSE_RELATION, $event);
 
-        $this->_relations = array_unique($event->elements);
+        $this->_relations = array_unique($event->sourceElements);
     }
 
     public function getReverseRelations(): array
