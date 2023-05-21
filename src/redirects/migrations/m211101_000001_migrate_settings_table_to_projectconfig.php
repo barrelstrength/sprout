@@ -86,8 +86,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     protected function prepareSettingsForMigration($newSettings, $currentProjectConfig): array
     {
         if (isset($newSettings['redirectMatchStrategy'])) {
-            $newSettings['matchDefinition'] = $newSettings['redirectMatchStrategy']
-                ?? 'urlWithoutQueryStrings';
+            $newSettings['matchDefinition'] = $newSettings['redirectMatchStrategy'];
         }
 
         if (!is_int($newSettings['total404Redirects'])) {
