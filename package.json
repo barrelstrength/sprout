@@ -3,7 +3,7 @@
     "description": "",
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.0.1",
-        "alpinejs": "^3.11.1",
+        "alpinejs": "^3.12.2",
         "apexcharts": "^3.37.2",
         "autoprefixer": "^10.4.13",
         "craftcms-sass": "^3.5.7",
