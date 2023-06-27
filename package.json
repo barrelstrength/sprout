@@ -3,9 +3,9 @@
     "description": "",
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.1.0",
-        "alpinejs": "^3.11.1",
+        "alpinejs": "^3.12.2",
         "apexcharts": "^3.37.2",
-        "autoprefixer": "^10.4.13",
+        "autoprefixer": "^10.4.14",
         "craftcms-sass": "^3.5.7",
         "datatables.net": "^1.13.2",
         "dom-autoscroller": "^2.3.4",
@@ -13,7 +13,7 @@
         "jquery-tageditor": "^1.0.1",
         "postcss": "^8.4.21",
         "sass": "^1.60.0",
-        "vite": "^4.2.1",
+        "vite": "^4.3.9",
         "vite-plugin-restart": "^0.3"
     },
     "scripts": {
