@@ -2,7 +2,7 @@
     "name": "sprout",
     "description": "",
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-node-resolve": "^15.1.0",
         "alpinejs": "^3.12.2",
         "apexcharts": "^3.37.2",
         "autoprefixer": "^10.4.14",
