@@ -110,10 +110,8 @@ class m211101_000008_migrate_reports_tables extends Migration
             $rows = (new Query())
                 ->select($oldTableCols)
                 ->from(['sproutreports_reports' => self::OLD_REPORTS_TABLE])
-                ->innerJoin(
-                    ['elements_sites' => Table::ELEMENTS_SITES],
-                    '[[sproutreports_reports.id]] = [[elements_sites.elementId]]'
-                )
+                ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES],
+                    '[[sproutreports_reports.id]] = [[elements_sites.elementId]]')
                 ->all();
 
             foreach ($rows as $key => $row) {

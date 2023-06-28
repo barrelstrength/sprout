@@ -59,14 +59,10 @@ class SpamLogDataSource extends DataSource implements DateRangeInterface
                 'submissions_spam_log.dateCreated',
             ])
             ->from(SproutTable::FORM_SUBMISSIONS_SPAM_LOG . ' submissions_spam_log')
-            ->innerJoin(
-                ['submissions' => SproutTable::FORM_SUBMISSIONS],
-                '[[submissions_spam_log.submissionId]] = [[submissions.id]]'
-            )
-            ->innerJoin(
-                ['forms' => SproutTable::FORMS],
-                '[[submissions.formId]] = [[forms.id]]'
-            );
+            ->innerJoin(['submissions' => SproutTable::FORM_SUBMISSIONS],
+                '[[submissions_spam_log.submissionId]] = [[submissions.id]]')
+            ->innerJoin(['forms' => SproutTable::FORMS],
+                '[[submissions.formId]] = [[forms.id]]');
 
         if ($formId !== '*') {
             $query->andWhere(['[[submissions.formId]]' => $formId]);

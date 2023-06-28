@@ -171,7 +171,8 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
         $query = (new Query())
             ->select($fieldHandle)
             ->from($contentTable)
-            ->innerJoin(Table::ELEMENTS . ' elements', '[[elements.id]] = ' . $contentTable . '.`elementId`')
+            ->innerJoin(['elements' => Table::ELEMENTS],
+                '[[elements.id]] = ' . $contentTable . '.`elementId`')
             ->where([$fieldHandle => $value])
             ->andWhere(['elements.draftId' => null])
             ->andWhere(['elements.revisionId' => null])

@@ -56,10 +56,8 @@ class m211101_000005_migrate_redirects_tables extends Migration
                 ->select($oldCols)
                 ->from([self::OLD_REDIRECTS_TABLE])
                 ->where(['in', 'method', ['301', '302']])
-                ->innerJoin(
-                    Table::ELEMENTS_SITES,
-                    '[[sproutseo_redirects.id]] = [[elements_sites.elementId]]'
-                )
+                ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES],
+                    '[[sproutseo_redirects.id]] = [[elements_sites.elementId]]')
                 ->all();
 
             foreach ($rows as $key => $row) {
