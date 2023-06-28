@@ -56,8 +56,8 @@ class m211101_000002_update_field_settings extends Migration
 
         $layouts = (new Query())
             ->select([
-                'entrytypes.uid AS entryTypeUid',
-                'fieldlayouts.uid AS fieldLayoutUid',
+                'entryTypeUid' => 'entrytypes.uid',
+                'fieldLayoutUid' => 'fieldlayouts.uid',
             ])
             ->from(['entrytypes' => '{{%entrytypes}}'])
             ->innerJoin(['fieldlayouts' => '{{%fieldlayouts}}'],

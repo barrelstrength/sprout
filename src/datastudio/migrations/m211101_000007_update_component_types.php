@@ -83,9 +83,7 @@ class m211101_000007_update_component_types extends Migration
         ];
 
         $permissions = (new Query())
-            ->select([
-                'id',
-            ])
+            ->select(['id'])
             ->from([Table::USERPERMISSIONS])
             ->where([
                 'like', 'name', 'sprout%', false,
