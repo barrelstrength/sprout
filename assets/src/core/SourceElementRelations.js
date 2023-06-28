@@ -27,9 +27,10 @@ let $modal = new Garnish.Modal($relationModal, {
 });
 
 let sproutRelationBtn = document.querySelector('#sprout-relations-btn');
-sproutRelationBtn.addEventListener('click', function(event) {
 
-    event.preventDefault();
-    $modal.show();
-
-}, false);
+if (sproutRelationBtn !== null) {
+    sproutRelationBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        $modal.show();
+    }, false);
+}
