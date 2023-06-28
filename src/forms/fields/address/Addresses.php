@@ -116,8 +116,9 @@ class Addresses extends Component
         $addressIdsWithDeletedElementIds = (new Query())
             ->select('addresses.id')
             ->from(['addresses' => SproutTable::ADDRESSES])
-            ->leftJoin(Table::ELEMENTS . ' elements', '[[addresses.elementId]] = [[elements.id]]')
-            ->where(['elements.id' => null])
+            ->leftJoin(['elements' => Table::ELEMENTS],
+                '[[addresses.elementId]] = [[elements.id]]')
+            ->where(['[[elements.id]]' => null])
             ->column();
 
         Craft::$app->db->createCommand()

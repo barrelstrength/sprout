@@ -76,15 +76,15 @@ class SubmissionsDataSource extends DataSource implements DateRangeInterface
 
         $formQuery = $query
             ->select([
-                '[[elements.id]] AS "elementId"',
-                '[[elements_sites.siteId]] AS "siteId"',
-                '[[formcontenttable.title]] AS "title"',
-                '[[submissionstatuses.name]] AS "submissionStatusName"',
-                '[[submissions.ipAddress]] AS "ipAddress"',
-                '[[submissions.referrer]] AS "referrer"',
-                '[[submissions.userAgent]] AS "userAgent"',
-                '[[submissions.dateCreated]] AS "dateCreated"',
-                '[[submissions.dateUpdated]] AS "dateUpdated"',
+                'elementId' => 'elements.id',
+                'siteId' => 'elements_sites.siteId',
+                'title' => 'formcontenttable.title',
+                'submissionStatusName' => 'submissionstatuses.name',
+                'ipAddress' => '[[submissions.ipAddress',
+                'referrer' => 'submissions.referrer',
+                'userAgent' => 'submissions.userAgent',
+                'dateCreated' => 'submissions.dateCreated',
+                'dateUpdated' => 'submissions.dateUpdated',
             ])
             ->from(['formcontenttable' => $contentTable])
             ->innerJoin(['elements' => Table::ELEMENTS],
