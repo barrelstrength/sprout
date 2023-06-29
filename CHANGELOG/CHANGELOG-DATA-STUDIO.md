@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.7 - 2023-06-29
+
+### Fixed
+
+- Fixed migration alias syntax ([#252])
+- Fixed duplicate entry issue in user permission migration
+
+[#252]: https://github.com/barrelstrength/sprout/issues/252
+
 ## 4.0.6 - 2023-04-21
 
 ### Fixed

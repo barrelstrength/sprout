@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.7 - 2023-06-29
+
+### Fixed
+
+- Fixed duplicate entry issue in user permission migration
+
 ## 4.0.5 - 2023-04-01
 
 ### Fixed
