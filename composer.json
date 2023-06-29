@@ -2,7 +2,7 @@
     "name": "barrelstrength/sprout",
     "description": "The Sprout Framework module",
     "type": "craft-module",
-    "version": "4.0.6",
+    "version": "4.0.7",
     "license": "proprietary",
     "authors": [
         {
