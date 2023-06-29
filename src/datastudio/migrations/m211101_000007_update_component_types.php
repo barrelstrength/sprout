@@ -75,48 +75,121 @@ class m211101_000007_update_component_types extends Migration
             }
         }
 
-        $permissionMap = [
-            'sproutReports-viewReports' => 'viewReports',
-            'sproutReports-editReports' => 'editDataSet',
-            'sproutForms-viewReports' => 'viewReports',
-            'sproutForms-editReports' => 'editDataSet',
+        $newPermissionSlugs = [
+            'viewReports',
+            'editDataSet',
         ];
 
-        $permissions = (new Query())
-            ->select(['id'])
-            ->from([Table::USERPERMISSIONS])
-            ->where([
-                'like', 'name', 'sprout%', false,
-            ])
-            ->indexBy('name')
-            ->column();
+        $newViewReportsPermissionIds = [];
+        $newEditDataSetPermissionIds = [];
 
-        // Update Permission Names in db
-        foreach ($permissionMap as $oldPermissionName => $newPermissionSlug) {
+        // Create new Permissions
+        foreach ($newPermissionSlugs as $newPermissionSlug) {
 
-            $lowerCasePermissionName = strtolower($oldPermissionName);
-            $permissionId = $permissions[$lowerCasePermissionName] ?? null;
-
-            if (!$permissionId) {
-                continue;
-            }
-
-            // Loop through Data Sources and
-            // - add view/edit permissions
+            // Loop through Data Sources
             foreach ($components as $columns) {
                 foreach ($columns as $types) {
                     foreach ($types as $type) {
 
                         $newType = $type['newType'];
-                        $newPermissionName = "sprout-module-data-studio:$newType:$newPermissionSlug";
+                        $newPermissionName = "sprout-module-data-studio:$newPermissionSlug:$newType";
 
-                        $this->update(Table::USERPERMISSIONS, [
+                        $this->insert(Table::USERPERMISSIONS, [
                             'name' => strtolower($newPermissionName),
-                        ], ['id' => $permissionId], [], false);
+                        ]);
+
+                        if ($newPermissionSlug === 'viewReports') {
+                            $newViewReportsPermissionIds[] = $this->db->getLastInsertID(Table::USERPERMISSIONS);
+                        }
+
+                        if ($newPermissionSlug === 'editDataSet') {
+                            $newEditDataSetPermissionIds[] = $this->db->getLastInsertID(Table::USERPERMISSIONS);
+                        }
                     }
                 }
             }
         }
+
+        $oldViewReportsPermissionIds = (new Query())
+            ->select(['id'])
+            ->from([Table::USERPERMISSIONS])
+            ->where([
+                'in', 'name', [
+                    strtolower('sproutReports-viewReports'),
+                    strtolower('sproutForms-viewReports'),
+                ],
+            ])
+            ->column();
+
+        $oldEditDataSetsPermissionIds = (new Query())
+            ->select(['id'])
+            ->from([Table::USERPERMISSIONS])
+            ->where([
+                'in', 'name', [
+                    strtolower('sproutReports-editReports'),
+                    strtolower('sproutForms-editReports'),
+                ],
+            ])
+            ->column();
+
+        // Gather User and User Groups who have the View Reports Permission
+        $userPermissionWithViewReportsPermissionIds = (new Query())
+            ->select(['userId'])
+            ->from([Table::USERPERMISSIONS_USERS])
+            ->where([
+                'in', 'permissionId', $oldViewReportsPermissionIds,
+            ])
+            ->column();
+
+        $userGroupPermissionsWithViewReportsPermissionIds = (new Query())
+            ->select(['groupId'])
+            ->from([Table::USERPERMISSIONS_USERGROUPS])
+            ->where([
+                'in', 'permissionId', $oldViewReportsPermissionIds,
+            ])
+            ->column();
+
+        // Gather User and User Groups who have the View Reports Permission
+        $userPermissionWithEditDataSetsPermissionIds = (new Query())
+            ->select(['userId'])
+            ->from([Table::USERPERMISSIONS_USERS])
+            ->where([
+                'in', 'permissionId', $oldEditDataSetsPermissionIds,
+            ])
+            ->column();
+
+        $userGroupPermissionsWithEditDataSetsPermissionIds = (new Query())
+            ->select(['groupId'])
+            ->from([Table::USERPERMISSIONS_USERGROUPS])
+            ->where([
+                'in', 'permissionId', $oldEditDataSetsPermissionIds,
+            ])
+            ->column();
+
+        // Delete references to Old Permissions
+        $this->delete(Table::USERPERMISSIONS, [
+            'in', 'id', $oldViewReportsPermissionIds,
+        ]);
+
+        $this->delete(Table::USERPERMISSIONS, [
+            'in', 'id', $oldEditDataSetsPermissionIds,
+        ]);
+
+        $this->delete(Table::USERPERMISSIONS_USERS, [
+            'in', 'permissionId', $oldViewReportsPermissionIds,
+        ]);
+
+        $this->delete(Table::USERPERMISSIONS_USERGROUPS, [
+            'in', 'permissionId', $oldViewReportsPermissionIds,
+        ]);
+
+        $this->delete(Table::USERPERMISSIONS_USERS, [
+            'in', 'permissionId', $oldEditDataSetsPermissionIds,
+        ]);
+
+        $this->delete(Table::USERPERMISSIONS_USERGROUPS, [
+            'in', 'permissionId', $oldEditDataSetsPermissionIds,
+        ]);
 
         // Removed. Use User Access permissions.
         $this->delete(Table::USERPERMISSIONS, [
@@ -127,6 +200,52 @@ class m211101_000007_update_component_types extends Migration
         $this->delete(Table::USERPERMISSIONS, [
             'name' => 'sproutreports-editsettings',
         ]);
+
+        $userIdsWithViewReportsPermission = array_unique($userPermissionWithViewReportsPermissionIds);
+
+        // Create User and User Group permission for new Permission ID
+        foreach ($userIdsWithViewReportsPermission as $userId) {
+            foreach ($newViewReportsPermissionIds as $newViewReportsPermissionId) {
+                $this->insert(Table::USERPERMISSIONS_USERS, [
+                    'userId' => $userId,
+                    'permissionId' => $newViewReportsPermissionId,
+                ]);
+            }
+        }
+
+        $groupIdsWithViewReportsPermission = array_unique($userGroupPermissionsWithViewReportsPermissionIds);
+
+        foreach ($groupIdsWithViewReportsPermission as $groupId) {
+            foreach ($newViewReportsPermissionIds as $newViewReportsPermissionId) {
+                $this->insert(Table::USERPERMISSIONS_USERGROUPS, [
+                    'groupId' => $groupId,
+                    'permissionId' => $newViewReportsPermissionId,
+                ]);
+            }
+        }
+
+        $userIdsWithEditDataSetsPermission = array_unique($userPermissionWithEditDataSetsPermissionIds);
+
+        // Create User and User Group permission for new Permission ID
+        foreach ($userIdsWithEditDataSetsPermission as $userId) {
+            foreach ($newEditDataSetPermissionIds as $newPermissionId) {
+                $this->insert(Table::USERPERMISSIONS_USERS, [
+                    'userId' => $userId,
+                    'permissionId' => $newPermissionId,
+                ]);
+            }
+        }
+
+        $groupIdsWithEditDataSetsPermission = array_unique($userGroupPermissionsWithEditDataSetsPermissionIds);
+
+        foreach ($groupIdsWithEditDataSetsPermission as $groupId) {
+            foreach ($newEditDataSetPermissionIds as $newPermissionId) {
+                $this->insert(Table::USERPERMISSIONS_USERGROUPS, [
+                    'groupId' => $groupId,
+                    'permissionId' => $newPermissionId,
+                ]);
+            }
+        }
     }
 
     public function safeDown(): bool

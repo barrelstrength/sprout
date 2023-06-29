@@ -47,7 +47,7 @@ class m211101_000004_update_user_permissions extends Migration
 
             // Add accessModule permissions
             $this->insert(Table::USERPERMISSIONS, [
-                'name' => strtolower($moduleId . ':accessModule'),
+                'name' => strtolower('sprout-module-meta:accessModule'),
             ]);
 
             $accessModulePermissionId = $this->db->getLastInsertID(Table::USERPERMISSIONS);
@@ -56,7 +56,7 @@ class m211101_000004_update_user_permissions extends Migration
                 ->select(['id'])
                 ->from([Table::USERPERMISSIONS])
                 ->where([
-                    'name' => 'accessplugin-' . $moduleId,
+                    'name' => 'accessplugin-sprout-seo',
                 ])
                 ->scalar();
 
@@ -103,6 +103,10 @@ class m211101_000004_update_user_permissions extends Migration
             // Remove access plugin permission that is no longer in use
             $this->delete(Table::USERPERMISSIONS, [
                 'id' => $accessPluginPermissionId,
+            ]);
+
+            $this->delete(Table::USERPERMISSIONS, [
+                'name' => 'editsproutseosettings',
             ]);
         }
     }
