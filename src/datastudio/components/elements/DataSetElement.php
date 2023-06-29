@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\components\elements;
 
 use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
+use BarrelStrength\Sprout\datastudio\components\elements\conditions\DataSetCondition;
 use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\DataSourceSettingsField;
 use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\DescriptionField;
 use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\NameField;
@@ -16,6 +17,7 @@ use craft\db\ActiveRecord;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\Html;
@@ -92,6 +94,11 @@ class DataSetElement extends Element
     public static function find(): DataSetElementQuery
     {
         return new DataSetElementQuery(static::class);
+    }
+
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(DataSetCondition::class, [static::class]);
     }
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void

@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\audience;
 
 use BarrelStrength\Sprout\mailer\audience\AudienceType;
+use BarrelStrength\Sprout\mailer\components\elements\audience\conditions\AudienceCondition;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceHandleField;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceNameField;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceSettingsField;
@@ -15,6 +16,7 @@ use craft\base\Element;
 use craft\db\Query;
 use craft\elements\actions\Delete;
 use craft\elements\actions\SetStatus;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -97,6 +99,11 @@ class AudienceElement extends Element
     public static function find(): AudienceElementQuery
     {
         return new AudienceElementQuery(static::class);
+    }
+
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(AudienceCondition::class, [static::class]);
     }
 
     public static function defaultTableAttributes(string $source): array

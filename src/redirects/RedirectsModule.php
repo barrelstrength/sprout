@@ -152,14 +152,6 @@ class RedirectsModule extends Module
         );
 
         Event::on(
-            BaseCondition::class,
-            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
-            static function(RegisterConditionRuleTypesEvent $event): void {
-                $event->conditionRuleTypes[] = MatchStrategyConditionRule::class;
-                $event->conditionRuleTypes[] = StatusCodeConditionRule::class;
-            });
-
-        Event::on(
             ErrorHandler::class,
             ErrorHandler::EVENT_BEFORE_HANDLE_EXCEPTION,
             static function(ExceptionEvent $event): void {

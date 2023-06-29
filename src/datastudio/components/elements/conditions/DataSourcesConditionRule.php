@@ -12,7 +12,6 @@ use yii\db\QueryInterface;
 
 class DataSourcesConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
-
     public function getLabel(): string
     {
         return Craft::t('sprout-module-data-studio', 'Data Sources');

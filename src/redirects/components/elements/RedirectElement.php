@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\redirects\components\elements;
 use BarrelStrength\Sprout\redirects\components\elements\actions\ChangePermanentStatusCode;
 use BarrelStrength\Sprout\redirects\components\elements\actions\ChangeTemporaryStatusCode;
 use BarrelStrength\Sprout\redirects\components\elements\actions\ExcludeUrl;
+use BarrelStrength\Sprout\redirects\components\elements\conditions\RedirectCondition;
 use BarrelStrength\Sprout\redirects\components\elements\db\RedirectElementQuery;
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\MatchStrategyField;
 use BarrelStrength\Sprout\redirects\components\elements\fieldlayoutelements\NewUrlField;
@@ -22,6 +23,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\SetStatus;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -99,6 +101,11 @@ class RedirectElement extends Element
     public static function find(): RedirectElementQuery
     {
         return new RedirectElementQuery(static::class);
+    }
+
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(RedirectCondition::class, [static::class]);
     }
 
     public static function indexHtml(ElementQueryInterface $elementQuery, ?array $disabledElementIds, array $viewState, ?string $sourceKey, ?string $context, bool $includeContainer, bool $showCheckboxes): string

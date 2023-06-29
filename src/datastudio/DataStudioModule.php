@@ -21,6 +21,7 @@ use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
+use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use Craft;
 use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
@@ -166,13 +167,6 @@ class DataStudioModule extends Module
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = DataSetElement::class;
-            });
-
-        Event::on(
-            BaseCondition::class,
-            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
-            static function(RegisterConditionRuleTypesEvent $event): void {
-                $event->conditionRuleTypes[] = DataSourcesConditionRule::class;
             });
 
         Event::on(

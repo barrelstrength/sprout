@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\captchas\Captcha;
 use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsDefaultStatus;
 use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsSpam;
+use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
@@ -19,6 +20,7 @@ use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Delete;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
@@ -125,6 +127,11 @@ class SubmissionElement extends Element
     public static function find(): ElementQueryInterface
     {
         return new SubmissionElementQuery(static::class);
+    }
+
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(SubmissionCondition::class, [static::class]);
     }
 
     protected static function defineSources(string $context = null): array

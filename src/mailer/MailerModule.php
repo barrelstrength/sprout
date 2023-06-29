@@ -134,13 +134,6 @@ class MailerModule extends Module
         );
 
         Event::on(
-            BaseCondition::class,
-            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
-            static function(RegisterConditionRuleTypesEvent $event): void {
-                $event->conditionRuleTypes[] = AudienceTypeConditionRule::class;
-            });
-
-        Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             [AudienceElement::class, 'defineNativeFields']);
