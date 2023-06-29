@@ -56,7 +56,8 @@ class UsersDataSource extends DataSource
         $userQuery = $query
             ->select($selectQueryString)
             ->from(['users' => Table::USERS])
-            ->leftJoin(['usergroups_users' => Table::USERGROUPS_USERS], 'users.id = [[usergroups_users.userId]]');
+            ->leftJoin(['usergroups_users' => Table::USERGROUPS_USERS],
+                '[[users.id]] = [[usergroups_users.userId]]');
 
         if (count($this->userGroupIds)) {
             $userQuery->where(['in', '[[usergroups_users.groupId]]', $this->userGroupIds]);
@@ -83,7 +84,8 @@ class UsersDataSource extends DataSource
         $userGroupsMapQuery = $query
             ->select('*')
             ->from(['usergroups_users' => Table::USERGROUPS_USERS])
-            ->leftJoin(['usergroups' => Table::USERGROUPS], 'usergroups.id = [[usergroups_users.groupId]]')
+            ->leftJoin(['usergroups' => Table::USERGROUPS],
+                '[[usergroups.id]] = [[usergroups_users.groupId]]')
             ->all();
 
         // Create a map of all users and which user groups they are in

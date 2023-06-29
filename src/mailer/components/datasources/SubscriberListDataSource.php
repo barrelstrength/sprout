@@ -62,8 +62,8 @@ class SubscriberListDataSource extends DataSource
     {
         $subscriberListOptions = (new Query())
             ->select([
-                'lists.name AS label',
-                'lists.id AS value',
+                'label' => 'lists.name',
+                'value' => 'lists.id',
             ])
             ->from(['lists' => SproutTable::AUDIENCES])
             ->leftJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[lists.id]]')

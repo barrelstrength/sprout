@@ -53,10 +53,22 @@ class IntegrationLogDataSource extends DataSource implements DateRangeInterface
         $query = new Query();
 
         $formQuery = $query
-            ->select('log.id id, log.dateCreated dateCreated, log.dateUpdated dateUpdated, log.submissionId submissionId, integrations.name integrationName, forms.name formName, log.message message, log.success success, log.status status')
+            ->select([
+                'id' => 'log.id',
+                'dateCreated' => 'log.dateCreated',
+                'dateUpdated' => 'log.dateUpdated',
+                'submissionId' => 'log.submissionId',
+                'integrationName' => 'integrations.name',
+                'formName' => 'forms.name',
+                'message' => 'log.message',
+                'success' => 'log.success',
+                'status' => 'log.status',
+            ])
             ->from(['log' => SproutTable::FORM_INTEGRATIONS_LOG])
-            ->innerJoin(['integrations' => SproutTable::FORM_INTEGRATIONS], '[[log.integrationId]] = [[integrations.id]]')
-            ->innerJoin(['forms' => SproutTable::FORMS], '[[integrations.formId]] = [[forms.id]]');
+            ->innerJoin(['integrations' => SproutTable::FORM_INTEGRATIONS],
+                '[[log.integrationId]] = [[integrations.id]]')
+            ->innerJoin(['forms' => SproutTable::FORMS],
+                '[[integrations.formId]] = [[forms.id]]');
 
         if ($formId != '*') {
             $formQuery->andWhere(['[[integrations.formId]]' => $formId]);

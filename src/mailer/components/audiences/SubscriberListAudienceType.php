@@ -42,9 +42,8 @@ class SubscriberListAudienceType extends AudienceType
     public function getRecipients(): array
     {
         $users = User::find()
-            ->innerJoin([
-                'subscriptions' => SproutTable::SUBSCRIPTIONS,
-            ], '[[users.id]] = [[subscriptions.itemId]]')
+            ->innerJoin(['subscriptions' => SproutTable::SUBSCRIPTIONS],
+                '[[users.id]] = [[subscriptions.itemId]]')
             ->all();
 
         $recipients = array_map(static function($user) {

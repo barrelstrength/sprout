@@ -30,10 +30,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         // Get shared sprout settings from old schema
         $oldSettings = (new Query())
-            ->select([
-                'model',
-                'settings',
-            ])
+            ->select(['model', 'settings'])
             ->from([self::OLD_SETTINGS_TABLE])
             ->where([
                 'model' => self::OLD_SETTINGS_CLASS,
