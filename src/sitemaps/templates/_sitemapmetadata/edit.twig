@@ -51,6 +51,30 @@
     {{ block('actionButton') }}
 {% endblock %}
 
+{% set priorityList = {
+    '1.0': '1.0 ↑ Highest'|t,
+    '0.9': '0.9',
+    '0.8': '0.8',
+    '0.7': '0.7',
+    '0.6': '0.6',
+    '0.5': '0.5',
+    '0.4': '0.4',
+    '0.3': '0.3',
+    '0.2': '0.2',
+    '0.1': '0.1',
+    '0.0': '0.0 ↓ Lowest'|t
+} %}
+
+{% set frequencyList = {
+    'always': 'Always'|t,
+    'hourly': 'Hourly'|t,
+    'daily': 'Daily'|t,
+    'weekly': 'Weekly'|t,
+    'monthly': 'Monthly'|t,
+    'yearly': 'Yearly'|t,
+    'never': 'Never'|t
+} %}
+
 {% block content %}
 
     {{ actionInput('sprout-module-sitemaps/sitemap-metadata/save-sitemap-metadata') }}
@@ -72,29 +96,6 @@
         required: true
     }) }}
 
-    {% set priorityList = {
-        '1.0': '1.0 ↑ Highest'|t,
-        '0.9': '0.9',
-        '0.8': '0.8',
-        '0.7': '0.7',
-        '0.6': '0.6',
-        '0.5': '0.5',
-        '0.4': '0.4',
-        '0.3': '0.3',
-        '0.2': '0.2',
-        '0.1': '0.1',
-        '0.0': '0.0 ↓ Lowest'|t
-    } %}
-
-    {% set frequencyList = {
-        'always': 'Always'|t,
-        'hourly': 'Hourly'|t,
-        'daily': 'Daily'|t,
-        'weekly': 'Weekly'|t,
-        'monthly': 'Monthly'|t,
-        'yearly': 'Yearly'|t,
-        'never': 'Never'|t
-    } %}
 
     {{ forms.selectField({
         label: "Priority"|t,
