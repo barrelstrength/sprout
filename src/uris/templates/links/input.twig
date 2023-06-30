@@ -1,26 +1,28 @@
 {% import "_includes/forms" as forms %}
 
 {% set module = sprout.modules.uris %}
+
 {% set links = module.links.getLinkInstances(excludedLinks ?? []) %}
 {% set linkOptions = module.links.getLinkOptions(excludedLinks ?? []) %}
 
-{% set displayNewWindowToggle = displayNewWindowToggle ?? false %}
+{% set type = type ?? '' %}
+{% set fieldNamespace = fieldNamespace ?? 'enhancedLinkField' %}
+
+{% set linkOnly = linkOnly ?? true %}
 {% set defaultNewWindow = defaultNewWindow ?? false %}
-{# {% set displayLinkTextField = displayLinkTextField ?? false %} #}
+{% set displayNewWindowToggle = displayNewWindowToggle ?? false %}
 {% set defaultLinkText = defaultLinkText ?? 'Learn More'|t('sprout-module-uris') %}
 
-{% set linkOnly = true %}
-
-{% namespace 'enhancedLinkField' %}
+{% namespace fieldNamespace %}
     <div class="sprout-link-field {% if linkOnly %} link-only{% endif %}">
         {% if linkOnly %}
 
             <div class="fields link-only">
                 {{ forms.select({
-                    name: 'linkType',
+                    name: 'type',
                     class: 'sprout-link-type-link-only-toggle',
                     options: linkOptions,
-                    value: '*',
+                    value: type,
                     errors: '',
                     toggle: true,
                     targetPrefix: 'link-settings-',
@@ -28,6 +30,7 @@
 
                 {% for link in links %}
                     <div id="link-settings-{{ className(link)|id }}" class="link-settings hidden">
+                        {% set link = className(link) == className(selectedLink) ? selectedLink : link %}
                         {{ link.getInputHtml()|raw }}
                     </div>
                 {% endfor %}
@@ -54,7 +57,7 @@
 
                 <div class="link-type-select-container">
                     {{ forms.select({
-                        name: 'linkType',
+                        name: 'type',
                         class: 'small sprout-link-type-toggle',
                         options: linkOptions,
                         value: '*',
@@ -68,7 +71,7 @@
                     {{ forms.lightswitch({
                         onLabel: 'New Window'|t('sprout-module-uris'),
                         name: 'targetNewWindow',
-                        on: false,
+                        on: defaultNewWindow,
                         small: true,
                     }) }}
                 {% endif %}

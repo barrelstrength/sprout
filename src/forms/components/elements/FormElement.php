@@ -189,10 +189,10 @@ class FormElement extends Element
         $integrationsTab->setElements([
             new HtmlFieldLayoutElement($integrationsHtml),
         ]);
-        
+
         $linkHtml = Links::enhancedLinkFieldHtml([
-            'inputName' => 'redirectUri',
-            'savedLink' => $this->redirectUri,
+            'fieldNamespace' => 'redirectUri',
+            'selectedLink' => $this->redirectUri,
             'type' => $this->redirectUri::class ?? null,
         ]);
 

@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\uris\components\links\HardCodedLink;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
+use craft\helpers\Json;
 
 class Links extends Component
 {
@@ -59,5 +60,21 @@ class Links extends Component
     public static function enhancedLinkFieldHtml(array $config = []): string
     {
         return Cp::renderTemplate('sprout-module-uris/links/input.twig', $config);
+    }
+
+    public static function toLinkField(mixed $value): LinkInterface|false
+    {
+        if ($value instanceof LinkInterface) {
+            return $value;
+        }
+
+        if (!$value = Json::decodeIfJson($value)) {
+            return false;
+        }
+
+        $linkType = new $value['type']();
+        $linkType->setAttributes($value, false);
+
+        return $linkType;
     }
 }
