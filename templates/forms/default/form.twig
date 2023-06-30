@@ -15,7 +15,7 @@
 {%- set errorClass = renderingOptions.errorClass is defined ? renderingOptions.errorClass : 'errors' -%}
 {%- set id = renderingOptions.id is defined ? renderingOptions.id : form.handle ~ '-form' -%}
 {%- set class = renderingOptions.class is defined ? renderingOptions.class : form.handle ~ '-form' -%}
-{%- set redirectUri = form.redirectUri -%}
+{%- set redirectUri = form.redirectUri.getUrl() -%}
 {#{%- set rules = form.getRules() -%}#}
 
 {%- set globalErrorListHtml -%}
@@ -43,8 +43,9 @@
     {{ sproutDynamicCsrfInput() }}
     <input type="hidden" aria-hidden="true" name="action" value="sprout-module-forms/submissions/save-submission">
     <input type="hidden" aria-hidden="true" name="handle" value="{{ form.handle }}">
-    {%- if redirectUri is not empty %}
+    {%- if redirectUri %}
         {% if redirectUri|slice(0, 1)|lower == '?' %}
+            {# @todo - make sure this works with updates to RedirectURI #}
             {%- set redirectUri = craft.app.request.getUrl()~redirectUri %}
         {% endif %}
 

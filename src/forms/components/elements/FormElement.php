@@ -13,6 +13,8 @@ use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\uris\links\LinkInterface;
+use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
 use craft\base\FieldInterface;
@@ -62,7 +64,7 @@ class FormElement extends Element
 
     public bool $displaySectionTitles = false;
 
-    public ?string $redirectUri = null;
+    public ?LinkInterface $redirectUri = null;
 
     public string $submissionMethod = 'sync';
 
@@ -187,12 +189,19 @@ class FormElement extends Element
         $integrationsTab->setElements([
             new HtmlFieldLayoutElement($integrationsHtml),
         ]);
+        
+        $linkHtml = Links::enhancedLinkFieldHtml([
+            'inputName' => 'redirectUri',
+            'savedLink' => $this->redirectUri,
+            'type' => $this->redirectUri::class ?? null,
+        ]);
 
         $settingsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/general', [
             'form' => $this,
             'groups' => $groups,
             'groupId' => $groupId,
             'config' => $config,
+            'linkHtml' => $linkHtml,
         ]);
 
         $settingsTab = new FieldLayoutTab();
@@ -463,7 +472,7 @@ class FormElement extends Element
         $record->titleFormat = $this->titleFormat;
         $record->displaySectionTitles = $this->displaySectionTitles;
         $record->groupId = $this->groupId;
-        $record->redirectUri = $this->redirectUri;
+        $record->redirectUri = Db::prepareValueForDb($this->redirectUri);
         $record->saveData = $this->saveData;
         $record->submissionMethod = $this->submissionMethod;
         $record->errorDisplayMethod = $this->errorDisplayMethod;
@@ -864,5 +873,27 @@ class FormElement extends Element
         $rules[] = [['enableCaptchas'], 'safe'];
 
         return $rules;
+    }
+
+    public function __construct($config = [])
+    {
+        if (isset($config['redirectUri'])) {
+            $config['redirectUri'] = Links::toLinkField($config['redirectUri']) ?: null;
+        }
+        parent::__construct($config);
+    }
+
+    public function setAttributes($values, $safeOnly = true): void
+    {
+        if (isset($values['redirectUri'])) {
+            $type = $values['redirectUri']['type'] ?? null;
+            $attributes = array_merge(
+                ['type' => $type],
+                $values['redirectUri'][$type] ?? []
+            );
+            $values['redirectUri'] = Links::toLinkField($attributes) ?: null;
+        }
+
+        parent::setAttributes($values, $safeOnly);
     }
 }
