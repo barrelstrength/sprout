@@ -1,0 +1,13 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "URI"|t('sprout-module-sitemaps'),
+    instructions: "The relative path of the Custom Page. The Base URL will be appended for you."|t('sprout-module-sitemaps'),
+    id: "uri",
+    name: 'uri',
+    value: (sitemapMetadata.uri == '__home__') ? "/" : sitemapMetadata.uri,
+    errors: sitemapMetadata.getErrors('uri'),
+    first: true,
+    autofocus: true,
+    required: true
+}) }}

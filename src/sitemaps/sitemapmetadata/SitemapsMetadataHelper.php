@@ -36,6 +36,20 @@ class SitemapsMetadataHelper
         return $element->getType()->handle === Section::TYPE_SINGLE;
     }
 
+    public static function getCustomQuerySitemapMetadata(Site $site): array
+    {
+        // Fetching all Custom Sitemap defined in Sprout SEO
+        $customQuerySitemapMetadata = (new Query())
+            ->select('*')
+            ->from([SproutTable::SITEMAPS_METADATA])
+            ->where(['enabled' => true])
+            ->andWhere(['siteId' => $site->id])
+            ->andWhere(['type' => SitemapMetadata::CUSTOM_QUERY_SITEMAP_TYPE])
+            ->all();
+
+        return $customQuerySitemapMetadata;
+    }
+
     public static function hasCustomPages(Site $site): bool
     {
         // Fetching all Custom Sitemap defined in Sprout SEO
@@ -44,7 +58,7 @@ class SitemapsMetadataHelper
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
             ->andWhere(['siteId' => $site->id])
-            ->andWhere(['type' => SitemapMetadata::NO_ELEMENT_TYPE])
+            ->andWhere(['type' => SitemapMetadata::CUSTOM_PAGE_SITEMAP_TYPE])
             ->andWhere(['not', ['uri' => null]])
             ->count();
 

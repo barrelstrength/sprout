@@ -69,7 +69,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
                     $row['sourceKey'] = $sourceKey;
                     $row['uri'] = null;
                 } else {
-                    $row['sourceKey'] = 'custom-pages';
+                    $row['sourceKey'] = 'custom-page';
                     $row['type'] = null;
                 }
 

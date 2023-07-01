@@ -1,24 +1,16 @@
 {% import "_includes/forms" as forms %}
 
-<td>
+<td colspan="2">
     {% include "sprout-module-sitemaps/_sitemapmetadata/titlecolumn" with {
-        sitemapMetadata: sitemapMetadata,
-        sourceKey: sourceKey,
+        sitemapMetadata: customSection,
+        isQuery: true,
         sitemapType: sitemapType,
-        hasUriTags: hasUriTags,
     } only %}
-</td>
-<td>
-    {{ sitemapMetadata.name }}
-
-    {% if sitemapMetadata.uri == '__home__' %}
-        <span data-icon="home" title="Homepage"></span>
-    {% endif %}
 </td>
 <td>
     {{ forms.selectField({
         options: priorityList,
-        value: sitemapMetadata.priority,
+        value: customSection.priority,
         class: 'sitemap-priority',
         errors: "",
         required: false,
@@ -32,7 +24,7 @@
 <td>
     {{ forms.selectField({
         options: frequencyList,
-        value: sitemapMetadata.changeFrequency,
+        value: customSection.changeFrequency,
         class: 'sitemap-change-frequency',
         errors: "",
         required: false,
@@ -43,10 +35,9 @@
         },
     }) }}
 </td>
-
 <td class="enabled-status" style="text-align: center;">
     {{ forms.lightswitch({
-        on: sitemapMetadata.enabled == 1 ?? false,
+        on: customSection.enabled == 1 ?? false,
         containerAttributes: {
             'x-on:click': 'toggleEnabledAndSaveSitemapMetadata',
             'x-model': 'enabled',
@@ -55,6 +46,10 @@
     }) }}
 </td>
 <td>
-    {# Empty but serving role to make columns even #}
-    <span style="display: inline-block;width:13px;"></span>
+    {{ tag('a', {
+        class: 'delete icon',
+        title: 'Delete'|t('sprout-module-sitemaps'),
+        'x-on:click': 'deleteSitemapMetadata',
+    }) }}
+    <a class="" title="Delete"></a>
 </td>

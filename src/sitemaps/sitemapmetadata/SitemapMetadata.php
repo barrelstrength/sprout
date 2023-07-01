@@ -21,7 +21,8 @@ class SitemapMetadata extends Component
 {
     public const EVENT_REGISTER_ELEMENT_SITEMAP_METADATA = 'registerSproutElementSitemapMetadata';
 
-    public const NO_ELEMENT_TYPE = null;
+    public const CUSTOM_QUERY_SITEMAP_TYPE = 'custom-query';
+    public const CUSTOM_PAGE_SITEMAP_TYPE = 'custom-page';
 
     private array $_elementsWithUris = [];
 
@@ -141,7 +142,7 @@ class SitemapMetadata extends Component
 
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['[[siteId]]' => $site->id])
-            ->andWhere(['not', ['[[type]]' => self::NO_ELEMENT_TYPE]])
+            ->andWhere(['not', ['[[type]]' => self::CUSTOM_PAGE_SITEMAP_TYPE]])
             ->indexBy('sourceKey')
             ->all();
 
@@ -161,11 +162,21 @@ class SitemapMetadata extends Component
         return $sitemapMetadata;
     }
 
+    public function getSitemapCustomQueryMetadata($siteId): array
+    {
+        return SitemapMetadataRecord::find()
+            ->where([
+                '[[type]]' => self::CUSTOM_QUERY_SITEMAP_TYPE,
+                '[[siteId]]' => $siteId,
+            ])
+            ->all();
+    }
+
     public function getSitemapPagesMetadata($siteId): array
     {
         return SitemapMetadataRecord::find()
             ->where([
-                '[[type]]' => self::NO_ELEMENT_TYPE,
+                '[[type]]' => self::CUSTOM_PAGE_SITEMAP_TYPE,
                 '[[siteId]]' => $siteId,
             ])
             ->all();
@@ -173,9 +184,10 @@ class SitemapMetadata extends Component
 
     public function saveSitemapMetadata(SitemapMetadataRecord $sitemapMetadata): bool
     {
-        if ($sitemapMetadata->type === self::NO_ELEMENT_TYPE) {
-
-            $sitemapMetadata->setScenario('customSection');
+        if ($sitemapMetadata->type === self::CUSTOM_PAGE_SITEMAP_TYPE) {
+            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_SECTION);
+        } elseif ($sitemapMetadata->type === self::CUSTOM_QUERY_SITEMAP_TYPE) {
+            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_QUERY);
         } else {
             // No need to store URI for Element SitemapMetadata
             $sitemapMetadata->uri = null;
@@ -186,7 +198,7 @@ class SitemapMetadata extends Component
         }
 
         // Custom Sections will be allowed to be unique, even in Multi-Lingual Sitemaps
-        if ($sitemapMetadata->type === self::NO_ELEMENT_TYPE) {
+        if ($sitemapMetadata->type === self::CUSTOM_PAGE_SITEMAP_TYPE) {
             return true;
         }
 

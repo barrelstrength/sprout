@@ -15,6 +15,8 @@ class SitemapsSettings extends BaseConfig
 
     public const AGGREGATION_METHOD_MULTI_LINGUAL = 'multiLingualSitemaps';
 
+    public bool $enableCustomQueries = false;
+
     public bool $enableCustomSections = false;
 
     public int $totalElementsPerSitemap = 500;
@@ -33,6 +35,13 @@ class SitemapsSettings extends BaseConfig
         }
 
         parent::init();
+    }
+
+    public function enableCustomQueries(bool $value): self
+    {
+        $this->enableCustomQueries = $value;
+
+        return $this;
     }
 
     public function enableCustomSections(bool $value): self

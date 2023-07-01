@@ -6,16 +6,32 @@
         <span class="status disabled"></span>
     {% endif %}
 
-    {% if isCustom is defined and isCustom %}
-        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapMetadata.id) }}"
+    {% if isQuery is defined and isQuery %}
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapType ~ '/' ~ sitemapMetadata.id) }}"
+            class="sprout-sectiontitle">
+            <code>{{ sitemapMetadata.description }}</code>
+        </a>
+    {% elseif isCustom is defined and isCustom %}
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapType ~ '/' ~ sitemapMetadata.id) }}"
             class="sprout-sectiontitle">
             <code>{{ sitemapMetadata.uri }}</code>
         </a>
     {% else %}
-        {{ sitemapMetadata.name }}
-
         {% if sitemapMetadata.uri == '__home__' %}
             <span data-icon="home" title="Homepage"></span>
+        {% else %}
+            {% if hasUriTags %}
+                <code>
+                    {{ "Conditional URL"|t('sprout-module-sitemaps') }}
+                    <span class="info">
+                    <h6>{{ "Conditional URL details"|t('sprout-module-sitemaps') }}</h6>
+                    <p>{{ sitemapMetadata.uri }}</p>
+                </span>
+                </code>
+            {% else %}
+                <code>{{ sitemapMetadata.uri }}</code>
+            {% endif %}
+
         {% endif %}
 
         {{ hiddenInput('sitemaps['~sourceKey~'][uri]', sitemapMetadata.uri) }}

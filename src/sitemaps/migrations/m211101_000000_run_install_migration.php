@@ -25,6 +25,7 @@ class m211101_000000_run_install_migration extends Migration
         $primarySite = Craft::$app->getSites()->getPrimarySite();
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
+            'enableCustomQueries' => false,
             'enableCustomSections' => false,
             'totalElementsPerSitemap' => 3,
             'sitemapAggregationMethod' => self::SITEMAP_AGGREGATION_METHOD_SETTING,
@@ -57,6 +58,8 @@ class m211101_000000_run_install_migration extends Migration
                 'uri' => $this->string(),
                 'priority' => $this->decimal(11, 1),
                 'changeFrequency' => $this->string(),
+                'description' => $this->string()->defaultValue(null),
+                'settings' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

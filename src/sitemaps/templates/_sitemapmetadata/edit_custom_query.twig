@@ -1,0 +1,27 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Description"|t('sprout-module-sitemaps'),
+    instructions: "Describe the sitemap created by this query"|t('sprout-module-sitemaps'),
+    id: "description",
+    name: 'description',
+    value: sitemapMetadata.description,
+    errors: sitemapMetadata.getErrors('description'),
+    first: true,
+    autofocus: true,
+    required: true
+}) }}
+
+
+{{ forms.selectField({
+    id: "elementType",
+    name: "elementType",
+    label: 'Element Type'|t('sprout-module-sitemaps'),
+    instructions: 'The Element to use for this Sitemap page custom query.'|t('sprout-module-sitemaps'),
+    options: elementOptions,
+    value: currentCondition.elementType ?? null,
+    toggle: true,
+    targetPrefix: 'element-type-'
+}) }}
+
+{{ conditionBuilderSettingsHtml|raw }}

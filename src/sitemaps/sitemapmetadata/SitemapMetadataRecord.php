@@ -22,9 +22,12 @@ use craft\models\Site;
  * @property string $uri
  * @property int $priority
  * @property string $changeFrequency
+ * @property string $description
+ * @property string $settings
  */
 class SitemapMetadataRecord extends ActiveRecord
 {
+    public const SCENARIO_CUSTOM_QUERY = 'customQuery';
     public const SCENARIO_CUSTOM_SECTION = 'customSection';
 
     /** Attribute assigned from URL-Enabled Section integration */
@@ -63,6 +66,8 @@ class SitemapMetadataRecord extends ActiveRecord
 
         $rules [] = [['uri'], 'sectionUri', 'on' => self::SCENARIO_CUSTOM_SECTION];
         $rules [] = [['uri'], 'required', 'on' => self::SCENARIO_CUSTOM_SECTION, 'message' => 'URI cannot be blank.'];
+        $rules [] = [['description'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Description is required.'];
+        $rules [] = [['settings'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Must define at least one query condition.'];
 
         return $rules;
     }

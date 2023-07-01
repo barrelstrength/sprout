@@ -24,8 +24,18 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Enable Custom Pages"|t,
-        instructions: "Add a section on the Sitemaps tab to manage Custom Pages that exist outside of any URL-Enabled Sections."|t,
+        label: "Enable Custom Queries"|t('sprout-module-sitemaps') ~ isProBadge,
+        instructions: "Add a section on the Sitemaps tab to build Sitemaps via Custom Element Queries."|t('sprout-module-sitemaps'),
+        name: 'enableCustomQueries',
+        on: (settings.enableCustomQueries is empty ? false : true),
+        onLabel: "Enable"|t('sprout-module-sitemaps'),
+        offLabel: "Disable"|t('sprout-module-sitemaps'),
+        warning: sproutConfigWarning(module, 'enableCustomQueries'),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Enable Custom Pages"|t('sprout-module-sitemaps') ~ isProBadge,
+        instructions: "Add a section on the Sitemaps tab to manage Custom Pages that exist outside of any URL-Enabled Sections."|t('sprout-module-sitemaps'),
         name: 'enableCustomSections',
         on: (settings.enableCustomSections is empty ? false : true),
         onLabel: "Enable"|t('sprout-module-sitemaps'),

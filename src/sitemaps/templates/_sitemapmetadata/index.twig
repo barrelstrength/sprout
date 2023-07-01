@@ -72,7 +72,7 @@
 
         <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
             <div style="flex-grow: 1;">
-                <h3 style="text-transform: uppercase;">{{ "Sections"|t('sprout-module-sitemaps') }}
+                <h3 style="text-transform: uppercase;">{{ "Element Sitemaps"|t('sprout-module-sitemaps') }}
                     <span class="info">{{ "Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data."|t('sprout-module-sitemaps') }}</span>
                 </h3>
             </div>
@@ -105,11 +105,11 @@
 
                         {% set name = elementWithUri.displayName() %}
 
+                        <th style="width:32%;">{{ "URL Pattern"|t('sprout-module-sitemaps') }}</th>
                         <th style="padding-left:9px;width:30%;">
                             {{ name }}
                             <span class="info">{{ "All of your " ~name~" that have unique URLs are listed here.  Enable each "~name~" you want to include in your sitemap."|t('sprout-module-sitemaps') }}</span>
                         </th>
-                        <th style="width:32%;">{{ "URL Pattern"|t('sprout-module-sitemaps') }}</th>
                         <th style="width:15%;">
                             {{ "Priority"|t('sprout-module-sitemaps') }}
                             {% if loop.index == 1 %}
@@ -152,6 +152,7 @@
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata" with {
                                 sitemapMetadata: sitemapMetadata,
                                 sourceKey: sourceKey,
+                                sitemapType: sitemapMetadata.type,
                                 hasUriTags: hasUriTags,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
@@ -190,17 +191,101 @@
 
     </div>
 
+    {% if settings.enableCustomQueries %}
+
+        <br>
+        <div class="content-pane">
+            <div class="sprout-section-header" style="display: flex;align-items: center;">
+                <div style="flex-grow: 1;">
+                    <h3 style="text-transform: uppercase;">{{ "Custom Query Sitemaps"|t('sprout-module-sitemaps') }}</h3>
+                </div>
+                <div style="flex-shrink: 0;">
+                    <div class="buttons right">
+                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-query/new') }}">
+                            {{ "Custom Query"|t('sprout-module-sitemaps') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if customQueries|length %}
+
+                <table class="data fullwidth custom-pages sitemap-settings" id="custom-pages">
+                    <thead>
+
+                    <th colspan="2" style="padding-left:9px;width:62%;">
+                        {{ "Description"|t('sprout-module-sitemaps') }}
+                        <span class="info">
+                            {{ "A Custom Page allows you to add a Custom URL that will display in your sitemap when enabled."|t('sprout-module-sitemaps') }}
+                        </span>
+                    </th>
+                    <th style="width:15%;">{{ "Priority"|t('sprout-module-sitemaps') }}</th>
+                    <th style="width:15%;">{{ "Change Frequency"|t('sprout-module-sitemaps') }}</th>
+                    <th style="width:8%;text-align: center;">{{ "Enabled"|t('sprout-module-sitemaps') }}</th>
+                    <th class="thin"></th>
+
+                    </thead>
+                    <tbody>
+
+                    {% for customQuery in customQueries %}
+
+                        <tr
+                            x-data="SitemapMetadataRow"
+                            x-ref="sitemapMetadataRow"
+                            data-description="{{ customQuery.description }}"
+                            data-type="custom-query"
+                            data-source-key="custom-query"
+                            data-sitemap-metadata-id="{{ customQuery.id ?? null }}"
+                            data-site-id="{{ site.id }}"
+                            data-uri="{{ customQuery.description }}"
+                            data-priority="{{ customQuery.priority ?? 0.5 }}"
+                            data-change-frequency="{{ customQuery.changeFrequency ?? 'monthly' }}"
+                            data-enabled="{{ customQuery.enabled ?? '0' }}"
+
+                            data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
+
+                            {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-query" with {
+                                sitemapType: customQuery.type,
+                                customSection: customQuery,
+                                priorityList: priorityList,
+                                frequencyList: frequencyList,
+                            } only %}
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                {% set boxBody %}
+                    <p>{{ "Custom Queries can be used to build more-specific Sitemaps."|t('sprout-module-sitemaps')|raw }}</p>
+                {% endset %}
+
+                {{ sproutCp.mediaBox({
+                    heading: "Custom Queries"|t('sprout-module-sitemaps'),
+                    body: boxBody,
+                    resourcePath: '@Sprout/Assets/dist/static/sitemaps/icons/icon.svg'
+                }) }}
+
+            {% endif %}
+
+        </div>
+    {% endif %}
+
     {% if settings.enableCustomSections %}
 
         <br>
         <div class="content-pane">
             <div class="sprout-section-header" style="display: flex;align-items: center;">
                 <div style="flex-grow: 1;">
-                    <h3 style="text-transform: uppercase;">{{ "Custom Pages"|t('sprout-module-sitemaps') }}</h3>
+                    <h3 style="text-transform: uppercase;">{{ "Custom Pages Sitemap"|t('sprout-module-sitemaps') }}</h3>
                 </div>
                 <div style="flex-shrink: 0;">
                     <div class="buttons right">
-                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/new') }}">
+                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-page/new') }}">
                             {{ "Custom URL"|t('sprout-module-sitemaps') }}
                         </a>
                     </div>
@@ -231,7 +316,8 @@
                         <tr
                             x-data="SitemapMetadataRow"
                             x-ref="sitemapMetadataRow"
-                            data-source-key="custom-pages"
+                            data-type="custom-page"
+                            data-source-key="custom-page"
                             data-sitemap-metadata-id="{{ customSection.id ?? null }}"
                             data-site-id="{{ site.id }}"
                             data-uri="{{ customSection.uri }}"
@@ -242,6 +328,7 @@
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
 
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-custom" with {
+                                sitemapType: customSection.type,
                                 customSection: customSection,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
@@ -257,7 +344,7 @@
             {% else %}
 
                 {% set boxBody %}
-                    <p>{{ "Add a Custom URL for any page that doesn't exist in a URL-Enabled Section."|t('sprout-module-sitemaps')|raw }}</p>
+                    <p>{{ "Add a Custom URL for any page that doesn't exist within the CMS."|t('sprout-module-sitemaps')|raw }}</p>
                 {% endset %}
 
                 {{ sproutCp.mediaBox({

@@ -80,22 +80,11 @@
     {{ actionInput('sprout-module-sitemaps/sitemap-metadata/save-sitemap-metadata') }}
     {{ redirectInput(cpUrl('sprout/sitemaps')) }}
     {{ hiddenInput('sitemapMetadataId', sitemapMetadata.id ?? '') }}
-    {{ hiddenInput('sourceKey', 'custom-pages') }}
-    {{ hiddenInput('type', sitemapMetadata.type ?? '') }}
+    {{ hiddenInput('sourceKey', sitemapType) }}
+    {{ hiddenInput('type', sitemapType) }}
     {{ hiddenInput('siteId', sitemapMetadata.siteId ?? null) }}
 
-    {{ forms.textField({
-        label: "URI"|t('sprout-module-sitemaps'),
-        instructions: "The relative path of the Custom Page. The Base URL will be appended for you."|t('sprout-module-sitemaps'),
-        id: "uri",
-        name: 'uri',
-        value: (sitemapMetadata.uri == '__home__') ? "/" : sitemapMetadata.uri,
-        errors: sitemapMetadata.getErrors('uri'),
-        first: true,
-        autofocus: true,
-        required: true
-    }) }}
-
+    {% include 'sprout-module-sitemaps/_sitemapmetadata/edit_' ~ sitemapType|snake %}
 
     {{ forms.selectField({
         label: "Priority"|t,
@@ -114,7 +103,6 @@
         errors: "",
         required: false
     }) }}
-
 
 {% endblock %}
 
