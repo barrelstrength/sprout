@@ -130,6 +130,7 @@ class NotificationEvents extends Component
             $emailTypeSettings = $email->getEmailTypeSettings();
             $settings = $emailTypeSettings->eventSettings[$notificationEventType] ?? [];
 
+            /** @var NotificationEvent $notificationEvent */
             $notificationEvent = new $emailTypeSettings->eventId();
             $notificationEvent->setAttributes($settings, false);
             $notificationEvent->event = $event;

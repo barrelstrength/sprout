@@ -34,8 +34,8 @@ trait LinkTrait
         return $data;
     }
 
-    //public function getInputId(): string
-    //{
-    //    return Html::id($this->handle);
-    //}
+    public function namespaceInputName(string $name): string
+    {
+        return Craft::$app->getView()->namespaceInputName($name, static::class);
+    }
 }

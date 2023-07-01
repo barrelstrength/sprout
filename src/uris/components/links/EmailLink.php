@@ -19,7 +19,7 @@ class EmailLink extends AbstractLink
     public function getInputHtml(): ?string
     {
         return Cp::textHtml([
-            'name' => static::class . '[email]',
+            'name' => $this->namespaceInputName('email'),
             'placeholder' => Craft::$app->getUser()->getIdentity()->email,
             'value' => $this->email,
             'errors' => '',
@@ -29,5 +29,14 @@ class EmailLink extends AbstractLink
     public function getUrl(): ?string
     {
         return 'mailto:'.$this->email;
+    }
+
+    public function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['email'], 'email'];
+
+        return $rules;
     }
 }

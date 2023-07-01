@@ -76,5 +76,5 @@
 {{ forms.field({
     label: "Redirect Page"|t('sprout-module-forms'),
     instructions: "Where should the user be redirected upon form submission? Leave blank to redirect user back to the form."|t('sprout-module-forms'),
-    errors: (form is defined ? form.getErrors('redirectUri') : null)
+    errors: form.getErrors('redirectUri')
 }, linkHtml|raw) }}

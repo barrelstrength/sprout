@@ -19,15 +19,23 @@ class PhoneLink extends AbstractLink
     public function getInputHtml(): ?string
     {
         return Cp::textHtml([
-            'name' => static::class . '[phone]',
+            'name' => $this->namespaceInputName('phone'),
             'placeholder' => Craft::$app->getUser()->getIdentity()->email,
             'value' => $this->phone,
-            'errors' => '',
         ]);
     }
 
     public function getUrl(): ?string
     {
         return 'tel:'.$this->phone;
+    }
+
+    public function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['url'], 'url'];
+
+        return $rules;
     }
 }

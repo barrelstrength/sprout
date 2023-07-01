@@ -17,10 +17,18 @@ class AbsoluteUrl extends AbstractLink
     public function getInputHtml(): ?string
     {
         return Cp::textHtml([
-            'name' => static::class . '[url]',
+            'name' => $this->namespaceInputName('url'),
             'placeholder' => UrlHelper::siteUrl(),
             'value' => $this->url,
-            'errors' => '',
         ]);
+    }
+
+    public function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['url'], 'url'];
+
+        return $rules;
     }
 }

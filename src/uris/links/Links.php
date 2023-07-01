@@ -24,7 +24,7 @@ class Links extends Component
             AbsoluteUrl::class,
             RelativeUrl::class,
             EmailLink::class,
-            PhoneLink::class,
+            //PhoneLink::class,
             EntryElementLink::class,
             CategoryElementLink::class,
         ];

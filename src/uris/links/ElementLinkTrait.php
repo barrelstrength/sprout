@@ -28,7 +28,7 @@ trait ElementLinkTrait
         $elementType = static::elementType();
 
         return Cp::elementSelectHtml([
-            'name' => static::class . '[elementId]',
+            'name' => $this->namespaceInputName('elementId'),
             'elements' => $element ? [$element] : [],
             'elementType' => $elementType,
             'selectionLabel' => 'Choose a ' . $elementType::displayName(),

@@ -13,11 +13,13 @@ use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
 use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
 use craft\base\FieldInterface;
+use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\db\Query;
 use craft\db\Table;
@@ -123,10 +125,6 @@ class FormElement extends Element
 
     public function getFieldLayout(): ?FieldLayout
     {
-        if ($this->_fieldLayout) {
-            return $this->_fieldLayout;
-        }
-
         $this->_fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);
@@ -860,9 +858,15 @@ class FormElement extends Element
         $rules[] = [['groupId'], 'safe'];
         $rules[] = [['submissionFieldLayoutId'], 'safe'];
         $rules[] = [['submissionFieldLayout'], 'safe'];
-        $rules[] = [['titleFormat'], 'safe'];
+        $rules[] = [['titleFormat'], 'required'];
         $rules[] = [['displaySectionTitles'], 'safe'];
-        $rules[] = [['redirectUri'], 'safe'];
+        $rules[] = [['redirectUri'], function($attribute) {
+            /** @var AbstractLink $link */
+            $link = $this->$attribute;
+            if ($link && !$link->validate()) {
+                $this->addError($attribute, $link->getErrorSummary(true)[0]);
+            }
+        }];
         $rules[] = [['submissionMethod'], 'safe'];
         $rules[] = [['errorDisplayMethod'], 'safe'];
         $rules[] = [['messageOnSuccess'], 'safe'];
