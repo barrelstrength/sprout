@@ -178,13 +178,17 @@ class SitemapMetadataController extends Controller
                 $condition->mainTag = 'div';
                 $condition->name = $element::lowerDisplayName().'-conditionRules';
                 $condition->id = $element::lowerDisplayName().'-conditionRules';
-                $conditionBuilderHtml = $condition->getBuilderHtml();
 
-                $settingsHtml .= Html::tag('div', $conditionBuilderHtml, [
+                $settingsHtml .= Html::tag('div', $condition->getBuilderHtml(), [
                     'id' => 'element-type-' . Html::id($element::class),
                     'class' => 'hidden',
                 ]);
             }
+
+            $conditionBuilderSettingsHtml = Cp::fieldHtml($settingsHtml, [
+                'label' => Craft::t('sprout-module-sitemaps', 'Content Query'),
+                'instructions' => Craft::t('sprout-module-sitemaps', 'Add URLs to the sitemap that match the following rules:'),
+            ]);
         }
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit.twig', [
@@ -195,7 +199,7 @@ class SitemapMetadataController extends Controller
             'sitemapType' => $sitemapType,
 
             'elementOptions' => $elementOptions ?? [],
-            'conditionBuilderSettingsHtml' => $settingsHtml ?? '',
+            'conditionBuilderSettingsHtml' => $conditionBuilderSettingsHtml ?? '',
             'currentCondition' => $currentCondition ?? null,
         ]);
     }

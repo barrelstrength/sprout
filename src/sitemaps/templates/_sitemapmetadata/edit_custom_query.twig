@@ -16,8 +16,8 @@
 {{ forms.selectField({
     id: "elementType",
     name: "elementType",
-    label: 'Element Type'|t('sprout-module-sitemaps'),
-    instructions: 'The Element to use for this Sitemap page custom query.'|t('sprout-module-sitemaps'),
+    label: 'Content Type'|t('sprout-module-sitemaps'),
+    instructions: 'Build a custom query from this type of content.'|t('sprout-module-sitemaps'),
     options: elementOptions,
     value: currentCondition.elementType ?? null,
     toggle: true,
