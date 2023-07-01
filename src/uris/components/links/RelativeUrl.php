@@ -2,24 +2,19 @@
 
 namespace BarrelStrength\Sprout\uris\components\links;
 
-use BarrelStrength\Sprout\uris\links\UriLinkTrait;
+use BarrelStrength\Sprout\uris\links\AbstractLink;
+use BarrelStrength\Sprout\uris\links\LinkTrait;
 use Craft;
 use craft\helpers\Cp;
 use craft\helpers\UrlHelper;
-use Symfony\Component\VarDumper\Dumper\DataDumperInterface;
 
-class HardCodedLink extends AbstractLink
+class RelativeUrl extends AbstractLink
 {
-    use UriLinkTrait;
-
-    /**
-     * The absolute URL the link resolves to
-     */
-    public ?string $url = null;
+    use LinkTrait;
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-uris', 'URL');
+        return Craft::t('sprout-module-uris', 'Relative URL');
     }
 
     public function getInputHtml(): ?string
@@ -30,10 +25,5 @@ class HardCodedLink extends AbstractLink
             'value' => $this->url,
             'errors' => '',
         ]);
-    }
-
-    public function getUrl(): ?string
-    {
-        return $this->url;
     }
 }

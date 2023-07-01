@@ -1,20 +1,14 @@
 <?php
 
-namespace BarrelStrength\Sprout\uris\components\links;
+namespace BarrelStrength\Sprout\uris\links;
 
-use BarrelStrength\Sprout\uris\links\LinkInterface;
-use BarrelStrength\Sprout\uris\links\UriLinkTrait;
-use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\Cp;
+use Craft;
 
-abstract class AbstractElementLink extends AbstractLink implements LinkInterface
+trait ElementLinkTrait
 {
-    use UriLinkTrait;
-
-    public mixed $elementId = null;
-
-    abstract public static function elementType(): string;
+    public ?int $elementId = null;
 
     public static function displayName(): string
     {
@@ -26,30 +20,29 @@ abstract class AbstractElementLink extends AbstractLink implements LinkInterface
 
     public function getInputHtml(): ?string
     {
-        if ($this->elementId) {
-            $element = Craft::$app->getElements()->getElementById($this->elementId);
-        } else {
-            $element = null;
-        }
+        $element = $this->elementId
+            ? Craft::$app->getElements()->getElementById($this->elementId)
+            : null;
 
         /** @var ElementInterface|string $elementType */
         $elementType = static::elementType();
 
         return Cp::elementSelectHtml([
-            //'label' => $elementType::displayName(),
-            'name' => static::class.'[elementId]',
+            'name' => static::class . '[elementId]',
             'elements' => $element ? [$element] : [],
             'elementType' => $elementType,
             'selectionLabel' => 'Choose a ' . $elementType::displayName(),
             'single' => true,
-            //'sources' => $this->sources(),
-            //'criteria' => $this->criteria(),
-            //'condition' => $this->selectionCondition(),
         ]);
     }
+
     public function getUrl(): ?string
     {
         $element = Craft::$app->getElements()->getElementById($this->elementId);
+
+        if (!$element) {
+            return null;
+        }
 
         return $element->getUrl();
     }

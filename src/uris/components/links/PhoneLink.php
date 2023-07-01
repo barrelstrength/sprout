@@ -7,27 +7,27 @@ use BarrelStrength\Sprout\uris\links\DataLinkTrait;
 use Craft;
 use craft\helpers\Cp;
 
-class EmailLink extends AbstractLink
+class PhoneLink extends AbstractLink
 {
-    public ?string $email = null;
+    public ?string $phone = null;
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-uris', 'Email');
+        return Craft::t('sprout-module-uris', 'Phone');
     }
 
     public function getInputHtml(): ?string
     {
         return Cp::textHtml([
-            'name' => static::class . '[email]',
+            'name' => static::class . '[phone]',
             'placeholder' => Craft::$app->getUser()->getIdentity()->email,
-            'value' => $this->email,
+            'value' => $this->phone,
             'errors' => '',
         ]);
     }
 
     public function getUrl(): ?string
     {
-        return 'mailto:'.$this->email;
+        return 'tel:'.$this->phone;
     }
 }

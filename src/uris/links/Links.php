@@ -5,11 +5,14 @@ namespace BarrelStrength\Sprout\uris\links;
 use BarrelStrength\Sprout\uris\components\links\CategoryElementLink;
 use BarrelStrength\Sprout\uris\components\links\EmailLink;
 use BarrelStrength\Sprout\uris\components\links\EntryElementLink;
-use BarrelStrength\Sprout\uris\components\links\HardCodedLink;
+use BarrelStrength\Sprout\uris\components\links\AbsoluteUrl;
+use BarrelStrength\Sprout\uris\components\links\PhoneLink;
+use BarrelStrength\Sprout\uris\components\links\RelativeUrl;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
 use craft\helpers\Json;
+use Craft;
 
 class Links extends Component
 {
@@ -18,8 +21,10 @@ class Links extends Component
     public function getLinkTypes(array $excludedLinks = []): array
     {
         $linkTypes = [
-            HardCodedLink::class,
+            AbsoluteUrl::class,
+            RelativeUrl::class,
             EmailLink::class,
+            PhoneLink::class,
             EntryElementLink::class,
             CategoryElementLink::class,
         ];
@@ -72,8 +77,10 @@ class Links extends Component
             return false;
         }
 
-        $linkType = new $value['type']();
-        $linkType->setAttributes($value, false);
+        $value['class'] = $value['type'];
+        unset($value['type']);
+
+        $linkType = Craft::createObject($value);
 
         return $linkType;
     }

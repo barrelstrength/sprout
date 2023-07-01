@@ -44,7 +44,7 @@
     <input type="hidden" aria-hidden="true" name="action" value="sprout-module-forms/submissions/save-submission">
     <input type="hidden" aria-hidden="true" name="handle" value="{{ form.handle }}">
     {%- if redirectUri %}
-        {% if redirectUri|slice(0, 1)|lower == '?' %}
+        {% if redirectUri|slice(0, 1) == '?' %}
             {# @todo - make sure this works with updates to RedirectURI #}
             {%- set redirectUri = craft.app.request.getUrl()~redirectUri %}
         {% endif %}
