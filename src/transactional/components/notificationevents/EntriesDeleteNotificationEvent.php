@@ -43,7 +43,7 @@ class EntriesDeleteNotificationEvent extends NotificationEvent
         return Entry::find()->one();
     }
 
-    public function isSendable(Event $event): bool
+    public function matchNotificationEvent(Event $event): bool
     {
         if (!$event instanceof ModelEvent) {
             return false;

@@ -144,7 +144,7 @@ class NotificationEvents extends Component
                 continue;
             }
 
-            if (!$notificationEvent->isSendable($event)) {
+            if (!$notificationEvent->matchNotificationEvent($event)) {
                 continue;
             }
 

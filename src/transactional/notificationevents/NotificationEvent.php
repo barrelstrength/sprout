@@ -114,7 +114,7 @@ abstract class NotificationEvent extends SavableComponent
      * Gives Notification Event a chance to check an event against
      * other settings to confirm if it can be sent
      */
-    public function isSendable(Event $event): bool
+    public function matchNotificationEvent(Event $event): bool
     {
         return true;
     }
