@@ -72,7 +72,7 @@
 
         <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
             <div style="flex-grow: 1;">
-                <h3 style="text-transform: uppercase;">{{ "Element Sitemaps"|t('sprout-module-sitemaps') }}
+                <h3 style="text-transform: uppercase;">{{ "Content Sitemaps"|t('sprout-module-sitemaps') }}
                     <span class="info">{{ "Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data."|t('sprout-module-sitemaps') }}</span>
                 </h3>
             </div>
@@ -134,7 +134,6 @@
                     {% endif %}
                     {% if sitemapMetadata.name is defined and className(elementWithUri) == sitemapMetadata.type %}
                         {% set elementName = elementWithUri.pluralLowerDisplayName() %}
-                        {% set sproutSeoHandle = elementName~':'~sitemapMetadata.handle %}
 
                         <tr
                             x-data="SitemapMetadataRow"
@@ -143,16 +142,15 @@
                             data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
                             data-site-id="{{ site.id }}"
                             data-type="{{ className(elementWithUri) }}"
-                            data-priority="{{ sitemapMetadata.priority ?? 0.5 }}"
-                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? 'monthly' }}"
+                            data-priority="{{ sitemapMetadata.priority ?? DEFAULT_PRIORITY }}"
+                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? DEFAULT_CHANGE_FREQUENCY }}"
                             data-enabled="{{ sitemapMetadata.enabled ?? '0' }}">
 
                             {% set hasUriTags = module.sitemaps.uriHasTags(sitemapMetadata.uri) %}
 
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata" with {
                                 sitemapMetadata: sitemapMetadata,
-                                sourceKey: sourceKey,
-                                sitemapType: sitemapMetadata.type,
+                                sourceKey: sitemapMetadata.sourceKey,
                                 hasUriTags: hasUriTags,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
@@ -191,24 +189,24 @@
 
     </div>
 
-    {% if settings.enableCustomQueries %}
+    {% if settings.enableContentQuerySitemaps %}
 
         <br>
         <div class="content-pane">
             <div class="sprout-section-header" style="display: flex;align-items: center;">
                 <div style="flex-grow: 1;">
-                    <h3 style="text-transform: uppercase;">{{ "Custom Query Sitemaps"|t('sprout-module-sitemaps') }}</h3>
+                    <h3 style="text-transform: uppercase;">{{ "Content Query Sitemaps"|t('sprout-module-sitemaps') }}</h3>
                 </div>
                 <div style="flex-shrink: 0;">
                     <div class="buttons right">
                         <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-query/new') }}">
-                            {{ "Custom Query"|t('sprout-module-sitemaps') }}
+                            {{ "Custom Sitemap"|t('sprout-module-sitemaps') }}
                         </a>
                     </div>
                 </div>
             </div>
 
-            {% if customQueries|length %}
+            {% if contentQueries|length %}
 
                 <table class="data fullwidth custom-pages sitemap-settings" id="custom-pages">
                     <thead>
@@ -227,26 +225,26 @@
                     </thead>
                     <tbody>
 
-                    {% for customQuery in customQueries %}
+                    {% for sitemapMetadata in contentQueries %}
 
                         <tr
                             x-data="SitemapMetadataRow"
                             x-ref="sitemapMetadataRow"
-                            data-description="{{ customQuery.description }}"
+                            data-description="{{ sitemapMetadata.description }}"
                             data-type="custom-query"
                             data-source-key="custom-query"
-                            data-sitemap-metadata-id="{{ customQuery.id ?? null }}"
+                            data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
                             data-site-id="{{ site.id }}"
-                            data-uri="{{ customQuery.description }}"
-                            data-priority="{{ customQuery.priority ?? 0.5 }}"
-                            data-change-frequency="{{ customQuery.changeFrequency ?? 'monthly' }}"
-                            data-enabled="{{ customQuery.enabled ?? '0' }}"
+                            data-uri="{{ sitemapMetadata.description }}"
+                            data-priority="{{ sitemapMetadata.priority ?? DEFAULT_PRIORITY }}"
+                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? DEFAULT_CHANGE_FREQUENCY }}"
+                            data-enabled="{{ sitemapMetadata.enabled ?? '0' }}"
 
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
 
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-query" with {
-                                sitemapType: customQuery.type,
-                                customSection: customQuery,
+                                sourceKey: sitemapMetadata.sourceKey,
+                                sitemapMetadata: sitemapMetadata,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
                             } only %}
@@ -275,7 +273,7 @@
         </div>
     {% endif %}
 
-    {% if settings.enableCustomSections %}
+    {% if settings.enableCustomPagesSitemap %}
 
         <br>
         <div class="content-pane">
@@ -292,7 +290,7 @@
                 </div>
             </div>
 
-            {% if customSections|length %}
+            {% if customPages|length %}
 
                 <table class="data fullwidth custom-pages sitemap-settings" id="custom-pages">
                     <thead>
@@ -311,25 +309,25 @@
                     </thead>
                     <tbody>
 
-                    {% for customSection in customSections %}
+                    {% for sitemapMetadata in customPages %}
 
                         <tr
                             x-data="SitemapMetadataRow"
                             x-ref="sitemapMetadataRow"
                             data-type="custom-page"
                             data-source-key="custom-page"
-                            data-sitemap-metadata-id="{{ customSection.id ?? null }}"
+                            data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
                             data-site-id="{{ site.id }}"
-                            data-uri="{{ customSection.uri }}"
-                            data-priority="{{ customSection.priority ?? 0.5 }}"
-                            data-change-frequency="{{ customSection.changeFrequency ?? 'monthly' }}"
-                            data-enabled="{{ customSection.enabled ?? '0' }}"
+                            data-uri="{{ sitemapMetadata.uri }}"
+                            data-priority="{{ sitemapMetadata.priority ?? DEFAULT_PRIORITY }}"
+                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? DEFAULT_CHANGE_FREQUENCY }}"
+                            data-enabled="{{ sitemapMetadata.enabled ?? '0' }}"
 
                             data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
 
                             {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-custom" with {
-                                sitemapType: customSection.type,
-                                customSection: customSection,
+                                sourceKey: sitemapMetadata.sourceKey,
+                                sitemapMetadata: sitemapMetadata,
                                 priorityList: priorityList,
                                 frequencyList: frequencyList,
                             } only %}

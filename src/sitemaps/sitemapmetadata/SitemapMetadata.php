@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMet
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
+use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\base\Element;
@@ -20,9 +21,6 @@ use yii\web\NotFoundHttpException;
 class SitemapMetadata extends Component
 {
     public const EVENT_REGISTER_ELEMENT_SITEMAP_METADATA = 'registerSproutElementSitemapMetadata';
-
-    public const CUSTOM_QUERY_SITEMAP_TYPE = 'custom-query';
-    public const CUSTOM_PAGE_SITEMAP_TYPE = 'custom-page';
 
     private array $_elementsWithUris = [];
 
@@ -136,57 +134,60 @@ class SitemapMetadata extends Component
      * Index results by Element Group ID: type-id
      * Example: entries-5, categories-12
      */
-    public function getSitemapMetadataByKey(Site $site): array
+    public function getContentSitemapMetadata(Site $site): array
     {
         $sourceDetails = $this->getSourceDetails($site);
 
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['[[siteId]]' => $site->id])
-            ->andWhere(['not', ['[[type]]' => self::CUSTOM_PAGE_SITEMAP_TYPE]])
+            ->andWhere(['not in', 'sourceKey', [
+                SitemapKey::SINGLES,
+                SitemapKey::CUSTOM_QUERY,
+                SitemapKey::CUSTOM_PAGES,
+            ]])
             ->indexBy('sourceKey')
             ->all();
 
         $sitemapMetadata = [];
 
-        foreach ($sourceDetails as $sourceKey => $sourceDetail) {
-
-            $record = $sitemapMetadataRecords[$sourceKey] ?? new SitemapMetadataRecord();
+        foreach ($sourceDetails as $sourceUid => $sourceDetail) {
+            $record = $sitemapMetadataRecords[$sourceUid] ?? new SitemapMetadataRecord();
 
             $record->type = $sourceDetail['type'] ?? null;
             $record->name = $sourceDetail['name'] ?? null;
             $record->uri = $sourceDetail['urlPattern'] ?? null;
 
-            $sitemapMetadata[$sourceKey] = $record;
+            $sitemapMetadata[$sourceUid] = $record;
         }
 
         return $sitemapMetadata;
     }
 
-    public function getSitemapCustomQueryMetadata($siteId): array
+    public function getContentQuerySitemapMetadata($siteId): array
     {
         return SitemapMetadataRecord::find()
             ->where([
-                '[[type]]' => self::CUSTOM_QUERY_SITEMAP_TYPE,
+                '[[sourceKey]]' => SitemapKey::CUSTOM_QUERY,
                 '[[siteId]]' => $siteId,
             ])
             ->all();
     }
 
-    public function getSitemapPagesMetadata($siteId): array
+    public function getCustomPagesSitemapMetadata($siteId): array
     {
         return SitemapMetadataRecord::find()
             ->where([
-                '[[type]]' => self::CUSTOM_PAGE_SITEMAP_TYPE,
                 '[[siteId]]' => $siteId,
+                '[[sourceKey]]' => SitemapKey::CUSTOM_PAGES,
             ])
             ->all();
     }
 
     public function saveSitemapMetadata(SitemapMetadataRecord $sitemapMetadata): bool
     {
-        if ($sitemapMetadata->type === self::CUSTOM_PAGE_SITEMAP_TYPE) {
-            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_SECTION);
-        } elseif ($sitemapMetadata->type === self::CUSTOM_QUERY_SITEMAP_TYPE) {
+        if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_PAGES) {
+            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_PAGES);
+        } elseif ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_QUERY) {
             $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_QUERY);
         } else {
             // No need to store URI for Element SitemapMetadata
@@ -198,7 +199,7 @@ class SitemapMetadata extends Component
         }
 
         // Custom Sections will be allowed to be unique, even in Multi-Lingual Sitemaps
-        if ($sitemapMetadata->type === self::CUSTOM_PAGE_SITEMAP_TYPE) {
+        if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_PAGES) {
             return true;
         }
 

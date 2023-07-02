@@ -4,12 +4,12 @@ namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\db\Query;
 use craft\elements\Entry;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use DateTime;
@@ -31,7 +31,7 @@ class XmlSitemap extends Component
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
 
-        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site);
+        $sitemapMetadataByKey = $sitemapsService->getContentSitemapMetadata($site);
 
         foreach ($elementsWithUris as $elementWithUri) {
 
@@ -75,13 +75,12 @@ class XmlSitemap extends Component
                             . '&siteId=' . $sitemapMetadata->siteId
                             . '&element=' . $elementWithUri::displayName()
                             . '&sourceKey=' . $sitemapMetadata->sourceKey
-                            . '&sitemapMetadataId=' . $sitemapMetadata->id
-                            . '&handle=' . $sitemapMetadata->handle;
+                            . '&sitemapMetadataId=' . $sitemapMetadata->id;
                     }
 
                     // Build Sitemap Index URLs
                     for ($i = 1; $i <= $totalSitemaps; $i++) {
-                        $sitemapIndexUrl = UrlHelper::siteUrl() . 'sitemap-' . $sitemapMetadata->sitemapKey . '-' . $i . '.xml' . $debugString;
+                        $sitemapIndexUrl = UrlHelper::siteUrl() . 'sitemap-' . $sitemapMetadata->uid . '-' . $i . '.xml' . $debugString;
 
                         $sitemapIndexPages[] = $sitemapIndexUrl;
                     }
@@ -89,7 +88,43 @@ class XmlSitemap extends Component
             }
         }
 
+        if ($customQuerySitemapMetadata = SitemapsMetadataHelper::getCustomQuerySitemapMetadata($site)) {
+            foreach ($customQuerySitemapMetadata as $customQuery) {
+
+                $currentConditionRules = Json::decodeIfJson($customQuery['settings']);
+                $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
+                $currentCondition->elementType = Entry::class;
+
+                $query = $currentCondition->elementType::find();
+                $currentCondition->modifyQuery($query);
+
+                $totalElements = $query->count();
+
+                $totalSitemaps = ceil($totalElements / $totalElementsPerSitemap);
+
+                $devMode = Craft::$app->config->getGeneral()->devMode;
+                $debugString = '';
+
+                if ($devMode) {
+                    $debugString =
+                        '?devMode=true'
+                        . '&siteId=' . $customQuery->siteId
+                        . '&element=' . $customQuery->type
+                        . '&sourceKey=' . $customQuery->sourceKey
+                        . '&sitemapMetadataId=' . $customQuery->id;
+                }
+
+                // Build Sitemap Index URLs
+                for ($i = 1; $i <= $totalSitemaps; $i++) {
+                    $sitemapIndexUrl = UrlHelper::siteUrl() . 'sitemap-' . $customQuery->uid . '-' . $i . '.xml' . $debugString;
+
+                    $sitemapIndexPages[] = $sitemapIndexUrl;
+                }
+            }
+        }
+
         if (SitemapsMetadataHelper::hasCustomPages($site)) {
+
             $sitemapIndexPages[] = UrlHelper::siteUrl('sitemap-custom-pages.xml');
         }
 
@@ -99,19 +134,23 @@ class XmlSitemap extends Component
     /**
      * Prepares urls for a dynamic sitemap
      */
-    public function getDynamicSitemapElements($sitemapKey, $pageNumber, Site $site): array
+    public function getDynamicSitemapElements($sitemapMetadataUid, $sitemapKey, $pageNumber, Site $site): array
     {
         $urls = [];
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
         $totalElementsPerSitemap = $this->getTotalElementsPerSitemap();
 
-        $currentSitemapSites = $this->getCurrentSitemapSites();
+        $sitemapSites = $this->getSitemapSites();
 
         // Our offset should be zero for the first page
         $offset = ($totalElementsPerSitemap * $pageNumber) - $totalElementsPerSitemap;
 
-        $enabledSitemapSections = $this->getEnabledSitemapSections($sitemapKey, $site);
+        if ($sitemapKey === SitemapKey::SINGLES) {
+            $enabledSitemapSections = SitemapsMetadataHelper::getSinglesSitemapMetadata($site);
+        } else {
+            $enabledSitemapSections = SitemapsMetadataHelper::getSitemapMetadataByUid($sitemapMetadataUid, $site);
+        }
 
         foreach ($enabledSitemapSections as $sitemapMetadata) {
 
@@ -121,13 +160,25 @@ class XmlSitemap extends Component
 
             $elementWithUri = $sitemapsService->getElementWithUriByType($sitemapMetadata->type);
 
-            foreach ($currentSitemapSites as $currentSitemapSite) {
+            foreach ($sitemapSites as $currentSitemapSite) {
 
                 if (!$elementWithUri) {
                     continue;
                 }
 
-                $elementQuery = $sitemapMetadata->getElementQuery();
+                if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_QUERY) {
+
+                    $conditionRules = Json::decodeIfJson($sitemapMetadata['settings']);
+                    $condition = Craft::$app->conditions->createCondition($conditionRules);
+                    // @todo - Save as 'type' in DB. $sitemapMetadata['type']
+                    $condition->elementType = $sitemapMetadata->type;
+
+                    $elementQuery = $condition->elementType::find();
+                    $condition->modifyQuery($elementQuery);
+                } else {
+                    $elementQuery = $sitemapMetadata->getElementQuery();
+                }
+
                 $elements = $elementQuery
                     ->offset($offset)
                     ->limit($totalElementsPerSitemap)
@@ -169,42 +220,19 @@ class XmlSitemap extends Component
     }
 
     /**
-     * Returns all sites to process for the current sitemap request
-     */
-    public function getCurrentSitemapSites(): array
-    {
-        $pluginSettings = SitemapsModule::getInstance()->getSettings();
-
-        $currentSite = Craft::$app->sites->getCurrentSite();
-        $isMultisite = Craft::$app->getIsMultiSite();
-
-        // For multi-lingual sitemaps, get all sites in the Current Site group
-        if ($isMultisite && in_array($currentSite->groupId, $pluginSettings->groupSettings, false)) {
-            return Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
-        }
-
-        // For non-multi-lingual sitemaps, get the current site
-        if (!$isMultisite && in_array($currentSite->id, array_filter($pluginSettings->siteSettings), false)) {
-            return [$currentSite];
-        }
-
-        return [];
-    }
-
-    /**
      * Returns all Custom Section URLs
      */
-    public function getCustomSectionUrls(Site $site): array
+    public function getCustomPagesUrls(Site $site): array
     {
         $urls = [];
 
-        // Fetch all Custom Sitemap defined in Sprout SEO
+        // Fetch all Custom Pages
         $sitemapMetadata = (new Query())
             ->select('uri, priority, [[changeFrequency]], [[dateUpdated]]')
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
             ->andWhere(['[[siteId]]' => $site->id])
-            ->andWhere(['[[type]]' => SitemapMetadata::NO_ELEMENT_TYPE])
+            ->andWhere(['[[sourceKey]]' => SitemapKey::CUSTOM_PAGES])
             ->all();
 
         foreach ($sitemapMetadata as $sitemapMetadataGroup) {
@@ -226,7 +254,7 @@ class XmlSitemap extends Component
     /**
      * Process Custom Pages Sitemaps for Multi-Lingual Sitemaps that can have custom pages from multiple sections
      */
-    public function getCustomSectionUrlsForMultipleIds($siteIds, $sitesInGroup): array
+    public function getCustomPagesUrlsForMultipleIds($siteIds, $sitesInGroup): array
     {
         $urls = [];
 
@@ -235,7 +263,7 @@ class XmlSitemap extends Component
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
             ->andWhere(['[[siteId]]' => $siteIds])
-            ->andWhere(['type' => SitemapMetadata::NO_ELEMENT_TYPE])
+            ->andWhere(['[[sourceKey]]' => SitemapKey::CUSTOM_PAGES])
             ->indexBy('[[siteId]]')
             ->all();
 
@@ -262,30 +290,36 @@ class XmlSitemap extends Component
     }
 
     /**
+     * Returns all sites to process for the current sitemap request
+     */
+    public function getSitemapSites(): array
+    {
+        $pluginSettings = SitemapsModule::getInstance()->getSettings();
+
+        $currentSite = Craft::$app->sites->getCurrentSite();
+        $isMultisite = Craft::$app->getIsMultiSite();
+
+        // For multi-lingual sitemaps, get all sites in the Current Site group
+        if ($isMultisite && in_array($currentSite->groupId, $pluginSettings->groupSettings, false)) {
+            return Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
+        }
+
+        // For non-multi-lingual sitemaps, get the current site
+        if (!$isMultisite && in_array($currentSite->id, array_filter($pluginSettings->siteSettings), false)) {
+            return [$currentSite];
+        }
+
+        return [];
+    }
+
+    /**
      * Returns the value for the totalElementsPerSitemap setting. Default is 500.
      */
-    public function getTotalElementsPerSitemap(int $total = 500): int
+    protected function getTotalElementsPerSitemap(int $total = 500): int
     {
         $settings = SitemapsModule::getInstance()->getSettings();
 
         return $settings->totalElementsPerSitemap ?? $total;
-    }
-
-    protected function getEnabledSitemapSections($sitemapKey, Site $site): array
-    {
-        $query = SitemapMetadataRecord::find()
-            ->where(['enabled' => true])
-            ->andWhere(['siteId' => $site->id])
-            ->andWhere(['not', ['type' => SitemapMetadata::NO_ELEMENT_TYPE]]);
-
-        // @todo - review this logic
-        if ($sitemapKey == SitemapKey::SINGLES) {
-            $query->andWhere(['type' => Entry::class]);
-        } else {
-            $query->andWhere(['sitemapKey' => $sitemapKey]);
-        }
-
-        return $query->all();
     }
 
     /**

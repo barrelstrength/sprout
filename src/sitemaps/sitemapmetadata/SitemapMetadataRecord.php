@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
 use craft\base\Element;
 use craft\db\ActiveRecord;
-use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
@@ -28,18 +27,17 @@ use craft\models\Site;
 class SitemapMetadataRecord extends ActiveRecord
 {
     public const SCENARIO_CUSTOM_QUERY = 'customQuery';
-    public const SCENARIO_CUSTOM_SECTION = 'customSection';
+    public const SCENARIO_CUSTOM_PAGES = 'customPages';
 
     /** Attribute assigned from URL-Enabled Section integration */
     public string $name = '';
-
-    public string $handle = '';
 
     public function getElementQuery(): ElementQuery
     {
         /** @var Element|string $elementType */
         $elementType = $this->type;
 
+        /** @var ElementQuery $query */
         $query = $elementType::find()
             ->siteId($this->siteId);
 
@@ -64,39 +62,12 @@ class SitemapMetadataRecord extends ActiveRecord
     {
         $rules = parent::rules();
 
-        $rules [] = [['uri'], 'sectionUri', 'on' => self::SCENARIO_CUSTOM_SECTION];
-        $rules [] = [['uri'], 'required', 'on' => self::SCENARIO_CUSTOM_SECTION, 'message' => 'URI cannot be blank.'];
+        $rules [] = [['uri'], 'sectionUri', 'on' => self::SCENARIO_CUSTOM_PAGES];
+        $rules [] = [['uri'], 'required', 'on' => self::SCENARIO_CUSTOM_PAGES, 'message' => 'URI cannot be blank.'];
         $rules [] = [['description'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Description is required.'];
         $rules [] = [['settings'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Must define at least one query condition.'];
 
         return $rules;
-    }
-
-    public function beforeSave($insert): bool
-    {
-        if (!$this->sitemapKey) {
-            $this->sitemapKey = $this->generateUniqueKey();
-        }
-
-        return parent::beforeSave($insert);
-    }
-
-    public function generateUniqueKey(): string
-    {
-        $sitemapKey = Craft::$app->getSecurity()->generateRandomString(12);
-
-        $result = (new Query())
-            ->select('[[sitemapKey]]')
-            ->from([SproutTable::SITEMAPS_METADATA])
-            ->where(['[[sitemapKey]]' => $sitemapKey])
-            ->scalar();
-
-        if ($result) {
-            // Try again until we have a unique key
-            $sitemapKey = $this->generateUniqueKey();
-        }
-
-        return $sitemapKey;
     }
 
     public function getSite(): ?Site

@@ -4,8 +4,9 @@ namespace BarrelStrength\Sprout\sitemaps\components\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementSitemapMetadataInterface;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use Craft;
+use craft\db\Query;
+use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
 use craft\models\Site;
@@ -21,8 +22,7 @@ class EntrySitemapMetadata implements ElementSitemapMetadataInterface
 
             foreach ($siteSettings as $siteSetting) {
                 if ($site->id == $siteSetting->siteId && $siteSetting->hasUrls) {
-                    $sourceKey = Entry::pluralLowerDisplayName() . '-' . $section->id;
-                    $sourceDetails[$sourceKey] = [
+                    $sourceDetails[$section->uid] = [
                         'type' => Entry::class,
                         'name' => $section->name,
                         'urlPattern' => $siteSetting->uriFormat,
@@ -36,7 +36,11 @@ class EntrySitemapMetadata implements ElementSitemapMetadataInterface
 
     public function getElementQuery(ElementQuery $query, SitemapMetadataRecord $sitemapMetadata): ElementQuery
     {
-        $sectionId = SitemapsMetadataHelper::findElementGroupId($sitemapMetadata->sourceKey);
+        $sectionId = (new Query())
+            ->select('id')
+            ->from(Table::SECTIONS)
+            ->where(['uid' => $sitemapMetadata->sourceKey])
+            ->scalar();
 
         return $query->sectionId($sectionId);
     }

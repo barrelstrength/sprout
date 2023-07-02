@@ -7,12 +7,12 @@
     {% endif %}
 
     {% if isQuery is defined and isQuery %}
-        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapType ~ '/' ~ sitemapMetadata.id) }}"
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sourceKey ~ '/' ~ sitemapMetadata.id) }}"
             class="sprout-sectiontitle">
             <code>{{ sitemapMetadata.description }}</code>
         </a>
     {% elseif isCustom is defined and isCustom %}
-        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sitemapType ~ '/' ~ sitemapMetadata.id) }}"
+        <a href="{{ cpUrl('sprout/sitemaps/edit/' ~ sourceKey ~ '/' ~ sitemapMetadata.id) }}"
             class="sprout-sectiontitle">
             <code>{{ sitemapMetadata.uri }}</code>
         </a>

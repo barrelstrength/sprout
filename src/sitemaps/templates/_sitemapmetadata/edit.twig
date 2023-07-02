@@ -80,11 +80,10 @@
     {{ actionInput('sprout-module-sitemaps/sitemap-metadata/save-sitemap-metadata') }}
     {{ redirectInput(cpUrl('sprout/sitemaps')) }}
     {{ hiddenInput('sitemapMetadataId', sitemapMetadata.id ?? '') }}
-    {{ hiddenInput('sourceKey', sitemapType) }}
-    {{ hiddenInput('type', sitemapType) }}
+    {{ hiddenInput('sourceKey', sourceKey) }}
     {{ hiddenInput('siteId', sitemapMetadata.siteId ?? null) }}
 
-    {% include 'sprout-module-sitemaps/_sitemapmetadata/edit_' ~ sitemapType|snake %}
+    {% include 'sprout-module-sitemaps/_sitemapmetadata/edit_' ~ sourceKey|snake %}
 
     {{ forms.selectField({
         label: "Priority"|t,

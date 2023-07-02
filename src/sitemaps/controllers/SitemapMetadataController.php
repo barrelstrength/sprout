@@ -4,13 +4,14 @@ namespace BarrelStrength\Sprout\sitemaps\controllers;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
+use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\base\Element;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Json;
-use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
@@ -87,9 +88,15 @@ class SitemapMetadataController extends Controller
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
-        $sitemapMetadataByKey = $sitemapsService->getSitemapMetadataByKey($site);
-        $customQueries = $sitemapsService->getSitemapCustomQueryMetadata($site->id);
-        $customSections = $sitemapsService->getSitemapPagesMetadata($site->id);
+        $sitemapMetadataByKey = $sitemapsService->getContentSitemapMetadata($site);
+        $contentQueries = $sitemapsService->getContentQuerySitemapMetadata($site->id);
+        $customPages = $sitemapsService->getCustomPagesSitemapMetadata($site->id);
+
+        $elementsToDisplayForSitemaps = array_column($sitemapMetadataByKey, 'type');
+        $elementsWithUris = array_filter($elementsWithUris,
+            static function($element) use ($elementsToDisplayForSitemaps) {
+                return in_array($element::class, $elementsToDisplayForSitemaps, true);
+            });
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/index.twig', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
@@ -98,16 +105,18 @@ class SitemapMetadataController extends Controller
             'editableSiteIds' => $editableSiteIds,
             'elementsWithUris' => $elementsWithUris,
             'sitemapMetadataByKey' => $sitemapMetadataByKey,
-            'customQueries' => $customQueries,
-            'customSections' => $customSections,
+            'contentQueries' => $contentQueries,
+            'customPages' => $customPages,
             'settings' => $settings,
+            'DEFAULT_PRIORITY' => SitemapsSettings::DEFAULT_PRIORITY,
+            'DEFAULT_CHANGE_FREQUENCY' => SitemapsSettings::DEFAULT_CHANGE_FREQUENCY,
         ]);
     }
 
     /**
      * Renders a Sitemap Edit Page
      */
-    public function actionSitemapMetadataCustomQueryEditTemplate(string $sitemapType, int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
+    public function actionSitemapMetadataCustomQueryEditTemplate(string $sourceKey, int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -130,21 +139,12 @@ class SitemapMetadataController extends Controller
             } else {
                 $sitemapMetadataRecord = new SitemapMetadataRecord();
                 $sitemapMetadataRecord->siteId = $site->id;
-                $sitemapMetadataRecord->type = SitemapMetadata::CUSTOM_PAGE_SITEMAP_TYPE;
             }
         }
 
-        $continueEditingUrl = UrlHelper::cpUrl('sprout/sitemaps/edit/'.$sitemapType.'/{id}');
+        $continueEditingUrl = UrlHelper::cpUrl('sprout/sitemaps/edit/' . $sourceKey . '/{id}');
 
-        $tabs = [
-            [
-                'label' => 'Custom Page',
-                'url' => '#tab1',
-                'class' => null,
-            ],
-        ];
-
-        if ($sitemapType === SitemapMetadata::CUSTOM_QUERY_SITEMAP_TYPE) {
+        if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
 
             if ($sitemapMetadataRecord->settings) {
                 $currentConditionRules = Json::decodeIfJson($sitemapMetadataRecord->settings);
@@ -153,11 +153,9 @@ class SitemapMetadataController extends Controller
                 $currentCondition = null;
             }
 
-
             $sitemapsService = SitemapsModule::getInstance()->sitemaps;
             $elementsWithUris = $sitemapsService->getElementWithUris();
 
-            $elementOptions = [];
             $settingsHtml = '';
 
             /** @var  Element $element */
@@ -176,8 +174,8 @@ class SitemapMetadataController extends Controller
 
                 $condition->sortable = true;
                 $condition->mainTag = 'div';
-                $condition->name = $element::lowerDisplayName().'-conditionRules';
-                $condition->id = $element::lowerDisplayName().'-conditionRules';
+                $condition->name = $element::lowerDisplayName() . '-conditionRules';
+                $condition->id = $element::lowerDisplayName() . '-conditionRules';
 
                 $settingsHtml .= Html::tag('div', $condition->getBuilderHtml(), [
                     'id' => 'element-type-' . Html::id($element::class),
@@ -195,9 +193,7 @@ class SitemapMetadataController extends Controller
             'site' => $site,
             'sitemapMetadata' => $sitemapMetadataRecord,
             'continueEditingUrl' => $continueEditingUrl,
-            'tabs' => $tabs,
-            'sitemapType' => $sitemapType,
-
+            'sourceKey' => $sourceKey,
             'elementOptions' => $elementOptions ?? [],
             'conditionBuilderSettingsHtml' => $conditionBuilderSettingsHtml ?? '',
             'currentCondition' => $currentCondition ?? null,
@@ -220,20 +216,19 @@ class SitemapMetadataController extends Controller
         $request = Craft::$app->getRequest();
 
         $type = $request->getBodyParam('type');
+        $sourceKey = $request->getBodyParam('sourceKey');
 
         $sitemapMetadataRecord->siteId = $request->getBodyParam('siteId');
-        $sitemapMetadataRecord->sourceKey = $request->getBodyParam('sourceKey');
-        $sitemapMetadataRecord->uri = $request->getBodyParam('uri', $sitemapMetadataRecord->uri);
+        $sitemapMetadataRecord->sourceKey = $sourceKey;
         $sitemapMetadataRecord->type = $type;
+        $sitemapMetadataRecord->uri = $request->getBodyParam('uri', $sitemapMetadataRecord->uri);
         $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
         $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
         $sitemapMetadataRecord->description = $request->getBodyParam('description', $sitemapMetadataRecord->description);
         $sitemapMetadataRecord->enabled = (bool)$request->getBodyParam('enabled');
 
-        $elementType = $request->getBodyParam('elementType');
-
-        if ($elementType && $type === SitemapMetadata::CUSTOM_QUERY_SITEMAP_TYPE) {
-            $conditionBuilderParam = $elementType::lowerDisplayName().'-conditionRules';
+        if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
+            $conditionBuilderParam = $type::lowerDisplayName() . '-conditionRules';
             $condition = $request->getBodyParam($conditionBuilderParam);
             $sitemapMetadataRecord->settings = $condition;
         }

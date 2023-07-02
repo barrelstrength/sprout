@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
@@ -196,9 +197,9 @@ class SitemapsModule extends Module
     protected function getCpUrlRules(): array
     {
         return [
-            'sprout/sitemaps/edit/<sitemapType:custom-query|custom-page>/<sitemapMetadataId:\d+>' =>
+            'sprout/sitemaps/edit/<sourceKey:custom-query|custom-page>/<sitemapMetadataId:\d+>' =>
                 'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-custom-query-edit-template',
-            'sprout/sitemaps/<sitemapType:custom-query|custom-page>/new' =>
+            'sprout/sitemaps/<sourceKey:custom-query|custom-page>/new' =>
                 'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-custom-query-edit-template',
             'sprout/sitemaps' =>
                 'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-index-template',
@@ -232,9 +233,9 @@ class SitemapsModule extends Module
      * Sitemap Index Page
      * - sitemap.xml
      *
-     * Element Groups
-     * - sitemap-t6PLT5o43IFG-1.xml
-     * - sitemap-t6PLT5o43IFG-2.xml
+     * Content Sitemaps and Custom Queries
+     * - sitemap-[uid]-1.xml
+     * - sitemap-[uid]-2.xml
      *
      * Special Groupings
      * - sitemap-singles.xml
@@ -247,9 +248,11 @@ class SitemapsModule extends Module
         }
 
         return [
-            'sitemap-<sitemapKey:.*>-<pageNumber:\d+>.xml' =>
+            'sitemap-<sitemapMetadataUid:' . SitemapsMetadataHelper::UUID_PATTERN . '>-<pageNumber:\d+>.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
-            'sitemap-?<sitemapKey:.*>.xml' =>
+            'sitemap-<sitemapMetadataUid:singles|custom-pages>.xml' =>
+                'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
+            'sitemap.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
         ];
     }

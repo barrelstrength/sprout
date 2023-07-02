@@ -4,9 +4,10 @@ namespace BarrelStrength\Sprout\sitemaps\components\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementSitemapMetadataInterface;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
+use craft\commerce\db\Table;
 use craft\commerce\elements\Product;
 use craft\commerce\Plugin as CraftCommerce;
+use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\models\Site;
 
@@ -21,8 +22,7 @@ class ProductSitemapMetadata implements ElementSitemapMetadataInterface
 
             foreach ($siteSettings as $siteSetting) {
                 if ($site->id == $siteSetting->siteId && $siteSetting->hasUrls) {
-                    $sourceKey = Product::pluralLowerDisplayName() . '-' . $productType->id;
-                    $sourceDetails[$sourceKey] = [
+                    $sourceDetails[$productType->uid] = [
                         'type' => Product::class,
                         'name' => $productType->name,
                         'urlPattern' => $siteSetting->uriFormat,
@@ -36,7 +36,11 @@ class ProductSitemapMetadata implements ElementSitemapMetadataInterface
 
     public function getElementQuery(ElementQuery $query, SitemapMetadataRecord $sitemapMetadata): ElementQuery
     {
-        $productTypeId = SitemapsMetadataHelper::findElementGroupId($sitemapMetadata->sourceKey);
+        $productTypeId = (new Query())
+            ->select('id')
+            ->from(Table::PRODUCTTYPES)
+            ->where(['uid' => $sitemapMetadata->sourceKey])
+            ->scalar();
 
         return $query->typeId($productTypeId);
     }

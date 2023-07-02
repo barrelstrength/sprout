@@ -16,7 +16,6 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
         $oldCols = [
             'id',
             'siteId',
-            'uniqueKey',
             'urlEnabledSectionId',
             'enabled',
             'type',
@@ -31,7 +30,6 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
         $newCols = [
             'id',
             'siteId',
-            'sitemapKey',
             'enabled',
             'type',
             'uri',

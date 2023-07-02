@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
@@ -20,7 +22,7 @@ class XmlSitemapController extends Controller
     /**
      * Generates an XML sitemapindex or sitemap
      */
-    public function actionRenderXmlSitemap($sitemapKey = null, int $pageNumber = null): Response
+    public function actionRenderXmlSitemap($sitemapMetadataUid = null, int $pageNumber = null): Response
     {
         $site = Craft::$app->sites->getCurrentSite();
         $multiSiteSiteIds = [];
@@ -33,7 +35,7 @@ class XmlSitemapController extends Controller
         }
 
         if (Craft::$app->getIsMultiSite()) {
-            $sitesInGroup = $xmlSitemapService->getCurrentSitemapSites();
+            $sitesInGroup = $xmlSitemapService->getSitemapSites();
             $firstSiteInGroup = $sitesInGroup[0] ?? null;
 
             // Only render sitemaps for the primary site in a group
@@ -49,6 +51,19 @@ class XmlSitemapController extends Controller
         $sitemapIndexUrls = [];
         $elements = [];
 
+        $uuidPattern = SitemapsMetadataHelper::UUID_PATTERN;
+
+        if (preg_match("/^$uuidPattern$/", $sitemapMetadataUid)) {
+            $sitemapKey = SitemapMetadataRecord::find()
+                ->select(['sourceKey'])
+                ->where(['enabled' => true])
+                ->andWhere(['siteId' => $site->id])
+                ->andWhere(['uid' => $sitemapMetadataUid])
+                ->scalar();
+        } else {
+            $sitemapKey = $sitemapMetadataUid;
+        }
+
         switch ($sitemapKey) {
             // Generate Sitemap Index
             case SitemapKey::INDEX:
@@ -58,21 +73,32 @@ class XmlSitemapController extends Controller
             // Prepare Singles Sitemap
             case SitemapKey::SINGLES:
                 $elements = $xmlSitemapService->getDynamicSitemapElements(
-                    'singles',
+                    $sitemapMetadataUid,
+                    $sitemapKey,
                     $pageNumber,
                     $site
                 );
                 break;
 
+            case SitemapKey::CUSTOM_QUERY:
+                $elements = $xmlSitemapService->getDynamicSitemapElements(
+                    $sitemapMetadataUid,
+                    $sitemapKey,
+                    $pageNumber,
+                    $site,
+                );
+
+                break;
+
             // Prepare Custom Pages Sitemap
             case SitemapKey::CUSTOM_PAGES:
                 if ($multiSiteSiteIds !== []) {
-                    $elements = $xmlSitemapService->getCustomSectionUrlsForMultipleIds(
+                    $elements = $xmlSitemapService->getCustomPagesUrlsForMultipleIds(
                         $multiSiteSiteIds,
                         $sitesInGroup
                     );
                 } else {
-                    $elements = $xmlSitemapService->getCustomSectionUrls($site);
+                    $elements = $xmlSitemapService->getCustomPagesUrls($site);
                 }
 
                 break;
@@ -80,9 +106,10 @@ class XmlSitemapController extends Controller
             // Prepare Element Group Sitemap
             default:
                 $elements = $xmlSitemapService->getDynamicSitemapElements(
+                    $sitemapMetadataUid,
                     $sitemapKey,
                     $pageNumber,
-                    $site
+                    $site,
                 );
         }
 
