@@ -13,6 +13,11 @@ class ManualNotificationEvent extends NotificationEvent
         return Craft::t('sprout-module-transactional', 'None');
     }
 
+    public function getDescription(): string
+    {
+        return Craft::t('sprout-module-transactional', 'The manual event is never triggered.');
+    }
+
     public static function getEventClassName(): ?string
     {
         return NotificationEvents::class;
@@ -21,10 +26,5 @@ class ManualNotificationEvent extends NotificationEvent
     public static function getEventName(): ?string
     {
         return NotificationEvents::EVENT_MANUAL_NOTIFICATION_NON_EVENT;
-    }
-
-    public function getDescription(): string
-    {
-        return Craft::t('sprout-module-transactional', 'The manual event is never triggered.');
     }
 }

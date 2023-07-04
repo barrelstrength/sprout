@@ -33,15 +33,19 @@ trait ElementEventTrait
         ]);
     }
 
+    /**
+     * Returns true if the Email Element's Notification Event matches a given Event
+     */
     public function matchNotificationEvent(Event $event): bool
     {
-        if (!$event instanceof ModelEvent) {
-            return false;
-        }
+        return $this->matchElement($event->sender);
+    }
 
-        /** @var ElementInterface $element */
-        $element = $event->sender;
-
+    /**
+     * Utility method that builds a condition and checks if an element matches it
+     */
+    protected function matchElement(ElementInterface $element): bool
+    {
         if (!$this->conditionRules) {
             return false;
         }

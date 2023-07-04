@@ -2,26 +2,25 @@
 
 namespace BarrelStrength\Sprout\transactional\components\notificationevents;
 
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
+use craft\base\ElementInterface;
+use craft\elements\conditions\users\UserCondition;
+use craft\elements\User as UserElement;
 use craft\records\User as UserRecord;
-use craft\web\User;
+use craft\web\User as UserComponent;
+use yii\base\Event;
+use yii\web\UserEvent;
 
-class UsersLoginNotificationEvent extends NotificationEvent
+class UsersLoginNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
+    use ElementEventTrait;
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-transactional', 'When a user is logged in.');
-    }
-
-    public static function getEventClassName(): ?string
-    {
-        return User::class;
-    }
-
-    public static function getEventName(): ?string
-    {
-        return User::EVENT_AFTER_LOGIN;
     }
 
     public function getDescription(): string
@@ -29,13 +28,46 @@ class UsersLoginNotificationEvent extends NotificationEvent
         return Craft::t('sprout-module-transactional', 'Triggered when a user is logged in.');
     }
 
+    public static function conditionType(): string
+    {
+        return UserCondition::class;
+    }
+
+    public static function elementType(): string
+    {
+        return UserElement::class;
+    }
+
+    public static function getEventClassName(): ?string
+    {
+        return UserComponent::class;
+    }
+
+    public static function getEventName(): ?string
+    {
+        return UserComponent::EVENT_AFTER_LOGIN;
+    }
+
     public function getEventObject()
     {
-        return $this->event->user;
+        return $this->event->identity;
     }
 
     public function getMockEventObject()
     {
         return UserRecord::find()->one();
+    }
+
+    /**
+     * Overrides default because the UserEvent is not an ElementEvent
+     * but includes the UserElement where we apply our condition rules
+     */
+    public function matchNotificationEvent(Event $event): bool
+    {
+        if (!$event instanceof UserEvent) {
+            return false;
+        }
+
+        return $this->matchElement($event->identity);
     }
 }
