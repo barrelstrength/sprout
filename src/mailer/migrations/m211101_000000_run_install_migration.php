@@ -81,7 +81,7 @@ class m211101_000000_run_install_migration extends Migration
                 'fromEmail' => $this->string(),
                 'replyToEmail' => $this->string(),
                 'recipients' => $this->string(),
-                'emailThemeUid' => $this->integer(),
+                'emailThemeUid' => $this->uid(),
                 'mailerId' => $this->integer(),
                 'mailerInstructionsSettings' => $this->text(),
                 'emailTypeSettings' => $this->text(),

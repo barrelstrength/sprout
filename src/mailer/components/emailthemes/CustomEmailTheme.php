@@ -21,13 +21,6 @@ class CustomEmailTheme extends EmailTheme
     {
         return true;
     }
-
-    public function getIncludePath(): string
-    {
-        //$settings = MailerModule::getInstance()->getSettings();
-
-        return Craft::getAlias('@Sprout/TemplateRoot/email/default');
-    }
 }
 
 

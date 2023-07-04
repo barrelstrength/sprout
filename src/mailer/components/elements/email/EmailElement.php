@@ -582,7 +582,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             'templates/render', [
-                'template' => $this->getEmailTheme()->htmlEmailTemplate,
+                'template' => $this->getEmailTheme()->getHtmlEmailTemplate(),
                 'variables' => [
                     'email' => $this,
                 ],

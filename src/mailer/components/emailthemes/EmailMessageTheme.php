@@ -26,12 +26,7 @@ class EmailMessageTheme extends EmailTheme
 
     public function name(): ?string
     {
-        return self::displayName();
-    }
-
-    public function getIncludePath(): string
-    {
-        return Craft::getAlias('@Sprout/TemplateRoot/email/default');
+        return $this->name ?? self::displayName();
     }
 
     public function getFieldLayout(): FieldLayout

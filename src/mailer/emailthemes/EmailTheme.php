@@ -109,13 +109,30 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         $this->_textBody = $text;
     }
 
-    public function getTextEmailTemplate(): ?string
+    public function getHtmlEmailTemplate(): ?string
     {
-        if (!Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate)) {
+        if (!$template = Craft::getAlias($this->htmlEmailTemplate)) {
             return null;
         }
 
-        return $this->textEmailTemplate;
+        if (!Craft::$app->getView()->doesTemplateExist($template)) {
+            return null;
+        }
+
+        return $template;
+    }
+
+    public function getTextEmailTemplate(): ?string
+    {
+        if (!$template = Craft::getAlias($this->textEmailTemplate)) {
+            return null;
+        }
+
+        if (!Craft::$app->getView()->doesTemplateExist($template)) {
+            return null;
+        }
+
+        return $template;
     }
 
     public function hasAtLeastOneField(): void
@@ -159,14 +176,14 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         // Craft::dd($this->email->getEmailTypeSettings()->getObjectVariable());
         // @todo - add dynamic support for objects
         $htmlBody = Craft::$app->getView()->renderTemplate(
-            $this->getIncludePath(),
+            $this->getHtmlEmailTemplate(),
             $this->getTemplateVariables()
         );
 
         // Converts html body to text email if no .txt
-        if (Craft::$app->getView()->doesTemplateExist($this->textEmailTemplate)) {
+        if ($this->getTextEmailTemplate() && Craft::$app->getView()->doesTemplateExist($this->getTextEmailTemplate())) {
             $textBody = Craft::$app->getView()->renderTemplate(
-                $this->textEmailTemplate,
+                $this->getTextEmailTemplate(),
                 $this->getTemplateVariables()
             );
         } else {
