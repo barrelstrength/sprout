@@ -15,7 +15,7 @@ class IsUpdatedEntryConditionRule extends BaseLightswitchConditionRule implement
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Is New Entry');
+        return Craft::t('sprout-module-transactional', 'Is Updated Entry');
     }
 
     public function getExclusiveQueryParams(): array

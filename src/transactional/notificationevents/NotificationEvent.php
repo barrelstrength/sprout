@@ -84,6 +84,15 @@ abstract class NotificationEvent extends SavableComponent
     }
 
     /**
+     * A tip that displays below the event when selected to help users
+     * understand what the event does and how to use it in email templates.
+     */
+    public function getTipHtml(): ?string
+    {
+        return '';
+    }
+
+    /**
      * Returns the object that represents the event. The object returned will be passed to renderObjectTemplate
      * and be available to output in the Notification Email templates via Craft Object Syntax:
      *

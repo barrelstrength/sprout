@@ -22,9 +22,18 @@
                     {{ event.getSettingsHtml()|raw }}
                 {% endif %}
             {% endnamespace %}
+
+            {% set eventTipHtml = event.getTipHtml() %}
+
+            {% if currentUser.admin and eventTipHtml %}
+                <div class="readable">
+                    <blockquote class="note tip">
+                        {{ eventTipHtml|raw }}
+                    </blockquote>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 {% endfor %}
 
 {% do sprout.modules.core.vite.register('transactional/NotificationEvents.js', false) %}
-

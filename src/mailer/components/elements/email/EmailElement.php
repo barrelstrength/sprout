@@ -462,7 +462,6 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function afterSave(bool $isNew): void
     {
-
         if (!$isNew) {
             $emailElementRecord = EmailElementRecord::findOne($this->id);
 

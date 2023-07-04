@@ -4,20 +4,30 @@ namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\core\modules\SettingsRecord;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\FieldChangedConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\IsNewEntryConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
-use BarrelStrength\Sprout\transactional\components\notificationevents\EntriesDeleteNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\EntriesSaveNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\UsersActivateNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\UsersDeleteNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\UsersLoginNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\UsersSaveNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\UserActivatedNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\UserDeletedNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\UserLoggedInNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
+use craft\elements\Entry;
+use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterConditionRuleTypesEvent;
 use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use yii\base\Event;
@@ -39,15 +49,17 @@ class NotificationEvents extends Component
      */
     public function getNotificationEventTypes(): array
     {
-        $notificationEvents[] = EntriesSaveNotificationEvent::class;
+        $notificationEvents[] = EntrySavedNotificationEvent::class;
 
         if (TransactionalModule::isPro()) {
-            $notificationEvents[] = EntriesDeleteNotificationEvent::class;
+            $notificationEvents[] = EntryDeletedNotificationEvent::class;
             $notificationEvents[] = ManualNotificationEvent::class;
-            $notificationEvents[] = UsersActivateNotificationEvent::class;
-            $notificationEvents[] = UsersDeleteNotificationEvent::class;
-            $notificationEvents[] = UsersLoginNotificationEvent::class;
-            $notificationEvents[] = UsersSaveNotificationEvent::class;
+
+            $notificationEvents[] = UserActivatedNotificationEvent::class;
+            $notificationEvents[] = UserDeletedNotificationEvent::class;
+            $notificationEvents[] = UserLoggedInNotificationEvent::class;
+            $notificationEvents[] = UserCreatedNotificationEvent::class;
+            $notificationEvents[] = UserUpdatedNotificationEvent::class;
         }
 
         $event = new RegisterComponentTypesEvent([
@@ -196,10 +208,11 @@ class NotificationEvents extends Component
             $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
         } else {
             $eventSettings = Json::decode($settingsRecord->settings);
-
+            $existingSettings = $eventSettings[$eventClassName][$eventName] ?? [];
             if (!isset($eventSettings[$eventClassName]) ||
-                !in_array($email->id, $eventSettings[$eventClassName][$eventName], true)
+                !in_array($email->id, $existingSettings, true)
             ) {
+
                 $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
             }
         }
@@ -214,6 +227,7 @@ class NotificationEvents extends Component
 
     private function getActiveNotificationEventTypes(): array
     {
+
         $activeNotificationEvents = SettingsRecord::find()
             ->select('settings')
             ->where([
@@ -288,6 +302,28 @@ class NotificationEvents extends Component
             ->all();
 
         return $emails;
+    }
+
+    public function registerConditionRuleTypes(RegisterConditionRuleTypesEvent $event): void
+    {
+        if (!$elementType = $event->sender->elementType) {
+            return;
+        }
+
+        if ($elementType === Entry::class) {
+            $event->conditionRuleTypes[] = IsNewEntryConditionRule::class;
+            $event->conditionRuleTypes[] = IsUpdatedEntryConditionRule::class;
+
+            // @todo - Is there a way to know if a generic Element supports drafts/revisions?
+            $event->conditionRuleTypes[] = DraftConditionRule::class;
+            $event->conditionRuleTypes[] = RevisionConditionRule::class;
+        }
+
+        if ($elementType === User::class) {
+            $event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
+        }
+
+        $event->conditionRuleTypes[] = FieldChangedConditionRule::class;
     }
 
     private function isNotificationEventContext(): bool

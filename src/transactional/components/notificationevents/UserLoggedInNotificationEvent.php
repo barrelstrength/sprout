@@ -9,18 +9,19 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User as UserElement;
+use craft\helpers\Html;
 use craft\records\User as UserRecord;
 use craft\web\User as UserComponent;
 use yii\base\Event;
 use yii\web\UserEvent;
 
-class UsersLoginNotificationEvent extends NotificationEvent implements ElementEventInterface
+class UserLoggedInNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
     use ElementEventTrait;
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-transactional', 'When a user is logged in.');
+        return Craft::t('sprout-module-transactional', 'When a user is logged in');
     }
 
     public function getDescription(): string
@@ -46,6 +47,14 @@ class UsersLoginNotificationEvent extends NotificationEvent implements ElementEv
     public static function getEventName(): ?string
     {
         return UserComponent::EVENT_AFTER_LOGIN;
+    }
+
+    public function getTipHtml(): ?string
+    {
+        $html = Html::tag('p', Craft::t('sprout-module-transactional','Access the User Element in your email templates using the <code>object</code> variable. Example:'));
+        $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-transactional', 'This email was sent to: <code>{{ object.email }}</code>')));
+
+        return $html;
     }
 
     public function getEventObject()

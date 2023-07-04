@@ -2,25 +2,42 @@
 
 namespace BarrelStrength\Sprout\forms\components\notificationevents;
 
+use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\base\ElementInterface;
+use craft\elements\conditions\entries\EntryCondition;
+use craft\elements\Entry;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
+use craft\helpers\Html;
+use craft\helpers\Template;
+use yii\base\Event;
 
-class SaveSubmissionNotificationEvent extends NotificationEvent
+class SaveSubmissionNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
-    public bool $whenNew = false;
+    use ElementEventTrait;
 
-    public bool $whenUpdated = false;
+    public static function displayName(): string
+    {
+        return Craft::t('sprout-module-forms', 'When a form submission is saved (Sprout)');
+    }
 
-    public array $availableForms = [];
+    public static function conditionType(): string
+    {
+        return SubmissionCondition::class;
+    }
 
-    public array $formIds = [];
+    public static function elementType(): string
+    {
+        return SubmissionElement::class;
+    }
 
     public static function getEventClassName(): ?string
     {
@@ -34,23 +51,15 @@ class SaveSubmissionNotificationEvent extends NotificationEvent
 
     public function getEventHandlerClassName(): ?string
     {
-        return ModelEvent::class;
+        return OnSaveSubmissionEvent::class;
     }
 
-    public static function displayName(): string
+    public function getTipHtml(): ?string
     {
-        return Craft::t('sprout-module-forms', 'When a form submission is saved (Sprout)');
-    }
+        $html = Html::tag('p', Craft::t('sprout-module-forms','Access the Form Submission Element in your email templates using the <code>object</code> variable. Example:'));
+        $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-forms', 'We have received your submission, <code>{{ object.customNameFieldHandle }}</code>')));
 
-    public function getSettingsHtml($context = []): ?string
-    {
-        if (!$this->availableForms) {
-            $this->availableForms = $this->getAllForms();
-        }
-
-        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/events/SaveSubmissionEvent/settings', [
-            'event' => $this,
-        ]);
+        return $html;
     }
 
     public function getEventObject(): ?ElementInterface
@@ -87,114 +96,22 @@ class SaveSubmissionNotificationEvent extends NotificationEvent
         return null;
     }
 
-    public function validateWhenTriggers(): void
+    public function matchNotificationEvent(Event $event): bool
     {
-        /**
-         * @var ElementEvent $event
-         */
-        $event = $this->event ?? null;
-
-        $isNewSubmission = $event->isNewSubmission ?? false;
-
-        $matchesWhenNew = $this->whenNew && $isNewSubmission ?? false;
-        $matchesWhenUpdated = $this->whenUpdated && !$isNewSubmission ?? false;
-
-        if (!$matchesWhenNew && !$matchesWhenUpdated) {
-            $this->addError('event', Craft::t('sprout-module-forms', 'When a submission is saved Event does not match any scenarios.'));
+        if (!$event instanceof OnSaveSubmissionEvent) {
+            return false;
         }
 
-        // Make sure new submissions are new.
-        if (($this->whenNew && !$isNewSubmission) && !$this->whenUpdated) {
-            $this->addError('event', Craft::t('sprout-module-forms', '"When a submission is created" is selected but the submission is being updated.'));
+        $element = $event->submission;
+
+        if (!$event->isNewSubmission) {
+            return false;
         }
 
-        // Make sure updated submissions are not new
-        if (($this->whenUpdated && $isNewSubmission) && !$this->whenNew) {
-            $this->addError('event', Craft::t('sprout-module-forms', '"When a submission is updated" is selected but the submission is new.'));
-        }
-    }
-
-    public function validateEvent(): void
-    {
-        /** @var OnSaveSubmissionEvent $event */
-        $event = $this->event ?? null;
-
-        if (!$event) {
-            $this->addError('event', Craft::t('sprout-module-forms', 'ElementEvent does not exist.'));
+        if ($element->hasCaptchaErrors()) {
+            return false;
         }
 
-        if (!$event->submission instanceof SubmissionElement) {
-            $this->addError('event', Craft::t('sprout-module-forms', 'Event Element does not match class: {className}', [
-                'className' => SubmissionElement::class,
-            ]));
-        }
-    }
-
-    public function validateCaptchas(): void
-    {
-        $submission = $this->event->submission;
-
-        if ($submission->hasCaptchaErrors()) {
-            $this->addError('event', Craft::t('sprout-module-forms', 'Submission has captcha errors.'));
-        }
-    }
-
-    public function validateFormIds(): void
-    {
-        /** @var OnSaveSubmissionEvent $event */
-        $event = $this->event ?? null;
-
-        $elementId = null;
-
-        if ($event->submission instanceof SubmissionElement) {
-
-            $form = $event->submission->getForm();
-            $elementId = $form->getId();
-        }
-
-        // If any section ids were checked, make sure the Submission belongs in one of them
-        if (!in_array($elementId, $this->formIds, false)) {
-            $this->addError('event', Craft::t('sprout-module-forms', 'The Form associated with the saved Submission Element does not match any selected Forms.'));
-        }
-    }
-
-    protected function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [
-            'whenNew', 'required', 'when' => function(): bool {
-                return $this->whenUpdated == false;
-            },
-        ];
-        $rules[] = [
-            'whenUpdated', 'required', 'when' => function(): bool {
-                return $this->whenNew == false;
-            },
-        ];
-        $rules[] = [['whenNew', 'whenUpdated'], 'validateWhenTriggers'];
-        $rules[] = [['event'], 'validateEvent'];
-        $rules[] = [['event'], 'validateCaptchas'];
-        $rules[] = [['formIds'], 'validateFormIds'];
-
-        return $rules;
-    }
-
-    /**
-     * Returns an array of forms suitable for use in checkbox field
-     */
-    protected function getAllForms(): array
-    {
-        $forms = FormsModule::getInstance()->forms->getAllForms();
-        $options = [];
-
-        foreach ($forms as $form) {
-            $options[] = [
-                'label' => $form->name,
-                'value' => $form->getId(),
-            ];
-        }
-
-        return $options;
+        return $this->matchElement($element);
     }
 }

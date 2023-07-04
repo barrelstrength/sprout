@@ -23,7 +23,6 @@ class RevisionConditionRule extends BaseLightswitchConditionRule implements Elem
 
     public function modifyQuery(QueryInterface $query): void
     {
-        \Craft::dd($query);
         /** @var ElementQueryInterface $query */
         $query->revisionId($this->value);
     }
