@@ -18,7 +18,7 @@ use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\components\emailtemplates\FormSummaryEmailTheme;
+use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
@@ -313,6 +313,10 @@ class FormsModule extends Module
                 'label' => self::getDisplayName(),
                 'url' => 'sprout/settings/forms',
             ],
+            'form-themes' => [
+                'label' => Craft::t('sprout-module-forms', 'Form Themes'),
+                'url' => 'sprout/settings/forms/form-themes',
+            ],
             'spam-protection' => [
                 'label' => Craft::t('sprout-module-forms', 'Spam Protection'),
                 'url' => 'sprout/settings/forms/spam-protection',
@@ -354,6 +358,15 @@ class FormsModule extends Module
             'sprout/upgrade/forms' => [
                 'template' => 'sprout-module-forms/_admin/upgrade',
             ],
+
+            // Settings: Form Themes
+            'sprout/settings/forms/form-themes/new' =>
+                'sprout-module-forms/form-themes/edit',
+            'sprout/settings/forms/form-themes/edit/<formThemeUid:.*>' =>
+                'sprout-module-forms/form-themes/edit',
+            'sprout/settings/forms/form-themes' =>
+                'sprout-module-forms/form-themes/form-themes-index-template',
+
 
             // Settings
             'sprout/settings/forms' => [

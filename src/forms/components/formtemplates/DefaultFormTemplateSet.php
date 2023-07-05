@@ -7,9 +7,14 @@ use Craft;
 
 class DefaultFormTemplateSet extends FormTemplateSet
 {
-    public function getName(): string
+    public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Default Templates');
+    }
+
+    public static function getHandle(): string
+    {
+        return 'default';
     }
 
     public function getIncludePath(): string

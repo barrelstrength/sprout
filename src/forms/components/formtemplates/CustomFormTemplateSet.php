@@ -17,9 +17,14 @@ use Craft;
  */
 class CustomFormTemplateSet extends FormTemplateSet
 {
-    public function getName(): string
+    public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Custom Templates');
+    }
+
+    public static function getHandle(): string
+    {
+        return 'custom';
     }
 
     public function getIncludePath(): string

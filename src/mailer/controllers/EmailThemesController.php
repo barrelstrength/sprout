@@ -14,7 +14,7 @@ use yii\web\Response;
 
 class EmailThemesController extends Controller
 {
-    public function actionEntryTypesIndexTemplate(): Response
+    public function actionEmailThemesIndexTemplate(): Response
     {
         $themeTypes = MailerModule::getInstance()->emailThemes->getEmailThemeTypeInstances();
 

@@ -32,6 +32,8 @@ class FormsSettings extends BaseConfig
 
     public string $defaultSubmissionMethod = 'sync';
 
+    public array $formThemes = [];
+
     public string $formTemplateId = DefaultFormTemplateSet::class;
 
     public string $formTemplatePath = '';

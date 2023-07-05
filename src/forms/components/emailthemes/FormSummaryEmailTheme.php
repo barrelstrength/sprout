@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\components\emailtemplates;
+namespace BarrelStrength\Sprout\forms\components\emailthemes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
@@ -31,7 +31,7 @@ class FormSummaryEmailTheme extends EmailTheme
 
     public function getPath(): string
     {
-        return 'emailtemplates/submission';
+        return 'emails/submission';
     }
 
     public function getFieldLayout(): FieldLayout

@@ -36,6 +36,8 @@ export default ({command}) => ({
                 regularExpressionField: '/fields/RegularExpressionField.js',
                 urlField: '/fields/UrlField.js',
 
+                formThemes: '/forms/FormThemesSettings.js',
+
                 // Front End
                 DynamicCsrfInput: '/core/DynamicCsrfInput.js',
 

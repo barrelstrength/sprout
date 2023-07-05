@@ -1,0 +1,70 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set currentSubNavKey = 'form-themes' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <div class="btn menubtn submit add icon">
+                {{ "New Form Theme"|t('sprout-module-forms') }}
+            </div>
+            <div class="menu">
+                <ul>
+                    {% for formThemeType in formThemeTypes %}
+                        <li>
+                            {{ tag('a', {
+                                href: cpUrl('sprout/settings/forms/form-themes/new', {
+                                    handle: formThemeType.handle,
+                                }),
+                                text: formThemeType.displayName(),
+                                class: 'menu-option',
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% if formThemes|length %}
+    {% for formTheme in formThemes %}
+
+        {% set cpEditUrl = cpUrl('sprout/settings/forms/form-themes/edit/' ~ formTheme.uid) %}
+
+        {% set tableData = tableData|merge([{
+            id: formTheme.uid,
+            labelHtml: {
+                url: cpEditUrl,
+                name: formTheme.name ?? formTheme.displayName()
+            },
+            formThemeType: formTheme.displayName,
+            title: formTheme.name|t('sprout-module-forms')|e,
+            url: cpEditUrl,
+            _showDelete: true,
+        }]) %}
+
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+
+    <div
+        id="admin-table"
+        data-table-data="{{ tableData|json_encode }}">
+    </div>
+
+{% endblock %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% do sprout.modules.core.vite.register('forms/FormThemesSettings.js', false) %}
+
+ {% js on ready %}
+
+     new FormThemesSettings('#admin-table');
+
+ {% endjs %}

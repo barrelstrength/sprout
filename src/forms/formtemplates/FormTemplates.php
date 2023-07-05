@@ -32,6 +32,18 @@ class FormTemplates extends Component
         return $event->types;
     }
 
+    public function getFormTemplateTypesInstances(): array
+    {
+        $formThemes = $this->getAllFormTemplateTypes();
+
+        $instances = [];
+        foreach ($formThemes as $formTheme) {
+            $instances[$formTheme::getHandle()] = new $formTheme();
+        }
+
+        return $instances;
+    }
+
     /**
      * Returns all available Form Templates
      *
@@ -51,7 +63,7 @@ class FormTemplates extends Component
              * @var $a FormTemplates
              * @var $b FormTemplates
              */
-            return $a->getName() <=> $b->getName();
+            return $a::displayName() <=> $b::displayName();
         });
 
         return $templates;

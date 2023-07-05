@@ -15,7 +15,6 @@ use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
 use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
-use BarrelStrength\Sprout\mailer\components\elements\audience\conditions\AudienceTypeConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\email\EmailTypes;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
@@ -26,12 +25,10 @@ use BarrelStrength\Sprout\mailer\subscribers\SubscriberListsVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
-use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterConditionRuleTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -314,7 +311,7 @@ class MailerModule extends Module
             'sprout/settings/email-themes/edit/<emailThemeUid:.*>' =>
                 'sprout-module-mailer/email-themes/edit',
             'sprout/settings/email-themes' =>
-                'sprout-module-mailer/email-themes/entry-types-index-template',
+                'sprout-module-mailer/email-themes/email-themes-index-template',
 
             // Settings: Mailers
             'sprout/settings/mailers/edit/new' =>

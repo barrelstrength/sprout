@@ -1,0 +1,154 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "_includes/forms" as forms %}
+
+{% set module = sprout.modules.mailer %}
+{% set settings = module.getSettings() %}
+
+{% set currentSubNavKey = 'form-themes' %}
+
+{% set crumbs = [
+    { label: "Settings"|t('sprout-module-mailer'), url: cpUrl('sprout/settings') },
+    { label: "Form Themes"|t('sprout-module-mailer'), url: cpUrl('sprout/settings/forms/form-themes') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+
+    {#    {% if formTheme.isEditable() %} #}
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
+    </div>
+    {#    {% endif %} #}
+
+{% endblock %}
+
+{% block content %}
+
+    {{ actionInput('sprout-module-forms/form-themes/save') }}
+    {{ redirectInput('sprout/settings/forms/form-themes') }}
+
+    {{ hiddenInput('uid', formTheme.uid) }}
+    {{ hiddenInput('type', className(formTheme)) }}
+
+    {{ forms.textField({
+        label: "Name"|t('sprout-module-forms'),
+        instructions: "How you will refer to this Form Theme."|t('sprout-module-forms'),
+        id: 'name',
+        name: 'name',
+        value: formTheme.name,
+        errors: formTheme.getErrors('name'),
+        warning: sproutConfigWarning(module, 'name'),
+        required: true,
+        first: true,
+    }) }}
+
+    {#    {{ forms.autosuggestField({#}
+    {#        label: "Email Template (HTML)"|t('sprout-module-mailer'),#}
+    {#        instructions: "The template that will be used to render your HTML email."|t('sprout-module-mailer'),#}
+    {#        id: 'htmlEmailTemplate',#}
+    {#        name: 'htmlEmailTemplate',#}
+    {#        suggestEnvVars: false,#}
+    {#        suggestions: craft.cp.getTemplateSuggestions(),#}
+    {#        placeholder: "_emails/theme/email.twig"|t('sprout-module-mailer'),#}
+    {#        value: emailTheme.htmlEmailTemplate ?? null,#}
+    {#        errors: emailTheme.getErrors('htmlEmailTemplate'),#}
+    {#        required: true,#}
+    {#        disabled: not emailTheme.isEditable(),#}
+    {#    }) }}#}
+
+    {#    {{ forms.autosuggestField({#}
+    {#        label: "Email Template (Text)"|t('sprout-module-mailer'),#}
+    {#        instructions: "Leave blank to render the text email by converting the HTML template to Markdown."|t('sprout-module-mailer'),#}
+    {#        id: 'textEmailTemplate',#}
+    {#        name: 'textEmailTemplate',#}
+    {#        suggestEnvVars: false,#}
+    {#        suggestions: craft.cp.getTemplateSuggestions(),#}
+    {#        placeholder: emailTheme.isEditable() ? "_emails/theme/email.txt"|t('sprout-module-mailer') : '',#}
+    {#        value: emailTheme.textEmailTemplate ?? null,#}
+    {#        errors: emailTheme.getErrors('textEmailTemplate'),#}
+    {#        disabled: not emailTheme.isEditable(),#}
+    {#    }) }}#}
+
+    {#    {{ forms.autosuggestField({ #}
+    {#        label: "Copy/Paste Email Template Folder"|t('sprout-module-mailer'), #}
+    {#        instructions: "The templates that will be used to display your email."|t('sprout-module-mailer'), #}
+    {#        id: 'copyPasteEmailTemplatePath', #}
+    {#        name: 'copyPasteEmailTemplatePath', #}
+    {#        suggestEnvVars: false, #}
+    {#        suggestions: sproutTemplateFolderSuggestions(), #}
+    {#        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'), #}
+    {#        value: emailTheme.copyPasteEmailTemplatePath ?? null, #}
+    {#        disabled: not emailTheme.isEditable(), #}
+    {#    }) }} #}
+
+    <hr>
+
+    {#    {% set fieldLayoutInstructions = "The content fields that can be used in this email theme."|t('sprout-module-mailer') %}#}
+
+    {#    {% if emailTheme.isEditable() %}#}
+
+    {#        {{ forms.fieldLayoutDesignerField({#}
+    {#            instructions: fieldLayoutInstructions,#}
+    {#            fieldLayout: emailTheme.getFieldLayout(),#}
+    {#            required: true,#}
+    {#            customizableTabs: false,#}
+    {#            customizableUi: false,#}
+    {#            errors: emailTheme.getErrors('fieldLayout'),#}
+    {#        }) }}#}
+
+    {#    {% else %}#}
+
+    {#        {% set tabs = emailTheme.getFieldLayout().getTabs() %}#}
+
+    {#        <div class="field">#}
+    {#            <div class="heading">#}
+    {#                <label>{{ "Field Layout"|t('sprout-module-mailer') }}</label>#}
+    {#            </div>#}
+    {#            <div class="instructions">#}
+    {#                <p>{{ fieldLayoutInstructions }}</p>#}
+    {#            </div>#}
+    {#            <div class="layoutdesigner">#}
+    {#                <div class="fld-workspace">#}
+    {#                    <div class="fld-tabs" style="position: relative;">#}
+    {#                        {% for tab in tabs %}#}
+    {#                            <div class="fld-tab last" style="height: 144px;">#}
+    {#                                <div class="tabs">#}
+    {#                                    <div class="tab"><span>{{ tab.name }}</span></div>#}
+    {#                                </div>#}
+    {#                                <div class="fld-tabcontent">#}
+    {#                                    {% for element in tab.elements %}#}
+    {#                                        <div class="fld-field fld-required fld-element">#}
+    {#                                            <div class="field-name">#}
+    {#                                                <div class="fld-element-label"><h4>{{ element.label }}</h4>#}
+    {#                                                    {% if element.required %}#}
+    {#                                                        <div class="fld-required-indicator" title="This field is required" aria-label="This field is required" data-icon="asterisk"></div>#}
+    {#                                                    {% endif %}#}
+    {#                                                </div>#}
+    {#                                                <div class="fld-attribute">#}
+    {#                                                    <div class="smalltext light code">{{ element.attribute }}</div>#}
+    {#                                                </div>#}
+    {#                                            </div>#}
+    {#                                            <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a>#}
+    {#                                        </div>#}
+    {#                                    {% endfor %}#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        {% endfor %}#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+
+    {#    {% endif %}#}
+
+    {{ forms.textField({
+        label: "Theme Type"|t('sprout-module-forms'),
+        value: formTheme.displayName(),
+        disabled: true,
+    }) }}
+
+{% endblock %}
+
+{# {% js "new Craft.HandleGenerator('#name', '#handle');" %} #}
