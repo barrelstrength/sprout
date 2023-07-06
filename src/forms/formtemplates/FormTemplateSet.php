@@ -8,6 +8,8 @@ abstract class FormTemplateSet extends SavableComponent implements FormTemplateS
 {
     public ?string $name = null;
 
+    public ?string $formTemplate = null;
+
     public ?string $uid = null;
 
     /**
@@ -47,18 +49,8 @@ abstract class FormTemplateSet extends SavableComponent implements FormTemplateS
             'type' => static::class,
             'name' => $this->name,
             'handle' => $this::getHandle(),
-            //'htmlEmailTemplate' => $this->htmlEmailTemplate,
-            //'textEmailTemplate' => $this->textEmailTemplate,
-            //'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,
+            'formTemplate' => $this->formTemplate,
         ];
-
-        //$fieldLayout = $this->getFieldLayout();
-        //
-        //if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
-        //    $config['fieldLayouts'] = [
-        //        $fieldLayout->uid => $fieldLayoutConfig,
-        //    ];
-        //}
 
         return $config;
     }

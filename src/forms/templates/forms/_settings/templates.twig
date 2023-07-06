@@ -3,41 +3,18 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
+{% set themes = module.formTemplates.getFormThemeOptions() %}
+
 {{ forms.selectField({
     label: "Templates"|t('sprout-module-forms'),
     instructions: "The Form Templates that will be used to output your forms. Update the 'Default Form Templates' in the general settings."|t('sprout-module-forms'),
+    name: "formTemplateUid",
     required: true,
     first: true,
-    errors: (form is defined ? form.getErrors('formTemplateId') : null),
-    options: [
-        {
-            label: 'Default Form Templates'|t('sprout-module-forms'),
-            value: 'BarrelStrength\\Sprout\\forms\\components\\formtemplates\\DefaultFormTemplates',
-        },
-        {
-            label: 'Custom Form Templates'|t('sprout-module-forms'),
-            value: 'custom',
-        }
-    ],
-    value: settings.formTemplateId ?? null,
-    toggle: true,
+    errors: (form is defined ? form.getErrors('formTemplateUid') : null),
+    options: themes,
+    value: form.formTemplateUid ?? settings.formTemplateUid ?? null,
     required: true,
-    targetPrefix: 'form-templates-',
-}) }}
-
-{{ forms.autosuggestField({
-    label: "Custom Form Template Path"|t('sprout-module-forms'),
-    instructions: "The templates that will be used to display your Forms. Add additional Form Templates via the Form Templates API or providing a custom path to your form templates folder."|t('sprout-module-forms'),
-    fieldId: 'form-templates-custom',
-    fieldClass: [
-        settings.formTemplateId != 'custom' ? 'hidden'
-    ]|filter,
-    id: 'formTemplatePath',
-    name: 'formTemplatePath',
-    suggestEnvVars: false,
-    suggestions: craft.cp.getTemplateSuggestions(),
-    placeholder: "_emails/custom-folder"|t('sprout-module-forms'),
-    value: settings.formTemplatePath ?? null
 }) }}
 
 {{ forms.selectField({

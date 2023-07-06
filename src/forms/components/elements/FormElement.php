@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
+use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
@@ -80,7 +81,7 @@ class FormElement extends Element
 
     public bool $saveData = true;
 
-    public string $formTemplateId = '';
+    public ?string $formTemplateUid = null;
 
     public bool $enableCaptchas = true;
 
@@ -477,7 +478,7 @@ class FormElement extends Element
         $record->messageOnSuccess = $this->messageOnSuccess;
         $record->messageOnError = $this->messageOnError;
         $record->submitButtonText = $this->submitButtonText;
-        $record->formTemplateId = $this->formTemplateId;
+        $record->formTemplateUid = $this->formTemplateUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
         $record->save(false);
@@ -702,8 +703,9 @@ class FormElement extends Element
     {
         $defaultFormTemplates = new DefaultFormTemplateSet();
 
-        if ($this->formTemplateId) {
-            $templatePath = FormsModule::getInstance()->formTemplates->getFormTemplateById($this->formTemplateId);
+        if ($this->formTemplateUid) {
+
+            $templatePath = FormThemeHelper::getFormThemeByUid($this->formTemplateUid);
             if ($templatePath) {
                 return $templatePath;
             }
@@ -744,7 +746,7 @@ class FormElement extends Element
         $settings = FormsModule::getInstance()->getSettings();
 
         /** @var FormTemplateSet $formTemplates */
-        $formTemplates = FormsModule::getInstance()->formTemplates->getFormTemplateById($settings->formTemplateId);
+        $formTemplates = FormThemeHelper::getFormThemeByUid($settings->formTemplateUid);
 
         // TODO: Just make this a static class
         $defaultTemplates = new DefaultFormTemplateSet();
@@ -873,7 +875,7 @@ class FormElement extends Element
         $rules[] = [['messageOnError'], 'safe'];
         $rules[] = [['submitButtonText'], 'safe'];
         $rules[] = [['saveData'], 'safe'];
-        $rules[] = [['formTemplateId'], 'safe'];
+        $rules[] = [['formTemplateUid'], 'safe'];
         $rules[] = [['enableCaptchas'], 'safe'];
 
         return $rules;

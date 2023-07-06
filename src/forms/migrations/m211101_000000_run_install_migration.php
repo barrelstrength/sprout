@@ -59,7 +59,7 @@ class m211101_000000_run_install_migration extends Migration
         // @todo - fix default settings to import
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
             'defaultSection' => 'submissions',
-            'formTemplateId' => self::FORM_TEMPLATE_SET,
+            'formTemplateUid' => self::FORM_TEMPLATE_SET,
             'enableSaveData' => true,
             'saveSpamToDatabase' => false,
             'enableSaveDataDefaultValue' => true,
@@ -118,7 +118,7 @@ class m211101_000000_run_install_migration extends Migration
                 'messageOnError' => $this->text(),
                 'submitButtonText' => $this->string(),
                 'saveData' => $this->boolean()->notNull()->defaultValue(false),
-                'formTemplateId' => $this->string(),
+                'formTemplateUid' => $this->uid(),
                 'enableCaptchas' => $this->boolean()->notNull()->defaultValue(true),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

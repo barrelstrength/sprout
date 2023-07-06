@@ -109,7 +109,7 @@ class m211101_000007_migrate_forms_tables extends Migration
             'errorMessage', // messageOnError
             'submitButtonText',
             'saveData',
-            'formTemplateId',
+            'formTemplateId', // @todo - create theme and insert UID
             'enableCaptchas',
             'dateCreated',
             'dateUpdated',
@@ -131,7 +131,7 @@ class m211101_000007_migrate_forms_tables extends Migration
             'messageOnError', // errorMessage
             'submitButtonText',
             'saveData',
-            'formTemplateId',
+            'formTemplateUid',
             'enableCaptchas',
             'dateCreated',
             'dateUpdated',

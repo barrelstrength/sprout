@@ -27,6 +27,11 @@ class CustomFormTemplateSet extends FormTemplateSet
         return 'custom';
     }
 
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
     public function getIncludePath(): string
     {
 

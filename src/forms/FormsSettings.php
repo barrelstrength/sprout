@@ -34,9 +34,7 @@ class FormsSettings extends BaseConfig
 
     public array $formThemes = [];
 
-    public string $formTemplateId = DefaultFormTemplateSet::class;
-
-    public string $formTemplatePath = '';
+    public ?string $formTemplateUid = null;
 
     public bool $enableSaveData = true;
 
@@ -74,16 +72,9 @@ class FormsSettings extends BaseConfig
         return $this;
     }
 
-    public function formTemplateId(string $value): self
+    public function formTemplateUid(string $value): self
     {
-        $this->formTemplateId = $value;
-
-        return $this;
-    }
-
-    public function formTemplatePath(string $value): self
-    {
-        $this->formTemplatePath = $value;
+        $this->formTemplateUid = $value;
 
         return $this;
     }

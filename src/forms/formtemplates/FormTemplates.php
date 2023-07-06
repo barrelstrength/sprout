@@ -69,76 +69,15 @@ class FormTemplates extends Component
         return $templates;
     }
 
-    public function getFormTemplateById($templateId): ?FormTemplateSet
+    public function getFormThemeOptions(): array
     {
-        $formTemplates = null;
+        $themes = FormThemeHelper::getFormThemes();
 
-        if (class_exists($templateId)) {
-            /** @var $formTemplates FormTemplates */
-            $formTemplates = new $templateId();
-        }
-
-        // TODO: add support for Custom Template Class
-
-        return $formTemplates;
-    }
-
-    public function getFormTemplateOptions(FormElement $form = null, bool $generalSettings = false): array
-    {
-        $options = [];
-        if ($generalSettings) {
-            $options[] = [
-                'optgroup' => Craft::t('sprout-module-forms', 'Global Templates'),
+        return array_map(static function($theme) {
+            return [
+                'label' => $theme->name(),
+                'value' => $theme->uid
             ];
-
-            $options[] = [
-                'label' => Craft::t('sprout-module-forms', 'Default Form Templates'),
-                'value' => null,
-            ];
-        }
-
-        $templates = $this->getAllFormTemplates();
-        $templateIds = [];
-
-        if ($generalSettings) {
-            $options[] = [
-                'optgroup' => Craft::t('sprout-module-forms', 'Form-Specific Templates'),
-            ];
-        }
-
-        foreach ($templates as $template) {
-            $options[] = [
-                'label' => $template->getName(),
-                'value' => $template::class,
-            ];
-            $templateIds[] = $template::class;
-        }
-
-        $settings = FormsModule::getInstance()->getSettings();
-
-        $templateFolder = $form->formTemplateId ?? $settings->formTemplateId ?? DefaultFormTemplateSet::class;
-
-        $options[] = [
-            'optgroup' => Craft::t('sprout-module-forms', 'Custom Template Folder'),
-        ];
-
-        if (!in_array($templateFolder, $templateIds, false) && $templateFolder != '') {
-            $options[] = [
-                'label' => $templateFolder,
-                'value' => $templateFolder,
-            ];
-        }
-
-        $options[] = [
-            'label' => Craft::t('sprout-module-forms', 'Add Custom'),
-            'value' => 'custom',
-        ];
-
-        return $options;
-    }
-
-    private function getSitePath($path): string
-    {
-        return Craft::$app->path->getSiteTemplatesPath() . DIRECTORY_SEPARATOR . $path;
+        }, $themes);
     }
 }

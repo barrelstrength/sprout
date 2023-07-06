@@ -25,7 +25,7 @@ class FormThemesController extends Controller
         ]);
     }
 
-    public function actionEdit(FormTemplateSet $formTemplateSet = null, string $formTemplateSetUid = null, string $handle = null): Response
+    public function actionEdit(FormTemplateSet $formTemplateSet = null, string $formThemeUid = null, string $handle = null): Response
     {
         $this->requireAdmin();
 
@@ -33,7 +33,7 @@ class FormThemesController extends Controller
             $formTemplateSet = FormThemeHelper::getFormThemeByHandle($handle);
         }
         if (!$formTemplateSet) {
-            $formTemplateSet = FormThemeHelper::getFormThemeByUid($formTemplateSetUid);
+            $formTemplateSet = FormThemeHelper::getFormThemeByUid($formThemeUid);
         }
 
         return $this->renderTemplate('sprout-module-forms/_settings/form-themes/edit.twig', [
@@ -139,12 +139,7 @@ class FormThemesController extends Controller
             return $formTheme;
         }
 
-        //$formTheme->htmlEmailTemplate = Craft::$app->request->getBodyParam('htmlEmailTemplate');
-        //$formTheme->textEmailTemplate = Craft::$app->request->getBodyParam('textEmailTemplate');
-
-        //$fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
-        //$fieldLayout->type = EmailElement::class;
-        //$formTheme->setFieldLayout($fieldLayout);
+        $formTheme->formTemplate = Craft::$app->request->getBodyParam('formTemplate');
 
         return $formTheme;
     }

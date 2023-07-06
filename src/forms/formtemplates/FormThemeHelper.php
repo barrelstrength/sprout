@@ -2,8 +2,10 @@
 
 namespace BarrelStrength\Sprout\forms\formtemplates;
 
+use BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
+use craft\errors\MissingComponentException;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
 
@@ -74,10 +76,7 @@ class FormThemeHelper
 
         $emailTheme = new $type([
             'name' => $formThemeSettings['name'],
-            //'htmlEmailTemplate' => $formThemeSettings['htmlEmailTemplate'] ?? null,
-            //'textEmailTemplate' => $formThemeSettings['textEmailTemplate'] ?? null,
-            //'copyPasteEmailTemplate' => $formThemeSettings['copyPasteEmailTemplate'] ?? null,
-            //'fieldLayout' => $fieldLayout,
+            'formTemplate' => $formThemeSettings['formTemplate'] ?? null,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);
 
@@ -104,6 +103,29 @@ class FormThemeHelper
     {
         $themes = self::getFormThemes();
 
-        return reset($themes) ?? null;
+        if (!$defaultTheme = reset($themes)) {
+            self::createDefaultFormTheme();
+
+            return self::getDefaultFormTheme();
+        }
+
+        return $defaultTheme;
+    }
+
+    public static function createDefaultFormTheme(): void
+    {
+        $formTheme = new DefaultFormTemplateSet();
+        $formTheme->uid = StringHelper::UUID();
+
+        if (!$formTheme->uid) {
+            $formTheme->uid = StringHelper::UUID();
+        }
+
+        $formThemesConfig = self::getFormThemes();
+        $formThemesConfig[$formTheme->uid] = $formTheme;
+
+        if (!$formTheme->validate() || !self::saveFormThemes($formThemesConfig)) {
+            throw new MissingComponentException('Unable to create default form theme.');
+        }
     }
 }

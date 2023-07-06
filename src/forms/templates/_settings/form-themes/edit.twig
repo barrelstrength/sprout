@@ -44,19 +44,19 @@
         first: true,
     }) }}
 
-    {#    {{ forms.autosuggestField({#}
-    {#        label: "Email Template (HTML)"|t('sprout-module-mailer'),#}
-    {#        instructions: "The template that will be used to render your HTML email."|t('sprout-module-mailer'),#}
-    {#        id: 'htmlEmailTemplate',#}
-    {#        name: 'htmlEmailTemplate',#}
-    {#        suggestEnvVars: false,#}
-    {#        suggestions: craft.cp.getTemplateSuggestions(),#}
-    {#        placeholder: "_emails/theme/email.twig"|t('sprout-module-mailer'),#}
-    {#        value: emailTheme.htmlEmailTemplate ?? null,#}
-    {#        errors: emailTheme.getErrors('htmlEmailTemplate'),#}
-    {#        required: true,#}
-    {#        disabled: not emailTheme.isEditable(),#}
-    {#    }) }}#}
+    {{ forms.autosuggestField({
+        label: "Form Template"|t('sprout-module-forms'),
+        instructions: "The template that will be used to render your form."|t('sprout-module-forms'),
+        id: 'formTemplate',
+        name: 'formTemplate',
+        suggestEnvVars: false,
+        suggestions: craft.cp.getTemplateSuggestions(),
+        placeholder: "_forms/theme/form.twig"|t('sprout-module-forms'),
+        value: formTheme.formTemplate ?? null,
+        errors: formTheme.getErrors('formTemplate'),
+        required: true,
+        disabled: not formTheme.isEditable(),
+    }) }}
 
     {#    {{ forms.autosuggestField({#}
     {#        label: "Email Template (Text)"|t('sprout-module-mailer'),#}

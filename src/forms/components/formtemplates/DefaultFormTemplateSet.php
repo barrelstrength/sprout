@@ -7,6 +7,8 @@ use Craft;
 
 class DefaultFormTemplateSet extends FormTemplateSet
 {
+    public ?string $formTemplate = '@Sprout/TemplateRoot/forms/default/form.twig';
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Default Templates');
