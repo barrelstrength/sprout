@@ -30,7 +30,7 @@
 
                 {% for link in links %}
                     <div id="link-settings-{{ className(link)|id }}" class="link-settings hidden">
-                        {% set link = className(link) == className(selectedLink) ? selectedLink : link %}
+                        {% set link = selectedLink and className(link) == className(selectedLink) ? selectedLink : link %}
                         {{ link.getInputHtml()|raw }}
                     </div>
                 {% endfor %}

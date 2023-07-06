@@ -192,7 +192,7 @@ class FormElement extends Element
         $linkHtml = Links::enhancedLinkFieldHtml([
             'fieldNamespace' => 'redirectUri',
             'selectedLink' => $this->redirectUri,
-            'type' => $this->redirectUri::class ?? null,
+            'type' => isset($this->redirectUri) ? $this->redirectUri::class : null,
         ]);
 
         $settingsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/general', [
