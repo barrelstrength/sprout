@@ -445,7 +445,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         foreach ($themes as $theme) {
             $templateOptions[] = [
-                'label' => $theme->name(),
+                'label' => $theme->name,
                 'value' => $theme->uid,
             ];
         }

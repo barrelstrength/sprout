@@ -75,7 +75,7 @@ class FormTemplates extends Component
 
         return array_map(static function($theme) {
             return [
-                'label' => $theme->name(),
+                'label' => $theme->name,
                 'value' => $theme->uid
             ];
         }, $themes);

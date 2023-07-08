@@ -12,14 +12,6 @@ abstract class FormTemplateSet extends SavableComponent implements FormTemplateS
 
     public ?string $uid = null;
 
-    /**
-     * The name of your Form Templates
-     */
-    public function name(): ?string
-    {
-        return $this->name ?? self::displayName();
-    }
-
     abstract public static function getHandle(): string;
 
     public static function isEditable(): bool

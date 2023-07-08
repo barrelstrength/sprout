@@ -36,11 +36,6 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     private ?string $_textBody = null;
 
-    public function name(): ?string
-    {
-        return $this->name;
-    }
-
     abstract public static function getHandle(): string;
 
     public static function isEditable(): bool

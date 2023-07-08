@@ -24,11 +24,6 @@ class EmailMessageTheme extends EmailTheme
         return 'simpleMessage';
     }
 
-    public function name(): ?string
-    {
-        return $this->name ?? self::displayName();
-    }
-
     public function getFieldLayout(): FieldLayout
     {
         $fieldLayout = new FieldLayout([
