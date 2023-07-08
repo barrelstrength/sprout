@@ -36,9 +36,10 @@
                     aria-controls="tab--content"
                     role="tab"
                     draggable="true"
-                    x-on:dragstart.self="dragPageTabStart"
-                    x-on:dragend.self="dragPageTabEnd"
-                    x-on:dragover="isOverPageTab"
+
+                    x-on:dragover="dragOverLayoutTabNav"
+                    x-on:dragstart.self="dragStartLayoutTabNav"
+                    x-on:dragend.self="dragEndLayoutTabNav"
                     x-on:click="selectedTabId = tab.id"
                     x-bind:id="tab.id"
                     x-bind:class="selectedTabId == tab.id ? 'sel' : ''"
@@ -89,10 +90,10 @@
                     x-bind:id="'sproutforms-tab-' + tab.id"
                     x-show="tab.id === selectedTabId"
 
-                    x-on:dragover="dragOverLayoutTab"
-                    x-on:dragenter.prevent.self="dragEnterLayoutTab"
-                    x-on:dragleave.prevent.self="dragLeaveLayoutTab"
-                    x-on:drop.self="dropOnLayoutTab"
+                    x-on:dragover="dragOverLayoutTabBody"
+                    x-on:dragenter.prevent.self="dragEnterLayoutTabBody"
+                    x-on:dragleave.prevent.self="dragLeaveLayoutTabBody"
+                    x-on:drop.self="dropOnLayoutTabBody"
                 >
                     {# Tab with Fields #}
                     <template x-if="tab.fields.length > 0">
@@ -108,8 +109,8 @@
 
                                 draggable="true"
                                 x-on:dragover="dragOverLayoutField"
-                                x-on:dragstart="dragLayoutFieldStart"
-                                x-on:dragend="dragLayoutFieldEnd"
+                                x-on:dragstart="dragStartLayoutField"
+                                x-on:dragend="dragEndLayoutField"
                                 x-on:dragenter.prevent="dragEnterLayoutField"
                                 x-on:dragleave.prevent="dragLeaveLayoutField"
                                 x-on:drop.prevent.stop="dropOnExistingLayoutField"

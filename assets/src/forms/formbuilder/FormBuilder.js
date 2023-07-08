@@ -159,28 +159,28 @@ export const FormBuilder = (formId) => ({
 
     // Drag Actions
 
-    dragPageTabStart(e) {
-        console.log('dragPageTabStart');
+    dragStartLayoutTabNav(e) {
+        console.log('dragStartLayoutTabNav');
 
         e.dataTransfer.setData('sprout/page-tab', e.target.dataset.type);
         // e.dataTransfer.dropEffect = 'link';
         // e.dataTransfer.effectAllowed = 'copyLink';
     },
 
-    dragPageTabEnd(e) {
-        console.log('dragPageTabEnd');
+    dragEndLayoutTabNav(e) {
+        console.log('dragEndLayoutTabNav');
     },
 
-    dragSourceFieldStart(e) {
-        console.log('dragSourceFieldStart');
+    dragStartSourceField(e) {
+        console.log('dragStartSourceField');
 
         e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
         // e.dataTransfer.dropEffect = 'link';
         // e.dataTransfer.effectAllowed = 'copyLink';
     },
 
-    dragSourceFieldEnd(e) {
-        console.log('dragSourceFieldEnd');
+    dragEndSourceField(e) {
+        console.log('dragEndSourceField');
 
         // this.isDragOverTabId = null;
         // this.isDraggingFormFieldId = null;
@@ -188,8 +188,8 @@ export const FormBuilder = (formId) => ({
         // this.isMouseOverFormFieldId = null;
     },
 
-    dragLayoutFieldStart(e) {
-        console.log('dragLayoutFieldStart');
+    dragStartLayoutField(e) {
+        console.log('dragStartLayoutField');
 
 
         // self = this;
@@ -226,8 +226,8 @@ export const FormBuilder = (formId) => ({
         // }
     },
 
-    dragLayoutFieldEnd(e) {
-        console.log('dragLayoutFieldEnd');
+    dragEndLayoutField(e) {
+        console.log('dragEndLayoutField');
         // this.isDragOverTabId = null;
         // this.isDraggingFormFieldId = null;
         // this.isDragOverFormFieldId = null;
@@ -237,20 +237,20 @@ export const FormBuilder = (formId) => ({
         // this.scrollActive = false;
     },
 
-    dragEnterLayoutTab(e) {
-        console.log('dragEnterLayoutTab');
+    dragEnterLayoutTabBody(e) {
+        console.log('dragEnterLayoutTabBody');
 
         this.isDragOverTabId = this.selectedTabId;
     },
 
-    dragLeaveLayoutTab(e) {
-        console.log('dragLeaveLayoutTab');
+    dragLeaveLayoutTabBody(e) {
+        console.log('dragLeaveLayoutTabBody');
 
         this.isDragOverTabId = null;
     },
 
-    dropOnLayoutTab(e) {
-        console.log('dropOnLayoutTab');
+    dropOnLayoutTabBody(e) {
+        console.log('dropOnLayoutTabBody');
 
         let type = e.dataTransfer.getData('sprout/field-type');
         this.addFieldToLayoutTab(type);
@@ -311,27 +311,33 @@ export const FormBuilder = (formId) => ({
         }
     },
 
-    isOverPageTab(e) {
+    dragOverLayoutTabNav(e) {
 
         const sproutPageTab = e.dataTransfer.types.includes('sprout/page-tab');
+        const isDraggingLayoutField = e.dataTransfer.types.includes('sprout/field-type');
 
         // this.isDragOverTabId = this.selectedTabId;
         // this.isDragOverFormFieldId = e.target.parentNode.dataset.fieldId;
         // this.isMouseOverFormFieldId = e.target.dataset.fieldId;
 
         if (sproutPageTab) {
-            console.log('isOverPageTab');
+            console.log('dragOverLayoutTabNav Tab');
+            event.preventDefault();
+        }
+
+        if (isDraggingLayoutField) {
+            console.log('dragOverLayoutTabNav Field');
             event.preventDefault();
         }
     },
 
     // See specifying drop targets docs:
     // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#specifying_drop_targets
-    dragOverLayoutTab(e) {
+    dragOverLayoutTabBody(e) {
         const isDraggingFormField = e.dataTransfer.types.includes('sprout/field-type');
 
         if (isDraggingFormField) {
-            console.log('dragOverLayoutTab');
+            console.log('dragOverLayoutTabBody');
             event.preventDefault();
         }
     },
