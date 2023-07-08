@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\transactional\components\conditions\FieldChangedCondit
 use BarrelStrength\Sprout\transactional\components\conditions\IsNewEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule;
+use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
@@ -324,6 +325,7 @@ class NotificationEvents extends Component
         }
 
         $event->conditionRuleTypes[] = FieldChangedConditionRule::class;
+        $event->conditionRuleTypes[] = TwigExpressionConditionRule::class;
     }
 
     private function isNotificationEventContext(): bool
