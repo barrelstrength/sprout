@@ -173,6 +173,17 @@ class SubmissionStatuses extends Component
             ->orderBy(['isDefault' => SORT_DESC])
             ->one();
 
+        if (!$submissionStatus) {
+            $submissionStatus = new SubmissionStatusRecord();
+            $submissionStatus->name = 'Unread';
+            $submissionStatus->handle = 'unread';
+            $submissionStatus->color = 'blue';
+            $submissionStatus->isDefault = true;
+            $submissionStatus->save();
+
+            return $this->getDefaultSubmissionStatus();
+        }
+
         return new SubmissionStatus($submissionStatus->getAttributes());
     }
 
