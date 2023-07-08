@@ -13,6 +13,7 @@ use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
 use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
+use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
@@ -20,11 +21,11 @@ use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
 use craft\base\FieldInterface;
-use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Duplicate;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -290,6 +291,7 @@ class FormElement extends Element
     {
         $actions = parent::defineActions($source);
 
+        $actions[] = Duplicate::class;
         $actions[] = Delete::class;
 
         return $actions;
@@ -369,7 +371,7 @@ class FormElement extends Element
      */
     public function getContentTable(): string
     {
-        return FormsModule::getInstance()->forms->getContentTableName($this);
+        return FormContentTableHelper::getContentTable($this->handle);
     }
 
     public function cpEditUrl(): ?string
@@ -450,6 +452,13 @@ class FormElement extends Element
 
     public function afterSave(bool $isNew): void
     {
+        $oldFieldContext = Craft::$app->content->fieldContext;
+        $oldContentTable = Craft::$app->content->contentTable;
+
+        // Set our field content and content table to work with our form output
+        Craft::$app->content->fieldContext = $this->getFieldContext();
+        Craft::$app->content->contentTable = $this->getContentTable();
+
         // Get the form record
         if (!$isNew) {
             $record = FormRecord::findOne($this->id);
@@ -457,14 +466,10 @@ class FormElement extends Element
             if (!$record instanceof FormRecord) {
                 throw new Exception('Invalid Form ID: ' . $this->id);
             }
-
-            $this->updateSubmissionLayout();
         } else {
             $record = new FormRecord();
             $record->id = $this->id;
         }
-
-        $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
 
         $record->name = $this->name;
         $record->handle = $this->handle;
@@ -481,7 +486,34 @@ class FormElement extends Element
         $record->formTemplateUid = $this->formTemplateUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
+        $oldHandle = $record->getOldAttribute('handle');
+        $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
+        $newContentDbTable = FormContentTableHelper::getContentTable($record->handle);
+
+        // Do we need to create/rename the content table?
+        if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
+            if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
+                Db::renameTable($oldContentDbTable, $newContentDbTable);
+            } else {
+                FormContentTableHelper::createContentTable($newContentDbTable);
+            }
+        }
+
+        $this->updateSubmissionLayout();
+        $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
+
         $record->save(false);
+
+        // Reset field context and content table to original values
+        Craft::$app->content->fieldContext = $oldFieldContext;
+        Craft::$app->content->contentTable = $oldContentTable;
+
+        // Re-save Submission Elements if titleFormat has changed
+        $oldTitleFormat = $record->getOldAttribute('titleFormat');
+
+        if ($record->titleFormat !== $oldTitleFormat) {
+            FormsModule::getInstance()->submissions->resaveElements($this->getId());
+        }
 
         parent::afterSave($isNew);
     }

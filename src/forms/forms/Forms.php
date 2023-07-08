@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use BarrelStrength\Sprout\forms\migrations\helpers\CreateFormContentTable;
+use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -158,7 +159,7 @@ class Forms extends Component
             // Delete the Field Layout
             Craft::$app->getFields()->deleteLayoutById($form->submissionFieldLayoutId);
 
-            $contentTable = $this->getContentTableName($form);
+            $contentTable = FormContentTableHelper::getContentTable($form);
 
             // Drop the content table
             Craft::$app->getDb()->createCommand()
@@ -222,25 +223,7 @@ class Forms extends Component
         return $query->one();
     }
 
-    /**
-     * Returns the content table name for a given form field
-     */
-    public function getContentTableName(FormElement $form, bool $useOldHandle = false): bool|string
-    {
-        if ($useOldHandle) {
-            if (!$form->oldHandle) {
-                return false;
-            }
 
-            $handle = $form->oldHandle;
-        } else {
-            $handle = $form->handle;
-        }
-
-        $name = StringHelper::toLowerCase(trim($handle));
-
-        return '{{%sprout_formcontent_' . $name . '}}';
-    }
 
     /**
      * Returns the value of a given field
@@ -470,19 +453,5 @@ class Forms extends Component
         }
 
         return null;
-    }
-
-    /**
-     * Creates the content table for a Form.
-     */
-    private function _createContentTable($tableName): void
-    {
-        $migration = new CreateFormContentTable([
-            'tableName' => $tableName,
-        ]);
-
-        ob_start();
-        $migration->up();
-        ob_end_clean();
     }
 }

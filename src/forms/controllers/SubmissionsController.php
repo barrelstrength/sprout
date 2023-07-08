@@ -169,6 +169,7 @@ class SubmissionsController extends BaseController
         $this->trigger(self::EVENT_BEFORE_POPULATE, $event);
 
         $submission = $this->getSubmissionModel();
+        $submission->formId = $this->form->id;
 
         $fieldsLocation = $this->request->getParam('fieldsLocation', 'fields');
         $submission->setFieldValuesFromRequest($fieldsLocation);

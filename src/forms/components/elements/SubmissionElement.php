@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\SubmissionRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionsSpamLog;
 use BarrelStrength\Sprout\forms\submissions\SubmissionStatus;
@@ -335,13 +336,7 @@ class SubmissionElement extends Element
      */
     public function getContentTable(): string
     {
-        $form = $this->getForm();
-
-        if ($form) {
-            return FormsModule::getInstance()->forms->getContentTableName($this->getForm());
-        }
-
-        return '';
+        return FormContentTableHelper::getContentTable($this->getForm());
     }
 
     public function cpEditUrl(): ?string
