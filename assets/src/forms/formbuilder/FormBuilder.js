@@ -239,6 +239,7 @@ export const FormBuilder = (formId) => ({
         this.dragOrigin = this.DragOrigins.sourceField;
 
         e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
+
         // e.dataTransfer.dropEffect = 'link';
         // e.dataTransfer.effectAllowed = 'copyLink';
     },
@@ -259,7 +260,8 @@ export const FormBuilder = (formId) => ({
         e.dataTransfer.setData('sprout/origin-page-tab-id', this.selectedTabId);
         e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
         this.dragOrigin = this.DragOrigins.layoutField;
-        self.isDraggingFormFieldId = e.target.dataset.fieldId;
+        this.isDraggingTabId = this.normalizeTypes(e.target.dataset.tabId);
+        this.isDraggingFormFieldId = this.normalizeTypes(e.target.dataset.fieldId);
 
         // Need setTimeout before manipulating dom:
         // https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -724,12 +726,27 @@ export const FormBuilder = (formId) => ({
             },
         }).then((response) => {
 
+
             const $body = $('<div/>', {class: 'fld-element-settings-body'});
             const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
             const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
 
+            const $removeBtn = Craft.ui.createButton({
+                class: 'icon',
+                attr: {
+                    'data-icon': 'trash',
+                },
+                label: Craft.t('app', 'Remove'),
+                spinner: true,
+            });
+
+            $removeBtn.attr('data-icon', 'trash');
+
             // Copied from Craft's FieldLayoutDesigner.js
             const $cancelBtn = Craft.ui.createButton({
+                data: {
+                    trashed: true,
+                },
                 label: Craft.t('app', 'Close'),
                 spinner: true,
             });
@@ -740,8 +757,8 @@ export const FormBuilder = (formId) => ({
                 spinner: true,
             });
 
+            $removeBtn.appendTo($footer);
             $('<div/>', {class: 'flex-grow'}).appendTo($footer);
-
             $cancelBtn.appendTo($footer);
             $applyButton.appendTo($footer);
 
@@ -771,11 +788,20 @@ export const FormBuilder = (formId) => ({
             $form.on('submit', function(event) {
                 event.preventDefault();
 
+                // console.log($($form).serialize());
+                // console.log($($form[0]).serialize());
+
                 let formData = new FormData($form[0]);
 
                 self.updateTabSettings(self.editTabId, formData);
 
                 slideout.close();
+            });
+
+            $removeBtn.on('click', () => {
+                // console.log(self.editTabId);
+                slideout.close();
+                self.editFieldId = null;
             });
 
             $cancelBtn.on('click', () => {
@@ -838,6 +864,17 @@ export const FormBuilder = (formId) => ({
             const $body = $('<div/>', {class: 'fld-element-settings-body fields'}).appendTo($form);
             const $footer = $('<div/>', {class: 'fld-element-settings-footer'}).appendTo($form);
 
+            const $removeBtn = Craft.ui.createButton({
+                class: 'icon',
+                attr: {
+                    'data-icon': 'trash',
+                },
+                label: Craft.t('app', 'Remove'),
+                spinner: true,
+            });
+
+            $removeBtn.attr('data-icon', 'trash');
+
             // Copied from Craft's FieldLayoutDesigner.js
             const $cancelBtn = Craft.ui.createButton({
                 label: Craft.t('app', 'Close'),
@@ -850,8 +887,8 @@ export const FormBuilder = (formId) => ({
                 spinner: true,
             });
 
+            $removeBtn.appendTo($footer);
             $('<div/>', {class: 'flex-grow'}).appendTo($footer);
-
             $cancelBtn.appendTo($footer);
             $applyButton.appendTo($footer);
 
@@ -877,6 +914,12 @@ export const FormBuilder = (formId) => ({
                 });
 
                 slideout.close();
+            });
+
+            $removeBtn.on('click', () => {
+                // console.log(self.editFieldId);
+                slideout.close();
+                self.editFieldId = null;
             });
 
             $cancelBtn.on('click', () => {
