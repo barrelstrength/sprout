@@ -91,7 +91,6 @@ class TransactionalEmailEmailType extends EmailType
         $eventTab->setElements([
             new NotificationEventField(['uid' => 'SPROUT-UID-NOTIFICATION-EVENT-FIELD']),
             new HorizontalRule(),
-            new SendRuleField(['uid' => 'SPROUT-UID-SEND-RULE-FIELD']),
             new FileAttachmentsField(['uid' => 'SPROUT-UID-FILE-ATTACHMENTS-FIELD']),
         ]);
 
@@ -131,31 +130,6 @@ class TransactionalEmailEmailType extends EmailType
         }
 
         return $notificationEvent;
-    }
-
-    public function sendRuleIsTrue(): bool
-    {
-        $sendRule = trim($this->sendRule);
-
-        // No send rule = Always Send
-        if (empty($sendRule)) {
-            return true;
-        }
-
-        // Custom Send Rule
-        try {
-            $resultTemplate = Craft::$app->view->renderObjectTemplate(
-                $sendRule, $this->getAdditionalTemplateVariables()
-            );
-            $value = trim($resultTemplate);
-            if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
-                return true;
-            }
-        } catch (Exception $exception) {
-            Craft::error($exception->getMessage(), __METHOD__);
-        }
-
-        return false;
     }
 
     public function getMockObjectVariable(EmailElement $email): array

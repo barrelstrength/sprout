@@ -161,10 +161,6 @@ class NotificationEvents extends Component
                 continue;
             }
 
-            if (!$emailTypeSettings->sendRuleIsTrue()) {
-                continue;
-            }
-
             $email->send();
         }
     }
