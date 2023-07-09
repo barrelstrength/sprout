@@ -87,24 +87,39 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         if ($this->displayMultipleFields) {
             $this->hasMultipleLabels = true;
         }
 
-        $rendered = Craft::$app->getView()->renderTemplate('name/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    if ($this->displayMultipleFields) {
+    //        $this->hasMultipleLabels = true;
+    //    }
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('name/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     /**
      * Prepare our Name for use as an NameFormFieldData

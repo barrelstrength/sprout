@@ -40,22 +40,36 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $users = FormsModule::getInstance()->frontEndFields->getFrontEndUsers($this->getSettings());
 
-        $rendered = Craft::$app->getView()->renderTemplate('users/input', [
-                'name' => $this->handle,
-                'value' => $value->ids(),
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-                'users' => $users,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value->ids(),
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+            'users' => $users,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $users = FormsModule::getInstance()->frontEndFields->getFrontEndUsers($this->getSettings());
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('users/input', [
+    //            'name' => $this->handle,
+    //            'value' => $value->ids(),
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //            'users' => $users,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

@@ -17,5 +17,5 @@ interface FormFieldInterface
     /**
      * The HTML to render when a Form is output using the displayForm, displayTab, or displayField tags
      */
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup;
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup;
 }

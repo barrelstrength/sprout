@@ -108,20 +108,31 @@ class OptInFormField extends Field implements FormFieldInterface, PreviewableFie
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
-        $rendered = Craft::$app->getView()->renderTemplate('optin/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $rendered = Craft::$app->getView()->renderTemplate('optin/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getElementConditionRuleType(): array|string|null
     {

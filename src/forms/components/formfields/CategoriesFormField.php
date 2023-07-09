@@ -38,23 +38,37 @@ class CategoriesFormField extends CraftCategories implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $categories = FormsModule::getInstance()->frontEndFields->getFrontEndCategories($this->getSettings());
 
-        $rendered = Craft::$app->getView()->renderTemplate('categories/input',
-            [
-                'name' => $this->handle,
-                'value' => $value->ids(),
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-                'categories' => $categories,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value->ids(),
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+            'categories' => $categories,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $categories = FormsModule::getInstance()->frontEndFields->getFrontEndCategories($this->getSettings());
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('categories/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value->ids(),
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //            'categories' => $categories,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

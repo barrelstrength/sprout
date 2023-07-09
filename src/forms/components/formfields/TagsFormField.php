@@ -38,23 +38,37 @@ class TagsFormField extends CraftTags implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $tags = FormsModule::getInstance()->frontEndFields->getFrontEndTags($this->getSettings());
 
-        $rendered = Craft::$app->getView()->renderTemplate('tags/input',
-            [
-                'name' => $this->handle,
-                'value' => $value->ids(),
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-                'tags' => $tags,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value->ids(),
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+            'users' => $tags,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $tags = FormsModule::getInstance()->frontEndFields->getFrontEndTags($this->getSettings());
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('tags/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value->ids(),
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //            'tags' => $tags,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

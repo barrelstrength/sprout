@@ -52,20 +52,20 @@ class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInter
         ];
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    {
-        $rendered = Craft::$app->getView()->renderTemplate('checkboxes/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
-    }
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $rendered = Craft::$app->getView()->renderTemplate('checkboxes/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

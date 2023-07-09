@@ -119,26 +119,43 @@ class EmailDropdownFormField extends CraftDropdownField implements FormFieldInte
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $selectedValue = $value->value ?? null;
 
         $options = $this->options;
         $options = EmailDropdownHelper::obfuscateEmailAddresses($options, $selectedValue);
 
-        $rendered = Craft::$app->getView()->renderTemplate('emaildropdown/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'options' => $options,
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'options' => $options,
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $selectedValue = $value->value ?? null;
+    //
+    //    $options = $this->options;
+    //    $options = EmailDropdownHelper::obfuscateEmailAddresses($options, $selectedValue);
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('emaildropdown/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'options' => $options,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
     {

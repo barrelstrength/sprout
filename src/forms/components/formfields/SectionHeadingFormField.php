@@ -123,7 +123,7 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $name = $this->handle;
         $namespaceInputId = $this->getNamespace() . '-' . $name;
@@ -132,13 +132,28 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
             $this->notes = '';
         }
 
-        $rendered = Craft::$app->getView()->renderTemplate('sectionheading/input',
-            [
-                'id' => $namespaceInputId,
-                'field' => $this,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'id' => $namespaceInputId,
+            'field' => $this,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $name = $this->handle;
+    //    $namespaceInputId = $this->getNamespace() . '-' . $name;
+    //
+    //    if ($this->notes === null) {
+    //        $this->notes = '';
+    //    }
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('sectionheading/input',
+    //        [
+    //            'id' => $namespaceInputId,
+    //            'field' => $this,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 }

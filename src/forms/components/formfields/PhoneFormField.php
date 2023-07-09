@@ -145,27 +145,45 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         ]);
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $name = $this->handle;
         $country = $value['country'] ?? $this->country;
         $countries = PhoneHelper::getCountries();
         $val = $value['phone'] ?? null;
 
-        $rendered = Craft::$app->getView()->renderTemplate('phone/input',
-            [
-                'name' => $name,
-                'value' => $val,
-                'field' => $this,
-                'submission' => $submission,
-                'country' => $country,
-                'countries' => $countries,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $name,
+            'value' => $val,
+            'field' => $this,
+            'submission' => $submission,
+            'country' => $country,
+            'countries' => $countries,
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $name = $this->handle;
+    //    $country = $value['country'] ?? $this->country;
+    //    $countries = PhoneHelper::getCountries();
+    //    $val = $value['phone'] ?? null;
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('phone/input',
+    //        [
+    //            'name' => $name,
+    //            'value' => $val,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'country' => $country,
+    //            'countries' => $countries,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
     {

@@ -263,7 +263,7 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $name = $this->handle;
         $settings = $this->getSettings();
@@ -294,19 +294,61 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
         $countryInputHtml = FormsModule::getInstance()->addressFormatter->getCountryInputHtml($showCountryDropdown);
         $addressFormHtml = FormsModule::getInstance()->addressFormatter->getAddressFormHtml();
 
-        $rendered = Craft::$app->getView()->renderTemplate('address/input', [
-                'field' => $this,
-                'submission' => $submission,
-                'name' => $this->handle,
-                'renderingOptions' => $renderingOptions,
-                'addressFormHtml' => TemplateHelper::raw($addressFormHtml),
-                'countryInputHtml' => TemplateHelper::raw($countryInputHtml),
-                'showCountryDropdown' => $showCountryDropdown,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'field' => $this,
+            'submission' => $submission,
+            'name' => $this->handle,
+            'renderingOptions' => $renderingOptions,
+            'addressFormHtml' => TemplateHelper::raw($addressFormHtml),
+            'countryInputHtml' => TemplateHelper::raw($countryInputHtml),
+            'showCountryDropdown' => $showCountryDropdown,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $name = $this->handle;
+    //    $settings = $this->getSettings();
+    //
+    //    $countryCode = $settings['defaultCountry'] ?? $this->defaultCountry;
+    //    $showCountryDropdown = $settings['showCountryDropdown'] ?? 0;
+    //
+    //    $addressModel = new AddressModel();
+    //
+    //    // This defaults to Sprout Base and we need it to get updated to look
+    //    // in the Sprout Forms Form Template location like other fields.
+    //    FormsModule::getInstance()->addressFormatter->setBaseAddressFieldPath('');
+    //
+    //    FormsModule::getInstance()->addressFormatter->setNamespace($name);
+    //
+    //    if (isset($this->highlightCountries) && count($this->highlightCountries)) {
+    //        FormsModule::getInstance()->addressFormatter->setHighlightCountries($this->highlightCountries);
+    //    }
+    //
+    //    FormsModule::getInstance()->addressFormatter->setCountryCode($countryCode);
+    //    FormsModule::getInstance()->addressFormatter->setAddressModel($addressModel);
+    //    FormsModule::getInstance()->addressFormatter->setLanguage($this->defaultLanguage);
+    //
+    //    if ($this->highlightCountries !== []) {
+    //        FormsModule::getInstance()->addressFormatter->setHighlightCountries($this->highlightCountries);
+    //    }
+    //
+    //    $countryInputHtml = FormsModule::getInstance()->addressFormatter->getCountryInputHtml($showCountryDropdown);
+    //    $addressFormHtml = FormsModule::getInstance()->addressFormatter->getAddressFormHtml();
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('address/input', [
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'name' => $this->handle,
+    //            'renderingOptions' => $renderingOptions,
+    //            'addressFormHtml' => TemplateHelper::raw($addressFormHtml),
+    //            'countryInputHtml' => TemplateHelper::raw($countryInputHtml),
+    //            'showCountryDropdown' => $showCountryDropdown,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
     {

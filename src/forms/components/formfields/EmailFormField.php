@@ -101,25 +101,25 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
         ];
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    {
-        $errorMessage = $this->getErrorMessage();
-        $placeholder = $this['placeholder'] ?? '';
-
-        $rendered = Craft::$app->getView()->renderTemplate('email/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'errorMessage' => $errorMessage,
-                'renderingOptions' => $renderingOptions,
-                'placeholder' => $placeholder,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
-    }
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $errorMessage = $this->getErrorMessage();
+    //    $placeholder = $this['placeholder'] ?? '';
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('email/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'errorMessage' => $errorMessage,
+    //            'renderingOptions' => $renderingOptions,
+    //            'placeholder' => $placeholder,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getElementValidationRules(): array
     {

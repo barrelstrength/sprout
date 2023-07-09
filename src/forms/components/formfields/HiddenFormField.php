@@ -73,7 +73,7 @@ class HiddenFormField extends Field implements FormFieldInterface, PreviewableFi
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         if ($this->value) {
             try {
@@ -83,18 +83,37 @@ class HiddenFormField extends Field implements FormFieldInterface, PreviewableFi
             }
         }
 
-        $rendered = Craft::$app->getView()->renderTemplate('hidden/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'field' => $this,
+            'submission' => $submission,
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    if ($this->value) {
+    //        try {
+    //            $value = Craft::$app->view->renderObjectTemplate($this->value, Forms::getFieldVariables());
+    //        } catch (Exception $exception) {
+    //            Craft::error($exception->getMessage(), __METHOD__);
+    //        }
+    //    }
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('hidden/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getElementConditionRuleType(): array|string|null
     {

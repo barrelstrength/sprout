@@ -167,7 +167,7 @@ class DateFormField extends CraftDate implements FormFieldInterface
         return TemplateHelper::raw($rendered);
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         if ($this->minimumDate) {
             $this->minimumDate = Craft::$app->getView()->renderString($this->minimumDate);
@@ -177,19 +177,39 @@ class DateFormField extends CraftDate implements FormFieldInterface
             $this->maximumDate = Craft::$app->getView()->renderString($this->maximumDate);
         }
 
-        $rendered = Craft::$app->getView()->renderTemplate('date/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'timeOptions' => $this->getTimeIncrementsAsOptions($this->minuteIncrement),
-                'renderingOptions' => $renderingOptions,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'field' => $this,
+            'submission' => $submission,
+            'timeOptions' => $this->getTimeIncrementsAsOptions($this->minuteIncrement),
+            'renderingOptions' => $renderingOptions,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    if ($this->minimumDate) {
+    //        $this->minimumDate = Craft::$app->getView()->renderString($this->minimumDate);
+    //    }
+    //
+    //    if ($this->maximumDate) {
+    //        $this->maximumDate = Craft::$app->getView()->renderString($this->maximumDate);
+    //    }
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('date/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'timeOptions' => $this->getTimeIncrementsAsOptions($this->minuteIncrement),
+    //            'renderingOptions' => $renderingOptions,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     /**
      * Prepare the time dropdown in increments of the selected minuteIncrement.

@@ -80,26 +80,43 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $errorMessage = FormsModule::getInstance()->urlField->getErrorMessage($this);
         $placeholder = $this->placeholder ?? '';
 
-        $rendered = Craft::$app->getView()->renderTemplate('url/input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'submission' => $submission,
-                'pattern' => $this->customPattern,
-                'errorMessage' => $errorMessage,
-                'renderingOptions' => $renderingOptions,
-                'placeholder' => $placeholder,
-            ]
-        );
-
-        return TemplateHelper::raw($rendered);
+        return [
+            'name' => $this->handle,
+            'value' => $value,
+            'field' => $this,
+            'submission' => $submission,
+            'pattern' => $this->customPattern,
+            'errorMessage' => $errorMessage,
+            'renderingOptions' => $renderingOptions,
+            'placeholder' => $placeholder,
+        ];
     }
+
+    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
+    //{
+    //    $errorMessage = FormsModule::getInstance()->urlField->getErrorMessage($this);
+    //    $placeholder = $this->placeholder ?? '';
+    //
+    //    $rendered = Craft::$app->getView()->renderTemplate('url/input',
+    //        [
+    //            'name' => $this->handle,
+    //            'value' => $value,
+    //            'field' => $this,
+    //            'submission' => $submission,
+    //            'pattern' => $this->customPattern,
+    //            'errorMessage' => $errorMessage,
+    //            'renderingOptions' => $renderingOptions,
+    //            'placeholder' => $placeholder,
+    //        ]
+    //    );
+    //
+    //    return TemplateHelper::raw($rendered);
+    //}
 
     public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
     {
