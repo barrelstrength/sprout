@@ -49,81 +49,81 @@ class Forms extends Component
         return static::$fieldVariables;
     }
 
-    public function saveForm(FormElement $form, bool $duplicate = false): bool
-    {
-        $isNew = !$form->getId();
-
-        if (!$isNew) {
-            // Add the oldHandle to our model so we can determine if we
-            // need to rename the content table
-            /** @var FormRecord $formRecord */
-            $formRecord = FormRecord::findOne($form->getId());
-            $form->oldHandle = $formRecord->getOldHandle();
-            $oldForm = $formRecord;
-
-            if ($duplicate) {
-                $form->name = $oldForm->name;
-                $form->handle = $oldForm->handle;
-                $form->oldHandle = null;
-            }
-        }
-
-        $form->validate();
-
-        if ($form->hasErrors()) {
-            Craft::error($form->getErrors(), __METHOD__);
-
-            return false;
-        }
-
-        /** @var Transaction $transaction */
-        $transaction = Craft::$app->db->beginTransaction();
-
-        try {
-            // Save the field layout
-            $fieldLayout = $form->getFieldLayout();
-            Craft::$app->getFields()->saveLayout($fieldLayout);
-
-            // Assign our new layout id info to our form model and record
-            $form->setFieldLayoutId($fieldLayout->id);
-
-            // Set the field context
-            Craft::$app->content->fieldContext = $form->getFieldContext();
-            Craft::$app->content->contentTable = $form->getContentTable();
-
-            // Create the content table first since the form will need it
-            $oldContentTable = $this->getContentTableName($form, true);
-            $newContentTable = $this->getContentTableName($form);
-
-            // Do we need to create/rename the content table?
-            if (!Craft::$app->db->tableExists($newContentTable) && !$duplicate) {
-                if ($oldContentTable && Craft::$app->db->tableExists($oldContentTable)) {
-                    Db::renameTable($oldContentTable, $newContentTable);
-                } else {
-                    $this->_createContentTable($newContentTable);
-                }
-            }
-
-            // Save the Form
-            if (!Craft::$app->elements->saveElement($form)) {
-                Craft::error('Couldn’t save Element.', __METHOD__);
-
-                return false;
-            }
-
-            // FormRecord saved on afterSave form element
-            $transaction->commit();
-
-            Craft::info('Form Saved.', __METHOD__);
-        } catch (Exception $exception) {
-            Craft::error('Unable to save form: ' . $exception->getMessage(), __METHOD__);
-            $transaction->rollBack();
-
-            throw $exception;
-        }
-
-        return true;
-    }
+    //public function saveForm(FormElement $form, bool $duplicate = false): bool
+    //{
+    //    $isNew = !$form->getId();
+    //
+    //    if (!$isNew) {
+    //        // Add the oldHandle to our model so we can determine if we
+    //        // need to rename the content table
+    //        /** @var FormRecord $formRecord */
+    //        $formRecord = FormRecord::findOne($form->getId());
+    //        $form->oldHandle = $formRecord->getOldHandle();
+    //        $oldForm = $formRecord;
+    //
+    //        if ($duplicate) {
+    //            $form->name = $oldForm->name;
+    //            $form->handle = $oldForm->handle;
+    //            $form->oldHandle = null;
+    //        }
+    //    }
+    //
+    //    $form->validate();
+    //
+    //    if ($form->hasErrors()) {
+    //        Craft::error($form->getErrors(), __METHOD__);
+    //
+    //        return false;
+    //    }
+    //
+    //    /** @var Transaction $transaction */
+    //    $transaction = Craft::$app->db->beginTransaction();
+    //
+    //    try {
+    //        // Save the field layout
+    //        $fieldLayout = $form->getFieldLayout();
+    //        Craft::$app->getFields()->saveLayout($fieldLayout);
+    //
+    //        // Assign our new layout id info to our form model and record
+    //        $form->setFieldLayoutId($fieldLayout->id);
+    //
+    //        // Set the field context
+    //        Craft::$app->content->fieldContext = $form->getFieldContext();
+    //        Craft::$app->content->contentTable = $form->getContentTable();
+    //
+    //        // Create the content table first since the form will need it
+    //        $oldContentTable = $this->getContentTableName($form, true);
+    //        $newContentTable = $this->getContentTableName($form);
+    //
+    //        // Do we need to create/rename the content table?
+    //        if (!Craft::$app->db->tableExists($newContentTable) && !$duplicate) {
+    //            if ($oldContentTable && Craft::$app->db->tableExists($oldContentTable)) {
+    //                Db::renameTable($oldContentTable, $newContentTable);
+    //            } else {
+    //                $this->_createContentTable($newContentTable);
+    //            }
+    //        }
+    //
+    //        // Save the Form
+    //        if (!Craft::$app->elements->saveElement($form)) {
+    //            Craft::error('Couldn’t save Element.', __METHOD__);
+    //
+    //            return false;
+    //        }
+    //
+    //        // FormRecord saved on afterSave form element
+    //        $transaction->commit();
+    //
+    //        Craft::info('Form Saved.', __METHOD__);
+    //    } catch (Exception $exception) {
+    //        Craft::error('Unable to save form: ' . $exception->getMessage(), __METHOD__);
+    //        $transaction->rollBack();
+    //
+    //        throw $exception;
+    //    }
+    //
+    //    return true;
+    //}
 
     /**
      * Removes a form and related records from the database
@@ -433,16 +433,16 @@ class Forms extends Component
         return $tabs;
     }
 
-    public function getFormField($formFieldHandle, $formId)
-    {
-        $form = Craft::$app->elements->getElementById($formId);
-
-        if (!$form) {
-            throw new BadRequestHttpException('No form exists with the ID ' . $formId);
-        }
-
-        return $form->getField($formFieldHandle);
-    }
+    //public function getFormField($formFieldHandle, $formId)
+    //{
+    //    $form = Craft::$app->elements->getElementById($formId);
+    //
+    //    if (!$form) {
+    //        throw new BadRequestHttpException('No form exists with the ID ' . $formId);
+    //    }
+    //
+    //    return $form->getField($formFieldHandle);
+    //}
 
     public function handleModifyFormHook($context): ?string
     {

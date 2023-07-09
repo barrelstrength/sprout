@@ -525,7 +525,26 @@ class FormElement extends Element
             return;
         }
 
+        // This should exist in $this->submissionFieldLayout as a list of IDs I can just act on
+        // If they are deleted, just delete them!
+        $deletedFieldIds = [];
+
         $fieldsService = Craft::$app->getFields();
+
+        if ($this->duplicateOf) {
+
+            // remap submissionFieldLayout and duplicate fields, etc.
+            // Does craft have a method for this?
+            // id, uid
+            // do userCondition and elementCondition need to be updated?
+            // they probably store uids as references
+            // fields.id, fields.userCondition, fields.elementCondition
+
+            // refreshUUID() method
+            // find all UUIDs in text blob with regex
+            // map every old UUID to a new UUID
+            // and do a find/replace
+        }
 
         $layoutConfig = Json::decode($this->submissionFieldLayout);
         $layoutConfig = reset($layoutConfig);
@@ -583,11 +602,12 @@ class FormElement extends Element
 
                 // 1. Create actual Field craft_fields
                 if (!$fieldsService->saveField($field)) {
-                    throw new Exception('Couldn’t save form field.');
+                    throw new Exception('Couldn’t save form field: '. Json::encode($field->getErrors()));
                 }
 
                 // 2. Create Field Layout Field craft_fieldlayoutfields
                 // 3. craft_fieldlayouttabs.elements
+                // 4. If HANDLE changed, update column in formcontent_table?
 
                 $layoutFieldElement = new CustomField($field, [
                     'required' => $layoutField['required'] ?? false,
@@ -621,7 +641,7 @@ class FormElement extends Element
         //  Instantiate each tab/field and add to layout
         // Check if content table names changed and rename them...
 
-        $deletedFieldIds = [];
+
 
         //        foreach ($layoutTabs['tabs'] as $key => $tab) {
 
@@ -679,16 +699,16 @@ class FormElement extends Element
      *
      * @return FieldInterface|null
      */
-    public function getField(string $handle): ?FormField
-    {
-        $fields = $this->getFields();
-
-        if (is_string($handle) && !empty($handle)) {
-            return $fields[$handle] ?? null;
-        }
-
-        return null;
-    }
+    //public function getField(string $handle): ?FormField
+    //{
+    //    $fields = $this->getFields();
+    //
+    //    if (is_string($handle) && !empty($handle)) {
+    //        return $fields[$handle] ?? null;
+    //    }
+    //
+    //    return null;
+    //}
 
     public function getClassesOptions($cssClasses = null): array
     {
