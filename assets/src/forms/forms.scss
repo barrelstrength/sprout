@@ -79,6 +79,10 @@
     margin-left: 20px;
 }
 
+.no-pointer-events * {
+    pointer-events: none;
+}
+
 .layout-field .body .sproutform-exampleinput-privatenotes textarea {
     border: 2px dashed #cccccc;
     box-shadow: none;

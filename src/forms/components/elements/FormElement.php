@@ -894,13 +894,15 @@ class FormElement extends Element
         $rules[] = [['submissionFieldLayout'], 'safe'];
         $rules[] = [['titleFormat'], 'required'];
         $rules[] = [['displaySectionTitles'], 'safe'];
-        $rules[] = [['redirectUri'], function($attribute) {
-            /** @var AbstractLink $link */
-            $link = $this->$attribute;
-            if ($link && !$link->validate()) {
-                $this->addError($attribute, $link->getErrorSummary(true)[0]);
-            }
-        }];
+        $rules[] = [
+            ['redirectUri'], function($attribute) {
+                /** @var AbstractLink $link */
+                $link = $this->$attribute;
+                if ($link && !$link->validate()) {
+                    $this->addError($attribute, $link->getErrorSummary(true)[0]);
+                }
+            },
+        ];
         $rules[] = [['submissionMethod'], 'safe'];
         $rules[] = [['errorDisplayMethod'], 'safe'];
         $rules[] = [['messageOnSuccess'], 'safe'];

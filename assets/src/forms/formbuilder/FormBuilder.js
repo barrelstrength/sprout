@@ -41,16 +41,23 @@ export const FormBuilder = (formId) => ({
     editTabId: null,
     editFieldId: null,
 
+    dragOrigin: null,
+
+    DragOrigins: {
+        sourceField: 'source-field',
+        layoutField: 'layout-field',
+        layoutTabNav: 'layout-tab-nav',
+    },
+
+    isDraggingTabId: null,
     isDragOverTabId: null,
 
     isDraggingFormFieldId: null,
     isDragOverFormFieldId: null,
-    isMouseOverFormFieldId: null,
-    isMouseOverEndZone: null,
 
     init() {
 
-        self = this;
+        let self = this;
         // Get the saved fieldLayout data
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-submission-field-layout', {
             data: {
@@ -162,17 +169,74 @@ export const FormBuilder = (formId) => ({
     dragStartLayoutTabNav(e) {
         console.log('dragStartLayoutTabNav');
 
-        e.dataTransfer.setData('sprout/page-tab', e.target.dataset.type);
+        e.dataTransfer.setData('sprout/origin-page-tab-id', e.target.dataset.tabId);
+        this.dragOrigin = this.DragOrigins.layoutTabNav;
+        this.isDraggingTabId = this.normalizeTypes(e.target.dataset.tabId);
+
         // e.dataTransfer.dropEffect = 'link';
         // e.dataTransfer.effectAllowed = 'copyLink';
     },
 
     dragEndLayoutTabNav(e) {
         console.log('dragEndLayoutTabNav');
+
+        this.dragOrigin = null;
+        this.isDraggingTabId = null;
+        this.isDragOverTabId = null;
+    },
+
+    dragEnterLayoutTabNav(e) {
+        console.log('dragEnterLayoutTabNav');
+        e.target.classList.add('no-pointer-events');
+    },
+
+    dragLeaveLayoutTabNav(e) {
+        console.log('dragLeaveLayoutTabNav');
+        e.target.classList.remove('no-pointer-events');
+    },
+
+    dragOverLayoutTabNav(e) {
+        let self = this;
+
+        if (this.dragOrigin === this.DragOrigins.layoutTabNav) {
+
+        }
+
+        if (this.dragOrigin === this.DragOrigins.sourceField || this.dragOrigin === this.DragOrigins.layoutField) {
+            setTimeout(function() {
+                self.selectedTabId = self.normalizeTypes(e.target.dataset.tabId);
+            }, 1000);
+        }
+    },
+
+    dropOnLayoutTabNav(e) {
+        console.log('dropOnLayoutTabNav');
+
+        let self = this;
+
+        let originTabId = self.normalizeTypes(e.dataTransfer.getData('sprout/origin-page-tab-id'));
+        let targetTabId = self.normalizeTypes(e.target.dataset.tabId);
+
+        if (this.dragOrigin === this.DragOrigins.layoutTabNav) {
+            this.updateTabPosition(originTabId, targetTabId);
+            this.selectedTabId = originTabId;
+        }
+
+        if (this.dragOrigin === this.DragOrigins.sourceField) {
+            let type = e.dataTransfer.getData('sprout/field-type');
+            this.addFieldToLayoutTab(type);
+        }
+
+        if (this.dragOrigin === this.DragOrigins.layoutField) {
+
+            this.updateFieldPositionOnNewTab(self.isDraggingFormFieldId, originTabId, targetTabId);
+        }
     },
 
     dragStartSourceField(e) {
         console.log('dragStartSourceField');
+
+        this.dragOrigin = this.DragOrigins.sourceField;
 
         e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
         // e.dataTransfer.dropEffect = 'link';
@@ -182,30 +246,27 @@ export const FormBuilder = (formId) => ({
     dragEndSourceField(e) {
         console.log('dragEndSourceField');
 
-        // this.isDragOverTabId = null;
-        // this.isDraggingFormFieldId = null;
-        // this.isDragOverFormFieldId = null;
-        // this.isMouseOverFormFieldId = null;
+        this.isDraggingFormFieldId = null;
+        this.isDragOverFormFieldId = null;
     },
 
     dragStartLayoutField(e) {
         console.log('dragStartLayoutField');
 
+        let self = this;
 
-        // self = this;
-        //
-        // this.isDragOverTabId = this.selectedTabId;
-        //
-        // let isDraggingFormFieldId = e.target.dataset.fieldId;
+        // Store selected tab in drag object as it might change before the drop event
+        e.dataTransfer.setData('sprout/origin-page-tab-id', this.selectedTabId);
+        e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
+        this.dragOrigin = this.DragOrigins.layoutField;
+        self.isDraggingFormFieldId = e.target.dataset.fieldId;
 
         // Need setTimeout before manipulating dom:
         // https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
         // setTimeout(function() {
         //   self.isDraggingFormFieldId = isDraggingFormFieldId;
         // }, 10);
-        //
-        e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
-        // e.dataTransfer.setData('sprout/field-id', isDraggingFormFieldId);
+
         // e.dataTransfer.dropEffect = 'move';
         // e.dataTransfer.effectAllowed = 'move';
 
@@ -228,13 +289,12 @@ export const FormBuilder = (formId) => ({
 
     dragEndLayoutField(e) {
         console.log('dragEndLayoutField');
-        // this.isDragOverTabId = null;
-        // this.isDraggingFormFieldId = null;
-        // this.isDragOverFormFieldId = null;
-        // this.isMouseOverFormFieldId = null;
 
         // Reset scrolling
         // this.scrollActive = false;
+
+        this.isDraggingFormFieldId = null;
+        this.isDragOverFormFieldId = null;
     },
 
     dragEnterLayoutTabBody(e) {
@@ -251,32 +311,44 @@ export const FormBuilder = (formId) => ({
 
     dropOnLayoutTabBody(e) {
         console.log('dropOnLayoutTabBody');
+        let self = this;
 
         let type = e.dataTransfer.getData('sprout/field-type');
-        this.addFieldToLayoutTab(type);
+
+        if (this.dragOrigin === this.DragOrigins.sourceField) {
+            this.addFieldToLayoutTab(type);
+        }
+
+        if (this.dragOrigin === this.DragOrigins.layoutField) {
+
+            let dropBeforeTargetFieldId = this.normalizeTypes(e.target.dataset.fieldId);
+
+            this.updateFieldPosition(self.isDraggingFormFieldId, dropBeforeTargetFieldId);
+        }
     },
 
     dragEnterLayoutField(e) {
         console.log('dragEnterLayoutField');
+        e.target.classList.add('no-pointer-events');
+
     },
 
     dragLeaveLayoutField(e) {
         console.log('dragLeaveLayoutField');
-
-        // this.isDragOverTabId = null;
-        // this.isMouseOverFormFieldId = null;
+        e.target.classList.remove('no-pointer-events');
     },
 
     dropOnExistingLayoutField(e) {
         console.log('dropOnExistingLayoutField');
+        let self = this;
 
-        let fieldId = e.dataTransfer.getData('sprout/field-id');
+        // let fieldId = e.dataTransfer.getData('sprout/field-id');
         let type = e.dataTransfer.getData('sprout/field-type');
 
         let dropBeforeTargetFieldId = e.target.dataset.fieldId;
 
-        if (fieldId) {
-            this.updateFieldPosition(fieldId, dropBeforeTargetFieldId);
+        if (this.dragOrigin === this.DragOrigins.layoutField) {
+            this.updateFieldPosition(self.isDraggingFormFieldId, dropBeforeTargetFieldId);
         } else {
             this.addFieldToLayoutTab(type, dropBeforeTargetFieldId);
         }
@@ -296,38 +368,17 @@ export const FormBuilder = (formId) => ({
 
     dropOnLayoutEndZone(e) {
         console.log('dropOnLayoutEndZone');
+        let self = this;
 
-        // this.isMouseOverEndZone = false;
-        //
         let type = e.dataTransfer.getData('sprout/field-type');
-        let fieldId = e.dataTransfer.getData('sprout/field-id');
+        // let fieldId = e.dataTransfer.getData('sprout/field-id');
 
-        if (!fieldId) {
+        if (this.dragOrigin === this.DragOrigins.sourceField) {
             console.log('addFieldToLayoutTab');
             this.addFieldToLayoutTab(type);
         } else {
             console.log('updateFieldPosition');
-            this.updateFieldPosition(fieldId);
-        }
-    },
-
-    dragOverLayoutTabNav(e) {
-
-        const sproutPageTab = e.dataTransfer.types.includes('sprout/page-tab');
-        const isDraggingLayoutField = e.dataTransfer.types.includes('sprout/field-type');
-
-        // this.isDragOverTabId = this.selectedTabId;
-        // this.isDragOverFormFieldId = e.target.parentNode.dataset.fieldId;
-        // this.isMouseOverFormFieldId = e.target.dataset.fieldId;
-
-        if (sproutPageTab) {
-            console.log('dragOverLayoutTabNav Tab');
-            event.preventDefault();
-        }
-
-        if (isDraggingLayoutField) {
-            console.log('dragOverLayoutTabNav Field');
-            event.preventDefault();
+            this.updateFieldPosition(self.isDraggingFormFieldId);
         }
     },
 
@@ -356,7 +407,7 @@ export const FormBuilder = (formId) => ({
 
         // this.isDragOverTabId = this.selectedTabId;
         // this.isDragOverFormFieldId = e.target.parentNode.dataset.fieldId;
-        // this.isMouseOverFormFieldId = e.target.parentNode.dataset.fieldId;
+
 
         if (sproutFormField) {
             console.log('isOverFieldLayoutEndZone');
@@ -365,6 +416,11 @@ export const FormBuilder = (formId) => ({
     },
 
     // Helper Methods
+
+    // Covert numbers to numbers and leave other data types as is
+    normalizeTypes(value) {
+        return Number.isNaN(parseInt(value)) ? value : parseInt(value);
+    },
 
     getFieldsByGroup(handle) {
         return this.sourceFields.filter(item => item.groupName === handle);
@@ -375,12 +431,25 @@ export const FormBuilder = (formId) => ({
         return this.sourceFields.filter(item => item.type === type)[0] ?? null;
     },
 
+    getCurrentTabIdFromFieldId(fieldId) {
+        // loop through this.tabs and find the this.tabs.fields.id that matches
+        // return the field.tabId
+        let self = this;
+        this.tabs.forEach(tab => {
+            let fieldIndex = self.getFieldIndexByFieldId(tab, fieldId);
+            if (fieldIndex > -1) {
+                return tab.fields[fieldIndex].tabId;
+            }
+        });
+    },
+
     getTabIndexByTabId(id) {
         return this.tabs.findIndex(item => item.id === id);
     },
 
     getFieldIndexByFieldId(tab, fieldId) {
-        return tab.fields.findIndex(item => item.id === fieldId);
+        // @todo - testing for == because we might have strings or numbers, fix at origin.
+        return tab.fields.findIndex(item => item.id == fieldId);
     },
 
     getNewFormTabId() {
@@ -414,15 +483,79 @@ export const FormBuilder = (formId) => ({
     },
 
     updateFieldSettings(fieldId, fieldSettings) {
+
         let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
         let tab = this.tabs[tabIndex];
 
         let fieldIndex = this.getFieldIndexByFieldId(tab, fieldId);
         let targetField = tab.fields[fieldIndex];
+        //
+        // console.log(targetField);
+        // console.log(fieldSettings);
 
-        targetField.settings = fieldSettings;
+        targetField.name = fieldSettings.name;
+        targetField.instructions = fieldSettings.instructions;
+        targetField.required = fieldSettings.required;
+        // // targetField.name = fieldSettings.name;
+        // // targetField.name = fieldSettings.name;
+        // console.log(targetField);
+
+        // loop through fieldSettings.settings and update the targetField.settings
+        // console.log(fieldSettings);
 
         tab.fields[fieldIndex] = targetField;
+    },
+
+    updateTabPosition(tabId, beforeTabId = null) {
+
+        let beforeTabIndex = this.getTabIndexByTabId(beforeTabId);
+        let tabIndex = this.getTabIndexByTabId(tabId);
+        let targetTab = this.tabs[tabIndex];
+
+        // console.log(this.tabs);
+        // Remove the updated tab
+        this.tabs.splice(tabIndex, 1);
+
+        if (beforeTabId) {
+
+            // console.log('target' + targetTab);
+            // Insert the updated tab before the target tab
+            this.tabs.splice(beforeTabIndex, 0, targetTab);
+        } else {
+            this.tabs.push(targetTab);
+        }
+
+        this.lastUpdatedTabId = targetTab.id;
+    },
+
+    updateFieldPositionOnNewTab(fieldId, originTabId, targetTabId) {
+
+        let self = this;
+
+        let targetTabIndex = this.getTabIndexByTabId(targetTabId);
+        let targetTab = this.tabs[targetTabIndex];
+
+        let originTabIndex = this.getTabIndexByTabId(originTabId);
+        let originTab = this.tabs[originTabIndex];
+
+        let fieldIndex = this.getFieldIndexByFieldId(originTab, fieldId);
+        let targetField = originTab.fields[fieldIndex];
+
+        // Remove the updated field from origin tab
+        originTab.fields.splice(fieldIndex, 1);
+
+        // Push field onto target tab
+        targetTab.fields.push(targetField);
+
+        // Update tab
+        this.tabs[targetTabIndex] = targetTab;
+
+        this.lastUpdatedFormFieldId = targetField.id;
+
+        // The timeout here needs to match the time of the 'drop-highlight' css transition effect
+        setTimeout(function() {
+            self.lastUpdatedFormFieldId = null;
+        }, 300);
     },
 
     updateFieldPosition(fieldId, beforeFieldId = null) {
@@ -478,16 +611,22 @@ export const FormBuilder = (formId) => ({
     addFieldToLayoutTab(type, beforeFieldId) {
 
         let fieldData = this.getFieldByType(type);
-        let newId = this.getNewFormFieldId();
-
-        fieldData.id = newId;
         fieldData.type = type;
+
+
+        if (this.dragOrigin === this.DragOrigins.sourceField) {
+            fieldData.id = this.getNewFormFieldId();
+        }
+
+        if (this.dragOrigin === this.DragOrigins.layoutField) {
+            // fieldData.id = this.getNewFormFieldId();
+        }
 
         let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
         this.tabs[tabIndex].fields.push(fieldData);
 
         if (beforeFieldId) {
-            this.updateFieldPosition(newId, beforeFieldId);
+            this.updateFieldPosition(fieldData.id, beforeFieldId);
         }
     },
 
@@ -516,7 +655,7 @@ export const FormBuilder = (formId) => ({
     // Field Stuff
 
     editFormTabX(tab) {
-        self = this;
+        let self = this;
 
         this.editTabId = tab.id;
 
@@ -574,7 +713,7 @@ export const FormBuilder = (formId) => ({
 
     editFormTab(tab) {
 
-        self = this;
+        let self = this;
 
         this.editTabId = tab.id;
 
@@ -726,18 +865,15 @@ export const FormBuilder = (formId) => ({
                 event.preventDefault();
 
                 let formData = new FormData($form[0]);
-
-                let fieldSettings = {};
-                for (const [index, value] of formData.entries()) {
-                    fieldSettings[index] = value;
-                }
+                let fieldSettings = JSON.stringify(Object.fromEntries(formData));
+                console.log(fieldSettings);
 
                 Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-settings-data', {
                     data: {
                         fieldSettings: fieldSettings,
                     },
                 }).then((response) => {
-                    self.updateFieldSettings(self.editFieldId, response.data.fieldSettings);
+                    self.updateFieldSettings(self.editFieldId, JSON.parse(response.data.fieldSettings));
                 });
 
                 slideout.close();

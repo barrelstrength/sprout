@@ -37,11 +37,16 @@
                     role="tab"
                     draggable="true"
 
-                    x-on:dragover="dragOverLayoutTabNav"
+                    x-on:dragover.prevent="dragOverLayoutTabNav"
                     x-on:dragstart.self="dragStartLayoutTabNav"
                     x-on:dragend.self="dragEndLayoutTabNav"
+                    x-on:dragenter.prevent.self="dragEnterLayoutTabNav"
+                    x-on:dragleave.prevent.self="dragLeaveLayoutTabNav"
+                    x-on:drop="dropOnLayoutTabNav"
+
                     x-on:click="selectedTabId = tab.id"
                     x-bind:id="tab.id"
+                    x-bind:data-tab-id="tab.id"
                     x-bind:class="selectedTabId == tab.id ? 'sel' : ''"
                     x-bind:aria-selected="selectedTabId == tab.id ? true : false"
                 >
@@ -64,7 +69,7 @@
             >
                 {{ "New page"|t('sprout-module-forms') }}
             </a>
-            <div id="formPageManagerBtn" class="btn icon" title="{{ 'Edit Pages'|t('sprout-module-forms') }}" data-icon="menu"></div>
+            {#<div id="" class="btn icon" title="{{ 'Edit Pages'|t('sprout-module-forms') }}" data-icon="menu"></div>#}
         </div>
 
         {{ forms.lightswitch({
@@ -88,12 +93,13 @@
                 <div
                     class="layout-tab drag-zone"
                     x-bind:id="'sproutforms-tab-' + tab.id"
+                    x-bind:data-tab-id="tab.id"
                     x-show="tab.id === selectedTabId"
 
                     x-on:dragover="dragOverLayoutTabBody"
                     x-on:dragenter.prevent.self="dragEnterLayoutTabBody"
                     x-on:dragleave.prevent.self="dragLeaveLayoutTabBody"
-                    x-on:drop.self="dropOnLayoutTabBody"
+                    x-on:drop="dropOnLayoutTabBody"
                 >
                     {# Tab with Fields #}
                     <template x-if="tab.fields.length > 0">
@@ -158,6 +164,7 @@
                 <template x-for="field in tab.fields">
                     <div
                         x-bind:id="'field-settings-slideout-' + field.id"
+                        x-bind:data-field-id="field.id"
                         class="fld-element-settings-body"
                         x-bind:class="editFieldId == field.id ? '' : 'hidden'"
                     >
