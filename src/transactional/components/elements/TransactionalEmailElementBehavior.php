@@ -29,7 +29,7 @@ class TransactionalEmailElementBehavior extends Behavior
 
         /** @var TransactionalEmailEmailType $emailTypeSettings */
         $emailTypeSettings = $this->owner->getEmailTypeSettings();
-        $settings = $emailTypeSettings->eventSettings[$event::class] ?? [];
+        $settings = $emailTypeSettings->eventSettings[$emailTypeSettings->eventId] ?? [];
 
         /** @var NotificationEvent $notificationEvent */
         $notificationEvent = new $emailTypeSettings->eventId();
