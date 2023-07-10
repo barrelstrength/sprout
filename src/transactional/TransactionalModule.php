@@ -135,12 +135,6 @@ class TransactionalModule extends Module
         );
 
         Event::on(
-            EmailElement::class,
-            EmailElement::EVENT_AFTER_SAVE,
-            [$this->notificationEvents, 'handleActiveNotificationEventSettings']
-        );
-
-        Event::on(
             RelationsHelper::class,
             RelationsHelper::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES,
             static function(RegisterComponentTypesEvent $event) {

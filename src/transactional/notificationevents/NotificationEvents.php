@@ -11,6 +11,8 @@ use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryCond
 use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementBehavior;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
@@ -109,12 +111,15 @@ class NotificationEvents extends Component
             return;
         }
 
-        foreach ($this->getActiveNotificationEventTypes() as $notificationEventType) {
+        $enabledEmailEventTypes = $this->getEnabledNotificationEventTypes();
+
+        foreach ($enabledEmailEventTypes as $notificationEventType) {
 
             if ($notificationEventType instanceof ManualNotificationEvent) {
                 continue;
             }
 
+            // @todo - events get registered multiple times...
             Event::on(
                 $notificationEventType::getEventClassName(),
                 $notificationEventType::getEventName(),
@@ -134,28 +139,12 @@ class NotificationEvents extends Component
             return;
         }
 
-        $emails = $this->getActiveNotificationEventEmails($notificationEventType);
+        $emails = $this->getPossibleNotificationEventEmails($notificationEventType);
 
-        /** @var EmailElement[] $emails */
+        /** @var EmailElement[]|TransactionalEmailElementBehavior[] $emails */
         foreach ($emails as $email) {
 
-            /** @var TransactionalEmailEmailType $emailTypeSettings */
-            $emailTypeSettings = $email->getEmailTypeSettings();
-            $settings = $emailTypeSettings->eventSettings[$notificationEventType] ?? [];
-
-            /** @var NotificationEvent $notificationEvent */
-            $notificationEvent = new $emailTypeSettings->eventId();
-            $notificationEvent->setAttributes($settings, false);
-            $notificationEvent->event = $event;
-
-            // Set dynamic event object variable
-            $emailTypeSettings->addAdditionalTemplateVariables(
-                'object', $notificationEvent->getEventObject()
-            );
-
-            if (!$notificationEvent->isEnabled()) {
-                continue;
-            }
+            $notificationEvent = $email->getNotificationEvent($event);
 
             if (!$notificationEvent->matchNotificationEvent($event)) {
                 continue;
@@ -165,137 +154,43 @@ class NotificationEvents extends Component
         }
     }
 
-    public function handleActiveNotificationEventSettings(ModelEvent $event): void
+    private function getEnabledNotificationEventTypes(): array
     {
-        /** @var EmailElement $email */
-        $email = $event->sender;
-        $emailType = $email->getEmailTypeSettings();
-
-        if (ElementHelper::isDraftOrRevision($email)) {
-            return;
-        }
-
-        if (!$email->getEnabledForSite()) {
-            return;
-        }
-
-        if (!$emailType instanceof TransactionalEmailEmailType) {
-            return;
-        }
-
-        $notificationEventType = $emailType->eventId;
-
-        $eventClassName = $notificationEventType::getEventClassName();
-        $eventName = $notificationEventType::getEventName();
-
-        $settingsRecord = SettingsRecord::find()
-            ->where([
-                'siteId' => $email->siteId,
-                'moduleId' => 'sprout-module-transactional',
-                'name' => 'activeNotificationEvents',
-            ])
-            ->one();
-
-        if ($settingsRecord === null) {
-            $settingsRecord = new SettingsRecord();
-            $settingsRecord->siteId = Craft::$app->getSites()->primarySite->id;
-            $settingsRecord->moduleId = 'sprout-module-transactional';
-            $settingsRecord->name = 'activeNotificationEvents';
-
-            $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
-        } else {
-            $eventSettings = Json::decode($settingsRecord->settings);
-            $existingSettings = $eventSettings[$eventClassName][$eventName] ?? [];
-            if (!isset($eventSettings[$eventClassName]) ||
-                !in_array($email->id, $existingSettings, true)
-            ) {
-
-                $eventSettings[$eventClassName][$eventName][$email->id] = $notificationEventType;
-            }
-        }
-
-        $settingsRecord->settings = $eventSettings;
-
-        if (!$settingsRecord->save()) {
-            // Unable to save Event Settings
-            $event->isValid = false;
-        }
-    }
-
-    private function getActiveNotificationEventTypes(): array
-    {
-
-        $activeNotificationEvents = SettingsRecord::find()
-            ->select('settings')
-            ->where([
-                //                'siteId' => $email->siteId,
-                'moduleId' => 'sprout-module-transactional',
-                'name' => 'activeNotificationEvents',
-            ])
-            ->scalar();
-
-        if (!$activeNotificationEvents) {
-            return [];
-        }
-
-        $notificationEvents = Json::decode($activeNotificationEvents);
-
-        $notificationEventTypes = [];
-
-        foreach ($notificationEvents as $eventEmails) {
-            foreach ($eventEmails as $emailDetails) {
-                foreach ($emailDetails as $notificationEventType) {
-                    $notificationEventTypes[] = $notificationEventType;
-                }
-            }
-        }
-
-        return $notificationEventTypes;
-    }
-
-    public function getActiveNotificationEventEmails($triggeredNotificationEventType): array
-    {
-        $triggeredEventClassName = $triggeredNotificationEventType::getEventClassName();
-        $triggeredEventName = $triggeredNotificationEventType::getEventName();
-
-        $activeNotificationEvents = SettingsRecord::find()
-            ->select('settings')
-            ->where([
-                //                'siteId' => $email->siteId,
-                'moduleId' => 'sprout-module-transactional',
-                'name' => 'activeNotificationEvents',
-            ])
-            ->scalar();
-
-        if (!$activeNotificationEvents) {
-            return [];
-        }
-
-        $notificationEvents = Json::decode($activeNotificationEvents);
-
-        $notificationEventTypeMatches = array_filter($notificationEvents, static function($notificationEvent) use ($triggeredEventClassName) {
-            return $notificationEvent === $triggeredEventClassName;
-        }, ARRAY_FILTER_USE_KEY);
-
-        if (!isset($notificationEventTypeMatches[$triggeredEventClassName])) {
-            return [];
-        }
-
-        $notificationEventNameMatches = array_filter($notificationEventTypeMatches[$triggeredEventClassName], static function($eventName) use ($triggeredEventName) {
-            return $eventName === $triggeredEventName;
-        }, ARRAY_FILTER_USE_KEY);
-
-        if (!isset($notificationEventNameMatches[$triggeredEventName])) {
-            return [];
-        }
-
-        $emailIds = array_keys($notificationEventNameMatches[$triggeredEventName]);
-
-        // Retrieve all watched Email Elements that match the current Event
-        $emails = EmailElement::find()
-            ->where(['emailType' => TransactionalEmailEmailType::class])
-            ->andWhere(['in', 'elements.id', $emailIds])
+        $enabledNotificationEmails = TransactionalEmailElement::find()
+            ->select('emailTypeSettings')
             ->status(Element::STATUS_ENABLED)
+            ->column();
+
+        return array_map(static function($emailTypeSettings) {
+            $settings = Json::decodeIfJson($emailTypeSettings);
+
+            return $settings['eventId'] ?? null;
+        }, $enabledNotificationEmails);
+
+    }
+
+    public function getPossibleNotificationEventEmails($notificationEventType): array
+    {
+        $currentSite = Craft::$app->getSites()->getCurrentSite();
+
+        $enabledNotificationEmails = TransactionalEmailElement::find()
+            ->select('emailTypeSettings')
+            ->status(Element::STATUS_ENABLED)
+            ->siteId($currentSite->id)
+            ->indexBy('id')
+            ->column();
+
+        // Return the Element IDs of the Notification Emails that are enabled using this Event
+        $matchedNotificationEmailIds = array_keys(array_map(static function($emailTypeSettings) use ($notificationEventType) {
+            $settings = Json::decodeIfJson($emailTypeSettings);
+
+            return isset($settings['eventId']) &&
+                $settings['eventId'] === $notificationEventType;
+        }, $enabledNotificationEmails));
+
+        $emails = TransactionalEmailElement::find()
+            ->id($matchedNotificationEmailIds)
+            ->siteId($currentSite->id)
             ->all();
 
         return $emails;
