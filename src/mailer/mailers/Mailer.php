@@ -34,7 +34,7 @@ abstract class Mailer extends SavableComponent
     /**
      * Returns the URL for this Mailer's CP Settings
      */
-    public function getCpSettingsUrl(): ?string
+    final public function getCpSettingsUrl(): ?string
     {
         return UrlHelper::cpUrl('sprout/settings/mailers/edit/' . $this->id);
     }
@@ -55,15 +55,14 @@ abstract class Mailer extends SavableComponent
         return '';
     }
 
-    public function createMailerInstructionsSettingsModel(): ?Model
+    abstract public function createMailerInstructionsSettingsModel(): Model;
+
+    public function createMailerInstructionsTestSettingsModel(): Model
     {
-        return null;
+        return $this->createMailerInstructionsSettingsModel();
     }
 
-    public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void
-    {
-
-    }
+    abstract public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void;
 
     public function getConfig(): array
     {

@@ -12,8 +12,10 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\email\EmailTypes;
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEventHelper;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
@@ -125,6 +127,13 @@ class TransactionalModule extends Module
             BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
             [$this->notificationEvents, 'registerConditionRuleTypes']
         );
+
+        Event::on(
+            Mailers::class,
+            Mailers::EVENT_REGISTER_MAILER_TYPES,
+            static function(RegisterComponentTypesEvent $e): void {
+                $e->types[] = TransactionalMailer::class;
+            });
 
         Event::on(
             EmailTypes::class,

@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use Craft;
 use craft\base\Component;
 use craft\events\ConfigEvent;

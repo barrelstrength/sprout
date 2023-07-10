@@ -10,7 +10,7 @@ use Craft;
 use Exception;
 use Symfony\Component\Mime\Address;
 
-class SystemMailerInstructionsSettings extends MailerInstructions implements SystemMailerInstructionsInterface
+abstract class SystemMailerInstructionsSettings extends MailerInstructions implements SystemMailerInstructionsInterface
 {
     /**
      * The sender replyTo email, if different than the sender email
@@ -83,5 +83,16 @@ class SystemMailerInstructionsSettings extends MailerInstructions implements Sys
 
         return $elements;
     }
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['sender', 'replyToEmail', 'recipients'], 'required'];
+        $rules[] = ['sender', 'validateSender'];
+        $rules[] = ['replyToEmail', 'validateReplyToEmail'];
+        $rules[] = ['recipients', 'validateRecipients'];
+
+        return $rules;
 }
 

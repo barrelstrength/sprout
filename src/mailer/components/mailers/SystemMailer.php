@@ -25,28 +25,13 @@ use Exception;
 use yii\base\ErrorException;
 use yii\mail\MessageInterface;
 
-class SystemMailer extends Mailer implements MailerSendTestInterface
+abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 {
     public ?array $approvedSenders = null;
 
     public ?array $approvedReplyToEmails = null;
 
     protected array $_attachmentExternalFilePaths = [];
-
-    public static function displayName(): string
-    {
-        return 'System Mailer';
-    }
-
-    public function getName(): string
-    {
-        return 'System Mailer';
-    }
-
-    public function getDescription(): string
-    {
-        return Craft::t('sprout-module-mailer', 'Smart transactional email, easy recipient management, and advanced third party integrations.');
-    }
 
     public static function getTabs(FieldLayout $fieldLayout): array
     {
@@ -99,16 +84,6 @@ class SystemMailer extends Mailer implements MailerSendTestInterface
         ]);
 
         return $html;
-    }
-
-    public function createMailerInstructionsSettingsModel(): SystemMailerInstructionsSettings
-    {
-        return new SystemMailerInstructionsSettings();
-    }
-
-    public function createMailerInstructionsTestSettingsModel(): SystemMailerInstructionsTestSettings
-    {
-        return new SystemMailerInstructionsTestSettings();
     }
 
     public function getSendTestModalHtml(EmailElement $email = null): string

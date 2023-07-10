@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\transactional\components\emailtypes;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PackageConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
@@ -14,6 +13,7 @@ use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\NotificationEventField;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\SendRuleField;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
@@ -60,7 +60,7 @@ class TransactionalEmailEmailType extends EmailType
     {
         $settings = MailerModule::getInstance()->getSettings();
 
-        $mailer = new SystemMailer();
+        $mailer = new TransactionalMailer();
         $mailer->setAttributes($settings->systemMailer, false);
 
         return $mailer;
