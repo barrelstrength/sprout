@@ -23,7 +23,6 @@ class Mailers extends Component
     public function getRegisteredMailers(): array
     {
         $mailers = [];
-        $mailers[] = SystemMailer::class;
 
         $event = new RegisterComponentTypesEvent([
             'types' => $mailers,
