@@ -3,11 +3,19 @@
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\core\relations\SourceElementRelationsEvent;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementBehavior;
 use craft\base\Component;
 use craft\elements\Entry;
+use craft\events\DefineBehaviorsEvent;
 
-class NotificationEventHelper extends Component
+class NotificationEventHelper
 {
+    public static function attachBehaviors(DefineBehaviorsEvent $event): void
+    {
+        $event->behaviors[TransactionalEmailElementBehavior::class] = TransactionalEmailElementBehavior::class;
+    }
+
     public static function getSourceElementRelations(SourceElementRelationsEvent $event): void
     {
         $event->sourceElementType = $event->data['sourceElementType'] ?? null;

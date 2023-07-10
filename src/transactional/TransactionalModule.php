@@ -155,6 +155,12 @@ class TransactionalModule extends Module
                 'sourceElementType' => TransactionalEmailElement::class,
             ]
         );
+
+        Event::on(
+            EmailElement::class,
+            EmailElement::EVENT_DEFINE_BEHAVIORS,
+            [NotificationEventHelper::class, 'attachBehaviors']
+        );
     }
 
     public function getCpUrlRules(): array
