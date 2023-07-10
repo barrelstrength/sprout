@@ -6,14 +6,10 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
-use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\conditions\users\UserCondition;
-use craft\elements\Entry;
 use craft\elements\User;
 use craft\events\ModelEvent;
-use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
-use Exception;
 use yii\base\Event;
 
 class UserUpdatedNotificationEvent extends NotificationEvent implements ElementEventInterface
@@ -52,7 +48,7 @@ class UserUpdatedNotificationEvent extends NotificationEvent implements ElementE
 
     public function getTipHtml(): ?string
     {
-        $html = Html::tag('p', Craft::t('sprout-module-transactional','Access the User Element in your email templates using the <code>object</code> variable. Example:'));
+        $html = Html::tag('p', Craft::t('sprout-module-transactional', 'Access the User Element in your email templates using the <code>object</code> variable. Example:'));
         $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-transactional', 'This email was sent to: <code>{{ object.email }}</code>')));
 
         return $html;

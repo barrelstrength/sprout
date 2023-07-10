@@ -6,10 +6,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementCondition;
 use craft\helpers\Cp;
-use craft\helpers\Html;
 use yii\base\Event;
-use craft\helpers\Template;
-use yii\base\ModelEvent;
 
 trait ElementEventTrait
 {

@@ -43,7 +43,7 @@ abstract class NotificationEvent extends SavableComponent
      *
      * @example Event::on($class, $name, function($handler) { ... });
      *
-     * @see \yii\base\Event
+     * @see Event
      */
     abstract public static function getEventClassName(): ?string;
 
@@ -54,7 +54,7 @@ abstract class NotificationEvent extends SavableComponent
      *
      * @example Event::on($class, $name, function($handler) { ... });
      *
-     * @see \yii\base\Event
+     * @see Event
      */
     abstract public static function getEventName(): ?string;
 

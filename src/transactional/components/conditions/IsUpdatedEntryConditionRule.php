@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional\components\conditions;
 
 use Craft;
 use craft\base\conditions\BaseLightswitchConditionRule;
-use craft\base\conditions\ConditionRuleInterface;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;

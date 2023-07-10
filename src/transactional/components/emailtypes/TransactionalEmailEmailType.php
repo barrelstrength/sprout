@@ -20,7 +20,6 @@ use Craft;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
-use Exception;
 
 class TransactionalEmailEmailType extends EmailType
 {

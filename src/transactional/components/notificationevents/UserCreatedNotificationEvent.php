@@ -48,7 +48,7 @@ class UserCreatedNotificationEvent extends NotificationEvent implements ElementE
 
     public function getTipHtml(): ?string
     {
-        $html = Html::tag('p', Craft::t('sprout-module-transactional','Access the User Element in your email templates using the <code>object</code> variable. Example:'));
+        $html = Html::tag('p', Craft::t('sprout-module-transactional', 'Access the User Element in your email templates using the <code>object</code> variable. Example:'));
         $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-transactional', 'This email was sent to: <code>{{ object.email }}</code>')));
 
         return $html;

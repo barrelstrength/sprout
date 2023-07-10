@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
-use BarrelStrength\Sprout\core\modules\SettingsRecord;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\FieldChangedConditionRule;
@@ -13,7 +12,6 @@ use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionCond
 use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementBehavior;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
@@ -28,10 +26,8 @@ use craft\base\Component;
 use craft\base\Element;
 use craft\elements\Entry;
 use craft\elements\User;
-use craft\events\ModelEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterConditionRuleTypesEvent;
-use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use yii\base\Event;
 
@@ -166,7 +162,6 @@ class NotificationEvents extends Component
 
             return $settings['eventId'] ?? null;
         }, $enabledNotificationEmails);
-
     }
 
     public function getPossibleNotificationEventEmails($notificationEventType): array

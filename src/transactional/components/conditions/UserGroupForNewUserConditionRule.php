@@ -7,7 +7,6 @@ use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\User;
 use craft\helpers\ArrayHelper;
 
 class UserGroupForNewUserConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
