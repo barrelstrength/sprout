@@ -20,10 +20,10 @@ use Craft;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
+use yii\base\Event;
 
 class TransactionalEmailEmailType extends EmailType
 {
-
     public ?string $handle = 'transactional-email';
 
     /**
@@ -50,6 +50,8 @@ class TransactionalEmailEmailType extends EmailType
      * Any options that have been set for your Event. Stored as JSON.
      */
     public ?array $eventSettings = [];
+
+    private ?NotificationEvent $_notificationEvent = null;
 
     public static function displayName(): string
     {
@@ -109,11 +111,19 @@ class TransactionalEmailEmailType extends EmailType
         ]);
     }
 
+    public function setNotificationEvent($notificationEvent): void
+    {
+        $this->_notificationEvent = $notificationEvent;
+    }
     /**
      * Returns a Notification Event
      */
-    public static function getNotificationEvent(EmailElement $email): NotificationEvent
+    public function getNotificationEvent(EmailElement $email, Event $event = null): NotificationEvent
     {
+        if ($this->_notificationEvent !== null) {
+            return $this->_notificationEvent;
+        }
+
         $emailType = $email->getEmailTypeSettings();
 
         $settings = $emailType->getSettings();
@@ -121,7 +131,9 @@ class TransactionalEmailEmailType extends EmailType
         $eventId = $settings['eventId'] ?? null;
 
         if ($eventId !== null) {
-            $notificationEvent = new $eventId();
+            $notificationEvent = new $eventId([
+                'event' => $event,
+            ]);
             $eventSettings = $settings['eventSettings'][$eventId] ?? [];
             $notificationEvent->setAttributes($eventSettings, false);
         } else {
@@ -129,14 +141,5 @@ class TransactionalEmailEmailType extends EmailType
         }
 
         return $notificationEvent;
-    }
-
-    public function getMockObjectVariable(EmailElement $email): array
-    {
-        if ($event = self::getNotificationEvent($email)) {
-            return $event->getMockEventObject();
-        }
-
-        return [];
     }
 }

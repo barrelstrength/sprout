@@ -25,7 +25,8 @@ class FileAttachmentsField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
-        $notificationEvent = TransactionalEmailEmailType::getNotificationEvent($element);
+        $emailTypeSettings = $element->getEmailTypeSettings();
+        $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/fileAttachments.twig', [
             'notificationEvent' => $notificationEvent,

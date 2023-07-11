@@ -11,6 +11,7 @@ use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionR
 use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
@@ -139,11 +140,16 @@ class NotificationEvents extends Component
         /** @var EmailElement[]|TransactionalEmailElement[] $emails */
         foreach ($emails as $email) {
 
-            $notificationEvent = $email->getNotificationEvent($event);
+            /** @var TransactionalEmailEmailType $emailTypeSettings */
+            $emailTypeSettings = $email->getEmailTypeSettings();
+            $notificationEvent = $emailTypeSettings->getNotificationEvent($email, $event);
 
             if (!$notificationEvent->matchNotificationEvent($event)) {
                 continue;
             }
+
+            $emailTypeSettings->setNotificationEvent($notificationEvent);
+            $email->setEmailTypeSettings($emailTypeSettings);
 
             $email->send();
         }

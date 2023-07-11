@@ -79,6 +79,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public array $mailerInstructionsSettings = [];
 
+    protected ?EmailType $_emailTypeSettingsModel = null;
+
     private ?FieldLayout $_fieldLayout = null;
 
     private ?Mailer $_mailer = null;
@@ -86,8 +88,6 @@ class EmailElement extends Element implements EmailPreviewInterface
     private ?MailerInstructionsInterface $_mailerInstructionsSettingsModel = null;
 
     private ?MailerInstructionsInterface $_mailerInstructionsTestSettingsModel = null;
-
-    private ?EmailType $_emailTypeSettingsModel = null;
 
     public static function displayName(): string
     {
@@ -256,6 +256,11 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailerInstructionsSettingsModel = $model;
 
         return $this->_mailerInstructionsSettingsModel;
+    }
+
+    public function setEmailTypeSettings($emailTypeSettings): void
+    {
+        $this->_emailTypeSettingsModel = $emailTypeSettings;
     }
 
     public function getEmailTypeSettings(): EmailType

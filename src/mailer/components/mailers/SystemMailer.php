@@ -105,8 +105,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void
     {
-        $mailerInstructionsSettings->beforeSend($email);
-
         $templateVariables = $mailerInstructionsSettings->getAdditionalTemplateVariables($email);
         $email->getEmailTheme()->addTemplateVariables($templateVariables);
 

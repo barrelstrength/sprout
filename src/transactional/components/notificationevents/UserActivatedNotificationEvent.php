@@ -55,12 +55,12 @@ class UserActivatedNotificationEvent extends NotificationEvent implements Elemen
         return $html;
     }
 
-    public function getEventObject()
+    public function getEventObject(): mixed
     {
         return $this->event->user;
     }
 
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         return User::find()->one();
     }

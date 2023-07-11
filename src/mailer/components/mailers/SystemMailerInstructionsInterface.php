@@ -1,11 +1,12 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\mailers;
+namespace BarrelStrength\Sprout\mailer\components\mailers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use craft\elements\Asset;
 
-interface SystemMailerInstructionsInterface
+interface SystemMailerInstructionsInterface extends MailerInstructionsInterface
 {
     /**
      * Returns a compatible value for the From address

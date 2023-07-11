@@ -11,10 +11,7 @@ abstract class NotificationEvent extends SavableComponent
 {
     public EmailElement $email;
 
-    /**
-     * @var Event $event
-     */
-    public Event $event;
+    public ?Event $event = null;
 
     /**
      * Enable or disable file attachments when notification emails are sent.
@@ -22,6 +19,15 @@ abstract class NotificationEvent extends SavableComponent
      * If disabled, files will still be stored in Craft after form submission. This only determines if they should also be sent via email.
      */
     public bool $enableFileAttachments = false;
+
+    public function __construct($config = [])
+    {
+        if ($config['event']) {
+            $this->event = $config['event'];
+        }
+
+        parent::__construct($config);
+    }
 
     public function __toString()
     {
@@ -102,7 +108,7 @@ abstract class NotificationEvent extends SavableComponent
      *
      * @return mixed
      */
-    public function getEventObject()
+    public function getEventObject(): mixed
     {
         return null;
     }
@@ -114,7 +120,7 @@ abstract class NotificationEvent extends SavableComponent
      *
      * @return mixed
      */
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         return null;
     }

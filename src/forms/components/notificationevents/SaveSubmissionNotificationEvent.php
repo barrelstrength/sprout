@@ -62,7 +62,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
         return $html;
     }
 
-    public function getEventObject(): ?ElementInterface
+    public function getEventObject(): mixed
     {
         /** @var ElementEvent $event */
         $event = $this->event ?? null;
@@ -73,7 +73,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
     /**
      * @todo fix bug where incorrect form can be selected.
      */
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         $criteria = SubmissionElement::find();
         $criteria->orderBy(['id' => SORT_DESC]);

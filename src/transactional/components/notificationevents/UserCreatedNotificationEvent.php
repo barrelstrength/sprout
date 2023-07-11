@@ -54,14 +54,14 @@ class UserCreatedNotificationEvent extends NotificationEvent implements ElementE
         return $html;
     }
 
-    public function getEventObject(): ?object
+    public function getEventObject(): mixed
     {
         $event = $this->event ?? null;
 
         return $event->sender ?? null;
     }
 
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         $criteria = User::find();
 

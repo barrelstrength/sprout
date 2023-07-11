@@ -56,12 +56,12 @@ class UserLoggedInNotificationEvent extends NotificationEvent implements Element
         return $html;
     }
 
-    public function getEventObject()
+    public function getEventObject(): mixed
     {
         return $this->event->identity;
     }
 
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         return UserRecord::find()->one();
     }

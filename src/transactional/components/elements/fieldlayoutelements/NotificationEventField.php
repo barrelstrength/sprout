@@ -33,7 +33,8 @@ class NotificationEventField extends BaseNativeField
 
         $eventOptions = TemplateHelper::optionsFromComponentTypes($events);
 
-        $notificationEvent = TransactionalEmailEmailType::getNotificationEvent($element);
+        $emailTypeSettings = $element->getEmailTypeSettings();
+        $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/events.twig', [
             'notificationEvent' => $notificationEvent,

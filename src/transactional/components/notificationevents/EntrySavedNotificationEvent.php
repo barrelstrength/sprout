@@ -55,7 +55,7 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
         return $html;
     }
 
-    public function getEventObject(): ?object
+    public function getEventObject(): mixed
     {
         $event = $this->event ?? null;
 
@@ -65,7 +65,7 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
     /**
      * @return array|ElementInterface|Entry|null
      */
-    public function getMockEventObject()
+    public function getMockEventObject(): mixed
     {
         $criteria = Entry::find();
 
