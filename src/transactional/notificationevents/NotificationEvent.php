@@ -22,7 +22,7 @@ abstract class NotificationEvent extends SavableComponent
 
     public function __construct($config = [])
     {
-        if ($config['event']) {
+        if (isset($config['event'])) {
             $this->event = $config['event'];
         }
 
