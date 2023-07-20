@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;

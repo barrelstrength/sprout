@@ -28,7 +28,7 @@ class EmailLink extends AbstractLink
 
     public function getUrl(): ?string
     {
-        return 'mailto:'.$this->email;
+        return 'mailto:' . $this->email;
     }
 
     public function defineRules(): array

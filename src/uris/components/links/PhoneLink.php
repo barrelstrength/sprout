@@ -27,7 +27,7 @@ class PhoneLink extends AbstractLink
 
     public function getUrl(): ?string
     {
-        return 'tel:'.$this->phone;
+        return 'tel:' . $this->phone;
     }
 
     public function defineRules(): array

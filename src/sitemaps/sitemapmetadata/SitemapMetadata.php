@@ -140,11 +140,13 @@ class SitemapMetadata extends Component
 
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['[[siteId]]' => $site->id])
-            ->andWhere(['not in', 'sourceKey', [
-                SitemapKey::SINGLES,
-                SitemapKey::CUSTOM_QUERY,
-                SitemapKey::CUSTOM_PAGES,
-            ]])
+            ->andWhere([
+                'not in', 'sourceKey', [
+                    SitemapKey::SINGLES,
+                    SitemapKey::CUSTOM_QUERY,
+                    SitemapKey::CUSTOM_PAGES,
+                ],
+            ])
             ->indexBy('sourceKey')
             ->all();
 

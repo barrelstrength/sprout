@@ -72,7 +72,6 @@ class m211101_000004_update_user_permissions extends Migration
         $this->delete(Table::USERPERMISSIONS, [
             'id' => $accessPluginPermissionId,
         ]);
-
     }
 
     public function safeDown(): bool

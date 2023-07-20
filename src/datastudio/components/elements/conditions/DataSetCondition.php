@@ -9,7 +9,7 @@ class DataSetCondition extends ElementCondition
     protected function conditionRuleTypes(): array
     {
         return array_merge(parent::conditionRuleTypes(), [
-            DataSourcesConditionRule::class
+            DataSourcesConditionRule::class,
         ]);
     }
 }

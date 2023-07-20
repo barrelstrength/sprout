@@ -32,8 +32,6 @@ class Mailers extends Component
 
         $eventMailers = $event->types;
 
-        $mailers = [];
-
         foreach ($eventMailers as $eventMailerClassName) {
             $mailers[$eventMailerClassName] = new $eventMailerClassName();
         }

@@ -313,11 +313,9 @@ class SubscribersController extends Controller
 
         $list->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
         $list->name = Craft::$app->request->getRequiredBodyParam('name');
-        $list->handle = Craft::$app->request->getBodyParam('handle');
-
-        if ($list->handle === null) {
-            $list->handle = StringHelper::toCamelCase($list->name);
-        }
+        $list->handle = Craft::$app->request->getBodyParam(
+            'handle', StringHelper::toCamelCase($list->name)
+        );
 
         return $list;
     }

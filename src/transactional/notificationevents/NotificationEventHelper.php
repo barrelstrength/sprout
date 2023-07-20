@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\core\relations\SourceElementRelationsEvent;
 use craft\elements\Entry;
-use craft\events\DefineBehaviorsEvent;
 
 class NotificationEventHelper
 {

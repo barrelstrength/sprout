@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;

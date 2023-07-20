@@ -115,6 +115,7 @@ class TransactionalEmailEmailType extends EmailType
     {
         $this->_notificationEvent = $notificationEvent;
     }
+
     /**
      * Returns a Notification Event
      */

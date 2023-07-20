@@ -2,9 +2,9 @@
 
 namespace BarrelStrength\Sprout\uris\links;
 
+use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\Cp;
-use Craft;
 
 trait ElementLinkTrait
 {

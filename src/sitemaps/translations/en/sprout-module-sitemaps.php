@@ -96,5 +96,5 @@ return [
     'Element Query Sitemaps' => 'Element Query Sitemaps',
     'Content Sitemaps' => 'Content Sitemaps',
     'Custom Sitemap' => 'Custom Sitemap',
-    'Content Query Sitemaps' => 'Content Query Sitemaps'
+    'Content Query Sitemaps' => 'Content Query Sitemaps',
 ];

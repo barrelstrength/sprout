@@ -162,10 +162,7 @@ class SubscriberLists extends Component
         return Craft::$app->elements->saveElement($list);
     }
 
-    /**
-     * @return array|mixed
-     */
-    public function getSubscriptions(AudienceElement $list)
+    public function getSubscriptions(AudienceElement $list): array
     {
         return SubscriptionRecord::find()
             ->where(['listId' => $list->id])

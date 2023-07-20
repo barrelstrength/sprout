@@ -2,17 +2,16 @@
 
 namespace BarrelStrength\Sprout\uris\links;
 
+use BarrelStrength\Sprout\uris\components\links\AbsoluteUrl;
 use BarrelStrength\Sprout\uris\components\links\CategoryElementLink;
 use BarrelStrength\Sprout\uris\components\links\EmailLink;
 use BarrelStrength\Sprout\uris\components\links\EntryElementLink;
-use BarrelStrength\Sprout\uris\components\links\AbsoluteUrl;
-use BarrelStrength\Sprout\uris\components\links\PhoneLink;
 use BarrelStrength\Sprout\uris\components\links\RelativeUrl;
+use Craft;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
 use craft\helpers\Json;
-use Craft;
 
 class Links extends Component
 {

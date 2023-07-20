@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\elements\db\AssetQuery;
 use craft\fields\Assets;
 use craft\helpers\App;
+use Exception;
 use Symfony\Component\Mime\Address;
 
 trait SystemMailerInstructionsTrait

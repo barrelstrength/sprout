@@ -52,7 +52,7 @@ class m211101_000005_migrate_sent_email_tables extends Migration
                 ->from([self::OLD_SENT_EMAIL_TABLE])
                 ->all();
 
-            foreach ($rows as &$row) {
+            foreach ($rows as $row) {
                 $row['sent'] = $row['status'] === 'sent';
                 unset($row['status']);
             }

@@ -17,6 +17,7 @@ use yii\db\ActiveQueryInterface;
  * @property $textBody string
  * @property $htmlBody string
  * @property $info string
+ * @property $sent bool
  * @property $status string
  * @property $dateCreated DateTime
  * @property $dateUpdated DateTime

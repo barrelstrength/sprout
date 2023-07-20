@@ -58,5 +58,7 @@ return [
     'Sprout Module | Sent Email' => 'Sprout Module | Sent Email',
     'Original Email Info' => 'Original Email Info',
     'Info' => 'Info',
-    'Delivery&nbsp;Info' => 'Delivery&nbsp;Info',
+    'Encryption Method' => 'Encryption Method',
+    'Failed' => 'Failed',
+    'Timeout' => 'Timeout'
 ];

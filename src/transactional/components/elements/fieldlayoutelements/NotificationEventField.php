@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\ElementInterface;
