@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use Craft;
 use craft\base\Component;
 use craft\helpers\App;
+use craft\helpers\Cp;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use Exception;
@@ -20,6 +21,12 @@ class SentEmails extends Component
     public function handleLogSentEmail(MailEvent $event): void
     {
         if (!SentEmailModule::isEnabled()) {
+            return;
+        }
+
+        $requestService = Craft::$app->getRequest();
+
+        if (!$requestService->getIsCpRequest() && !$requestService->getIsSiteRequest()) {
             return;
         }
 
@@ -49,6 +56,12 @@ class SentEmails extends Component
 
         $sentEmailDetails = $this->_prepareDetails($sentEmail, $message, $status);
         $sentEmail->info = $sentEmailDetails->getAttributes();
+
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            $sentEmail->siteId = Cp::requestedSite()->id;
+        } else {
+            $sentEmail->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+        }
 
         try {
             Craft::$app->getElements()->saveElement($sentEmail);
