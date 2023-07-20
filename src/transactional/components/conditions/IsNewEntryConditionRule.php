@@ -14,7 +14,7 @@ class IsNewEntryConditionRule extends BaseLightswitchConditionRule implements El
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Is New Entry');
+        return Craft::t('sprout-module-transactional', 'Is New Live Entry');
     }
 
     public function getExclusiveQueryParams(): array
@@ -37,14 +37,23 @@ class IsNewEntryConditionRule extends BaseLightswitchConditionRule implements El
 
     public function matchElement(ElementInterface $element): bool
     {
-        $isNewEntry =
+        $isNewEntryForFirstTime =
             $element->firstSave &&
-            $element->getIsCanonical() &&
             $element->getStatus() === Entry::STATUS_LIVE &&
-            !ElementHelper::isDraftOrRevision($element) &&
-            !$element->resaving &&
-            !$element->propagating;
+            $element->getIsCanonical() &&
+            !ElementHelper::isDraftOrRevision($element);
 
-        return $this->matchValue($isNewEntry);
+        if ($isNewEntryForFirstTime) {
+            return true;
+        }
+
+        // OR!!!
+
+        // When not the firstSave but
+        // Status is changed to Live...
+
+        $isNewEntryBecauseStatusChangedToLive = false;
+
+        return $isNewEntryBecauseStatusChangedToLive;
     }
 }
