@@ -44,7 +44,7 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
 
     public static function getEventName(): ?string
     {
-        return Entry::EVENT_AFTER_SAVE;
+        return Entry::EVENT_AFTER_PROPAGATE;
     }
 
     public function getTipHtml(): ?string

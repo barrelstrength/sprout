@@ -43,7 +43,7 @@ class UserCreatedNotificationEvent extends NotificationEvent implements ElementE
 
     public static function getEventName(): ?string
     {
-        return User::EVENT_AFTER_SAVE;
+        return User::EVENT_AFTER_PROPAGATE;
     }
 
     public function getTipHtml(): ?string
