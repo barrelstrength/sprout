@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.8 - 2023-07-20
+
+### Fixed
+
+- Fixed existing 404 cleanup query
+
 ## 4.0.7 - 2023-06-29
 
 ### Fixed

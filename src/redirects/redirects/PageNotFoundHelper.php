@@ -75,7 +75,7 @@ class PageNotFoundHelper
         $existing404RedirectId = (new Query())
             ->select('redirects.id')
             ->from(['redirects' => SproutTable::REDIRECTS])
-            ->innerJoin(['element_sites' => Table::ELEMENTS_SITES],
+            ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES],
                 '[[elements_sites.elementId]] = [[redirects.id]]')
             ->where([
                 'elements_sites.siteId' => $redirect->siteId,
