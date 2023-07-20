@@ -9,26 +9,18 @@ use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
-use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
-use craft\base\FieldInterface;
-use craft\db\Table;
-use craft\errors\ElementNotFoundException;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
-use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\records\FieldLayout as FieldLayoutRecord;
-use craft\records\FieldLayoutTab as FieldLayoutTabRecord;
 use craft\web\Controller as BaseController;
-use yii\base\Exception;
-use yii\db\Transaction;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -242,6 +234,22 @@ class FormsController extends BaseController
         ]);
     }
 
+    public function actionGetFormTabObject(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $name = Craft::$app->getRequest()->getRequiredBodyParam('name');
+        $userCondition = Craft::$app->getRequest()->getRequiredBodyParam('userCondition');
+        $elementCondition = Craft::$app->getRequest()->getRequiredBodyParam('elementCondition');
+
+        return $this->asJson([
+            'name' => $name,
+            'userCondition' => $userCondition,
+            'elementCondition' => $elementCondition,
+        ]);
+    }
+
     public function actionGetFormTabSettingsHtml(): Response
     {
         $this->requirePostRequest();
@@ -260,19 +268,8 @@ class FormsController extends BaseController
         $fieldLayout->setTabs([$tab]);
 
         $tab->name = $tabSettings['name'] ?? null;
-
-        //        $condition = $form::createCondition();
-        //        $condition->id = '__ID__';
-        //        $condition->name = 'sources[__SOURCE_KEY__][condition]';
-        //        $condition->mainTag = 'div';
-        //        $condition->forProjectConfig = true;
-        //        $condition->queryParams = ['site', 'status'];
-        //        $condition->addRuleLabel = Craft::t('app', 'Add a filter');
-        //
-        //        $view = Craft::$app->getView();
-        //        $view->startJsBuffer();
-        //        $conditionBuilderHtml = $condition->getBuilderHtml();
-        //        $conditionBuilderJs = $view->clearJsBuffer();
+        $tab->setUserCondition($tabSettings['userCondition']);
+        $tab->setElementCondition($tabSettings['elementCondition']);
 
         $view = Craft::$app->getView();
         $view->startJsBuffer();
@@ -284,7 +281,6 @@ class FormsController extends BaseController
             'tabId' => $tabSettings['id'],
             'settingsHtml' => $conditionBuilderHtml,
             'conditionBuilderJs' => $conditionBuilderJs,
-            //            'settingsHtml' => $tab->getSettingsHtml(),
         ]);
     }
 
@@ -361,51 +357,6 @@ class FormsController extends BaseController
             'fieldSettings' => $fieldSettings,
         ]);
     }
-
-    //public function actionEditFormTemplate(int $formId = null, FormElement $form = null): Response
-    //{
-        //        $this->requirePermission(FormsModule::p('editForms'));
-
-        //        $isNew = !$formId;
-
-        // Immediately create a new Form
-        //        if ($isNew) {
-
-        // Make sure Pro is installed before we create a new form
-        //            if (!FormsModule::getInstance()->forms->canCreateForm()) {
-        //                throw new WrongEditionException('Please upgrade to Sprout Forms Pro Edition to create unlimited forms.');
-        //            }
-
-        //            $form = FormsModule::getInstance()->forms->createNewForm();
-        //
-        //            if ($form !== null) {
-        //                $url = UrlHelper::cpUrl('sprout/forms/edit/'.$form->getId());
-        //
-        //                return $this->redirect($url);
-        //            }
-        //
-        //            throw new Exception('Unable to create new Form');
-        //        }
-
-        //if (!$form instanceof ElementInterface && $formId !== null) {
-        //    $form = FormsModule::getInstance()->forms->getFormById($formId);
-        //
-        //    if (!$form instanceof ElementInterface) {
-        //        throw new NotFoundHttpException('Form not found');
-        //    }
-        //}
-
-    //    $tabs = FormsModule::getInstance()->forms->getTabsForFieldLayout($form);
-    //
-    //    $config = FormsModule::getInstance()->getSettings();
-    //
-    //    return $this->renderTemplate('sprout-module-forms/forms/_editForm', [
-    //        'form' => $form,
-    //        'formTabs' => $tabs,
-    //        'continueEditingUrl' => 'sprout/forms/edit/{id}',
-    //        'config' => $config,
-    //    ]);
-    //}
 
     public function actionDeleteForm(): Response
     {

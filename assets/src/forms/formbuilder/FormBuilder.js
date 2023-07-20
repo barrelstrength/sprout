@@ -464,20 +464,13 @@ export const FormBuilder = (formId) => ({
         return 'new' + nextId;
     },
 
-    updateTabSettings(tabId, formData) {
+    updateTabSettings(tabId, data) {
         let tabIndex = this.getTabIndexByTabId(tabId);
 
-        for (const [index, value] of formData.entries()) {
-            if (index.startsWith('userCondition')) {
-                // @todo - capture settings
-                this.tabs[tabIndex]['userCondition'] = value;
-            } else if (index.startsWith('elementCondition')) {
-                // @todo - capture settings
-                this.tabs[tabIndex]['elementCondition'] = value;
-            } else {
-                this.tabs[tabIndex][index] = value;
-            }
-        }
+        // loop through js object
+        Object.entries(data).forEach(([index, value]) => {
+            this.tabs[tabIndex][index] = value;
+        });
 
         if (!this.tabs[tabIndex]['name']) {
             this.tabs[tabIndex]['name'] = 'Page';
@@ -656,63 +649,6 @@ export const FormBuilder = (formId) => ({
 
     // Field Stuff
 
-    editFormTabX(tab) {
-        let self = this;
-
-        this.editTabId = tab.id;
-
-        let $slideoutHtml = $('#tab-settings-slideout form');
-
-        const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
-
-        // Copied from Craft's FieldLayoutDesigner.js
-        const $cancelBtn = Craft.ui.createButton({
-            label: Craft.t('app', 'Close'),
-            spinner: true,
-        });
-
-        const $applyButton = Craft.ui.createSubmitButton({
-            class: 'secondary',
-            label: Craft.t('app', 'Apply'),
-            spinner: true,
-        });
-
-        $('<div/>', {class: 'flex-grow'}).appendTo($footer);
-        $cancelBtn.appendTo($footer);
-        $applyButton.appendTo($footer);
-
-        $footer.appendTo($slideoutHtml);
-
-        const slideout = new Craft.Slideout($slideoutHtml);
-        // const slideout = new Craft.Slideout($slideoutHtml, {
-        //   containerElement: 'form',
-        //   containerAttributes: {
-        //     method: 'post',
-        //     action: "",
-        //     class: 'fld-element-settings slideout',
-        //   },
-        // });
-
-        // const $form = slideout.$container;
-
-        Craft.initUiElements($slideoutHtml);
-
-        slideout.on('submit', function(event) {
-            event.preventDefault();
-
-            let formData = new FormData($form[0]);
-
-            self.updateTabSettings(self.editTabId, formData);
-
-            slideout.close();
-        });
-
-        $cancelBtn.on('click', () => {
-            slideout.close();
-            self.editFieldId = null;
-        });
-    },
-
     editFormTab(tab) {
 
         let self = this;
@@ -725,7 +661,6 @@ export const FormBuilder = (formId) => ({
                 tab: tab,
             },
         }).then((response) => {
-
 
             const $body = $('<div/>', {class: 'fld-element-settings-body'});
             const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
@@ -762,8 +697,6 @@ export const FormBuilder = (formId) => ({
             $cancelBtn.appendTo($footer);
             $applyButton.appendTo($footer);
 
-            // Craft.appendHeadHtml(response.data.headHtml);
-
             let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.tabId);
 
             $(settingsHtml).appendTo($fields);
@@ -788,12 +721,17 @@ export const FormBuilder = (formId) => ({
             $form.on('submit', function(event) {
                 event.preventDefault();
 
-                // console.log($($form).serialize());
-                // console.log($($form[0]).serialize());
-
                 let formData = new FormData($form[0]);
 
-                self.updateTabSettings(self.editTabId, formData);
+                Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-tab-object', {
+                    data: formData,
+                }).then((response) => {
+                    self.updateTabSettings(self.editTabId, {
+                        name: response.data.name,
+                        userCondition: response.data.userCondition,
+                        elementCondition: response.data.elementCondition,
+                    });
+                });
 
                 slideout.close();
             });
