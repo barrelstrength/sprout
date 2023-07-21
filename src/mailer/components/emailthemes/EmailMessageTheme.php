@@ -41,7 +41,7 @@ class EmailMessageTheme extends EmailTheme
             new TextareaField([
                 'label' => Craft::t('sprout-module-mailer', 'Message'),
                 'instructions' => Craft::t('sprout-module-mailer', 'A message that will appear in the body of your email content.'),
-                'attribute' => 'message',
+                'attribute' => 'defaultMessage',
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,

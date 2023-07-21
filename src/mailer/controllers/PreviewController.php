@@ -123,14 +123,14 @@ class PreviewController extends Controller
 
         // The getBodyParam is for livePreviewNotification to update on change
         //        $subjectLine = Craft::$app->getRequest()->getBodyParam('subjectLine');
-        //        $defaultBody = Craft::$app->getRequest()->getBodyParam('defaultBody');
+        //        $defaultMessage= Craft::$app->getRequest()->getBodyParam('defaultMessage');
         //
         //        if ($subjectLine) {
         //            $email->subjectLine = $subjectLine;
         //        }
         //
-        //        if ($defaultBody) {
-        //            $email->defaultBody = $defaultBody;
+        //        if ($defaultMessage) {
+        //            $email->defaultMessage = $defaultMessage;
         //        }
 
         //        $fieldsLocation = Craft::$app->getRequest()->getParam('fieldsLocation', 'fields');

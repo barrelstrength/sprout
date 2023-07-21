@@ -12,7 +12,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $id
  * @property string $subjectLine
  * @property string $preheaderText
- * @property string $defaultBody
+ * @property string $defaultMessage
  * @property string $emailThemeUid
  * @property string $mailerId
  * @property string $mailerInstructionsSettings

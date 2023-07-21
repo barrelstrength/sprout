@@ -67,7 +67,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public string $preheaderText = '';
 
-    public string $defaultBody = '';
+    public string $defaultMessage = '';
 
     public null|int|string $emailThemeUid = null;
 
@@ -480,7 +480,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailElementRecord->subjectLine = $this->subjectLine;
         $emailElementRecord->preheaderText = $this->preheaderText;
-        $emailElementRecord->defaultBody = $this->defaultBody;
+        $emailElementRecord->defaultMessage = $this->defaultMessage;
 
         $emailElementRecord->emailThemeUid = $this->emailThemeUid;
 
@@ -632,8 +632,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         // Subject
         $rules[] = [['title', 'subjectLine'], 'required', 'except' => self::SCENARIO_ESSENTIALS];
         $rules[] = [['preheaderText'], 'safe'];
-
-        $rules[] = [['defaultBody'], 'safe'];
+        $rules[] = [['defaultMessage'], 'safe'];
 
         $rules[] = [['emailThemeUid'], 'safe'];
 

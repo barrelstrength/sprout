@@ -24,7 +24,7 @@ class EmailElementQuery extends ElementQuery
         $this->query->select([
             'sprout_emails.subjectLine',
             'sprout_emails.preheaderText',
-            'sprout_emails.defaultBody',
+            'sprout_emails.defaultMessage',
             'sprout_emails.emailThemeUid',
             'sprout_emails.mailerId',
             'sprout_emails.mailerInstructionsSettings',

@@ -76,7 +76,7 @@ class m211101_000000_run_install_migration extends Migration
                 'emailType' => $this->string(),
                 'subjectLine' => $this->string(),
                 'preheaderText' => $this->string(),
-                'defaultBody' => $this->text(),
+                'defaultMessage' => $this->text(),
                 'fromName' => $this->string(),
                 'fromEmail' => $this->string(),
                 'replyToEmail' => $this->string(),
