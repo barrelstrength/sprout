@@ -11,7 +11,6 @@ use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\FileAttachmentsField;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\NotificationEventField;
-use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\SendRuleField;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;

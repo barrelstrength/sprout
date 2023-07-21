@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional\components\elements;
 
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElementQuery;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
@@ -36,7 +35,7 @@ class TransactionalEmailElement extends EmailElement
         return 'transactional-email';
     }
 
-    public static function find(): EmailElementQuery
+    public static function find(): ElementQueryInterface
     {
         return EmailElement::find()
             ->where([

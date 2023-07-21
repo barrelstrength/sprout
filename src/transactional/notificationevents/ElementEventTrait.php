@@ -35,7 +35,10 @@ trait ElementEventTrait
      */
     public function matchNotificationEvent(Event $event): bool
     {
-        return $this->matchElement($event->sender);
+        /** @var ElementInterface $element */
+        $element = $event->sender;
+
+        return $this->matchElement($element);
     }
 
     /**

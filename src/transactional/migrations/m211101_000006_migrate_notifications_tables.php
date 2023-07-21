@@ -96,8 +96,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 ->select($oldThemeCols)
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
-
-            $themeMapping = [];
+            
             $themeRowsMapped = [];
             $sortOrder = 0;
 

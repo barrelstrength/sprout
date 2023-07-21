@@ -3,10 +3,12 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
+use yii\base\InvalidArgumentException;
 
 class NotificationEventField extends BaseNativeField
 {
@@ -28,6 +30,10 @@ class NotificationEventField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
+        if (!$element instanceof EmailElement) {
+            throw new InvalidArgumentException('Notification Event field can only be used in Email field layouts.');
+        }
+
         $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEvents();
 
         $eventOptions = TemplateHelper::optionsFromComponentTypes($events);

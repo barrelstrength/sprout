@@ -2,9 +2,11 @@
 
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
+use yii\base\InvalidArgumentException;
 
 class FileAttachmentsField extends BaseNativeField
 {
@@ -24,6 +26,10 @@ class FileAttachmentsField extends BaseNativeField
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
+        if (!$element instanceof EmailElement) {
+            throw new InvalidArgumentException('File Attachments field can only be used in Email field layouts.');
+        }
+
         $emailTypeSettings = $element->getEmailTypeSettings();
         $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
 

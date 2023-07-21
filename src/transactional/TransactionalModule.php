@@ -149,14 +149,6 @@ class TransactionalModule extends Module
                 $event->types[] = TransactionalEmailElement::class;
             }
         );
-
-        Event::on(
-            RelationsHelper::class,
-            RelationsHelper::EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS,
-            [NotificationEventHelper::class, 'getSourceElementRelations'], [
-                'sourceElementType' => TransactionalEmailElement::class,
-            ]
-        );
     }
 
     public function getCpUrlRules(): array
