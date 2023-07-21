@@ -3,12 +3,49 @@
 namespace BarrelStrength\Sprout\sentemail\components\elements;
 
 use craft\elements\db\ElementQuery;
+use craft\helpers\Db;
 
 class SentEmailElementQuery extends ElementQuery
 {
     protected array $defaultOrderBy = [
         'sprout_sent_emails.dateCreated' => SORT_DESC,
     ];
+
+    public ?string $subjectLine = null;
+
+    public ?string $fromName = null;
+
+    public ?string $fromEmail = null;
+
+    public ?string $toEmail = null;
+
+    public function subjectLine($value): self
+    {
+        $this->subjectLine = $value;
+
+        return $this;
+    }
+
+    public function fromName(array $value): self
+    {
+        $this->fromName = $value;
+
+        return $this;
+    }
+
+    public function fromEmail(array $value): self
+    {
+        $this->fromEmail = $value;
+
+        return $this;
+    }
+
+    public function toEmail(array $value): self
+    {
+        $this->toEmail = $value;
+
+        return $this;
+    }
 
     protected function beforePrepare(): bool
     {
@@ -28,6 +65,30 @@ class SentEmailElementQuery extends ElementQuery
             'sprout_sent_emails.dateCreated',
             'sprout_sent_emails.dateUpdated',
         ]);
+
+        if ($this->subjectLine) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_sent_emails.subjectLine', $this->subjectLine)
+            );
+        }
+
+        if ($this->fromName) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_sent_emails.fromName', $this->fromName)
+            );
+        }
+
+        if ($this->fromEmail) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_sent_emails.fromEmail', $this->fromEmail)
+            );
+        }
+
+        if ($this->toEmail) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_sent_emails.toEmail', $this->toEmail)
+            );
+        }
 
         return parent::beforePrepare();
     }
