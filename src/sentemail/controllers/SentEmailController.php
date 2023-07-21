@@ -5,6 +5,8 @@ namespace BarrelStrength\Sprout\sentemail\controllers;
 use BarrelStrength\Sprout\sentemail\components\elements\SentEmailElement;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use Craft;
+use craft\helpers\Cp;
+use craft\models\Site;
 use craft\web\Controller;
 use Exception;
 use yii\web\ForbiddenHttpException;
@@ -15,19 +17,14 @@ class SentEmailController extends Controller
     /**
      * Loads the Sent Email Index page
      */
-    public function actionSentEmailIndexTemplate($siteHandle = null): Response
+    public function actionSentEmailIndexTemplate(): Response
     {
         $this->requirePermission(SentEmailModule::p('viewSentEmail'));
 
-        if ($siteHandle === null) {
-            $primarySite = Craft::$app->getSites()->getPrimarySite();
-            $siteHandle = $primarySite->handle;
-        }
+        $site = Cp::requestedSite();
 
-        $currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-        if (!$currentSite) {
-            throw new ForbiddenHttpException('Unable to find site');
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
         return $this->renderTemplate('sprout-module-sent-email/_sentemail/index.twig', [
@@ -41,9 +38,15 @@ class SentEmailController extends Controller
      */
     public function actionGetSentEmailDetailsModalHtml(): Response
     {
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
-        $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class);
+        $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class, $site->id);
 
         $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/sent-email-details.twig', [
             'sentEmail' => $sentEmail,
@@ -60,9 +63,15 @@ class SentEmailController extends Controller
      */
     public function actionGetResendModalHtml(): Response
     {
+        $site = Cp::requestedSite();
+
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
-        $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class);
+        $sentEmail = Craft::$app->getElements()->getElementById($emailId, SentEmailElement::class, $site->id);
 
         $html = Craft::$app->getView()->renderTemplate('sprout-module-sent-email/_components/elements/SentEmail/resend-email-fields.twig', [
             'sentEmail' => $sentEmail,
