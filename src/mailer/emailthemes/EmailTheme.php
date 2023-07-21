@@ -30,7 +30,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     public ?string $uid = null;
 
-    private ?FieldLayout $_fieldLayout = null;
+    protected ?FieldLayout $_fieldLayout = null;
 
     private ?string $_htmlBody = null;
 
