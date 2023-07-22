@@ -49,7 +49,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public const STATUS_SENT = 'sent';
 
-    // Package Statuses
+    // Email Type Statuses
 
     public const ENABLED = 'enabled';
 
@@ -610,7 +610,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     protected function metadata(): array
     {
         return [
-            Craft::t('sprout-module-mailer', 'Package Type') => $this->getEmailTypeSettings()::displayName(),
+            Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailTypeSettings()::displayName(),
         ];
     }
 

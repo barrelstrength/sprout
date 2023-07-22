@@ -35,15 +35,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public static function getTabs(FieldLayout $fieldLayout): array
     {
-        $campaignPackageCondition = [
-            'class' => EmailCondition::class,
-            'conditionRules' => [
-                //                new PackageConditionRule([
-                //                    'value' => self::class,
-                //                ]),
-            ],
-        ];
-
         $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
 
         $testToEmailAddressField = [];
@@ -58,7 +49,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $audienceField = new AudienceField([
             'uid' => 'SPROUT-UID-RECIPIENTS-FIELD',
         ]);
-        $audienceField->setElementCondition($campaignPackageCondition);
 
         $mailerTab = new FieldLayoutTab();
         $mailerTab->layout = $fieldLayout;

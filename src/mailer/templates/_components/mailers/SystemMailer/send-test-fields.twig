@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <th>{{ 'From Address'|t('sprout-module-sent-email') }}</th>
-        <td>{{ mailerInstructionsSettings.sender }}</td>
+        <td>{{ mailerInstructionsSettings.getSenderAsString() }}</td>
     </tr>
 </table>
 

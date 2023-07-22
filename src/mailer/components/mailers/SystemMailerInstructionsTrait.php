@@ -37,6 +37,13 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
+    public function getSenderAsString(): mixed
+    {
+        $sender = $this->getSender();
+
+        return current($sender) . ' <' . key($sender) . '>' ?? null;
+    }
+
     public function getSender(): mixed
     {
         $senderAddress = Address::create($this->sender);

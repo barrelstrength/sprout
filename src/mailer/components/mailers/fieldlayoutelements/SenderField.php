@@ -7,6 +7,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\BaseField;
+use craft\helpers\App;
 
 class SenderField extends BaseField
 {
@@ -44,10 +45,12 @@ class SenderField extends BaseField
                 continue;
             }
 
-            $sender = $approvedSender['fromName'] . ' <' . $approvedSender['fromEmail'] . '>';
+            $labelSender = App::parseEnv($approvedSender['fromName']) . ' <' . App::parseEnv($approvedSender['fromEmail']) . '>';
+            $valueSender = $approvedSender['fromName'] . ' <' . $approvedSender['fromEmail'] . '>';
+
             $senderOptions[] = [
-                'label' => $sender,
-                'value' => $sender,
+                'label' => $labelSender,
+                'value' => $valueSender,
             ];
         }
 

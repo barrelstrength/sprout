@@ -7,13 +7,10 @@ use craft\events\RegisterComponentTypesEvent;
 
 class EmailTypes extends Component
 {
-    public const EVENT_REGISTER_PACKAGE_TYPES = 'registerSproutEmailTypes';
+    public const EVENT_REGISTER_SPROUT_EMAIL_TYPES = 'registerSproutEmailTypes';
 
     protected array $_emailTypes = [];
 
-    /**
-     * @return string[]
-     */
     public function getRegisteredEmailTypes(): array
     {
         $emailTypes = [];
@@ -22,7 +19,7 @@ class EmailTypes extends Component
             'types' => $emailTypes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_PACKAGE_TYPES, $event);
+        $this->trigger(self::EVENT_REGISTER_SPROUT_EMAIL_TYPES, $event);
 
         return $event->types;
     }
