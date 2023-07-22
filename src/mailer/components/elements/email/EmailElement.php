@@ -389,6 +389,10 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getFieldLayout(): ?FieldLayout
     {
+        // Memoizing the field layout breaks the UI when the Theme switches
+        // and generates the first provisional draft. The user then has to
+        // reload or trigger another draft before the Content tab layout gets updated
+        // with the new email theme layout.
         //if ($this->_fieldLayout) {
         //    return $this->_fieldLayout;
         //}
