@@ -201,7 +201,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
                     'href' => '#',
                     'class' => 'sprout-sent-email-details-btn btn small formsubmit',
                     'data-email-id' => $this->id,
-                    'onclick' => 'window.SproutSentEmailDetailsModal('.$this->id.')',
+                    'onclick' => 'window.SentEmailDetailsModal('.$this->id.')',
                 ]);
 
             case 'resend':
@@ -214,6 +214,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
                     'data-send-email-action' => 'sprout-module-sent-email/sent-email/resend-email',
                     'data-modal-title' => Craft::t('sprout-module-sent-email', 'Resend email'),
                     'data-modal-action-btn-label' => Craft::t('sprout-module-sent-email', 'Resend Now'),
+                    'onclick' => 'window.SendEmailModal('.$this->id.')',
                 ]);
 
             case 'preview':

@@ -52,11 +52,4 @@ class TransactionalEmailElement extends EmailElement
             ],
         ];
     }
-
-    public static function indexHtml(ElementQueryInterface $elementQuery, ?array $disabledElementIds, array $viewState, ?string $sourceKey, ?string $context, bool $includeContainer, bool $showCheckboxes): string
-    {
-        Sprout::getInstance()->vite->register('mailer/SendEmailModal.js', false);
-
-        return parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
-    }
 }

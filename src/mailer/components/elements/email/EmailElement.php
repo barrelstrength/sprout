@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
@@ -206,6 +207,13 @@ class EmailElement extends Element implements EmailPreviewInterface
         ];
     }
 
+    public static function indexHtml(ElementQueryInterface $elementQuery, ?array $disabledElementIds, array $viewState, ?string $sourceKey, ?string $context, bool $includeContainer, bool $showCheckboxes): string
+    {
+        Sprout::getInstance()->vite->register('mailer/SendEmailModal.js', false);
+
+        return parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
+    }
+
     public function prepareEditScreen(Response $response, string $containerId): void
     {
         $crumbs[] = [
@@ -342,6 +350,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                     'data-send-email-action' => 'sprout-module-mailer/mailer/send-test',
                     'data-modal-title' => Craft::t('sprout-module-mailer', 'Send a test'),
                     'data-modal-action-btn-label' => Craft::t('sprout-module-mailer', 'Send Test Now'),
+                    'onclick' => 'window.SendEmailModal('.$this->id.')',
                 ]);
 
             case 'preview':

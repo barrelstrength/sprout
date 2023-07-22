@@ -1,4 +1,4 @@
-window.SproutSentEmailDetailsModal = function(emailId) {
+window.SentEmailDetailsModal = function(emailId) {
 
     Craft.sendActionRequest('POST', 'sprout-module-sent-email/sent-email/get-sent-email-details-modal-html', {
             data: {
