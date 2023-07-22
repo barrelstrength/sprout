@@ -703,13 +703,15 @@ export const FormBuilder = (formId) => ({
 
             const $contents = $body.add($footer);
 
+            $('#sprout-tab-modal').remove();
+
             const slideout = new Craft.Slideout($contents, {
                 containerElement: 'form',
                 containerAttributes: {
                     method: 'post',
                     action: '',
                     class: 'fld-element-settings slideout',
-                    id: 'cat-dog',
+                    id: 'sprout-tab-modal',
                 },
             });
 
