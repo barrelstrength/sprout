@@ -5,8 +5,8 @@
 </head>
 <body>
 
-{% if email.defaultBody|length %}
-    <p>{{ email.defaultBody|markdown }}</p>
+{% if email.defaultMessage|length %}
+    <p>{{ email.defaultMessage|markdown }}</p>
 {% endif %}
 
 </body>

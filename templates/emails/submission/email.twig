@@ -14,12 +14,12 @@
                 <tr>
                     <td style="width:600px;">
 
-                        {% if email.defaultBody|length %}
+                        {% if email.defaultMessage|length %}
                             <table>
                                 <tr>
                                     <td style="width:600px;">
 
-                                        <p>{{ email.defaultBody|markdown }}</p>
+                                        <p>{{ email.defaultMessage|markdown }}</p>
 
                                     </td>
                                 </tr>
