@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\components\conditions;
 
 use Craft;
+use craft\base\conditions\BaseConditionRule;
 use craft\base\conditions\BaseLightswitchConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
@@ -10,11 +11,20 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
 use craft\helpers\ElementHelper;
 
-class IsNewEntryConditionRule extends BaseLightswitchConditionRule implements ElementConditionRuleInterface
+class IsNewEntryConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
+    public bool $value = true;
+
     public function getLabel(): string
     {
         return Craft::t('sprout-module-transactional', 'Is New Live Entry');
+    }
+
+    public function getConfig(): array
+    {
+        return array_merge(parent::getConfig(), [
+            'value' => $this->value,
+        ]);
     }
 
     public function getExclusiveQueryParams(): array
@@ -30,6 +40,19 @@ class IsNewEntryConditionRule extends BaseLightswitchConditionRule implements El
         ];
     }
 
+    protected function inputHtml(): string
+    {
+        // This rule always returns true, so no input is needed
+        return '';
+    }
+
+    protected function defineRules(): array
+    {
+        return array_merge(parent::defineRules(), [
+            [['value'], 'safe'],
+        ]);
+    }
+
     public function modifyQuery(ElementQueryInterface $query): void
     {
         // No changes
@@ -43,17 +66,13 @@ class IsNewEntryConditionRule extends BaseLightswitchConditionRule implements El
             $element->getIsCanonical() &&
             !ElementHelper::isDraftOrRevision($element);
 
-        if ($isNewEntryForFirstTime) {
-            return true;
-        }
+        $isNewEntryBecauseStatusChangedToLive =
+            $element->enabled === true &&
+            $element->isAttributeDirty('enabled') &&
+            $element->getStatus() === Entry::STATUS_LIVE &&
+            $element->getIsCanonical() &&
+            !ElementHelper::isDraftOrRevision($element);
 
-        // OR!!!
-
-        // When not the firstSave but
-        // Status is changed to Live...
-
-        $isNewEntryBecauseStatusChangedToLive = false;
-
-        return $isNewEntryBecauseStatusChangedToLive;
+        return $isNewEntryForFirstTime || $isNewEntryBecauseStatusChangedToLive;
     }
 }
