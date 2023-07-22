@@ -49,13 +49,13 @@ class FormSummaryEmailTheme extends EmailTheme
 
         $fieldLayoutTab->setElements([
             new TextareaField([
-                'label' => Craft::t('sprout-module-mailer', 'Body'),
+                'label' => Craft::t('sprout-module-mailer', 'Message'),
                 'instructions' => Craft::t('sprout-module-mailer', 'Instructions'),
-                'attribute' => 'defaultBody',
+                'attribute' => 'defaultMessage',
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-DEFAULT-MESSAGE-FIELD',
             ]),
         ]);
 

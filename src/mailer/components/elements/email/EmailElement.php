@@ -388,9 +388,6 @@ class EmailElement extends Element implements EmailPreviewInterface
             'type' => self::class,
         ]);
 
-        $emailTheme = $this->getEmailTheme();
-        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
-
         $settings = MailerModule::getInstance()->getSettings();
         $emailType = $this->getEmailTypeSettings();
         $mailer = $this->getMailer();
@@ -428,6 +425,9 @@ class EmailElement extends Element implements EmailPreviewInterface
                 ],
             ]),
         ]);
+
+        $emailTheme = $this->getEmailTheme();
+        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
 
         $newTabs = array_merge(
             [$subjectTab],

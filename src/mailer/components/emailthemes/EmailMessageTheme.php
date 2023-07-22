@@ -49,7 +49,7 @@ class EmailMessageTheme extends EmailTheme
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-DEFAULT-MESSAGE-FIELD',
             ]),
         ]);
 
@@ -57,7 +57,7 @@ class EmailMessageTheme extends EmailTheme
             $fieldLayoutTab,
         ]);
 
-        return $fieldLayout;
+        return $this->_fieldLayout = $fieldLayout;
     }
 }
 

@@ -66,9 +66,11 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
             return $this->_fieldLayout;
         }
 
-        return new FieldLayout([
+        $fieldLayout = new FieldLayout([
             'type' => EmailElement::class,
         ]);
+
+        return $this->_fieldLayout = $fieldLayout;
     }
 
     public function setFieldLayout(?FieldLayout $fieldLayout): void
