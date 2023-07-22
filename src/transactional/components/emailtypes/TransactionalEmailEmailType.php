@@ -2,8 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\components\emailtypes;
 
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PackageConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -74,20 +72,10 @@ class TransactionalEmailEmailType extends EmailType
 
     public static function getTabs(FieldLayout $fieldLayout): array
     {
-        $transactionalEmailPackageCondition = [
-            'class' => EmailCondition::class,
-            'conditionRules' => [
-                new PackageConditionRule([
-                    'value' => self::class,
-                ]),
-            ],
-        ];
-
         $eventTab = new FieldLayoutTab();
         $eventTab->layout = $fieldLayout;
         $eventTab->name = Craft::t('sprout-module-mailer', 'Event');
         $eventTab->uid = 'SPROUT-UID-EMAIL-EVENTS-TAB';
-        $eventTab->setElementCondition($transactionalEmailPackageCondition);
         $eventTab->setElements([
             new NotificationEventField(['uid' => 'SPROUT-UID-NOTIFICATION-EVENT-FIELD']),
             new HorizontalRule(),

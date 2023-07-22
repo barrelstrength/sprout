@@ -9,8 +9,6 @@ class EmailCondition extends ElementCondition
     protected function conditionRuleTypes(): array
     {
         return array_merge(parent::conditionRuleTypes(), [
-            FromEmailConditionRule::class,
-            PackageConditionRule::class,
         ]);
     }
 }
