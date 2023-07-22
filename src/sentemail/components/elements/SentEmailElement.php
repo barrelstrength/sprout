@@ -25,23 +25,27 @@ class SentEmailElement extends Element implements EmailPreviewInterface
 
     public const STATUS_FAILED = 'failed';
 
-    public string $subjectLine;
+    public ?string $subjectLine = null;
 
     public bool $enableFileAttachments = false;
 
     // Sender Info
 
-    public string $fromName;
+    public ?string $fromName = null;
 
-    public string $fromEmail;
+    public ?string $fromEmail = null;
 
-    public string $toEmail;
+    public ?string $toEmail = null;
 
-    public string $textBody;
+    public ?string $textBody = null;
 
-    public string $htmlBody;
+    public ?string $htmlBody = null;
 
     public array $info = [];
+
+    public ?int $originSiteId = null;
+
+    public ?string $originSiteContext = null;
 
     public bool $sent = false;
 
@@ -259,6 +263,8 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         $record->textBody = $this->textBody;
         $record->htmlBody = $this->htmlBody;
         $record->info = $this->info;
+        $record->originSiteId = $this->originSiteId;
+        $record->originSiteContext = $this->originSiteContext;
         $record->sent = $this->sent;
         $record->dateCreated = $this->dateCreated;
         $record->dateUpdated = $this->dateUpdated;

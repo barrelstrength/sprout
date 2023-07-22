@@ -17,6 +17,8 @@ use yii\db\ActiveQueryInterface;
  * @property $textBody string
  * @property $htmlBody string
  * @property $info string
+ * @property $originSiteId int
+ * @property $originSiteContext string
  * @property $sent bool
  * @property $status string
  * @property $dateCreated DateTime

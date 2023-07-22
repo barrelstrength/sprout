@@ -58,9 +58,11 @@ class SentEmails extends Component
         $sentEmail->info = $sentEmailDetails->getAttributes();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $sentEmail->siteId = Cp::requestedSite()->id;
+            $sentEmail->originSiteId = Cp::requestedSite()->id;
+            $sentEmail->originSiteContext = 'cp';
         } else {
-            $sentEmail->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+            $sentEmail->originSiteId = Craft::$app->getSites()->getCurrentSite()->id;
+            $sentEmail->originSiteContext = 'site';
         }
 
         try {
@@ -94,7 +96,6 @@ class SentEmails extends Component
                 'sprout_sent_emails.dateCreated' => SORT_DESC,
             ])
             ->status(null)
-            ->siteId(Craft::$app->getSites()->getCurrentSite()->id)
             ->ids();
 
         $purgeElements = new PurgeElements();
