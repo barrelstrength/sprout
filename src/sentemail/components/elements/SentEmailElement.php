@@ -212,6 +212,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
                     'href' => '#',
                     'class' => 'sprout-sent-email-details-btn btn small formsubmit',
                     'data-email-id' => $this->id,
+                    'onclick' => 'window.SproutSentEmailDetailsModal('.$this->id.')',
                 ]);
 
             case 'resend':
