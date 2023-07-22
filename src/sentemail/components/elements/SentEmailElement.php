@@ -72,11 +72,6 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         return true;
     }
 
-    public static function isLocalized(): bool
-    {
-        return true;
-    }
-
     public static function hasStatuses(): bool
     {
         return true;
@@ -189,12 +184,6 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         $actions[] = Delete::class;
 
         return $actions;
-    }
-
-    public function getSupportedSites(): array
-    {
-        // limit to just the one site this element is set to so that we don't propagate when saving
-        return [$this->siteId];
     }
 
     public function __toString(): string
