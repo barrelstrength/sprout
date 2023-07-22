@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use Craft;
 use craft\fieldlayoutelements\TextareaField;
-use craft\helpers\StringHelper;
+use craft\fieldlayoutelements\Tip;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
@@ -50,12 +50,17 @@ class FormSummaryEmailTheme extends EmailTheme
         $fieldLayoutTab->setElements([
             new TextareaField([
                 'label' => Craft::t('sprout-module-mailer', 'Message'),
-                'instructions' => Craft::t('sprout-module-mailer', 'Instructions'),
+                'instructions' => Craft::t('sprout-module-mailer', 'A message that will appear in the body of your email content.'),
                 'attribute' => 'defaultMessage',
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,
                 'uid' => 'SPROUT-UID-DEFAULT-MESSAGE-FIELD',
+            ]),
+            new Tip([
+                'style' => Tip::STYLE_TIP,
+                'tip' => Craft::t('sprout-module-mailer', 'The body of this email theme will include a summary of the form submission.'),
+                'uid' => 'SPROUT-UID-FORM-SUMMARY-TIP-FIELD',
             ]),
         ]);
 

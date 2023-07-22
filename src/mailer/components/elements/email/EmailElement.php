@@ -389,11 +389,11 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getFieldLayout(): ?FieldLayout
     {
-        if ($this->_fieldLayout) {
-            return $this->_fieldLayout;
-        }
+        //if ($this->_fieldLayout) {
+        //    return $this->_fieldLayout;
+        //}
 
-        $this->_fieldLayout = new FieldLayout([
+        $fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);
 
@@ -406,7 +406,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             : [];
 
         $subjectTab = new FieldLayoutTab();
-        $subjectTab->layout = $this->_fieldLayout;
+        $subjectTab->layout = $fieldLayout;
         $subjectTab->name = Craft::t('sprout-module-mailer', 'Subject');
         $subjectTab->sortOrder = -1;
         $subjectTab->uid = 'SPROUT-UID-EMAIL-PREPARE-TAB';
@@ -440,14 +440,14 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $newTabs = array_merge(
             [$subjectTab],
-            $mailer::getTabs($this->getFieldLayout()),
-            $emailType::getTabs($this->getFieldLayout()),
+            $mailer::getTabs($fieldLayout),
+            $emailType::getTabs($fieldLayout),
             $themeTabs,
         );
 
-        $this->_fieldLayout->setTabs($newTabs);
+        $fieldLayout->setTabs($newTabs);
 
-        return $this->_fieldLayout;
+        return $this->_fieldLayout = $fieldLayout;
     }
 
     public function getSidebarHtml(bool $static): string

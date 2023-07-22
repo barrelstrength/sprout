@@ -110,23 +110,6 @@ class EmailThemesController extends Controller
         ]);
     }
 
-    private function getFieldLayoutSettings(): ?array
-    {
-        if (!Craft::$app->getRequest()->getBodyParam('fieldLayout')) {
-            return [];
-        }
-
-        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
-
-        if (!$fieldLayout) {
-            return [];
-        }
-
-        return [
-            $fieldLayout->uid => $fieldLayout->getConfig(),
-        ];
-    }
-
     private function populateEmailThemeModel(): EmailTheme
     {
         $type = Craft::$app->request->getRequiredBodyParam('type');
