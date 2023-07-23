@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailPreviewInterface;
+use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
@@ -144,10 +145,21 @@ class PreviewController extends Controller
 
     protected function showPreviewEmail(EmailElement $email, string $fileExtension = 'html'): void
     {
-        if ($fileExtension == 'txt') {
-            $output = $email->getEmailTheme()->getTextBody();
+        $emailTheme = $email->getEmailTheme();
+
+        $emailTheme->addTemplateVariable('email', $email);
+
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        $recipient = new MailingListRecipient([
+            'name' => $currentUser->getName(),
+            'email' => $currentUser->email,
+        ]);
+        $emailTheme->addTemplateVariable('recipient', $recipient);
+
+        if ($fileExtension === 'txt') {
+            $output = $emailTheme->getTextBody();
         } else {
-            $output = $email->getEmailTheme()->getHtmlBody();
+            $output = $emailTheme->getHtmlBody();
         }
 
         echo $output;
