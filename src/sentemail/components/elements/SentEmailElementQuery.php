@@ -19,28 +19,28 @@ class SentEmailElementQuery extends ElementQuery
 
     public ?string $toEmail = null;
 
-    public function subjectLine($value): self
+    public function subjectLine(string $value): self
     {
         $this->subjectLine = $value;
 
         return $this;
     }
 
-    public function fromName(array $value): self
+    public function fromName(string $value): self
     {
         $this->fromName = $value;
 
         return $this;
     }
 
-    public function fromEmail(array $value): self
+    public function fromEmail(string $value): self
     {
         $this->fromEmail = $value;
 
         return $this;
     }
 
-    public function toEmail(array $value): self
+    public function toEmail(string $value): self
     {
         $this->toEmail = $value;
 

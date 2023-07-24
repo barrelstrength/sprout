@@ -60,5 +60,5 @@ return [
     'Info' => 'Info',
     'Encryption Method' => 'Encryption Method',
     'Failed' => 'Failed',
-    'Timeout' => 'Timeout'
+    'Timeout' => 'Timeout',
 ];
