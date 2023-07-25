@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\mailer\components\emailthemes\CustomEmailTheme;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use Psy\Util\Json;
 
 class m211101_000006_migrate_notifications_tables extends Migration
 {
@@ -40,7 +41,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
         //            'settings',
         //            'sendRule',
         //            'subjectLine',
-        //            'defaultBody',
+        //            'defaultMessage',
         //            'recipients',
         //            'cc',
         //            'bcc',
@@ -56,10 +57,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
         //            'uid',
         //        ];
 
-        $cols2 = [
+        $oldEmailCols = [
             'id',
             'subjectLine',
-            'defaultBody',
             'fromName',
             'fromEmail',
             'replyToEmail',
@@ -68,26 +68,24 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'dateUpdated',
             'uid',
 
+            'defaultBody', // Remap to defaultMessage
             'emailTemplateId', // Remap to emailThemeUid
             'preheaderText', // Hard code default
             'emailType', // Hard code as 'notification' ?
         ];
 
-        $cols3 = [
+        $emailCols = [
             'id',
             'subjectLine',
-            'defaultBody',
-            'fromName',
-            'fromEmail',
-            'replyToEmail',
-            'recipients',
             'dateCreated',
             'dateUpdated',
             'uid',
 
+            'defaultMessage',
             'emailThemeUid',
             'preheaderText', // Hard code default
             'emailType', // Hard code as 'notification' ?
+            'mailerInstructionsSettings',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
@@ -96,7 +94,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 ->select($oldThemeCols)
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
-            
+
             $themeRowsMapped = [];
             $sortOrder = 0;
 
@@ -126,21 +124,37 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 ->execute();
 
             $rows = (new Query())
-                ->select(array_diff($cols2, ['preheaderText', 'emailType']))
+                ->select(array_diff($oldEmailCols, ['preheaderText', 'emailType']))
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
 
             foreach ($rows as $key => $value) {
+                $rows[$key]['defaultMessage'] = $rows[$key]['defaultBody'];
+                unset($rows[$key]['defaultBody']);
+
                 // @todo - figure out how we store custom template data...
                 $rows[$key]['emailThemeId'] = 1;
                 unset($rows[$key]['emailTemplateId']);
 
                 $rows[$key]['preheaderText'] = '';
                 $rows[$key]['emailType'] = self::EMAIL_CLASS;
+
+                $rows[$key]['mailerInstructionsSettings'] = Json::encode([
+                    'fromName' => $rows[$key]['fromName'],
+                    'fromEmail' => $rows[$key]['fromEmail'],
+                    'replyToEmail' => $rows[$key]['replyToEmail'],
+                    'recipients' => $rows[$key]['recipients'],
+                ]);
+                unset(
+                    $rows[$key]['fromName'],
+                    $rows[$key]['fromEmail'],
+                    $rows[$key]['replyToEmail'],
+                    $rows[$key]['recipients']
+                );
             }
 
             Craft::$app->getDb()->createCommand()
-                ->batchInsert(self::NEW_EMAIL_TABLE, $cols3, $rows)
+                ->batchInsert(self::NEW_EMAIL_TABLE, $emailCols, $rows)
                 ->execute();
         }
     }

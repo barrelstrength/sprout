@@ -96,12 +96,12 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             $newSettings['totalElementsPerSitemap'] = (int)$newSettings['totalElementsPerSitemap'];
         }
 
-        if ($newSettings['enableCustomPagesSitemap'] === '1') {
-            $newSettings['enableCustomPagesSitemap'] = true;
+        if ($newSettings['enableCustomSections'] === '1') {
+            $newSettings['enableCustomSections'] = true;
         }
 
-        if ($newSettings['enableCustomPagesSitemap'] === '') {
-            $newSettings['enableCustomPagesSitemap'] = false;
+        if ($newSettings['enableCustomSections'] === '') {
+            $newSettings['enableCustomSections'] = false;
         }
 
         if ($newSettings['enableMultilingualSitemaps'] === '1') {

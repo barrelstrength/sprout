@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\sentemail\migrations;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use craft\helpers\Json;
 
 class m211101_000005_migrate_sent_email_tables extends Migration
 {
@@ -23,10 +24,11 @@ class m211101_000005_migrate_sent_email_tables extends Migration
             'body AS textBody',
             'htmlBody',
             'info',
-            'status',
             'dateCreated',
             'dateUpdated',
             'uid',
+
+            'status',
         ];
 
         $newCols = [
@@ -52,9 +54,31 @@ class m211101_000005_migrate_sent_email_tables extends Migration
                 ->from([self::OLD_SENT_EMAIL_TABLE])
                 ->all();
 
-            foreach ($rows as $row) {
-                $row['sent'] = $row['status'] === 'sent';
-                unset($row['status']);
+            foreach ($rows as $key => $row) {
+
+                $rows[$key]['sent'] = $rows[$key]['status'] === 'sent';
+                unset($rows[$key]['status']);
+
+                $info = Json::decodeIfJson($rows[$key]['info']);
+                $info['deliveryStatus'] = $info['deliveryType'] ?? null;
+                $info['transportType'] = $info['mailer'] ?? null;
+
+                unset(
+                    $info['emailType'],
+                    $info['deliveryType'],
+                    $info['source'],
+                    $info['sourceVersion'],
+                    $info['mailer'],
+                    $info['hostName'],
+                    $info['smtpSecureTransportType'],
+                    $info['timeout'],
+                    $info['protocol'],
+                    $info['port'],
+                    $info['host'],
+                    $info['username'],
+                    $info['encryptionMethod'],
+                );
+                $rows[$key]['info'] = Json::encode($info);
             }
 
             Craft::$app->getDb()->createCommand()

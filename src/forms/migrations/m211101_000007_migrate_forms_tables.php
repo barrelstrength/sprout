@@ -109,11 +109,12 @@ class m211101_000007_migrate_forms_tables extends Migration
             'errorMessage', // messageOnError
             'submitButtonText',
             'saveData',
-            'formTemplateId', // @todo - create theme and insert UID
             'enableCaptchas',
             'dateCreated',
             'dateUpdated',
             'uid',
+
+            'formTemplateId', // @todo - create theme and insert UID
         ];
 
         $colsNew = [
@@ -131,11 +132,12 @@ class m211101_000007_migrate_forms_tables extends Migration
             'messageOnError', // errorMessage
             'submitButtonText',
             'saveData',
-            'formTemplateUid',
             'enableCaptchas',
             'dateCreated',
             'dateUpdated',
             'uid',
+
+            'formTemplateUid',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_FORMS_TABLE)) {
@@ -150,6 +152,10 @@ class m211101_000007_migrate_forms_tables extends Migration
                 if (!in_array($row['groupId'], $newSourceGroupIds, true)) {
                     $rows[$key]['groupId'] = null;
                 }
+
+                /** @todo - figure out formTempateUid */
+                $rows[$key]['formTemplateUid'] = 'REPLACE_ME';
+                unset($rows[$key]['formTemplateId']);
             }
 
             Craft::$app->getDb()->createCommand()
