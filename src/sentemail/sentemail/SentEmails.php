@@ -10,6 +10,7 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\App;
 use craft\helpers\Cp;
+use craft\helpers\Json;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use Exception;
@@ -149,20 +150,8 @@ class SentEmails extends Component
         $emailSettings = App::mailSettings();
 
         /** @var BaseTransportAdapter $transportType */
-        $transportType = new $emailSettings->transportType();
-
-        if ($emailSettings->transportSettings) {
-            $transportType->setAttributes($emailSettings->transportSettings);
-        }
-
-        $sentEmailDetails->transportType = $transportType::displayName();
-
-        if ($transportType instanceof Smtp) {
-            /** @var Smtp $transportType */
-            $sentEmailDetails->host = $transportType->host;
-            $sentEmailDetails->port = $transportType->port;
-            $sentEmailDetails->username = $transportType->username;
-        }
+        $sentEmailDetails->transportType = $emailSettings->transportType::displayName();
+        $sentEmailDetails->transportSettings = Json::encode($emailSettings->transportSettings);
 
         return $sentEmailDetails;
     }

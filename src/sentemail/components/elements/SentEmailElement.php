@@ -289,8 +289,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
 
     public function getDetails(): SentEmailDetails
     {
-        $sentEmailDetails = new SentEmailDetails();
-        $sentEmailDetails->setAttributes($this->info, false);
+        $sentEmailDetails = new SentEmailDetails($this->info);
 
         return $sentEmailDetails;
     }

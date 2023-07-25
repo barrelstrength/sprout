@@ -3,6 +3,8 @@
 namespace BarrelStrength\Sprout\sentemail\sentemail;
 
 use craft\base\Model;
+use craft\helpers\Json;
+use yii\helpers\Inflector;
 
 class SentEmailDetails extends Model
 {
@@ -10,8 +12,6 @@ class SentEmailDetails extends Model
 
     /**
      * The status of the email that was sent
-     *
-     * @var string|null Sent, Error
      */
     public ?string $deliveryStatus = null;
 
@@ -36,11 +36,18 @@ class SentEmailDetails extends Model
 
     public ?string $transportType = null;
 
-    public ?string $protocol = null;
+    public ?string $transportSettings = null;
 
-    public ?string $host = null;
+    public function getTransportSettingsAsArray(): array
+    {
+        $settingsAttributes = Json::decodeIfJson($this->transportSettings);
 
-    public ?string $port = null;
+        if (is_array($settingsAttributes)) {
+            foreach ($settingsAttributes as $name => $value) {
+                $transportSettings[Inflector::camel2words($name, true)] = $value;
+            }
+        }
 
-    public ?string $username = null;
+        return $transportSettings ?? [];
+    }
 }

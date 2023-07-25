@@ -60,18 +60,13 @@
             <td>{{ details.transportType ?? '–' }}</td>
         </tr>
     {% endif %}
-    {% if details.transportType == 'SMTP' %}
-        <tr>
-            <th>{{ 'Host Name'|t('sprout-module-sent-email') }}</th>
-            <td>{{ details.host ?? '–' }}</td>
-        </tr>
-        <tr>
-            <th>{{ 'Port'|t('sprout-module-sent-email') }}</th>
-            <td>{{ details.port ?? '–' }}</td>
-        </tr>
-        <tr>
-            <th>{{ 'Username'|t('sprout-module-sent-email') }}</th>
-            <td>{{ details.username ?? '–' }}</td>
-        </tr>
+    {% set transportSettings = details.getTransportSettingsAsArray() %}
+    {% if transportSettings|length %}
+        {% for key, value in transportSettings %}
+            <tr>
+                <th>{{ key }}</th>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
     {% endif %}
 </table>
