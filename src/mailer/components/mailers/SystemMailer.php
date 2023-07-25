@@ -27,6 +27,8 @@ use yii\mail\MessageInterface;
 
 abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 {
+    public const SYSTEM_MAILER_KEY = 'systemMailer';
+
     public ?array $approvedSenders = null;
 
     public ?array $approvedReplyToEmails = null;

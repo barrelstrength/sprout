@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
-use BarrelStrength\Sprout\mailer\mailers\MailerRecord;
 use Craft;
 use craft\helpers\StringHelper;
 use craft\web\Controller;
@@ -23,12 +22,12 @@ class MailerController extends Controller
         ]);
     }
 
-    public function actionEdit(Mailer $mailer = null, int $mailerId = null): Response
+    public function actionEdit(Mailer $mailer = null, string $mailerUid = null): Response
     {
         $this->requireAdmin();
 
         if (!$mailer) {
-            $mailer = MailerModule::getInstance()->mailers->getMailerById($mailerId);
+            $mailer = MailerModule::getInstance()->mailers->getMailerByUid($mailerUid);
         }
 
         return $this->renderTemplate('sprout-module-mailer/_settings/mailers/edit.twig', [
@@ -143,11 +142,11 @@ class MailerController extends Controller
 
     private function populateMailerModel(): Mailer
     {
-        $mailerId = Craft::$app->request->getBodyParam('mailerId');
+        $mailerUid = Craft::$app->request->getBodyParam('mailerUid');
 
-        $mailer = MailerModule::getInstance()->mailers->getMailerById($mailerId);
+        $mailer = MailerModule::getInstance()->mailers->getMailerByUid($mailerUid);
 
-        $mailer->id = $mailerId;
+        $mailer->id = $mailerUid;
         $mailer->name = Craft::$app->request->getBodyParam('name');
         $mailer->mailerSettings = Craft::$app->request->getBodyParam('mailerSettings');
         $mailer->setAttributes($mailer->mailerSettings, false);
@@ -157,13 +156,8 @@ class MailerController extends Controller
         if ($isNew) {
             $mailer->uid = StringHelper::UUID();
         } else {
-            $mailerRecord = MailerRecord::find()
-                ->where([
-                    'id' => $mailer->id,
-                ])
-                ->one();
-
-            $mailer->uid = $mailerRecord->uid;
+            $settings = MailerModule::getInstance()->getSettings();
+            $mailer->uid = $settings->systemMailer->uid;
         }
 
         return $mailer;

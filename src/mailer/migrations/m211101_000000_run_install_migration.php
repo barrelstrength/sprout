@@ -14,7 +14,6 @@ class m211101_000000_run_install_migration extends Migration
 
     public const EMAILS_TABLE = '{{%sprout_emails}}';
     public const EMAIL_THEMES_TABLE = '{{%sprout_email_themes}}';
-    public const MAILERS_TABLE = '{{%sprout_mailers}}';
     public const AUDIENCES_TABLE = '{{%sprout_audiences}}';
     public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
     public const SUBSCRIPTIONS_TABLE = '{{%sprout_subscriptions}}';
@@ -78,7 +77,7 @@ class m211101_000000_run_install_migration extends Migration
                 'preheaderText' => $this->string(),
                 'defaultMessage' => $this->text(),
                 'emailThemeUid' => $this->uid(),
-                'mailerId' => $this->integer(),
+                'mailerUid' => $this->integer(),
                 'mailerInstructionsSettings' => $this->text(),
                 'emailTypeSettings' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
@@ -100,18 +99,6 @@ class m211101_000000_run_install_migration extends Migration
                 'copyPasteEmailTemplate' => $this->string(),
                 'settings' => $this->text(),
                 'sortOrder' => $this->integer(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]);
-        }
-
-        if (!$this->getDb()->tableExists(self::MAILERS_TABLE)) {
-            $this->createTable(self::MAILERS_TABLE, [
-                'id' => $this->primaryKey(),
-                'name' => $this->string(),
-                'type' => $this->string(),
-                'settings' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

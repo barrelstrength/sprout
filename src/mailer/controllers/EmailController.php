@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -28,9 +29,6 @@ class EmailController extends Controller
             throw new InvalidArgumentException('Unable to find email type: ' . $emailType);
         }
 
-        //        $emailType->getPermission()
-        //        $this->requirePermission('sprout-module-mailer:editCampaigns');
-
         /** @var string|Element $elementType */
         $elementType = $emailType::getElementIndexType();
 
@@ -55,7 +53,6 @@ class EmailController extends Controller
         }
 
         $email = Craft::createObject(EmailElement::class);
-        //        $email->siteId = $site->id;
 
         $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
         $email->emailThemeUid = $emailTheme->uid;
@@ -71,7 +68,7 @@ class EmailController extends Controller
         }
 
         $email->emailType = $emailType::class;
-        $email->mailerId = MailerModule::getInstance()->mailers->getDefaultMailerId();
+        $email->mailerUid = SystemMailer::SYSTEM_MAILER_KEY;
 
         $user = Craft::$app->getUser()->getIdentity();
 

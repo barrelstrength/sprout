@@ -30,7 +30,7 @@
     {{ redirectInput('sprout/settings/mailers') }}
 
     {% if mailer.id %}
-        {{ hiddenInput('mailerId', mailer.id) }}
+        {{ hiddenInput('mailerUid', mailer.id) }}
     {% endif %}
 
     {{ forms.textField({

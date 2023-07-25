@@ -26,7 +26,7 @@ class EmailElementQuery extends ElementQuery
             'sprout_emails.preheaderText',
             'sprout_emails.defaultMessage',
             'sprout_emails.emailThemeUid',
-            'sprout_emails.mailerId',
+            'sprout_emails.mailerUid',
             'sprout_emails.mailerInstructionsSettings',
             'sprout_emails.emailType',
             'sprout_emails.emailTypeSettings',

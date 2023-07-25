@@ -316,7 +316,7 @@ class MailerModule extends Module
             // Settings: Mailers
             'sprout/settings/mailers/edit/new' =>
                 'sprout-module-mailer/mailer/edit',
-            'sprout/settings/mailers/edit/<mailerId:.*>' =>
+            'sprout/settings/mailers/edit/<mailerUid:.*>' =>
                 'sprout-module-mailer/mailer/edit',
             'sprout/settings/mailers' =>
                 'sprout-module-mailer/mailer/mailers-index-template',

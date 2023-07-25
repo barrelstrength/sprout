@@ -76,7 +76,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public array $emailTypeSettings = [];
 
-    public ?int $mailerId = null;
+    public ?string $mailerUid = null;
 
     public array $mailerInstructionsSettings = [];
 
@@ -423,8 +423,8 @@ class EmailElement extends Element implements EmailPreviewInterface
             $preheaderText,
             new TextField([
                 'type' => 'hidden',
-                'name' => 'mailerId',
-                'attribute' => 'mailerId',
+                'name' => 'mailerUid',
+                'attribute' => 'mailerUid',
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
@@ -497,7 +497,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailElementRecord->emailThemeUid = $this->emailThemeUid;
 
-        $emailElementRecord->mailerId = $this->mailerId;
+        $emailElementRecord->mailerUid = $this->mailerUid;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
 
         $emailElementRecord->emailType = $this->emailType;
@@ -651,7 +651,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $rules[] = [['emailType'], 'safe'];
         $rules[] = [['emailTypeSettings'], 'safe'];
-        $rules[] = [['mailerId'], 'safe'];
+        $rules[] = [['mailerUid'], 'safe'];
         $rules[] = [['mailerInstructionsSettings'], 'safe'];
 
         return $rules;
