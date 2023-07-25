@@ -12,7 +12,6 @@ use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\mail\transportadapters\BaseTransportAdapter;
-use craft\mail\transportadapters\Smtp;
 use Exception;
 use yii\mail\MailEvent;
 use yii\mail\MessageInterface;
@@ -150,7 +149,8 @@ class SentEmails extends Component
         $emailSettings = App::mailSettings();
 
         /** @var BaseTransportAdapter $transportType */
-        $sentEmailDetails->transportType = $emailSettings->transportType::displayName();
+        $transportType = $emailSettings->transportType;
+        $sentEmailDetails->transportType = $transportType::displayName();
         $sentEmailDetails->transportSettings = Json::encode($emailSettings->transportSettings);
 
         return $sentEmailDetails;
