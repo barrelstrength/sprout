@@ -8,7 +8,16 @@ use craft\helpers\Db;
 
 class EmailElementQuery extends ElementQuery
 {
+    public ?string $subjectLine = null;
+
     public ?string $emailType = null;
+
+    public function subjectLine(string $value): static
+    {
+        $this->subjectLine = $value;
+
+        return $this;
+    }
 
     public function emailType(string $value): static
     {
@@ -33,6 +42,10 @@ class EmailElementQuery extends ElementQuery
             'sprout_emails.dateCreated',
             'sprout_emails.dateUpdated',
         ]);
+
+        if ($this->subjectLine) {
+            $this->subQuery->andWhere(Db::parseParam('sprout_emails.subjectLine', $this->subjectLine));
+        }
 
         if ($this->emailType) {
             $this->subQuery->andWhere(Db::parseParam('sprout_emails.emailType', $this->emailType));

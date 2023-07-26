@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\email\EmailType;
@@ -15,6 +14,7 @@ use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
+use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
@@ -142,7 +142,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public static function createCondition(): ElementConditionInterface
     {
-        return Craft::createObject(EmailCondition::class, [static::class]);
+        return Craft::createObject(TransactionalEmailCondition::class, [static::class]);
     }
 
     public static function trackChanges(): bool
@@ -350,7 +350,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                     'data-send-email-action' => 'sprout-module-mailer/mailer/send-test',
                     'data-modal-title' => Craft::t('sprout-module-mailer', 'Send a test'),
                     'data-modal-action-btn-label' => Craft::t('sprout-module-mailer', 'Send Test Now'),
-                    'onclick' => 'window.SendEmailModal('.$this->id.')',
+                    'onclick' => 'window.SendEmailModal(' . $this->id . ')',
                 ]);
 
             case 'preview':
