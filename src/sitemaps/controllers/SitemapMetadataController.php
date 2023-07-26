@@ -37,15 +37,25 @@ class SitemapMetadataController extends Controller
         $settings = SitemapsModule::getInstance()->getSettings();
         $isMultiSite = Craft::$app->getIsMultiSite();
 
+
         // Get Enabled Site IDs. Remove any disabled IDS.
         $enabledSiteIds = array_filter($settings->siteSettings);
         $enabledSiteGroupIds = array_filter($settings->groupSettings);
 
-        if (!$isMultiSite && empty($enabledSiteIds)) {
+        $missingSettingsScenario1 = !$isMultiSite && empty($enabledSiteIds);
+        $missingSettingsScenario2 = $isMultiSite &&
+            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_SINGLE_LANGUAGE &&
+            empty($enabledSiteGroupIds);
+
+        if ($missingSettingsScenario1 && $missingSettingsScenario2) {
             throw new NotFoundHttpException('No Sites are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site for your Sitemap.');
         }
 
-        if ($isMultiSite && empty($enabledSiteGroupIds)) {
+        $missingSettingsScenario3 = $isMultiSite &&
+            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL &&
+            empty($enabledSiteGroupIds);
+
+        if ($missingSettingsScenario3) {
             throw new NotFoundHttpException('No Site Groups are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site Group for your Sitemap.');
         }
 
