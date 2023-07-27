@@ -13,7 +13,6 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULE_CLASS = 'BarrelStrength\Sprout\mailer\MailerModule';
 
     public const EMAILS_TABLE = '{{%sprout_emails}}';
-    public const EMAIL_THEMES_TABLE = '{{%sprout_email_themes}}';
     public const AUDIENCES_TABLE = '{{%sprout_audiences}}';
     public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
     public const SUBSCRIPTIONS_TABLE = '{{%sprout_subscriptions}}';
@@ -85,24 +84,6 @@ class m211101_000000_run_install_migration extends Migration
                 'uid' => $this->uid(),
             ]);
             // @todo - FKs, etc
-        }
-
-        // @todo - SAVE IN PROJECT CONFIG?
-        if (!$this->getDb()->tableExists(self::EMAIL_THEMES_TABLE)) {
-            $this->createTable(self::EMAIL_THEMES_TABLE, [
-                'id' => $this->primaryKey(),
-                'fieldLayoutUid' => $this->uid(),
-                'name' => $this->string(),
-                'type' => $this->string(),
-                'htmlEmailTemplate' => $this->string(),
-                'textEmailTemplate' => $this->string(),
-                'copyPasteEmailTemplate' => $this->string(),
-                'settings' => $this->text(),
-                'sortOrder' => $this->integer(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]);
         }
     }
 

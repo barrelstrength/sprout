@@ -263,9 +263,9 @@ class MailerModule extends Module
     protected function getSproutCpSettingsNavItems(): array
     {
         return [
-            'system-mailer' => [
-                'label' => Craft::t('sprout-module-mailer', 'System Mailer'),
-                'url' => 'sprout/settings/system-mailer',
+            'mailers' => [
+                'label' => Craft::t('sprout-module-mailer', 'Mailers'),
+                'url' => 'sprout/settings/mailers',
             ],
             'email-themes' => [
                 'label' => Craft::t('sprout-module-mailer', 'Email Themes'),
@@ -314,7 +314,7 @@ class MailerModule extends Module
                 'sprout-module-mailer/email-themes/email-themes-index-template',
 
             // Settings: Mailers
-            'sprout/settings/mailers/edit/new' =>
+            'sprout/settings/mailers/new' =>
                 'sprout-module-mailer/mailer/edit',
             'sprout/settings/mailers/edit/<mailerUid:.*>' =>
                 'sprout-module-mailer/mailer/edit',
@@ -322,8 +322,8 @@ class MailerModule extends Module
                 'sprout-module-mailer/mailer/mailers-index-template',
 
             // Settings
-            'sprout/settings/system-mailer' => [
-                'template' => 'sprout-module-mailer/_settings/system-mailer',
+            'sprout/settings/mailers' => [
+                'template' => 'sprout-module-mailer/_settings/mailers',
             ],
 
             // Preview

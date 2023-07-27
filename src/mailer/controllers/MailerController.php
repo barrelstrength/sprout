@@ -22,12 +22,16 @@ class MailerController extends Controller
         ]);
     }
 
-    public function actionEdit(Mailer $mailer = null, string $mailerUid = null): Response
+    public function actionEdit(Mailer $mailer = null, string $mailerUid = null, string $type = null): Response
     {
         $this->requireAdmin();
 
-        if (!$mailer) {
+        if ($mailerUid) {
             $mailer = MailerModule::getInstance()->mailers->getMailerByUid($mailerUid);
+        }
+
+        if (!$mailer && $type) {
+            $mailer = new $type();
         }
 
         return $this->renderTemplate('sprout-module-mailer/_settings/mailers/edit.twig', [

@@ -17,6 +17,7 @@ use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\Tip;
 use craft\fs\Local;
 use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use craft\models\FieldLayout;
@@ -49,14 +50,14 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         }
 
         $audienceField = new AudienceField([
-            'uid' => 'SPROUT-UID-RECIPIENTS-FIELD',
+            'uid' => StringHelper::UUID(),
         ]);
 
         $mailerTab = new FieldLayoutTab();
         $mailerTab->layout = $fieldLayout;
         $mailerTab->name = Craft::t('sprout-module-mailer', 'Mailer');
         $mailerTab->sortOrder = 0;
-        $mailerTab->uid = 'SPROUT-UID-EMAIL-AUDIENCE-TAB';
+        $mailerTab->uid = StringHelper::UUID();
         $mailerTab->setElements([
             new SenderField(),
             new ReplyToField(),

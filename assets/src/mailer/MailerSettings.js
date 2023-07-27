@@ -20,18 +20,18 @@ class MailerSettings {
             },
             {
                 name: 'mailerType',
-                title: Craft.t('sprout-module-forms', 'Mailer'),
+                title: Craft.t('sprout-module-mailer', 'Mailer'),
             },
         ];
 
         new Craft.VueAdminTable({
             columns: columns,
             container: this.adminTableId,
-            deleteAction: 'sprout-module-forms/submission-statuses/delete',
-            deleteConfirmationMessage: Craft.t('sprout-module-forms', 'Are you sure you want to delete the Submission Status “{name}”?'),
-            deleteSuccessMessage: Craft.t('sprout-module-forms', 'Email theme deleted'),
-            deleteFailMessage: Craft.t('sprout-module-forms', 'Unable to delete email theme.'),
-            emptyMessage: Craft.t('sprout-module-forms', 'No email themes exist yet.'),
+            deleteAction: 'sprout-module-mailer/mailers/delete',
+            deleteConfirmationMessage: Craft.t('sprout-module-mailer', 'Are you sure you want to delete the mailer “{name}”?'),
+            deleteSuccessMessage: Craft.t('sprout-module-mailer', 'Mailer deleted'),
+            deleteFailMessage: Craft.t('sprout-module-mailer', 'Unable to delete mailer.'),
+            emptyMessage: Craft.t('sprout-module-mailer', 'No mailers exist yet.'),
             minItems: 2,
             padded: true,
             tableData: this.tableData,

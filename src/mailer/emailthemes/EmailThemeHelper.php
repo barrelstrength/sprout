@@ -69,18 +69,23 @@ class EmailThemeHelper
 
     public static function getEmailThemeModel(array $emailThemeSettings, string $uid = null): ?EmailTheme
     {
-        $fieldLayout = FieldLayout::createFromConfig(reset($emailThemeSettings['fieldLayouts']));
-
         $type = $emailThemeSettings['type'];
+
+        $config = reset($emailThemeSettings['fieldLayouts']);
+        $config['type'] = EmailTheme::class;
+
+        $fieldLayout = FieldLayout::createFromConfig($config);
 
         $emailTheme = new $type([
             'name' => $emailThemeSettings['name'],
+            'displayPreheaderText' => $emailThemeSettings['displayPreheaderText'] ?? false,
             'htmlEmailTemplate' => $emailThemeSettings['htmlEmailTemplate'] ?? null,
             'textEmailTemplate' => $emailThemeSettings['textEmailTemplate'] ?? null,
             'copyPasteEmailTemplate' => $emailThemeSettings['copyPasteEmailTemplate'] ?? null,
-            'fieldLayout' => $fieldLayout,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);
+
+        $emailTheme->setFieldLayout($fieldLayout);
 
         return $emailTheme;
     }

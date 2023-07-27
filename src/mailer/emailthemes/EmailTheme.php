@@ -18,6 +18,8 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 {
     public ?string $name = null;
 
+    public bool $displayPreheaderText = false;
+
     public ?string $htmlEmailTemplate = null;
 
     public ?string $textEmailTemplate = null;
@@ -147,6 +149,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
             'type' => static::class,
             'name' => $this->name,
             'handle' => $this::getHandle(),
+            'displayPreheaderText' => $this->displayPreheaderText,
             'htmlEmailTemplate' => $this->htmlEmailTemplate,
             'textEmailTemplate' => $this->textEmailTemplate,
             'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,

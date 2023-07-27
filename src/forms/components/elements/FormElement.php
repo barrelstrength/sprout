@@ -145,7 +145,7 @@ class FormElement extends Element
         $formBuilderTab = new FieldLayoutTab();
         $formBuilderTab->layout = $this->_fieldLayout;
         $formBuilderTab->name = Craft::t('sprout-module-forms', 'Layout');
-        $formBuilderTab->uid = 'SPROUT-UID-FORM-BUILDER-TAB';
+        $formBuilderTab->uid = StringHelper::UUID();
         $formBuilderTab->setElements([
             new FormBuilderField(),
         ]);
@@ -158,7 +158,7 @@ class FormElement extends Element
         $templatesTab = new FieldLayoutTab();
         $templatesTab->layout = $this->_fieldLayout;
         $templatesTab->name = Craft::t('sprout-module-forms', 'Design');
-        $templatesTab->uid = 'SPROUT-UID-GENERAL-TEMPLATES-TAB';
+        $templatesTab->uid = StringHelper::UUID();
         $templatesTab->setElements([
             new HtmlFieldLayoutElement($templatesHtml),
         ]);
@@ -171,7 +171,7 @@ class FormElement extends Element
         $notificationsTab = new FieldLayoutTab();
         $notificationsTab->layout = $this->_fieldLayout;
         $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
-        $notificationsTab->uid = 'SPROUT-UID-NOTIFICATIONS-TAB';
+        $notificationsTab->uid = StringHelper::UUID();
         $notificationsTab->setElements([
             new HtmlFieldLayoutElement($notificationsHtml),
         ]);
@@ -185,7 +185,7 @@ class FormElement extends Element
         $integrationsTab = new FieldLayoutTab();
         $integrationsTab->layout = $this->_fieldLayout;
         $integrationsTab->name = Craft::t('sprout-module-forms', 'Integrations');
-        $integrationsTab->uid = 'SPROUT-UID-INTEGRATIONS-TAB';
+        $integrationsTab->uid = StringHelper::UUID();
         $integrationsTab->setElements([
             new HtmlFieldLayoutElement($integrationsHtml),
         ]);
@@ -207,7 +207,7 @@ class FormElement extends Element
         $settingsTab = new FieldLayoutTab();
         $settingsTab->layout = $this->_fieldLayout;
         $settingsTab->name = Craft::t('sprout-module-forms', 'Settings');
-        $settingsTab->uid = 'SPROUT-UID-GENERAL-SETTINGS-TAB';
+        $settingsTab->uid = StringHelper::UUID();
         $settingsTab->setElements([
             new HtmlFieldLayoutElement($settingsHtml),
         ]);

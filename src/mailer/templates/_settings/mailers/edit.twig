@@ -29,40 +29,30 @@
     {{ actionInput('sprout-module-mailer/mailer/save') }}
     {{ redirectInput('sprout/settings/mailers') }}
 
-    {% if mailer.id %}
-        {{ hiddenInput('mailerUid', mailer.id) }}
-    {% endif %}
+    {{ hiddenInput('uid', mailer.uid) }}
+    {{ hiddenInput('type', className(mailer)) }}
 
     {{ forms.textField({
         label: "Name"|t('sprout-module-mailer'),
         instructions: "How you will refer to this Mailer."|t('sprout-module-mailer'),
         id: 'name',
         name: 'name',
-        value: mailer.name,
+        value: mailer.name ?? null,
         warning: sproutConfigWarning(module, 'name'),
         first: true,
         required: true,
     }) }}
-    {# errors: "mailer.getErrors('name')", #}
-    {# disabled: 'not mailer.isEditable()', #}
 
-    {{ forms.selectField({
-        label: 'Mailer Type'|t('sprout-module-mailer'),
-        id: 'mailerType',
-        name: 'mailerType',
-        options: [
-            {
-                label: 'System Mailer',
-                value: 'BarrelStrength\\Sprout\\mailer\\components\\mailers\\SystemMailer',
-            }
-        ],
-        value: className(mailer),
-        errors: [],
-        warning: sproutConfigWarning(module, 'mailerType')
-    }) }}
 
     {% namespace 'mailerSettings' %}
         {{ mailer.getSettingsHtml()|raw }}
     {% endnamespace %}
+
+
+    {{ forms.textField({
+        label: "Mailer Type"|t('sprout-module-mailer'),
+        value: mailer.displayName(),
+        disabled: true,
+    }) }}
 
 {% endblock %}

@@ -7,11 +7,14 @@ use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use Craft;
 use craft\fieldlayoutelements\TextareaField;
 use craft\fieldlayoutelements\Tip;
+use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
 class FormSummaryEmailTheme extends EmailTheme
 {
+    public bool $displayPreheaderText = true;
+
     public ?string $htmlEmailTemplate = '@Sprout/TemplateRoot/emails/submission/email.twig';
 
     public static function displayName(): string
@@ -44,7 +47,7 @@ class FormSummaryEmailTheme extends EmailTheme
             'layout' => $fieldLayout,
             'name' => Craft::t('sprout-module-mailer', 'Content'),
             'sortOrder' => 1,
-            'uid' => 'SPROUT-UID-CONTENT-TAB',
+            'uid' => StringHelper::UUID(),
         ]);
 
         $fieldLayoutTab->setElements([
@@ -55,12 +58,12 @@ class FormSummaryEmailTheme extends EmailTheme
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,
-                'uid' => 'SPROUT-UID-DEFAULT-MESSAGE-FIELD',
+                'uid' => StringHelper::UUID(),
             ]),
             new Tip([
                 'style' => Tip::STYLE_TIP,
                 'tip' => Craft::t('sprout-module-mailer', 'The body of this email theme will include a summary of the form submission.'),
-                'uid' => 'SPROUT-UID-FORM-SUMMARY-TIP-FIELD',
+                'uid' => StringHelper::UUID(),
             ]),
         ]);
 

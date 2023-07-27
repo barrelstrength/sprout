@@ -12,7 +12,6 @@ class MailerSettings extends BaseConfig
 
     public array $systemMailer = [];
 
-    public bool $enablePreheaderText = true;
 
     public bool $enableSubscriberLists = false;
 
@@ -33,13 +32,6 @@ class MailerSettings extends BaseConfig
     public function emailThemes(array $value): self
     {
         $this->emailThemes = $value;
-
-        return $this;
-    }
-
-    public function enablePreheaderText(bool $value): self
-    {
-        $this->enablePreheaderText = $value;
 
         return $this;
     }

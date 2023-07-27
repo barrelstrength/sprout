@@ -36,20 +36,4 @@ class EmailThemes extends Component
 
         return $instances;
     }
-
-    public function getEmailThemeById($id): ?EmailTheme
-    {
-        if (!$emailThemeRecord = EmailThemeRecord::findOne($id)) {
-            return null;
-        }
-
-        $emailTheme = new $emailThemeRecord->type();
-        $emailTheme->id = $emailThemeRecord->id;
-        $emailTheme->name = $emailThemeRecord->name;
-        $emailTheme->htmlEmailTemplate = $emailThemeRecord->htmlEmailTemplate;
-        $emailTheme->textEmailTemplate = $emailThemeRecord->textEmailTemplate;
-        $emailTheme->copyPasteEmailTemplate = $emailThemeRecord->copyPasteEmailTemplate;
-
-        return $emailTheme;
-    }
 }

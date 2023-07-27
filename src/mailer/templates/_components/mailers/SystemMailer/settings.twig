@@ -7,15 +7,19 @@
     name: 'approvedSenders',
     cols: {
         fromName: {
-            type: 'singleline',
+            type: 'autosuggest',
             heading: "From Name"|t('sprout-module-mailer'),
+            info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
             code: true,
+            suggestEnvVars: true,
         },
         fromEmail: {
-            type: 'singleline',
+            type: 'autosuggest',
             heading: "From Email"|t('sprout-module-mailer'),
+            info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
             required: true,
             code: true,
+            suggestEnvVars: true,
         },
     }|filter,
     rows: settings.approvedSenders ?? [''],
@@ -32,10 +36,12 @@
     name: 'approvedReplyToEmails',
     cols: {
         replyToEmail: {
-            type: 'singleline',
+            type: 'autosuggest',
             heading: "Reply To Email"|t('sprout-module-mailer'),
-            info: "From Email will be used if no Reply To Email is provided."|t('sprout-module-mailer'),
+            info: "From Email will be used if no Reply To Email is provided. This can be set to an environment variable. Warning: if the selected environment variable changes, it will change
+                the settings of existing emails."|t('sprout-module-mailer'),
             code: true,
+            suggestEnvVars: true,
         },
     }|filter,
     rows: settings.approvedReplyToEmails ?? [''],

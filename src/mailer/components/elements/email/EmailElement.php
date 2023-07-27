@@ -9,7 +9,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\S
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeRecord;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
@@ -26,6 +25,7 @@ use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\TextField;
 use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Html;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -70,7 +70,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public string $defaultMessage = '';
 
-    public null|int|string $emailThemeUid = null;
+    public ?string $emailThemeUid = null;
 
     public ?string $emailType = null;
 
@@ -291,8 +291,6 @@ class EmailElement extends Element implements EmailPreviewInterface
      * EMAIL TYPE determines:
      * $fieldLayout
      * $emailThemeUid
-     *
-     * @return EmailThemeRecord|null
      */
     public function getEmailTheme(): ?EmailTheme
     {
@@ -401,25 +399,34 @@ class EmailElement extends Element implements EmailPreviewInterface
             'type' => self::class,
         ]);
 
-        $settings = MailerModule::getInstance()->getSettings();
         $emailType = $this->getEmailTypeSettings();
         $mailer = $this->getMailer();
 
-        $preheaderText = $settings->enablePreheaderText
-            ? new PreheaderTextField()
+        $emailTheme = $this->getEmailTheme();
+        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
+
+        $preheaderText = $emailTheme->displayPreheaderText
+            ? new PreheaderTextField([
+                'uid' => StringHelper::UUID(),
+            ])
             : [];
 
         $subjectTab = new FieldLayoutTab();
         $subjectTab->layout = $fieldLayout;
         $subjectTab->name = Craft::t('sprout-module-mailer', 'Subject');
         $subjectTab->sortOrder = -1;
-        $subjectTab->uid = 'SPROUT-UID-EMAIL-PREPARE-TAB';
+        $subjectTab->uid = StringHelper::UUID();
         $subjectTab->setElements([
             new TitleField([
                 'label' => Craft::t('sprout-module-mailer', 'Email Name'),
+                'uid' => StringHelper::UUID(),
             ]),
-            new HorizontalRule(),
-            new SubjectLineField(),
+            new HorizontalRule([
+                'uid' => StringHelper::UUID(),
+            ]),
+            new SubjectLineField([
+                'uid' => StringHelper::UUID(),
+            ]),
             $preheaderText,
             new TextField([
                 'type' => 'hidden',
@@ -428,6 +435,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
+                'uid' => StringHelper::UUID(),
             ]),
             new TextField([
                 'type' => 'hidden',
@@ -436,11 +444,9 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
+                'uid' => StringHelper::UUID(),
             ]),
         ]);
-
-        $emailTheme = $this->getEmailTheme();
-        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
 
         $newTabs = array_merge(
             [$subjectTab],
@@ -456,7 +462,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getSidebarHtml(bool $static): string
     {
-        $mailers = MailerModule::getInstance()->mailers->getRegisteredMailers();
+        $mailers = MailerModule::getInstance()->mailers->getMailerTypes();
         $mailerTypeOptions = TemplateHelper::optionsFromComponentTypes($mailers);
 
         $themes = EmailThemeHelper::getEmailThemes();

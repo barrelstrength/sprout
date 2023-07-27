@@ -21,7 +21,7 @@ class Mailers extends Component
     /**
      * @return Mailer[]
      */
-    public function getRegisteredMailers(): array
+    public function getMailerTypes(): array
     {
         $mailers = [];
 
@@ -54,7 +54,7 @@ class Mailers extends Component
         return $mailers;
     }
 
-    public function getMailerByUid(string $uid): ?Mailer
+    public function getMailerByUid(string $uid = null): ?Mailer
     {
         $mailers = $this->getMailers();
 

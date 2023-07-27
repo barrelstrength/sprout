@@ -38,7 +38,7 @@ class EmailMessageTheme extends EmailTheme
             'layout' => $fieldLayout,
             'name' => Craft::t('sprout-module-mailer', 'Content'),
             'sortOrder' => 1,
-            'uid' => 'SPROUT-UID-CONTENT-TAB',
+            'uid' => StringHelper::UUID(),
         ]);
 
         $fieldLayoutTab->setElements([
@@ -49,7 +49,7 @@ class EmailMessageTheme extends EmailTheme
                 'class' => 'nicetext fullwidth',
                 'rows' => 11,
                 'mandatory' => true,
-                'uid' => 'SPROUT-UID-DEFAULT-MESSAGE-FIELD',
+                'uid' => StringHelper::UUID(),
             ]),
         ]);
 
