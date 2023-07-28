@@ -194,7 +194,7 @@ class MailerController extends Controller
         /** @var Mailer $mailer */
         $mailer = new $type();
         $mailer->name = Craft::$app->request->getRequiredBodyParam('name');
-        $mailer->uid = !empty($uid) ?: StringHelper::UUID();
+        $mailer->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
         $mailer->mailerSettings = Craft::$app->request->getBodyParam('mailerSettings');
         $mailer->setAttributes($mailer->mailerSettings, false);

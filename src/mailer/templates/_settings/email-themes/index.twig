@@ -33,17 +33,15 @@
 {% if emailThemes|length %}
     {% for emailTheme in emailThemes %}
 
-        {% set cpEditUrl = cpUrl('sprout/settings/email-themes/edit/' ~ emailTheme.uid) %}
-
         {% set tableData = tableData|merge([{
             id: emailTheme.uid,
             labelHtml: {
-                url: cpEditUrl,
+                url: emailTheme.getCpEditUrl(),
                 name: emailTheme.name ?? emailTheme.displayName()
             },
             emailThemeType: emailTheme.displayName,
             title: emailTheme.name|t('sprout-module-mailer')|e,
-            url: cpEditUrl,
+            url: emailTheme.getCpEditUrl(),
             _showDelete: true,
         }]) %}
 

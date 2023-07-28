@@ -39,12 +39,12 @@
         {% set tableData = tableData|merge([{
             id: mailer.uid,
             labelHtml: {
-                url: mailer.getCpSettingsUrl(),
+                url: mailer.getCpEditUrl(),
                 name: mailer.name,
             },
             mailerType: mailer.displayName(),
             title: mailer.name|t('sprout-module-mailer')|e,
-            url: mailer.getCpSettingsUrl(),
+            url: mailer.getCpEditUrl(),
             _showDelete: true,
         }]) %}
 

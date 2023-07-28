@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\emailthemes;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\SavableComponent;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\web\View;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -43,6 +44,11 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
     public static function isEditable(): bool
     {
         return false;
+    }
+
+    final public function getCpEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl('sprout/settings/email-themes/edit/' . $this->uid);
     }
 
     public function getTemplateVariables(): array
