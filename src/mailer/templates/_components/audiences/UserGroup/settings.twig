@@ -1,0 +1,16 @@
+{% import "_includes/forms" as forms %}
+
+{% if groupOptions|length %}
+    {{ forms.selectField({
+        first: true,
+        label: 'User Group'|t('sprout-module-mailer'),
+        id: 'userGroupUid',
+        name: 'userGroupUid',
+        options: groupOptions,
+        value: audienceType.userGroupUid,
+    }) }}
+{% else %}
+    <p class="warning">
+        {{ 'No user groups exist.'|t('sprout-module-mailer') }}
+    </p>
+{% endif %}

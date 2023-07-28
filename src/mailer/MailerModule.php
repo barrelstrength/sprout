@@ -16,7 +16,7 @@ use BarrelStrength\Sprout\mailer\audience\Audiences;
 use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\email\EmailTypes;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;

@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\email;
+namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;

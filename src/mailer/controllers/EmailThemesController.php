@@ -52,7 +52,7 @@ class EmailThemesController extends Controller
 
         $emailThemesConfig = EmailThemeHelper::getEmailThemes();
         $emailThemesConfig[$emailTheme->uid] = $emailTheme;
-        
+
         if (!$emailTheme->validate() || !EmailThemeHelper::saveEmailThemes($emailThemesConfig)) {
 
             Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save Email Type.'));

@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\email;
+namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;

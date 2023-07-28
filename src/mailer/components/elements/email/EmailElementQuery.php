@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
-use BarrelStrength\Sprout\mailer\email\EmailType;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 
