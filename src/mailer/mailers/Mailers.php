@@ -91,7 +91,7 @@ class Mailers extends Component
 
     public static function reorderMailers(array $uids = []): bool
     {
-        $oldMailers = self::getMailers();
+        $oldMailers = MailerModule::getInstance()->mailers->getMailers();
         $newMailers = [];
 
         foreach ($uids as $uid) {

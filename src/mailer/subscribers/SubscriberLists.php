@@ -17,10 +17,6 @@ class SubscriberLists extends Component
     // TODO - refactor for new Subscriber Users
     public function add(SubscriptionInterface $subscription): bool
     {
-        if ($this->requireEmailForSubscription === true) {
-            $subscription->setScenario(Subscription::SCENARIO_SUBSCRIBER);
-        }
-
         if (!$subscription->validate()) {
             return false;
         }
@@ -42,7 +38,7 @@ class SubscriberLists extends Component
             }
 
             // Save or resave the subscriber. Make sure we have an ID and run User Sync.
-            $this->saveSubscriber($item);
+            //$this->saveSubscriber($item);
 
             $subscription->itemId = $item->getId();
 

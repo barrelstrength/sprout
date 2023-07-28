@@ -5,19 +5,34 @@ namespace BarrelStrength\Sprout\mailer\subscribers;
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\fieldlayoutelements\SubscriberListsField;
+use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElementBehavior;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberQueryBehavior;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\elements\User;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\events\ModelEvent;
 use craft\events\RegisterElementSourcesEvent;
 
 class SubscriberHelper
 {
+    public static function attachSubscriberElementBehavior(DefineBehaviorsEvent $event): void
+    {
+        $settings = MailerModule::getInstance()->getSettings();
+
+        if ($settings->enableSubscriberLists) {
+            $event->behaviors[SubscriberElementBehavior::class] = SubscriberElementBehavior::class;
+        }
+    }
+
     public static function attachSubscriberQueryBehavior(DefineBehaviorsEvent $event): void
     {
-        $event->behaviors[SubscriberQueryBehavior::class] = SubscriberQueryBehavior::class;
+        $settings = MailerModule::getInstance()->getSettings();
+
+        if ($settings->enableSubscriberLists) {
+            $event->behaviors[SubscriberQueryBehavior::class] = SubscriberQueryBehavior::class;
+        }
     }
 
     public static function defineNativeSubscriberField(DefineFieldLayoutFieldsEvent $event): void
@@ -74,6 +89,36 @@ class SubscriberHelper
         }
 
         $event->sources = array_merge($event->sources, $sources);
+    }
+
+    public static function saveSubscriberLists(ModelEvent $event): void
+    {
+        /** @var User|SubscriberElementBehavior $user */
+        $user = $event->sender;
+
+        $newListIds = Craft::$app->getRequest()->getBodyParam('sprout.subscriberListIds');
+        $oldListIds = $user->getSubscriberListsIds();
+
+        $newListIds = $newListIds !== '' ? $newListIds : [];
+
+        $listIdsToRemove = array_diff($oldListIds, $newListIds);
+
+        if (!$newListIds && !$listIdsToRemove) {
+            return;
+        }
+
+        SubscriptionRecord::deleteAll([
+            'itemId' => $user->id,
+            'listId' => $listIdsToRemove,
+        ]);
+
+        foreach ($newListIds as $listId) {
+            $subscription = new Subscription();
+            $subscription->listId = $listId;
+            $subscription->itemId = $user->id;
+
+            MailerModule::getInstance()->subscriberLists->add($subscription);
+        }
     }
 
     /**

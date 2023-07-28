@@ -141,6 +141,12 @@ class MailerModule extends Module
             [SubscriberHelper::class, 'defineNativeSubscriberField']);
 
         Event::on(
+            User::class,
+            User::EVENT_AFTER_PROPAGATE,
+            [SubscriberHelper::class, 'saveSubscriberLists']
+        );
+
+        Event::on(
             DataSources::class,
             DataSources::INTERNAL_SPROUT_EVENT_REGISTER_DATA_SOURCES,
             static function(RegisterComponentTypesEvent $event): void {
@@ -192,6 +198,12 @@ class MailerModule extends Module
             User::class,
             User::EVENT_REGISTER_SOURCES,
             [SubscriberHelper::class, 'defineAdditionalSources']
+        );
+
+        Event::on(
+            User::class,
+            User::EVENT_DEFINE_BEHAVIORS,
+            [SubscriberHelper::class, 'attachSubscriberElementBehavior']
         );
 
         Event::on(

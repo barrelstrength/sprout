@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\components\elements\subscriber\fieldlayou
 
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;
+use BarrelStrength\Sprout\mailer\subscribers\SubscriptionRecord;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TextField;
@@ -28,9 +29,14 @@ class SubscriberListsField extends TextField
     {
         $options = SubscriberHelper::getListOptions();
 
+        $subscriptionIds = SubscriptionRecord::find()
+            ->select(['listId'])
+            ->where(['itemId' => $element->id])
+            ->column();
+
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/subscribers/_fields.twig', [
             'options' => $options,
-            'values' => [],
+            'values' => $subscriptionIds,
         ]);
     }
 }
