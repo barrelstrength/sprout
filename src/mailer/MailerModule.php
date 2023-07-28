@@ -271,10 +271,10 @@ class MailerModule extends Module
                 'label' => Craft::t('sprout-module-mailer', 'Email Themes'),
                 'url' => 'sprout/settings/email-themes',
             ],
-            //'mailers' => [
-            //    'label' => Craft::t('sprout-module-mailer', 'Mailers'),
-            //    'url' => 'sprout/settings/mailers',
-            //],
+            'subscribers' => [
+                'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
+                'url' => 'sprout/settings/subscribers',
+            ],
         ];
     }
 
@@ -322,8 +322,8 @@ class MailerModule extends Module
                 'sprout-module-mailer/mailer/mailers-index-template',
 
             // Settings
-            'sprout/settings/mailers' => [
-                'template' => 'sprout-module-mailer/_settings/mailers',
+            'sprout/settings/subscribers' => [
+                'template' => 'sprout-module-mailer/_settings/subscribers',
             ],
 
             // Preview

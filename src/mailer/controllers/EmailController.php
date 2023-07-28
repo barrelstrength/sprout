@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\email\EmailType;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
@@ -67,8 +68,10 @@ class EmailController extends Controller
             throw new NotFoundHttpException('No email type found.');
         }
 
+        $defaultMailer = Mailers::getDefaultMailer();
+
         $email->emailType = $emailType::class;
-        $email->mailerUid = SystemMailer::SYSTEM_MAILER_KEY;
+        $email->mailerUid = $defaultMailer->uid ?? null;
 
         $user = Craft::$app->getUser()->getIdentity();
 

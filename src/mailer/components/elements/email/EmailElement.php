@@ -235,7 +235,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     /**
      * The Email Service provide can be update via Craft's Email Settings
      */
-    public function getMailer(): Mailer
+    public function getMailer(): ?Mailer
     {
         if ($this->_mailer) {
             return $this->_mailer;
@@ -243,10 +243,10 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailTypeSettings = $this->getEmailTypeSettings();
 
-        return $emailTypeSettings->getMailer();
+        return $emailTypeSettings->getMailer($this);
     }
 
-    public function setMailer(?Mailer $mailer): void
+    public function setMailer(Mailer $mailer): void
     {
         $this->_mailer = $mailer;
     }
@@ -430,15 +430,6 @@ class EmailElement extends Element implements EmailPreviewInterface
             $preheaderText,
             new TextField([
                 'type' => 'hidden',
-                'name' => 'mailerUid',
-                'attribute' => 'mailerUid',
-                'containerAttributes' => [
-                    'class' => 'hidden',
-                ],
-                'uid' => StringHelper::UUID(),
-            ]),
-            new TextField([
-                'type' => 'hidden',
                 'name' => 'emailType',
                 'attribute' => 'emailType',
                 'containerAttributes' => [
@@ -462,8 +453,14 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getSidebarHtml(bool $static): string
     {
-        $mailers = MailerModule::getInstance()->mailers->getMailerTypes();
-        $mailerTypeOptions = TemplateHelper::optionsFromComponentTypes($mailers);
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
+
+        foreach ($mailers as $mailer) {
+            $mailerTypeOptions[] = [
+                'label' => $mailer->name,
+                'value' => $mailer->uid,
+            ];
+        }
 
         $themes = EmailThemeHelper::getEmailThemes();
 
@@ -478,7 +475,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             'element' => $this,
             'mailer' => $this->getMailer(),
             'templateOptions' => $templateOptions ?? [],
-            'mailerTypeOptions' => $mailerTypeOptions,
+            'mailerTypeOptions' => $mailerTypeOptions ?? [],
         ]);
 
         return $meta . parent::getSidebarHtml($static);
@@ -654,10 +651,10 @@ class EmailElement extends Element implements EmailPreviewInterface
         $rules[] = [['defaultMessage'], 'safe'];
 
         $rules[] = [['emailThemeUid'], 'safe'];
+        $rules[] = [['mailerUid'], 'safe'];
 
         $rules[] = [['emailType'], 'safe'];
         $rules[] = [['emailTypeSettings'], 'safe'];
-        $rules[] = [['mailerUid'], 'safe'];
         $rules[] = [['mailerInstructionsSettings'], 'safe'];
 
         return $rules;

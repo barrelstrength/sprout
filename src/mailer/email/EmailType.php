@@ -35,7 +35,7 @@ abstract class EmailType extends SavableComponent
     /**
      * Returns the Mailer this Email Type uses when sending email
      */
-    abstract public function getMailer(): Mailer;
+    abstract public function getMailer(EmailElement $email): ?Mailer;
 
     /**
      * Returns the Element Class being used as the Element Index UI layer for this Email Type

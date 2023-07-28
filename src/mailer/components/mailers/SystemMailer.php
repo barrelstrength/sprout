@@ -28,8 +28,6 @@ use yii\mail\MessageInterface;
 
 abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 {
-    public const SYSTEM_MAILER_KEY = 'systemMailer';
-
     public ?array $approvedSenders = null;
 
     public ?array $approvedReplyToEmails = null;
@@ -47,6 +45,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             $testToEmailAddressField->tip = Craft::t('sprout-module-mailer', 'Test email found in general config. All messages will be sent to the testToEmailAddress: {email}', [
                 'email' => $testToEmailAddress,
             ]);
+            $testToEmailAddressField->uid = StringHelper::UUID();
         }
 
         $audienceField = new AudienceField([
@@ -59,12 +58,20 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $mailerTab->sortOrder = 0;
         $mailerTab->uid = StringHelper::UUID();
         $mailerTab->setElements([
-            new SenderField(),
-            new ReplyToField(),
-            new HorizontalRule(),
-            $testToEmailAddressField,
-            new ToField(),
+            new SenderField([
+                'uid' => StringHelper::UUID(),
+            ]),
+            new ReplyToField([
+                'uid' => StringHelper::UUID(),
+            ]),
+            new HorizontalRule([
+                'uid' => StringHelper::UUID(),
+            ]),
+            new ToField([
+                'uid' => StringHelper::UUID(),
+            ]),
             $audienceField,
+            $testToEmailAddressField,
         ]);
 
         return [$mailerTab];

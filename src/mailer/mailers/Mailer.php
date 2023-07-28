@@ -36,7 +36,7 @@ abstract class Mailer extends SavableComponent
      */
     final public function getCpSettingsUrl(): ?string
     {
-        return UrlHelper::cpUrl('sprout/settings/mailers/edit/' . $this->id);
+        return UrlHelper::cpUrl('sprout/settings/mailers/edit/' . $this->uid);
     }
 
     /**

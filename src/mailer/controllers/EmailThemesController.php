@@ -50,10 +50,6 @@ class EmailThemesController extends Controller
 
         $emailTheme = $this->populateEmailThemeModel();
 
-        if (!$emailTheme->uid) {
-            $emailTheme->uid = StringHelper::UUID();
-        }
-
         $emailThemesConfig = EmailThemeHelper::getEmailThemes();
         $emailThemesConfig[$emailTheme->uid] = $emailTheme;
 
@@ -117,8 +113,8 @@ class EmailThemesController extends Controller
 
         /** @var EmailTheme $emailTheme */
         $emailTheme = new $type();
-        $emailTheme->name = Craft::$app->request->getBodyParam('name');
-        $emailTheme->uid = $uid ?? StringHelper::UUID();
+        $emailTheme->name = Craft::$app->request->getRequiredBodyParam('name');
+        $emailTheme->uid = !empty($uid) ?: StringHelper::UUID();
 
         if (!$emailTheme::isEditable()) {
             return $emailTheme;

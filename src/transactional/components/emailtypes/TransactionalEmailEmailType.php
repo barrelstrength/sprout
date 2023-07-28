@@ -56,14 +56,11 @@ class TransactionalEmailEmailType extends EmailType
         return Craft::t('sprout-module-mailer', 'Transactional Email');
     }
 
-    public function getMailer(): Mailer
+    public function getMailer(EmailElement $email): ?Mailer
     {
-        $settings = MailerModule::getInstance()->getSettings();
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
 
-        $mailer = new TransactionalMailer();
-        $mailer->setAttributes($settings->systemMailer, false);
-
-        return $mailer;
+        return $mailers[$email->mailerUid] ?? null;
     }
 
     public static function getElementIndexType(): string
@@ -76,12 +73,14 @@ class TransactionalEmailEmailType extends EmailType
         $eventTab = new FieldLayoutTab();
         $eventTab->layout = $fieldLayout;
         $eventTab->name = Craft::t('sprout-module-mailer', 'Event');
-        $eventTab->uid = StringHelper::UUID();
+        $eventTab->uid = 'SPROUT-UID-EMAIL-TYPE-TAB';
         $eventTab->setElements([
             new NotificationEventField([
                 'uid' => StringHelper::UUID(),
             ]),
-            new HorizontalRule(),
+            new HorizontalRule([
+                'uid' => StringHelper::UUID(),
+            ]),
             new FileAttachmentsField([
                 'uid' => StringHelper::UUID(),
             ]),

@@ -2,15 +2,14 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
+use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Component;
-use craft\events\ConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
-use craft\helpers\Json;
-use craft\helpers\ProjectConfig as ProjectConfigHelper;
-use Throwable;
-use yii\base\Exception;
+use craft\helpers\ProjectConfig;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 
 class Mailers extends Component
 {
@@ -44,14 +43,13 @@ class Mailers extends Component
     {
         $settings = MailerModule::getInstance()->getSettings();
 
-        $mailers = $settings->mailers;
+        $mailerConfigs = ProjectConfig::unpackAssociativeArray($settings->mailers);
 
-        // @todo - Update to use project config
-        foreach ($mailers as $uid => $mailer) {
-            $mailers[$uid] = $mailer;
+        foreach ($mailerConfigs as $uid => $config) {
+            $mailers[$uid] = self::getMailerModel($config, $uid);
         }
 
-        return $mailers;
+        return $mailers ?? [];
     }
 
     public function getMailerByUid(string $uid = null): ?Mailer
@@ -59,5 +57,73 @@ class Mailers extends Component
         $mailers = $this->getMailers();
 
         return $mailers[$uid] ?? null;
+    }
+
+    public static function saveMailers(array $mailers): bool
+    {
+        $projectConfig = Craft::$app->getProjectConfig();
+        $configPath = MailerModule::projectConfigPath('mailers');
+        $mailerConfigs = [];
+
+        foreach ($mailers as $uid => $mailer) {
+            $mailerConfigs[$uid] = $mailer->getConfig();
+        }
+
+        if (!$projectConfig->set($configPath, ProjectConfig::packAssociativeArray($mailerConfigs))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function removeMailer(string $uid): bool
+    {
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
+
+        unset($mailers[$uid]);
+
+        if (!self::saveMailers($mailers)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function reorderMailers(array $uids = []): bool
+    {
+        $oldMailers = self::getMailers();
+        $newMailers = [];
+
+        foreach ($uids as $uid) {
+            $newMailers[$uid] = $oldMailers[$uid];
+        }
+
+        if (!self::saveMailers($newMailers)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function getMailerModel(array $mailerSettings, string $uid = null): ?Mailer
+    {
+        $type = $mailerSettings['type'];
+
+        $settings = $mailerSettings['settings'] ?? [];
+
+        $mailer = new $type(array_merge([
+            'name' => $mailerSettings['name'],
+            'mailerSettings' => $mailerSettings['settings'],
+            'uid' => $uid ?? StringHelper::UUID(),
+        ], $settings));
+
+        return $mailer;
+    }
+
+    public static function getDefaultMailer()
+    {
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
+
+        return reset($mailers);
     }
 }

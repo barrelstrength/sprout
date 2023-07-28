@@ -10,17 +10,7 @@ class MailerSettings extends BaseConfig
 
     public array $mailers = [];
 
-    public array $systemMailer = [];
-
-
-    public bool $enableSubscriberLists = false;
-
-    public function systemMailer(array $value): self
-    {
-        $this->systemMailer = $value;
-
-        return $this;
-    }
+    public ?bool $enableSubscriberLists = false;
 
     public function mailers(array $value): self
     {

@@ -110,6 +110,6 @@ class EmailThemeHelper
     {
         $themes = self::getEmailThemes();
 
-        return reset($themes) ?? null;
+        return reset($themes);
     }
 }

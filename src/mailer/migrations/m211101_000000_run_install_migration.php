@@ -76,7 +76,7 @@ class m211101_000000_run_install_migration extends Migration
                 'preheaderText' => $this->string(),
                 'defaultMessage' => $this->text(),
                 'emailThemeUid' => $this->uid(),
-                'mailerUid' => $this->integer(),
+                'mailerUid' => $this->uid(),
                 'mailerInstructionsSettings' => $this->text(),
                 'emailTypeSettings' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),

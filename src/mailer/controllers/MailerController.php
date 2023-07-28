@@ -3,9 +3,11 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\web\Controller;
 use Exception;
@@ -16,9 +18,11 @@ class MailerController extends Controller
     public function actionMailersIndexTemplate(): Response
     {
         $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailerTypes = MailerModule::getInstance()->mailers->getMailerTypes();
 
         return $this->renderTemplate('sprout-module-mailer/_settings/mailers/index.twig', [
             'mailers' => $mailers,
+            'mailerTypes' => $mailerTypes,
         ]);
     }
 
@@ -44,24 +48,62 @@ class MailerController extends Controller
         $this->requirePostRequest();
         $this->requireAdmin();
 
-        $mailerModel = $this->populateMailerModel();
+        $mailer = $this->populateMailerModel();
 
-        $settingsKey = $mailerModel->uid;
-        $configPath = MailerModule::projectConfigPath('mailers.' . $settingsKey);
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers[$mailer->uid] = $mailer;
 
-        if (!$mailerModel->validate() || !Craft::$app->getProjectConfig()->set($configPath, $mailerModel->getConfig(), "Update Sprout Settings for “{$configPath}”")) {
-            Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save Email Type.'));
+        if (!$mailer->validate() || !MailerModule::getInstance()->mailers::saveMailers($mailers)) {
+
+            Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save mailer.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
-                'emailTheme' => $mailerModel,
+                'mailer' => $mailer,
             ]);
 
             return null;
         }
 
-        Craft::$app->session->setNotice(Craft::t('sprout-module-mailer', 'Email Type saved.'));
+        Craft::$app->session->setNotice(Craft::t('sprout-module-mailer', 'Mailer saved.'));
 
         return $this->redirectToPostedUrl();
+    }
+
+    public function actionReorder(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin(false);
+
+        $ids = Json::decode(Craft::$app->request->getRequiredBodyParam('ids'));
+
+        if (!MailerModule::getInstance()->mailers::reorderMailers($ids)) {
+            return $this->asJson([
+                'success' => false,
+                'error' => Craft::t('sprout-module-mailer', "Couldn't reorder mailers."),
+            ]);
+        }
+
+        return $this->asJson([
+            'success' => true,
+        ]);
+    }
+
+    public function actionDelete(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin(false);
+
+        $mailerUid = Craft::$app->request->getRequiredBodyParam('id');
+
+        if (!MailerModule::getInstance()->mailers::removeMailer($mailerUid)) {
+            return $this->asJson([
+                'success' => false,
+            ]);
+        }
+
+        return $this->asJson([
+            'success' => true,
+        ]);
     }
 
     public function actionGetSendTestHtml(): Response
@@ -146,23 +188,16 @@ class MailerController extends Controller
 
     private function populateMailerModel(): Mailer
     {
-        $mailerUid = Craft::$app->request->getBodyParam('mailerUid');
+        $type = Craft::$app->request->getRequiredBodyParam('type');
+        $uid = Craft::$app->request->getRequiredBodyParam('uid');
 
-        $mailer = MailerModule::getInstance()->mailers->getMailerByUid($mailerUid);
+        /** @var Mailer $mailer */
+        $mailer = new $type();
+        $mailer->name = Craft::$app->request->getRequiredBodyParam('name');
+        $mailer->uid = !empty($uid) ?: StringHelper::UUID();
 
-        $mailer->id = $mailerUid;
-        $mailer->name = Craft::$app->request->getBodyParam('name');
         $mailer->mailerSettings = Craft::$app->request->getBodyParam('mailerSettings');
         $mailer->setAttributes($mailer->mailerSettings, false);
-
-        $isNew = !$mailer->id;
-
-        if ($isNew) {
-            $mailer->uid = StringHelper::UUID();
-        } else {
-            $settings = MailerModule::getInstance()->getSettings();
-            $mailer->uid = $settings->systemMailer->uid;
-        }
 
         return $mailer;
     }
