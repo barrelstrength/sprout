@@ -7,13 +7,10 @@ use BarrelStrength\Sprout\mailer\components\elements\audience\conditions\Audienc
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceHandleField;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceNameField;
 use BarrelStrength\Sprout\mailer\components\elements\audience\fieldlayoutelements\AudienceSettingsField;
-use BarrelStrength\Sprout\mailer\db\SproutTable;
 use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;
-use BarrelStrength\Sprout\mailer\subscribers\Subscription;
+use BarrelStrength\Sprout\mailer\subscriberlists\SubscriptionRecord;
 use Craft;
 use craft\base\Element;
-use craft\db\Query;
 use craft\elements\actions\Delete;
 use craft\elements\actions\SetStatus;
 use craft\elements\conditions\ElementConditionInterface;
@@ -367,5 +364,32 @@ class AudienceElement extends Element
         ];
 
         return $rules;
+    }
+
+    public function isSubscribed(mixed $identifier): bool
+    {
+        $criteria['subscriberListId'] = $this->id;
+
+        if ($identifier instanceof User) {
+            $criteria['userId'] = $identifier->id;
+        } elseif (is_numeric($identifier)) {
+            $criteria['userId'] = $identifier;
+        } elseif (!filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = User::find()
+                ->email($identifier)
+                ->one();
+
+            if ($user === null) {
+                return false;
+            }
+
+            $criteria['userId'] = $user->id;
+        } else {
+            return false;
+        }
+
+        return SubscriptionRecord::find()
+            ->where($criteria)
+            ->exists();
     }
 }

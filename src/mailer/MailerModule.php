@@ -16,12 +16,12 @@ use BarrelStrength\Sprout\mailer\audience\Audiences;
 use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
+use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberHelper;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
-use BarrelStrength\Sprout\mailer\subscribers\SubscriberHelper;
-use BarrelStrength\Sprout\mailer\subscribers\SubscriberLists;
-use BarrelStrength\Sprout\mailer\subscribers\SubscriberListsVariable;
+use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberLists;
+use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberListsVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
@@ -108,7 +108,7 @@ class MailerModule extends Module
             SproutVariable::EVENT_INIT,
             function(Event $event): void {
                 $event->sender->registerModule($this);
-                $event->sender->registerVariable('lists', new SubscriberListsVariable());
+                $event->sender->registerVariable('audiences', new SubscriberListsVariable());
             });
 
         Event::on(
@@ -139,12 +139,6 @@ class MailerModule extends Module
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             [SubscriberHelper::class, 'defineNativeSubscriberField']);
-
-        Event::on(
-            User::class,
-            User::EVENT_AFTER_PROPAGATE,
-            [SubscriberHelper::class, 'handleSaveAllSubscriberListsForUser']
-        );
 
         Event::on(
             DataSources::class,
@@ -211,6 +205,7 @@ class MailerModule extends Module
             UserQuery::EVENT_DEFINE_BEHAVIORS,
             [SubscriberHelper::class, 'attachSubscriberQueryBehavior']
         );
+
     }
 
     public function createSettingsModel(): MailerSettings

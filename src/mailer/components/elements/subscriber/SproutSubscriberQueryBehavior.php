@@ -13,9 +13,16 @@ use yii\base\Behavior;
  *
  * @property UserQuery $owner
  */
-class SubscriberQueryBehavior extends Behavior
+class SproutSubscriberQueryBehavior extends Behavior
 {
-    public ?int $subscriberListId = null;
+    public ?int $sproutSubscriberListId = null;
+
+    public function sproutSubscriberListId(string $value): UserQuery
+    {
+        $this->sproutSubscriberListId = $value;
+
+        return $this->owner;
+    }
 
     public function events(): array
     {
@@ -26,19 +33,19 @@ class SubscriberQueryBehavior extends Behavior
 
     public function beforePrepare(): void
     {
-        if (!$this->subscriberListId) {
+        if (!$this->sproutSubscriberListId) {
             return;
         }
 
         $this->owner->subQuery->innerJoin(
             ['subscriptions' => SproutTable::SUBSCRIPTIONS],
-            '[[users.id]] = [[subscriptions.itemId]]'
+            '[[users.id]] = [[subscriptions.userId]]'
         );
 
         $this->owner->subQuery->andWhere([
-            '[[subscriptions.listId]]' => $this->subscriberListId,
+            '[[subscriptions.subscriberListId]]' => $this->sproutSubscriberListId,
         ]);
 
-        $this->owner->subQuery->groupBy(['subscriptions.itemId']);
+        $this->owner->subQuery->groupBy(['subscriptions.userId']);
     }
 }

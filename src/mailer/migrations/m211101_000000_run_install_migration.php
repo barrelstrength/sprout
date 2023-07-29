@@ -55,17 +55,17 @@ class m211101_000000_run_install_migration extends Migration
         if (!$this->getDb()->tableExists(self::SUBSCRIPTIONS_TABLE)) {
             $this->createTable(self::SUBSCRIPTIONS_TABLE, [
                 'id' => $this->primaryKey(),
-                'listId' => $this->integer()->notNull(),
-                'itemId' => $this->integer()->notNull(),
+                'subscriberListId' => $this->integer()->notNull(),
+                'userId' => $this->integer()->notNull(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
             ]);
 
-            $this->createIndex(null, self::SUBSCRIPTIONS_TABLE, ['listId', 'itemId'], true);
+            $this->createIndex(null, self::SUBSCRIPTIONS_TABLE, ['subscriberListId', 'userId'], true);
 
-            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['itemId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
-            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['listId'], self::AUDIENCES_TABLE, ['id'], 'CASCADE', 'CASCADE');
+            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['subscriberListId'], self::AUDIENCES_TABLE, ['id'], 'CASCADE', 'CASCADE');
+            $this->addForeignKey(null, self::SUBSCRIPTIONS_TABLE, ['userId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
         }
 
         if (!$this->getDb()->tableExists(self::EMAILS_TABLE)) {

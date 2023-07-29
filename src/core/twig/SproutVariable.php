@@ -8,7 +8,7 @@ use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscribers\SubscriberListsVariable;
+use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberListsVariable;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\MetaModule;
 use BarrelStrength\Sprout\redirects\RedirectsModule;

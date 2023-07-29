@@ -63,7 +63,7 @@ class m211101_000004_migrate_lists_tables extends Migration
         //                ->execute();
         //        }
 
-        $cols = [
+        $oldCols = [
             'id',
             'listId',
             'itemId',
@@ -72,9 +72,18 @@ class m211101_000004_migrate_lists_tables extends Migration
             'uid',
         ];
 
+        $newCols = [
+            'id',
+            'subscriberListId',
+            'userId',
+            'dateCreated',
+            'dateUpdated',
+            'uid',
+        ];
+
         if ($this->getDb()->tableExists(self::OLD_SUBSCRIPTIONS_TABLE)) {
             $rows = (new Query())
-                ->select($cols)
+                ->select($oldCols)
                 ->from([self::OLD_SUBSCRIPTIONS_TABLE])
                 ->all();
 
