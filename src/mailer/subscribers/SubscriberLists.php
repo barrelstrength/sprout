@@ -141,23 +141,6 @@ class SubscriberLists extends Component
         return $query->one();
     }
 
-    /**
-     * Get all Lists
-     *
-     * @return AudienceElement[]
-     */
-    public function getLists(): array
-    {
-        return AudienceElement::find()
-            ->type(SubscriberListAudienceType::class)
-            ->subs->all();
-    }
-
-    public function saveList(AudienceElement $list): bool
-    {
-        return Craft::$app->elements->saveElement($list);
-    }
-
     public function getSubscriptions(AudienceElement $list): array
     {
         return SubscriptionRecord::find()

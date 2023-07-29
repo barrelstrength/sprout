@@ -143,7 +143,7 @@ class MailerModule extends Module
         Event::on(
             User::class,
             User::EVENT_AFTER_PROPAGATE,
-            [SubscriberHelper::class, 'saveSubscriberLists']
+            [SubscriberHelper::class, 'handleSaveAllSubscriberListsForUser']
         );
 
         Event::on(
@@ -304,18 +304,6 @@ class MailerModule extends Module
                 'sprout-module-mailer/audience/create-audience',
             'sprout/email/audiences' =>
                 'sprout-module-mailer/audience/audience-index-template',
-
-            // Subscribers
-            'sprout/email/subscribers/new' =>
-                'elements/edit',
-            'sprout/email/subscribers/<userId:\d+>' =>
-                'sprout-module-mailer/subscribers/edit-subscriber-template',
-            'sprout/email/subscribers/<listHandle:.*>' => [
-                'template' => 'sprout-module-mailer/subscribers/index',
-            ],
-            'sprout/email/subscribers' => [
-                'template' => 'sprout-module-mailer/subscribers/index',
-            ],
 
             // Settings: Email Themes
             'sprout/settings/email-themes/new' =>

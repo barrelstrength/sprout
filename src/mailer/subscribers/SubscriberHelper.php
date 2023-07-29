@@ -14,6 +14,8 @@ use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\ModelEvent;
 use craft\events\RegisterElementSourcesEvent;
+use Throwable;
+use yii\db\Transaction;
 
 class SubscriberHelper
 {
@@ -91,34 +93,68 @@ class SubscriberHelper
         $event->sources = array_merge($event->sources, $sources);
     }
 
-    public static function saveSubscriberLists(ModelEvent $event): void
+    public static function handleSaveAllSubscriberListsForUser(ModelEvent $event): void
     {
-        /** @var User|SubscriberElementBehavior $user */
         $user = $event->sender;
 
         $newListIds = Craft::$app->getRequest()->getBodyParam('sprout.subscriberListIds');
-        $oldListIds = $user->getSubscriberListsIds();
 
-        $newListIds = $newListIds !== '' ? $newListIds : [];
+        self::saveAllSubscriberListsForUser($user, $newListIds);
+    }
 
-        $listIdsToRemove = array_diff($oldListIds, $newListIds);
-
-        if (!$newListIds && !$listIdsToRemove) {
+    public static function saveAllSubscriberListsForUser(User $user, array $newListIds = []): void
+    {
+        if (!$newListIds) {
             return;
         }
 
-        SubscriptionRecord::deleteAll([
-            'itemId' => $user->id,
-            'listId' => $listIdsToRemove,
-        ]);
+        /** @var Transaction $transaction */
+        $transaction = Craft::$app->getDb()->beginTransaction();
 
-        foreach ($newListIds as $listId) {
-            $subscription = new Subscription();
-            $subscription->listId = $listId;
-            $subscription->itemId = $user->id;
+        try {
+            /** @var User|SubscriberElementBehavior $user */
+            $oldListIds = $user->getSubscriberListsIds();
 
-            MailerModule::getInstance()->subscriberLists->add($subscription);
+            // Remove all old subscriptions
+            SubscriptionRecord::deleteAll([
+                'itemId' => $user->id,
+                'listId' => $oldListIds,
+            ]);
+
+            foreach ($newListIds as $listId) {
+                $subscriptionRecord = new SubscriptionRecord();
+                $subscriptionRecord->listId = $listId;
+                $subscriptionRecord->itemId = $user->id;
+
+                $subscriptionRecord->save();
+            }
+
+            $transaction->commit();
+        } catch (Throwable $throwable) {
+
+            $transaction->rollBack();
+
+            throw $throwable;
         }
+    }
+
+    public static function getSubscriberListOptions(): array
+    {
+        /** @var AudienceElement[] $lists */
+        $lists = AudienceElement::find()
+            ->type(SubscriberListAudienceType::class)
+            ->all();
+
+        $options = [];
+
+        array_map(static function($list) use (&$options) {
+            $options[] = [
+                'label' => $list->name,
+                'value' => $list->getId(),
+            ];
+        }, $lists);
+
+        return $options;
     }
 
     /**
@@ -158,29 +194,5 @@ class SubscriberHelper
         }
 
         return $subscriber;
-    }
-
-    public static function getListOptions(): array
-    {
-        /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()
-            ->type(SubscriberListAudienceType::class)
-            ->all();
-
-        $options = [];
-
-        foreach ($lists as $list) {
-            $options[] = [
-                'label' => $list->name,
-                'value' => $list->getId(),
-            ];
-        }
-
-        // Return a blank template if we have no lists
-        if (empty($options)) {
-            return [];
-        }
-
-        return $options;
     }
 }

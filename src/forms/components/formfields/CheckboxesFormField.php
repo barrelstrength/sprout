@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use Craft;
 use craft\fields\Checkboxes as CraftCheckboxes;
 use craft\fields\Checkboxes as CraftCheckboxesField;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInterface
 {
