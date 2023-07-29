@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\components\elements;
 
-use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;

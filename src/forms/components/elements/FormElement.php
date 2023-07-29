@@ -602,7 +602,7 @@ class FormElement extends Element
 
                 // 1. Create actual Field craft_fields
                 if (!$fieldsService->saveField($field)) {
-                    throw new Exception('Couldn’t save form field: '. Json::encode($field->getErrors()));
+                    throw new Exception('Couldn’t save form field: ' . Json::encode($field->getErrors()));
                 }
 
                 // 2. Create Field Layout Field craft_fieldlayoutfields
@@ -640,8 +640,6 @@ class FormElement extends Element
         /// Loop through tabs and save/update/delete TAB/FIELDS
         //  Instantiate each tab/field and add to layout
         // Check if content table names changed and rename them...
-
-
 
         //        foreach ($layoutTabs['tabs'] as $key => $tab) {
 

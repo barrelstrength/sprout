@@ -8,20 +8,16 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
-use BarrelStrength\Sprout\forms\migrations\helpers\CreateFormContentTable;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
-use craft\helpers\Db;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayoutTab;
 use craft\records\FieldLayoutField;
 use Exception;
 use yii\base\Component;
 use yii\db\Transaction;
-use yii\web\BadRequestHttpException;
 
 class Forms extends Component
 {
@@ -222,8 +218,6 @@ class Forms extends Component
 
         return $query->one();
     }
-
-
 
     /**
      * Returns the value of a given field

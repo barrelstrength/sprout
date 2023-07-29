@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use Craft;
 use craft\fields\Dropdown as CraftDropdownField;
 use craft\fields\PlainText as CraftPlainText;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class DropdownFormField extends CraftDropdownField implements FormFieldInterface
 {

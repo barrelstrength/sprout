@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\fields\Categories as CraftCategories;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class CategoriesFormField extends CraftCategories implements FormFieldInterface
 {

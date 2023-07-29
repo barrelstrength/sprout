@@ -71,5 +71,5 @@ return [
     'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'.',
     'Triggered when a new user is created.' => 'Triggered when a new user is created.',
     'Status changes to Live' => 'Status changes to Live',
-    'Is New Entry' => 'Is New Entry'
+    'Is New Entry' => 'Is New Entry',
 ];

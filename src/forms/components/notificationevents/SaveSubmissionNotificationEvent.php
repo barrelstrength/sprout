@@ -6,18 +6,12 @@ use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionConditi
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\forms\Submissions;
-use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
-use craft\base\ElementInterface;
-use craft\elements\conditions\entries\EntryCondition;
-use craft\elements\Entry;
 use craft\events\ElementEvent;
-use craft\events\ModelEvent;
 use craft\helpers\Html;
-use craft\helpers\Template;
 use yii\base\Event;
 
 class SaveSubmissionNotificationEvent extends NotificationEvent implements ElementEventInterface
@@ -56,7 +50,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
 
     public function getTipHtml(): ?string
     {
-        $html = Html::tag('p', Craft::t('sprout-module-forms','Access the Form Submission Element in your email templates using the <code>object</code> variable. Example:'));
+        $html = Html::tag('p', Craft::t('sprout-module-forms', 'Access the Form Submission Element in your email templates using the <code>object</code> variable. Example:'));
         $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-forms', 'We have received your submission, <code>{{ object.customNameFieldHandle }}</code>')));
 
         return $html;

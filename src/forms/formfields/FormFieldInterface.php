@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\forms\formfields;
 
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use Twig\Markup;
 
 interface FormFieldInterface
 {

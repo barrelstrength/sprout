@@ -13,7 +13,6 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Template as TemplateHelper;
 use DateTime;
 use DateTimeInterface;
-use Twig\Markup;
 use yii\db\Schema;
 
 class DateFormField extends CraftDate implements FormFieldInterface

@@ -13,9 +13,7 @@ use craft\base\PreviewableFieldInterface;
 use craft\fields\conditions\TextFieldConditionRule;
 use craft\fields\Dropdown as CraftDropdown;
 use craft\fields\PlainText as CraftPlainText;
-use craft\helpers\Template as TemplateHelper;
 use Exception;
-use Twig\Markup;
 
 class HiddenFormField extends Field implements FormFieldInterface, PreviewableFieldInterface
 {

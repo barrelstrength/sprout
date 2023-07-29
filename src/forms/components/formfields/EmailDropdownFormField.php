@@ -12,8 +12,6 @@ use craft\fields\data\SingleOptionFieldData;
 use craft\fields\Dropdown as CraftDropdownField;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\StringHelper;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 use yii\db\Schema;
 
 class EmailDropdownFormField extends CraftDropdownField implements FormFieldInterface

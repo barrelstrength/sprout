@@ -39,7 +39,6 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
             $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "eventId")');
         } else {
             $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")');
-
         }
 
         $operator = $this->operator === 'in' ? 'in' : 'not in';
@@ -60,7 +59,7 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
             $query->andWhere([
                 $operator,
                 $expression,
-                $searchValues
+                $searchValues,
             ]);
         } else {
             //AND (
@@ -69,10 +68,9 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
             $query->andWhere([
                 $operator,
                 $expression,
-                $this->getValues()
+                $this->getValues(),
             ]);
         }
-
 
         //\Craft::dd($searchValues);
         //$query->andWhere(['or', ['in', $expression, $class]);
@@ -88,14 +86,14 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
 
         //foreach ($this->getValues() as $class) {
         //    $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")');
-            //\Craft::dd(trim(Json::encode(trim(Json::encode($class), '"')), '"'));
-            //$query->andWhere(['=', $expression, Json::encode($class)]);
-            //$query->orWhere([
-            //    'JSON_CONTAINS',
-            //    'sprout_emails.emailTypeSettings',
-            //    Json::encode($class),
-            //    '$.eventId'
-            //]);
+        //\Craft::dd(trim(Json::encode(trim(Json::encode($class), '"')), '"'));
+        //$query->andWhere(['=', $expression, Json::encode($class)]);
+        //$query->orWhere([
+        //    'JSON_CONTAINS',
+        //    'sprout_emails.emailTypeSettings',
+        //    Json::encode($class),
+        //    '$.eventId'
+        //]);
         //}
 
         //$searchValues = array_map(static function($value) {

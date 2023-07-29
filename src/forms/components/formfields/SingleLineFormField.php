@@ -11,9 +11,7 @@ use craft\fields\Dropdown as CraftDropdown;
 use craft\fields\PlainText;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\Db;
-use craft\helpers\Template as TemplateHelper;
 use LitEmoji\LitEmoji;
-use Twig\Markup;
 use yii\db\Schema;
 
 class SingleLineFormField extends PlainText implements FormFieldInterface

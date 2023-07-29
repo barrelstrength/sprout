@@ -9,9 +9,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\Db;
-use craft\helpers\Template as TemplateHelper;
 use LitEmoji\LitEmoji;
-use Twig\Markup;
 use yii\db\Schema;
 
 class ParagraphFormField extends CraftPlainText implements FormFieldInterface

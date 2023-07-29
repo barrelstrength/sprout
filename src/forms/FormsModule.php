@@ -367,7 +367,6 @@ class FormsModule extends Module
             'sprout/settings/forms/form-themes' =>
                 'sprout-module-forms/form-themes/form-themes-index-template',
 
-
             // Settings
             'sprout/settings/forms' => [
                 'template' => 'sprout-module-forms/_settings/forms',

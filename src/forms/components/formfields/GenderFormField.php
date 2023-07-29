@@ -9,8 +9,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Html;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class GenderFormField extends Field implements FormFieldInterface
 {

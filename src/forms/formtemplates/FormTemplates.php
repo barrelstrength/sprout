@@ -2,11 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\formtemplates;
 
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\formtemplates\CustomFormTemplateSet;
 use BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet;
-use BarrelStrength\Sprout\forms\FormsModule;
-use Craft;
 use craft\events\RegisterComponentTypesEvent;
 use yii\base\Component;
 
@@ -76,7 +73,7 @@ class FormTemplates extends Component
         return array_map(static function($theme) {
             return [
                 'label' => $theme->name,
-                'value' => $theme->uid
+                'value' => $theme->uid,
             ];
         }, $themes);
     }

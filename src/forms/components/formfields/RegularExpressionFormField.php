@@ -13,8 +13,6 @@ use craft\base\PreviewableFieldInterface;
 use craft\fields\conditions\TextFieldConditionRule;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\Html;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class RegularExpressionFormField extends Field implements FormFieldInterface, PreviewableFieldInterface
 {

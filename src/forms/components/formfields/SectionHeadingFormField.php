@@ -10,9 +10,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Html;
-use craft\helpers\Template as TemplateHelper;
 use ReflectionClass;
-use Twig\Markup;
 use yii\db\Schema;
 
 class SectionHeadingFormField extends Field implements FormFieldInterface

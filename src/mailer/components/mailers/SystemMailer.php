@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\components\mailers;
 
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailCondition;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\AudienceField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ReplyToField;

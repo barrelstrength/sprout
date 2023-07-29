@@ -7,8 +7,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use Craft;
 use craft\fields\MultiSelect as CraftMultiSelect;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class MultiSelectFormField extends CraftMultiSelect implements FormFieldInterface
 {

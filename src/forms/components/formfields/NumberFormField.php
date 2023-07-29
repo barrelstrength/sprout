@@ -11,9 +11,7 @@ use craft\fields\Dropdown as CraftDropdown;
 use craft\fields\Number as CraftNumber;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\Localization;
-use craft\helpers\Template as TemplateHelper;
 use craft\i18n\Locale;
-use Twig\Markup;
 
 class NumberFormField extends CraftNumber implements FormFieldInterface
 {

@@ -160,7 +160,6 @@ class SentEmailElement extends Element implements EmailPreviewInterface
             'info' => ['label' => Craft::t('sprout-module-sent-email', 'Info')],
         ];
 
-
         if (SentEmailModule::isPro() && SentEmailModule::p('resendSentEmail')) {
             $attributes['resend'] = ['label' => Craft::t('sprout-module-sent-email', 'Resend')];
         }

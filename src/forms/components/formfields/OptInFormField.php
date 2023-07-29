@@ -16,8 +16,6 @@ use craft\fields\Lightswitch as CraftLightswitch;
 use craft\fields\PlainText as CraftPlainText;
 use craft\fields\RadioButtons as CraftRadioButtons;
 use craft\helpers\Html;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class OptInFormField extends Field implements FormFieldInterface, PreviewableFieldInterface
 {

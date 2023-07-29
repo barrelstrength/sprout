@@ -14,8 +14,6 @@ use craft\fields\Dropdown as CraftDropdown;
 use craft\fields\Email as CraftEmail;
 use craft\fields\PlainText as CraftPlainText;
 use craft\helpers\Html;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class EmailFormField extends CraftEmail implements FormFieldInterface
 {

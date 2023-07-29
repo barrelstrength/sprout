@@ -2,14 +2,12 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
-use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
-use craft\models\FieldLayout;
 
 class Mailers extends Component
 {

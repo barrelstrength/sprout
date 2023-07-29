@@ -37,7 +37,6 @@ class SitemapMetadataController extends Controller
         $settings = SitemapsModule::getInstance()->getSettings();
         $isMultiSite = Craft::$app->getIsMultiSite();
 
-
         // Get Enabled Site IDs. Remove any disabled IDS.
         $enabledSiteIds = array_filter($settings->siteSettings);
         $enabledSiteGroupIds = array_filter($settings->groupSettings);

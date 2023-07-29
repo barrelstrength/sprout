@@ -205,7 +205,6 @@ class MailerModule extends Module
             UserQuery::EVENT_DEFINE_BEHAVIORS,
             [SubscriberHelper::class, 'attachSubscriberQueryBehavior']
         );
-
     }
 
     public function createSettingsModel(): MailerSettings

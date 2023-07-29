@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\fields\Users as CraftUsers;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class UsersFormField extends CraftUsers implements FormFieldInterface
 {

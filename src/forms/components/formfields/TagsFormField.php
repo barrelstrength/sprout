@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\fields\Tags as CraftTags;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class TagsFormField extends CraftTags implements FormFieldInterface
 {

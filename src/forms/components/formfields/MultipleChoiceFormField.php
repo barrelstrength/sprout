@@ -7,8 +7,6 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use Craft;
 use craft\fields\RadioButtons as CraftRadioButtons;
-use craft\helpers\Template as TemplateHelper;
-use Twig\Markup;
 
 class MultipleChoiceFormField extends CraftRadioButtons implements FormFieldInterface
 {

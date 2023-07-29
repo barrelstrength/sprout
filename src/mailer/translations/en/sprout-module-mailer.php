@@ -159,5 +159,5 @@ return [
     'Mailing list includes failed recipients.' => 'Mailing list includes failed recipients.',
     'The lists in which this user is subscribed.' => 'The lists in which this user is subscribed.',
     'Audience Types' => 'Audience Types',
-    'System Mailer' => 'System Mailer'
+    'System Mailer' => 'System Mailer',
 ];

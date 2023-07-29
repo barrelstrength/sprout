@@ -12,10 +12,7 @@ use Craft;
 use craft\elements\User;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
-use craft\events\ModelEvent;
 use craft\events\RegisterElementSourcesEvent;
-use Throwable;
-use yii\db\Transaction;
 
 class SubscriberHelper
 {

@@ -5,12 +5,10 @@ namespace BarrelStrength\Sprout\mailer\components\elements\subscriber;
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriptionRecord;
-use craft\elements\db\UserQuery;
+use Craft;
 use craft\elements\User;
-use craft\events\ModelEvent;
 use Throwable;
 use yii\base\Behavior;
-use Craft;
 use yii\db\Transaction;
 
 class SproutSubscriberElementBehavior extends Behavior
