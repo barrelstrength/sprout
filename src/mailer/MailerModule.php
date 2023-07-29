@@ -275,6 +275,10 @@ class MailerModule extends Module
     protected function getSproutCpSettingsNavItems(): array
     {
         return [
+            'audiences' => [
+                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
+                'url' => 'sprout/settings/audiences',
+            ],
             'mailers' => [
                 'label' => Craft::t('sprout-module-mailer', 'Mailers'),
                 'url' => 'sprout/settings/mailers',
@@ -282,10 +286,6 @@ class MailerModule extends Module
             'email-themes' => [
                 'label' => Craft::t('sprout-module-mailer', 'Email Themes'),
                 'url' => 'sprout/settings/email-themes',
-            ],
-            'subscribers' => [
-                'label' => Craft::t('sprout-module-mailer', 'Subscribers'),
-                'url' => 'sprout/settings/subscribers',
             ],
         ];
     }
@@ -322,8 +322,8 @@ class MailerModule extends Module
                 'sprout-module-mailer/mailer/mailers-index-template',
 
             // Settings
-            'sprout/settings/subscribers' => [
-                'template' => 'sprout-module-mailer/_settings/subscribers',
+            'sprout/settings/audiences' => [
+                'template' => 'sprout-module-mailer/_settings/audiences',
             ],
 
             // Preview
