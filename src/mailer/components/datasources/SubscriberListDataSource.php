@@ -8,16 +8,18 @@ use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\db\Query;
 use craft\db\Table;
-use craft\records\User;
+use craft\elements\User;
 
 /**
  * @property string $defaultEmailColumn
  */
 class SubscriberListDataSource extends DataSource
 {
+    public ?int $subscriberListId = null;
+
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-mailer', 'Subscriber List (Sprout Lists)');
+        return Craft::t('sprout-module-mailer', 'Subscriber List');
     }
 
     public static function getHandle(): string
@@ -42,17 +44,22 @@ class SubscriberListDataSource extends DataSource
 
     public function getResults(DataSetElement $dataSet): array
     {
-        $reportSettings = $dataSet->getSettings();
-
-        $subscriberRecords = User::find()
-            ->where([
-                'subscriberListId' => $reportSettings['subscriberListId'],
-            ])
-            ->one();
+        $users = User::find([
+            'subscriberListId' => $this->subscriberListId,
+        ])->all();
 
         $subscribers = [];
-        foreach ($subscriberRecords as $subscriberRecord) {
-            $subscribers[] = $subscriberRecord->getAttributes();
+
+        foreach ($users as $user) {
+            $subscribers[] = [
+                'id' => $user->id,
+                'email' => $user->email,
+                'firstName' => $user->firstName,
+                'lastName' => $user->lastName,
+                'username' => $user->username,
+                'admin' => $user->admin,
+                'enabled' => $user->enabled,
+            ];
         }
 
         return $subscribers;
@@ -76,13 +83,4 @@ class SubscriberListDataSource extends DataSource
             'subscriberListOptions' => $subscriberListOptions,
         ]);
     }
-
-    //    public function prepSettings(array $settings)
-    //    {
-    //        // Convert date strings to DateTime
-    //        $settings['startDate'] = DateTimeHelper::toDateTime($settings['startDate']) ?: null;
-    //        $settings['endDate'] = DateTimeHelper::toDateTime($settings['endDate']) ?: null;
-    //
-    //        return $settings;
-    //    }
 }

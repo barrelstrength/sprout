@@ -368,32 +368,4 @@ class AudienceElement extends Element
 
         return $rules;
     }
-
-    public function hasItem(array $criteria): bool
-    {
-        // Always use the List ID of the current list
-        $criteria['listId'] = $this->id;
-
-        /** @var Subscription $subscription */
-        $subscription = MailerModule::getInstance()->subscriberLists->populateSubscriptionFromCriteria($criteria);
-        $subscriberOrItem = SubscriberHelper::getSubscriberOrItem($subscription);
-
-        if (!$subscriberOrItem) {
-            return false;
-        }
-
-        return (new Query())
-            ->select(['id'])
-            ->from([SproutTable::SUBSCRIPTIONS])
-            ->where([
-                'listId' => $this->id,
-                'itemId' => $subscriberOrItem->getId(),
-            ])
-            ->exists();
-    }
-
-    public function isSubscribed(array $criteria): bool
-    {
-        return $this->hasItem($criteria);
-    }
 }
