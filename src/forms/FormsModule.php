@@ -31,7 +31,7 @@ use BarrelStrength\Sprout\forms\forms\Forms;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
-use BarrelStrength\Sprout\forms\formtemplates\FormTemplates;
+use BarrelStrength\Sprout\forms\formthemes\FormThemes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
@@ -60,7 +60,7 @@ use yii\base\Module;
  * @property SubmissionStatuses $submissionStatuses
  * @property FrontEndFields $frontEndFields
  * @property FormIntegrations $formIntegrations
- * @property FormTemplates $formTemplates
+ * @property FormThemes $formThemes
  * @property FormCaptchas $formCaptchas
  *
  * @property Addresses $addressField
@@ -116,7 +116,7 @@ class FormsModule extends Module
             'submissionStatuses' => SubmissionStatuses::class,
             'frontEndFields' => FrontEndFields::class,
             'formIntegrations' => FormIntegrations::class,
-            'formTemplates' => FormTemplates::class,
+            'formThemes' => FormThemes::class,
             'formCaptchas' => FormCaptchas::class,
 
             // Fields
@@ -208,7 +208,7 @@ class FormsModule extends Module
 
         Event::on(
             EmailThemes::class,
-            EmailThemes::EVENT_REGISTER_EMAIL_THEMES,
+            EmailThemes::EVENT_REGISTER_SPROUT_EMAIL_THEMES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = FormSummaryEmailTheme::class;
             });

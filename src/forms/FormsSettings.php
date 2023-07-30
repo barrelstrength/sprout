@@ -33,7 +33,7 @@ class FormsSettings extends BaseConfig
 
     public array $formThemes = [];
 
-    public ?string $formTemplateUid = null;
+    public ?string $formThemeUid = null;
 
     public bool $enableSaveData = true;
 
@@ -71,9 +71,9 @@ class FormsSettings extends BaseConfig
         return $this;
     }
 
-    public function formTemplateUid(string $value): self
+    public function formThemeUid(string $value): self
     {
-        $this->formTemplateUid = $value;
+        $this->formThemeUid = $value;
 
         return $this;
     }

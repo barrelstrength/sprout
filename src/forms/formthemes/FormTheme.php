@@ -1,10 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\formtemplates;
+namespace BarrelStrength\Sprout\forms\formthemes;
 
 use craft\base\SavableComponent;
 
-abstract class FormTemplateSet extends SavableComponent implements FormTemplateSetInterface
+abstract class FormTheme extends SavableComponent implements FormThemeInterface
 {
     public ?string $name = null;
 
@@ -12,16 +12,9 @@ abstract class FormTemplateSet extends SavableComponent implements FormTemplateS
 
     public ?string $uid = null;
 
-    abstract public static function getHandle(): string;
-
     public static function isEditable(): bool
     {
         return false;
-    }
-
-    public function getIncludePath(): string
-    {
-        return '';
     }
 
     /**
@@ -40,7 +33,6 @@ abstract class FormTemplateSet extends SavableComponent implements FormTemplateS
         $config = [
             'type' => static::class,
             'name' => $this->name,
-            'handle' => $this::getHandle(),
             'formTemplate' => $this->formTemplate,
         ];
 

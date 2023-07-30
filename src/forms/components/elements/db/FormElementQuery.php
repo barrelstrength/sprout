@@ -148,7 +148,7 @@ class FormElementQuery extends ElementQuery
             'sprout_forms.messageOnSuccess',
             'sprout_forms.messageOnError',
             'sprout_forms.submitButtonText',
-            'sprout_forms.formTemplateUid',
+            'sprout_forms.formThemeUid',
             'sprout_forms.enableCaptchas',
         ]);
 

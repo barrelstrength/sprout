@@ -6,13 +6,13 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
-use BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet;
+use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
-use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formthemes\FormTheme;
+use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
@@ -82,7 +82,7 @@ class FormElement extends Element
 
     public bool $saveData = true;
 
-    public ?string $formTemplateUid = null;
+    public ?string $formThemeUid = null;
 
     public bool $enableCaptchas = true;
 
@@ -483,7 +483,7 @@ class FormElement extends Element
         $record->messageOnSuccess = $this->messageOnSuccess;
         $record->messageOnError = $this->messageOnError;
         $record->submitButtonText = $this->submitButtonText;
-        $record->formTemplateUid = $this->formTemplateUid;
+        $record->formThemeUid = $this->formThemeUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
         $oldHandle = $record->getOldAttribute('handle');
@@ -749,19 +749,18 @@ class FormElement extends Element
     /**
      * Get the global template used by Sprout Forms
      */
-    public function getFormTemplate(): FormTemplateSet
+    public function getFormTemplate(): FormTheme
     {
-        $defaultFormTemplates = new DefaultFormTemplateSet();
+        $defaultFormTheme = new DefaultFormTheme();
 
-        if ($this->formTemplateUid) {
-
-            $templatePath = FormThemeHelper::getFormThemeByUid($this->formTemplateUid);
+        if ($this->formThemeUid) {
+            $templatePath = FormThemeHelper::getFormThemeByUid($this->formThemeUid);
             if ($templatePath) {
                 return $templatePath;
             }
         }
 
-        return $defaultFormTemplates;
+        return $defaultFormTheme;
     }
 
     public function getNotifications(): array
@@ -795,15 +794,15 @@ class FormElement extends Element
     {
         $settings = FormsModule::getInstance()->getSettings();
 
-        /** @var FormTemplateSet $formTemplates */
-        $formTemplates = FormThemeHelper::getFormThemeByUid($settings->formTemplateUid);
+        /** @var FormTheme $formTheme */
+        $formTheme = FormThemeHelper::getFormThemeByUid($settings->formThemeUid);
 
         // TODO: Just make this a static class
-        $defaultTemplates = new DefaultFormTemplateSet();
+        $defaultTemplates = new DefaultFormTheme();
 
         $includePaths = array_merge($this->additionalTemplates, [
-            $formTemplates->getIncludePath(),
-            $defaultTemplates->getIncludePath(),
+            Craft::getAlias($formTheme->formTemplate ?? null),
+            Craft::getAlias($defaultTemplates->formTemplate),
         ]);
 
         return array_map(static function($path) use ($name) {
@@ -927,7 +926,7 @@ class FormElement extends Element
         $rules[] = [['messageOnError'], 'safe'];
         $rules[] = [['submitButtonText'], 'safe'];
         $rules[] = [['saveData'], 'safe'];
-        $rules[] = [['formTemplateUid'], 'safe'];
+        $rules[] = [['formThemeUid'], 'safe'];
         $rules[] = [['enableCaptchas'], 'safe'];
 
         return $rules;

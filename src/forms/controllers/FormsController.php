@@ -8,7 +8,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
@@ -165,7 +165,7 @@ class FormsController extends BaseController
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
 
         $theme = FormThemeHelper::getDefaultFormTheme();
-        $form->formTemplateUid = $theme->uid;
+        $form->formThemeUid = $theme->uid;
         $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
         $form->submissionMethod = $settings->defaultSubmissionMethod ?: 'sync';
 
@@ -641,7 +641,7 @@ class FormsController extends BaseController
     //    $form->messageOnError = $request->getBodyParam('messageOnError', $form->messageOnError);
     //    $form->submitButtonText = $request->getBodyParam('submitButtonText', $form->submitButtonText);
     //    $form->titleFormat = $request->getBodyParam('titleFormat', $form->titleFormat);
-    //    $form->formTemplateUid = $request->getBodyParam('formTemplateUid', $form->formTemplateUid);
+    //    $form->formThemeUid = $request->getBodyParam('formThemeUid', $form->formThemeUid);
     //    $form->enableCaptchas = $request->getBodyParam('enableCaptchas', $form->enableCaptchas);
     //
     //    if (!$form->titleFormat) {

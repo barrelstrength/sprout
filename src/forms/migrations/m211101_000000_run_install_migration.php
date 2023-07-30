@@ -13,7 +13,7 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-forms';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\forms\FormsModule';
-    public const FORM_TEMPLATE_SET = 'BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet';
+    public const FORM_THEME = 'BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme';
     public const SPAM_REDIRECT_BEHAVIOR_NORMAL = 'redirectAsNormal';
 
     public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
@@ -59,7 +59,7 @@ class m211101_000000_run_install_migration extends Migration
         // @todo - fix default settings to import
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
             'defaultSection' => 'submissions',
-            'formTemplateUid' => self::FORM_TEMPLATE_SET,
+            'formThemeUid' => self::FORM_THEME,
             'enableSaveData' => true,
             'saveSpamToDatabase' => false,
             'enableSaveDataDefaultValue' => true,
@@ -118,7 +118,7 @@ class m211101_000000_run_install_migration extends Migration
                 'messageOnError' => $this->text(),
                 'submitButtonText' => $this->string(),
                 'saveData' => $this->boolean()->notNull()->defaultValue(false),
-                'formTemplateUid' => $this->uid(),
+                'formThemeUid' => $this->uid(),
                 'enableCaptchas' => $this->boolean()->notNull()->defaultValue(true),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

@@ -3,8 +3,9 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
-use BarrelStrength\Sprout\forms\formtemplates\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formthemes\FormTheme;
+use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use Craft;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -15,7 +16,7 @@ class FormThemesController extends Controller
 {
     public function actionFormThemesIndexTemplate(): Response
     {
-        $themeTypes = FormsModule::getInstance()->formTemplates->getFormTemplateTypesInstances();
+        $themeTypes = FormsModule::getInstance()->formThemes->getFormThemeTypeInstances();
 
         $themes = FormThemeHelper::getFormThemes();
 
@@ -25,19 +26,20 @@ class FormThemesController extends Controller
         ]);
     }
 
-    public function actionEdit(FormTemplateSet $formTemplateSet = null, string $formThemeUid = null, string $handle = null): Response
+    public function actionEdit(FormTheme $formTheme = null, string $formThemeUid = null, string $type = null): Response
     {
         $this->requireAdmin();
 
-        if (!$formTemplateSet && $handle) {
-            $formTemplateSet = FormThemeHelper::getFormThemeByHandle($handle);
+        if ($formThemeUid) {
+            $formTheme = FormThemeHelper::getFormThemeByUid($formThemeUid);
         }
-        if (!$formTemplateSet) {
-            $formTemplateSet = FormThemeHelper::getFormThemeByUid($formThemeUid);
+
+        if (!$formTheme && $type) {
+            $formTheme = new $type();
         }
 
         return $this->renderTemplate('sprout-module-forms/_settings/form-themes/edit.twig', [
-            'formTheme' => $formTemplateSet,
+            'formTheme' => $formTheme,
         ]);
     }
 
@@ -108,12 +110,12 @@ class FormThemesController extends Controller
         ]);
     }
 
-    private function populateFormThemeModel(): FormTemplateSet
+    private function populateFormThemeModel(): FormTheme
     {
         $type = Craft::$app->request->getRequiredBodyParam('type');
         $uid = Craft::$app->request->getRequiredBodyParam('uid');
 
-        /** @var FormTemplateSet $formTheme */
+        /** @var FormTheme $formTheme */
         $formTheme = new $type();
         $formTheme->name = Craft::$app->request->getBodyParam('name');
         $formTheme->uid = $uid ?? StringHelper::UUID();

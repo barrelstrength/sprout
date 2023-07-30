@@ -3,17 +3,17 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
-{% set themes = module.formTemplates.getFormThemeOptions() %}
+{% set themes = module.formThemes.getFormThemeOptions() %}
 
 {{ forms.selectField({
     label: "Templates"|t('sprout-module-forms'),
-    instructions: "The Form Templates that will be used to output your forms. Update the 'Default Form Templates' in the general settings."|t('sprout-module-forms'),
-    name: "formTemplateUid",
+    instructions: "The Form Theme that will be used to output your forms. Update the 'Default Form Theme' in the general settings."|t('sprout-module-forms'),
+    name: "formThemeUid",
     required: true,
     first: true,
-    errors: (form is defined ? form.getErrors('formTemplateUid') : null),
+    errors: (form is defined ? form.getErrors('formThemeUid') : null),
     options: themes,
-    value: form.formTemplateUid ?? settings.formTemplateUid ?? null,
+    value: form.formThemeUid ?? settings.formThemeUid ?? null,
     required: true,
 }) }}
 

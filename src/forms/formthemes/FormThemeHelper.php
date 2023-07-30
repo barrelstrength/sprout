@@ -1,8 +1,8 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\formtemplates;
+namespace BarrelStrength\Sprout\forms\formthemes;
 
-use BarrelStrength\Sprout\forms\components\formtemplates\DefaultFormTemplateSet;
+use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\errors\MissingComponentException;
@@ -54,33 +54,26 @@ class FormThemeHelper
         return true;
     }
 
-    public static function getFormThemeByUid(string $uid): ?FormTemplateSet
+    public static function getFormThemeByUid(string $uid): ?FormTheme
     {
         $themes = self::getFormThemes();
 
         return $themes[$uid] ?? null;
     }
 
-    public static function getFormThemeByHandle(string $handle = null): ?FormTemplateSet
-    {
-        $themes = FormsModule::getInstance()->formTemplates->getFormTemplateTypesInstances();
-
-        return $themes[$handle] ?? null;
-    }
-
-    public static function getFormThemeModel(array $formThemeSettings, string $uid = null): ?FormTemplateSet
+    public static function getFormThemeModel(array $formThemeSettings, string $uid = null): ?FormTheme
     {
         //$fieldLayout = FieldLayout::createFromConfig(reset($formThemeSettings['fieldLayouts']));
 
         $type = $formThemeSettings['type'];
 
-        $emailTheme = new $type([
-            'name' => $formThemeSettings['name'],
+        $formTheme = new $type([
+            'name' => $formThemeSettings['name'] ?? null,
             'formTemplate' => $formThemeSettings['formTemplate'] ?? null,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);
 
-        return $emailTheme;
+        return $formTheme;
     }
 
     public static function reorderFormThemes(array $uids = []): bool
@@ -114,7 +107,7 @@ class FormThemeHelper
 
     public static function createDefaultFormTheme(): void
     {
-        $formTheme = new DefaultFormTemplateSet();
+        $formTheme = new DefaultFormTheme();
         $formTheme->uid = StringHelper::UUID();
 
         if (!$formTheme->uid) {

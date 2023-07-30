@@ -11,13 +11,13 @@
             </div>
             <div class="menu">
                 <ul>
-                    {% for formThemeType in formThemeTypes %}
+                    {% for formTheme in formThemeTypes %}
                         <li>
                             {{ tag('a', {
                                 href: cpUrl('sprout/settings/forms/form-themes/new', {
-                                    handle: formThemeType.handle,
+                                    type: className(formTheme),
                                 }),
-                                text: formThemeType.displayName(),
+                                text: formTheme.displayName(),
                                 class: 'menu-option',
                             }) }}
                         </li>

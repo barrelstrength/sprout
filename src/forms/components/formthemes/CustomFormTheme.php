@@ -1,21 +1,21 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\components\formtemplates;
+namespace BarrelStrength\Sprout\forms\components\formthemes;
 
-use BarrelStrength\Sprout\forms\formtemplates\FormTemplateSet;
+use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use Craft;
 
 /**
- * The Custom Templates is used to dynamically create a FormTemplates
+ * The CustomFormTheme is used to dynamically create a FormTheme
  * integration when a user selects the custom option and provides a path
  * to the custom templates they wish to use.
  *
- * The Custom Templates integration is not registered with Sprout Forms
- * and will not display in the Form Templates dropdown list.
+ * The CustomFormTheme integration is not registered with Sprout Forms
+ * and will not display in the Form Themes dropdown list.
  *
  * @property string $path
  */
-class CustomFormTemplateSet extends FormTemplateSet
+class CustomFormTheme extends FormTheme
 {
     public static function displayName(): string
     {
@@ -30,12 +30,6 @@ class CustomFormTemplateSet extends FormTemplateSet
     public static function isEditable(): bool
     {
         return true;
-    }
-
-    public function getIncludePath(): string
-    {
-
-        return '';
     }
 }
 

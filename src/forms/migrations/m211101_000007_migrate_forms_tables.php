@@ -137,7 +137,7 @@ class m211101_000007_migrate_forms_tables extends Migration
             'dateUpdated',
             'uid',
 
-            'formTemplateUid',
+            'formThemeUid',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_FORMS_TABLE)) {
