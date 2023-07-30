@@ -55,6 +55,13 @@
         data-table-data="{{ tableData|json_encode }}">
     </div>
 
+    <br>
+    <div class="readable">
+        <blockquote class="tip note">
+            {{ "When editing an email, themes will be displayed in the order they appear. The first theme in the list will be selected as the default."|t('sprout-module-forms') }}
+        </blockquote>
+    </div>
+
 {% endblock %}
 
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
