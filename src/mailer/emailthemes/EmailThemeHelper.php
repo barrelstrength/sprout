@@ -60,13 +60,6 @@ class EmailThemeHelper
         return $themes[$uid] ?? null;
     }
 
-    public static function getEmailThemeByHandle(string $handle = null): ?EmailTheme
-    {
-        $emailThemes = MailerModule::getInstance()->emailThemes->getEmailThemeTypeInstances();
-
-        return $emailThemes[$handle] ?? null;
-    }
-
     public static function getEmailThemeModel(array $emailThemeSettings, string $uid = null): ?EmailTheme
     {
         $type = $emailThemeSettings['type'];

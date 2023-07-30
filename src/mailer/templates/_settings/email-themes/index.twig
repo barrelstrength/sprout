@@ -11,13 +11,13 @@
             </div>
             <div class="menu">
                 <ul>
-                    {% for emailThemeType in emailThemeTypes %}
+                    {% for emailTheme in emailThemeTypes %}
                         <li>
                             {{ tag('a', {
                                 href: cpUrl('sprout/settings/email-themes/new', {
-                                    handle: emailThemeType.handle,
+                                    type: className(emailTheme),
                                 }),
-                                text: emailThemeType.displayName(),
+                                text: emailTheme.displayName(),
                                 class: 'menu-option',
                             }) }}
                         </li>

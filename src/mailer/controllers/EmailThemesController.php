@@ -26,16 +26,16 @@ class EmailThemesController extends Controller
         ]);
     }
 
-    public function actionEdit(EmailTheme $emailTheme = null, string $emailThemeUid = null, string $handle = null): Response
+    public function actionEdit(EmailTheme $emailTheme = null, string $emailThemeUid = null, string $type = null): Response
     {
         $this->requireAdmin();
 
-        if (!$emailTheme && $handle) {
-            $emailTheme = EmailThemeHelper::getEmailThemeByHandle($handle);
+        if ($emailThemeUid) {
+            $emailTheme = EmailThemeHelper::getEmailThemeByUid($emailThemeUid);
         }
 
-        if (!$emailTheme) {
-            $emailTheme = EmailThemeHelper::getEmailThemeByUid($emailThemeUid);
+        if (!$emailTheme && $type) {
+            $emailTheme = new $type();
         }
 
         return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/edit.twig', [

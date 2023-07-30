@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\components\audiences;
 use BarrelStrength\Sprout\mailer\audience\AudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberQueryBehavior;
 use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
-use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
