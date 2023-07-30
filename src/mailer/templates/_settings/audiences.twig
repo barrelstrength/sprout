@@ -3,7 +3,7 @@
 {% import "_includes/forms" as forms %}
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
-{% set currentSubNavKey = 'subscribers' %}
+{% set currentSubNavKey = 'audiences' %}
 
 {% set module = sprout.modules.mailer %}
 {% set settings = module.getSettings() %}
@@ -11,8 +11,8 @@
 {% block settings %} <!-- Template: {{ _self }}.twig -->
 
     {{ forms.lightswitchField({
-        label: "Enable Subscriber Lists",
-        instructions: "Subscriber Lists are layer on top of Craft Users which add a  Subscriber Lists field, Subscriber List Audience Type, and Subscriber List sources in the sources sidebar of the Users Element Index page.",
+        label: "Enable Subscriber List Audience Type",
+        instructions: "Subscriber Lists add layer on top of Craft Users which includes a Subscriber Lists field, Subscriber List Audience Type, and Subscriber List sources in the sources sidebar of the Users Element Index page.",
         name: 'enableSubscriberLists',
         on: settings.enableSubscriberLists,
         first: true,

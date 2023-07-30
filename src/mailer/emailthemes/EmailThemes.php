@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\emailthemes;
 
-use BarrelStrength\Sprout\mailer\components\emailthemes\CustomEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
 use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
@@ -14,7 +14,7 @@ class EmailThemes extends Component
     public function getEmailThemeTypes(): array
     {
         $emailThemes[] = EmailMessageTheme::class;
-        $emailThemes[] = CustomEmailTheme::class;
+        $emailThemes[] = CustomTemplatesEmailTheme::class;
 
         $event = new RegisterComponentTypesEvent([
             'types' => $emailThemes,
@@ -31,7 +31,7 @@ class EmailThemes extends Component
 
         $instances = [];
         foreach ($emailThemes as $emailTheme) {
-            $instances[$emailTheme::getHandle()] = new $emailTheme();
+            $instances[$emailTheme] = new $emailTheme();
         }
 
         return $instances;

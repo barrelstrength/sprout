@@ -5,16 +5,11 @@ namespace BarrelStrength\Sprout\mailer\components\emailthemes;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use Craft;
 
-class CustomEmailTheme extends EmailTheme
+class CustomTemplatesEmailTheme extends EmailTheme
 {
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-mailer', 'Custom');
-    }
-
-    public static function getHandle(): string
-    {
-        return 'custom';
+        return Craft::t('sprout-module-mailer', 'Custom Templates');
     }
 
     public static function isEditable(): bool

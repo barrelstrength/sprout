@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\mailer\components\emailthemes\CustomEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
@@ -107,8 +107,8 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 //                $emailTheme = CustomEmailTheme::class;
 
                 $themeRowsMapped[$key] = [
-                    'name' => CustomEmailTheme::displayName(),
-                    'type' => CustomEmailTheme::class,
+                    'name' => CustomTemplatesEmailTheme::displayName(),
+                    'type' => CustomTemplatesEmailTheme::class,
 
                     // Check if custom themes are using same template values, may have multiple themes...
                     'htmlEmailTemplate' => $themeRow['emailTemplateId'],

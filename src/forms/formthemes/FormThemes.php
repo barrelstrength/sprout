@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\formthemes;
 
-use BarrelStrength\Sprout\forms\components\formthemes\CustomFormTheme;
+use BarrelStrength\Sprout\forms\components\formthemes\CustomTemplatesFormTheme;
 use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
 use craft\events\RegisterComponentTypesEvent;
 use yii\base\Component;
@@ -15,7 +15,7 @@ class FormThemes extends Component
     {
         $formThemes = [];
         $formThemes[] = DefaultFormTheme::class;
-        $formThemes[] = CustomFormTheme::class;
+        $formThemes[] = CustomTemplatesFormTheme::class;
 
         $event = new RegisterComponentTypesEvent([
             'types' => $formThemes,

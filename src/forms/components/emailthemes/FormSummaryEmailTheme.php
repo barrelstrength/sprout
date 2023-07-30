@@ -22,11 +22,6 @@ class FormSummaryEmailTheme extends EmailTheme
         return Craft::t('sprout-module-forms', 'Form Summary (Sprout)');
     }
 
-    public static function getHandle(): string
-    {
-        return 'formSummary';
-    }
-
     public function getTemplateRoot(): string
     {
         return Craft::getAlias('@Sprout/TemplateRoot');

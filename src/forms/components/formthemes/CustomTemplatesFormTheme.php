@@ -15,16 +15,11 @@ use Craft;
  *
  * @property string $path
  */
-class CustomFormTheme extends FormTheme
+class CustomTemplatesFormTheme extends FormTheme
 {
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Custom Templates');
-    }
-
-    public static function getHandle(): string
-    {
-        return 'custom';
     }
 
     public static function isEditable(): bool

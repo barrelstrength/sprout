@@ -13,11 +13,6 @@ class DefaultFormTheme extends FormTheme
     {
         return Craft::t('sprout-module-forms', 'Default Templates');
     }
-
-    public static function getHandle(): string
-    {
-        return 'default';
-    }
 }
 
 

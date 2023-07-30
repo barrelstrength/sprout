@@ -19,11 +19,6 @@ class EmailMessageTheme extends EmailTheme
         return Craft::t('sprout-module-mailer', 'Simple Message');
     }
 
-    public static function getHandle(): string
-    {
-        return 'simpleMessage';
-    }
-
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
