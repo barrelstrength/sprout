@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\mailer\mailers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use craft\base\Model;
 use craft\base\SavableComponent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -55,9 +54,9 @@ abstract class Mailer extends SavableComponent
         return '';
     }
 
-    abstract public function createMailerInstructionsSettingsModel(): Model;
+    abstract public function createMailerInstructionsSettingsModel(): MailerInstructionsInterface;
 
-    public function createMailerInstructionsTestSettingsModel(): Model
+    public function createMailerInstructionsTestSettingsModel(): MailerInstructionsInterface
     {
         return $this->createMailerInstructionsSettingsModel();
     }

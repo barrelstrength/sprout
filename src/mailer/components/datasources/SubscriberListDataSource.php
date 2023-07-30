@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\components\datasources;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
+use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberQueryBehavior;
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
 use craft\db\Query;
@@ -44,9 +45,11 @@ class SubscriberListDataSource extends DataSource
 
     public function getResults(DataSetElement $dataSet): array
     {
-        $users = User::find([
-            'subscriberListId' => $this->subscriberListId,
-        ])->all();
+        $query = User::find();
+
+        /** @var SproutSubscriberQueryBehavior $query */
+        $users = $query->sproutSubscriberListId($this->subscriberListId)
+            ->all();
 
         $subscribers = [];
 

@@ -179,10 +179,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         $subjectLine = $mailerInstructionsSettings->getSubjectLine($email);
         $subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables);
-        $defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables);
-
-        $textBody = '';
-        $htmlBody = '';
 
         $textBody = trim($emailTheme->getTextBody());
         $htmlBody = trim($emailTheme->getHtmlBody());
@@ -208,7 +204,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         foreach ($assets as $asset) {
 
             $name = $asset->getFilename();
-            $volume = $asset->getVolume();
+            $volume = $asset->getVolume()->getFs();
 
             if ($volume instanceof Local) {
                 $path = $this->getLocalAssetFilePath($asset);

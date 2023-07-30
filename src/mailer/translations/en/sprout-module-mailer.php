@@ -183,4 +183,5 @@ return [
     'Notification Event Type' => 'Notification Event Type',
     'Could not save mailer.' => 'Could not save mailer.',
     'The body of this email theme will include the values provided in a form submission.' => 'The body of this email theme will include the values provided in a form submission.',
+    'Custom Templates' => 'Custom Templates'
 ];

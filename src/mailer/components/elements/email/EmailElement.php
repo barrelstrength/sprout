@@ -257,10 +257,10 @@ class EmailElement extends Element implements EmailPreviewInterface
         }
 
         $mailer = $this->getMailer();
-        $model = $mailer->createMailerInstructionsSettingsModel();
-        $model->setAttributes($this->mailerInstructionsSettings, false);
+        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
 
-        $this->_mailerInstructionsSettingsModel = $model;
+        $this->_mailerInstructionsSettingsModel = $mailerInstructionsSettings;
 
         return $this->_mailerInstructionsSettingsModel;
     }

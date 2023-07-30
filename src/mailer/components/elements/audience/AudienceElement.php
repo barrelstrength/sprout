@@ -187,8 +187,6 @@ class AudienceElement extends Element
 
     /**
      * Use the name as the string representation.
-     *
-     * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function __toString(): string
     {
@@ -337,8 +335,11 @@ class AudienceElement extends Element
 
     protected function metadata(): array
     {
+        /** @var AudienceType|string $audienceType */
+        $audienceType = $this->type;
+
         return [
-            Craft::t('sprout-module-mailer', 'Audience Type') => $this->type::displayName(),
+            Craft::t('sprout-module-mailer', 'Audience Type') => $audienceType::displayName(),
         ];
     }
 
