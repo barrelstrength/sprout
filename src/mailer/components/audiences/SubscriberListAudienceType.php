@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\components\audiences;
 
 use BarrelStrength\Sprout\mailer\audience\AudienceType;
+use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberQueryBehavior;
 use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
@@ -41,9 +42,10 @@ class SubscriberListAudienceType extends AudienceType
 
     public function getRecipients(): array
     {
-        $users = User::find()
-            ->innerJoin(['subscriptions' => SproutTable::SUBSCRIPTIONS],
-                '[[users.id]] = [[subscriptions.itemId]]')
+        $query = User::find();
+
+        /** @var SproutSubscriberQueryBehavior $query */
+        $users = $query->sproutSubscriberListId($this->elementId)
             ->all();
 
         $recipients = array_map(static function($user) {

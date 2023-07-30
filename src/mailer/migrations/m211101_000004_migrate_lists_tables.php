@@ -88,7 +88,7 @@ class m211101_000004_migrate_lists_tables extends Migration
                 ->all();
 
             Craft::$app->getDb()->createCommand()
-                ->batchInsert(self::SUBSCRIPTIONS_TABLE, $cols, $rows)
+                ->batchInsert(self::SUBSCRIPTIONS_TABLE, $newCols, $rows)
                 ->execute();
         }
     }

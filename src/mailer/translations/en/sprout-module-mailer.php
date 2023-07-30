@@ -160,4 +160,27 @@ return [
     'The lists in which this user is subscribed.' => 'The lists in which this user is subscribed.',
     'Audience Types' => 'Audience Types',
     'System Mailer' => 'System Mailer',
+    'This Email Theme will display a short message above a body that displays the name and value for all submitted form fields.' => 'This Email Theme will display a short message above a body that displays the name and value for all submitted form fields.',
+    'This email theme will display all the fields included in a form submission.' => 'This email theme will display all the fields included in a form submission.',
+    'This email theme includes the values provided in a form submission.' => 'This email theme includes the values provided in a form submission.',
+    'From Email will be used if no Reply To Email is provided. This can be set to an environment variable. Warning: if the selected environment variable changes, it will change
+                the settings of existing emails.' => 'From Email will be used if no Reply To Email is provided. This can be set to an environment variable. Warning: if the selected environment variable changes, it will change
+                the settings of existing emails.',
+    'From Email will be used if no Reply To Email is provided. This can be set to an environment variable.' => 'From Email will be used if no Reply To Email is provided. This can be set to an environment variable.',
+    'The Form Summary theme will display.' => 'The Form Summary theme will display.',
+    'User does not exist.' => 'User does not exist.',
+    'This Email Theme will display your message above a list of all submitted form fields and their submitted values.' => 'This Email Theme will display your message above a list of all submitted form fields and their submitted values.',
+    'This can be set to an environment variable.' => 'This can be set to an environment variable.',
+    'Create a Subscriber List to select it here' => 'Create a Subscriber List to select it here',
+    'This email theme will display your message above a loop that will output of all fields submitted.' => 'This email theme will display your message above a loop that will output of all fields submitted.',
+    'The body of this email theme will include a summary of the form submission.' => 'The body of this email theme will include a summary of the form submission.',
+    'This email theme body will also display all the fields included in a form submission.' => 'This email theme body will also display all the fields included in a form submission.',
+    'No user groups exist.' => 'No user groups exist.',
+    'Mailer saved.' => 'Mailer saved.',
+    'This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails.' => 'This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails.',
+    'Couldn\'t reorder mailers.' => 'Couldn\'t reorder mailers.',
+    'Email Type' => 'Email Type',
+    'Notification Event Type' => 'Notification Event Type',
+    'Could not save mailer.' => 'Could not save mailer.',
+    'The body of this email theme will include the values provided in a form submission.' => 'The body of this email theme will include the values provided in a form submission.'
 ];

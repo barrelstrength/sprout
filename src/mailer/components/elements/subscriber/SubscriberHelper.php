@@ -1,12 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\subscriberlists;
+namespace BarrelStrength\Sprout\mailer\components\elements\subscriber;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\fieldlayoutelements\SubscriberListsField;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberElementBehavior;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberQueryBehavior;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\elements\User;
