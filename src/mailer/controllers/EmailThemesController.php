@@ -120,6 +120,7 @@ class EmailThemesController extends Controller
             return $emailTheme;
         }
 
+        $emailTheme->displayPreheaderText = Craft::$app->request->getBodyParam('displayPreheaderText');
         $emailTheme->htmlEmailTemplate = Craft::$app->request->getBodyParam('htmlEmailTemplate');
         $emailTheme->textEmailTemplate = Craft::$app->request->getBodyParam('textEmailTemplate');
         $emailTheme->copyPasteEmailTemplate = Craft::$app->request->getBodyParam('copyPasteEmailTemplate');
