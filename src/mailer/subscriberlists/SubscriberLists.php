@@ -80,10 +80,11 @@ class SubscriberLists extends Component
                 ]);
             }
         }
+
         SubscriptionRecord::findOne([
             'subscriberListId' => $subscription->subscriberListId,
             'userId' => $subscription->userId,
-        ])->delete();
+        ])?->delete();
 
         return true;
     }

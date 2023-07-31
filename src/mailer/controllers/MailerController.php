@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
+use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\web\Controller;
@@ -110,6 +111,10 @@ class MailerController extends Controller
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
+
+        if (!$email) {
+            throw new ElementNotFoundException('Email not found.');
+        }
 
         return $this->asJson([
             'success' => true,

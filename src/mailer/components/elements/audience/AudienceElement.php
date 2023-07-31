@@ -78,17 +78,16 @@ class AudienceElement extends Element
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): DefineFieldLayoutFieldsEvent
     {
-        if ($event->sender->type === self::class) {
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $event->sender;
 
-            /** @var FieldLayout $fieldLayout */
-            $fieldLayout = $event->sender;
-
-            if ($fieldLayout->type === self::class) {
-                $event->fields[] = AudienceNameField::class;
-                $event->fields[] = AudienceHandleField::class;
-                $event->fields[] = AudienceSettingsField::class;
-            }
+        if ($event->sender->type !== self::class || $fieldLayout->type !== self::class) {
+            return $event;
         }
+
+        $event->fields[] = AudienceNameField::class;
+        $event->fields[] = AudienceHandleField::class;
+        $event->fields[] = AudienceSettingsField::class;
 
         return $event;
     }

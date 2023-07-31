@@ -20,6 +20,7 @@ use craft\elements\actions\SetStatus;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
+use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\TextField;
 use craft\fieldlayoutelements\TitleField;
@@ -234,7 +235,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     /**
      * The Email Service provide can be update via Craft's Email Settings
      */
-    public function getMailer(): ?Mailer
+    public function getMailer(): Mailer
     {
         if ($this->_mailer) {
             return $this->_mailer;
@@ -242,7 +243,13 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailTypeSettings = $this->getEmailTypeSettings();
 
-        return $emailTypeSettings->getMailer($this);
+        $mailer = $emailTypeSettings->getMailer($this);
+
+        if (!$mailer) {
+            throw new MissingComponentException('No Mailer found.');
+        }
+
+        return $mailer;
     }
 
     public function setMailer(Mailer $mailer): void
@@ -250,7 +257,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailer = $mailer;
     }
 
-    public function getMailerInstructionsSettings(): ?MailerInstructionsInterface
+    public function getMailerInstructionsSettings(): MailerInstructionsInterface
     {
         if ($this->_mailerInstructionsSettingsModel !== null) {
             return $this->_mailerInstructionsSettingsModel;
@@ -291,12 +298,16 @@ class EmailElement extends Element implements EmailPreviewInterface
      * $fieldLayout
      * $emailThemeUid
      */
-    public function getEmailTheme(): ?EmailTheme
+    public function getEmailTheme(): EmailTheme
     {
         $emailTheme = EmailThemeHelper::getEmailThemeByUid($this->emailThemeUid);
 
         if (!$emailTheme) {
             $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
+        }
+
+        if (!$emailTheme) {
+            throw new MissingComponentException('No Email Theme found.');
         }
 
         $emailTheme->email = $this;

@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriber
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\ElementInterface;
+use craft\elements\User;
 use craft\fieldlayoutelements\TextField;
 
 class SubscriberListsField extends TextField
@@ -28,6 +29,10 @@ class SubscriberListsField extends TextField
 
     protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
+        if (!$element instanceof User) {
+            return '';
+        }
+
         /** @var ElementInterface|SproutSubscriberElementBehavior $element */
         if (!$element->getBehavior(SproutSubscriberElementBehavior::class)) {
             return '';
