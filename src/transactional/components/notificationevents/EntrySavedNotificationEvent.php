@@ -11,6 +11,7 @@ use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
 use craft\helpers\Html;
+use craft\helpers\Json;
 use yii\base\Event;
 
 class EntrySavedNotificationEvent extends NotificationEvent implements ElementEventInterface
@@ -67,20 +68,18 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
      */
     public function getMockEventObject(): mixed
     {
-        $criteria = Entry::find();
+        if ($this->conditionRules) {
+            $conditionRules = Json::decodeIfJson($this->conditionRules);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = Entry::class;
 
-        $ids = $this->sectionIds;
+            $query = $condition->elementType::find();
+            $condition->modifyQuery($query);
 
-        if (is_array($ids) && count($ids)) {
-
-            $id = array_shift($ids);
-
-            $criteria->where([
-                'sectionId' => $id,
-            ]);
+            return $query->one();
         }
 
-        return $criteria->one();
+        return null;
     }
 
     public function matchNotificationEvent(Event $event): bool

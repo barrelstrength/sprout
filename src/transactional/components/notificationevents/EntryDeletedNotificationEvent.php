@@ -9,6 +9,7 @@ use Craft;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\helpers\Html;
+use craft\helpers\Json;
 
 class EntryDeletedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
@@ -61,6 +62,17 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
 
     public function getMockEventObject(): mixed
     {
-        return Entry::find()->one();
+        if ($this->conditionRules) {
+            $conditionRules = Json::decodeIfJson($this->conditionRules);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = Entry::class;
+
+            $query = $condition->elementType::find();
+            $condition->modifyQuery($query);
+
+            return $query->one();
+        }
+
+        return null;
     }
 }

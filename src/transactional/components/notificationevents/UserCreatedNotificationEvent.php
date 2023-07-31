@@ -8,8 +8,10 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
+use craft\elements\User as UserElement;
 use craft\events\ModelEvent;
 use craft\helpers\Html;
+use craft\helpers\Json;
 use yii\base\Event;
 
 class UserCreatedNotificationEvent extends NotificationEvent implements ElementEventInterface
@@ -63,17 +65,20 @@ class UserCreatedNotificationEvent extends NotificationEvent implements ElementE
 
     public function getMockEventObject(): mixed
     {
-        $criteria = User::find();
+        $user = Craft::$app->getUser()->getIdentity();
 
-        $ids = $this->userGroupIds;
+        if ($this->conditionRules) {
+            $conditionRules = Json::decodeIfJson($this->conditionRules);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = UserElement::class;
 
-        if (is_array($ids) && count($ids)) {
-            $id = array_shift($ids);
+            $query = $condition->elementType::find();
+            $condition->modifyQuery($query);
 
-            $criteria->groupId = $id;
+            $user = $query->one();
         }
 
-        return $criteria->one();
+        return $user;
     }
 
     public function matchNotificationEvent(Event $event): bool

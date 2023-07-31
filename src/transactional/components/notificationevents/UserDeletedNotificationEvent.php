@@ -8,7 +8,9 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
+use craft\elements\User as UserElement;
 use craft\helpers\Html;
+use craft\helpers\Json;
 
 class UserDeletedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
@@ -61,6 +63,19 @@ class UserDeletedNotificationEvent extends NotificationEvent implements ElementE
 
     public function getMockEventObject(): mixed
     {
-        return User::find()->one();
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if ($this->conditionRules) {
+            $conditionRules = Json::decodeIfJson($this->conditionRules);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = UserElement::class;
+
+            $query = $condition->elementType::find();
+            $condition->modifyQuery($query);
+
+            $user = $query->one();
+        }
+
+        return $user;
     }
 }

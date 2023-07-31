@@ -7,9 +7,10 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
+use craft\elements\User;
 use craft\elements\User as UserElement;
 use craft\helpers\Html;
-use craft\records\User as UserRecord;
+use craft\helpers\Json;
 use craft\web\User as UserComponent;
 use yii\base\Event;
 use yii\web\UserEvent;
@@ -63,7 +64,20 @@ class UserLoggedInNotificationEvent extends NotificationEvent implements Element
 
     public function getMockEventObject(): mixed
     {
-        return UserRecord::find()->one();
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if ($this->conditionRules) {
+            $conditionRules = Json::decodeIfJson($this->conditionRules);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = UserElement::class;
+
+            $query = $condition->elementType::find();
+            $condition->modifyQuery($query);
+
+            $user = $query->one();
+        }
+
+        return $user;
     }
 
     /**
