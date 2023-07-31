@@ -74,15 +74,9 @@ class TransactionalEmailEmailType extends EmailType
         $eventTab->name = Craft::t('sprout-module-mailer', 'Event');
         $eventTab->uid = 'SPROUT-UID-EMAIL-TYPE-TAB';
         $eventTab->setElements([
-            new NotificationEventField([
-                'uid' => StringHelper::UUID(),
-            ]),
-            new HorizontalRule([
-                'uid' => StringHelper::UUID(),
-            ]),
-            new FileAttachmentsField([
-                'uid' => StringHelper::UUID(),
-            ]),
+            new NotificationEventField(),
+            new HorizontalRule(),
+            new FileAttachmentsField(),
         ]);
 
         return [$eventTab];
