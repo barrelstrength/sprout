@@ -24,7 +24,8 @@ class m211101_000001_update_lists_projectconfig extends Migration
         $newConfig = [];
 
         foreach ($defaultSettings as $key => $defaultValue) {
-            $newConfig[$key] = isset($oldConfig[$key]) ? $oldConfig[$key] ?? $defaultValue : $defaultValue;
+            $oldValue = isset($oldConfig[$key]) && !empty($oldConfig[$key]) ? $oldConfig[$key] : null;
+            $newConfig[$key] = $oldValue ?? $defaultValue;
         }
 
         unset(
