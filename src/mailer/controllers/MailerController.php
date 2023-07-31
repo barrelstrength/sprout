@@ -141,7 +141,6 @@ class MailerController extends Controller
         }
 
         try {
-            $mailer = $email->getMailer();
             $mailer->send($email, $mailerInstructionsTestSettings);
         } catch (Exception) {
             return $this->asJson([
@@ -171,8 +170,15 @@ class MailerController extends Controller
         $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
         $mailerInstructionsSettings->setAttributes($settings, false);
 
+        if (!$mailerInstructionsSettings->validate()) {
+            return $this->asJson([
+                'success' => false,
+                'errors' => $mailerInstructionsSettings->getErrors(),
+            ]);
+        }
+
         try {
-            $email->send($mailerInstructionsSettings);
+            $mailer->send($email, $mailerInstructionsSettings);
         } catch (Exception) {
             return $this->asJson([
                 'success' => false,
