@@ -29,12 +29,12 @@ class m211101_000002_update_notifications_projectconfig extends Migration
         $newConfig = [];
 
         foreach ($defaultSettings as $key => $defaultValue) {
-            if (isset($oldConfig[$key])) {
+            if (isset($oldConfig[$key]) && !empty($oldConfig[$key])) {
                 if ($key === 'emailTemplateId') {
                     $newConfig[$key] = $templateIdMap[$oldConfig[$key]] ?? $defaultValue;
                 } else {
                     // Grab the existing settings
-                    $newConfig[$key] = $oldConfig[$key] ?? $defaultValue;
+                    $newConfig[$key] = $oldConfig[$key];
                 }
             } else {
                 // Use the default settings

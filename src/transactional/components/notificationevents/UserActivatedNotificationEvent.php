@@ -8,7 +8,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
-use craft\elements\User as UserElement;
 use craft\events\UserEvent;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -69,7 +68,7 @@ class UserActivatedNotificationEvent extends NotificationEvent implements Elemen
         if ($this->conditionRules) {
             $conditionRules = Json::decodeIfJson($this->conditionRules);
             $condition = Craft::$app->conditions->createCondition($conditionRules);
-            $condition->elementType = UserElement::class;
+            $condition->elementType = User::class;
 
             $query = $condition->elementType::find();
             $condition->modifyQuery($query);

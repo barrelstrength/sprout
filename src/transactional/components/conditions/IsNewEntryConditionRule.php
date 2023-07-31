@@ -39,12 +39,6 @@ class IsNewEntryConditionRule extends BaseConditionRule implements ElementCondit
         ];
     }
 
-    protected function inputHtml(): string
-    {
-        // This rule always returns true, so no input is needed
-        return '';
-    }
-
     protected function defineRules(): array
     {
         return array_merge(parent::defineRules(), [

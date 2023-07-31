@@ -5,8 +5,6 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailPreviewInterface;
 use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
-use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\ElementNotFoundException;

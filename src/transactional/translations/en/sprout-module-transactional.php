@@ -72,4 +72,8 @@ return [
     'Triggered when a new user is created.' => 'Triggered when a new user is created.',
     'Status changes to Live' => 'Status changes to Live',
     'Is New Entry' => 'Is New Entry',
+    'Field Changed (Event)' => 'Field Changed (Event)',
+    'Subject Line' => 'Subject Line',
+    'Notification Event' => 'Notification Event',
+    'Attribute Changed' => 'Attribute Changed'
 ];

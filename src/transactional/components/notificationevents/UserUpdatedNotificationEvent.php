@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
-use craft\elements\Entry;
 use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\helpers\Html;

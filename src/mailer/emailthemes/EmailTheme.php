@@ -190,7 +190,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
             $converter = new HtmlConverter([
                 'remove_nodes' => 'head style script',
                 'strip_tags' => true,
-                'hard_break'=> true,
+                'hard_break' => true,
             ]);
 
             // For more advanced html templates, conversion may be tougher. Minifying the HTML
@@ -199,7 +199,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
             $markdown = $converter->convert($htmlBody);
 
             $textBody = Html::tag('pre', trim($markdown), [
-                'style' => 'white-space: pre-wrap; word-wrap: break-word;'
+                'style' => 'white-space: pre-wrap; word-wrap: break-word;',
             ]);
         }
 
