@@ -83,78 +83,29 @@ class PreviewController extends Controller
     {
         $this->requireToken();
 
-        $this->getPreviewEmailById($emailId, $type);
-    }
-
-    //    public function actionLivePreviewNotificationEmail(): void
-    //    {
-    //        $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
-    //
-    //        $this->getPreviewEmailById($emailId);
-    //    }
-
-    public function preparePreviewEmailElement(EmailElement $email): bool
-    {
-        $event = TransactionalModule::getInstance()->notificationEvents->getEvent($email);
-
-        if (!$event instanceof NotificationEvent) {
-
-            echo Craft::t('sprout-module-mailer', 'Notification Email cannot display. The Event setting must be set.');
-
-            Craft::$app->end();
-        }
-
-        $email->setEventObject($event->getMockEventObject());
-
-        return true;
-    }
-
-    /**
-     * Retrieves a rendered Notification Email to be shared or for Live Preview
-     */
-    protected function getPreviewEmailById($emailId, $type = null): void
-    {
         $email = Craft::$app->getElements()->getElementById($emailId);
 
         if (!$email instanceof EmailElement) {
             throw new ElementNotFoundException('Email not found using id ' . $emailId);
         }
 
-        //        $this->preparePreviewEmailElement($email);
-
-        // The getBodyParam is for livePreviewNotification to update on change
-        //        $subjectLine = Craft::$app->getRequest()->getBodyParam('subjectLine');
-        //        $defaultMessage= Craft::$app->getRequest()->getBodyParam('defaultMessage');
-        //
-        //        if ($subjectLine) {
-        //            $email->subjectLine = $subjectLine;
-        //        }
-        //
-        //        if ($defaultMessage) {
-        //            $email->defaultMessage = $defaultMessage;
-        //        }
-
-        //        $fieldsLocation = Craft::$app->getRequest()->getParam('fieldsLocation', 'fields');
-
-        //        $email->setFieldValuesFromRequest($fieldsLocation);
-
         $fileExtension = $type === 'text' ? 'txt' : 'html';
-
-        $this->showPreviewEmail($email, $fileExtension);
-    }
-
-    protected function showPreviewEmail(EmailElement $email, string $fileExtension = 'html'): void
-    {
-        $emailTheme = $email->getEmailTheme();
-
-        $emailTheme->addTemplateVariable('email', $email);
 
         $currentUser = Craft::$app->getUser()->getIdentity();
         $recipient = new MailingListRecipient([
             'name' => $currentUser->getName(),
             'email' => $currentUser->email,
         ]);
+
+        $mailer = $email->getMailer();
+        $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
+        $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
+
+        $emailTheme = $email->getEmailTheme();
+
+        $emailTheme->addTemplateVariable('email', $email);
         $emailTheme->addTemplateVariable('recipient', $recipient);
+        $emailTheme->addTemplateVariables($additionalTemplateVariables);
 
         if ($fileExtension === 'txt') {
             $output = $emailTheme->getTextBody();

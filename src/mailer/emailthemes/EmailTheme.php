@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\emailthemes;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\SavableComponent;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\web\View;
@@ -176,22 +177,20 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         $oldTemplateMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
-        // Craft::dd($this->email->getEmailTypeSettings()->getObjectVariable());
-        // @todo - add dynamic support for objects
-        $htmlBody = Craft::$app->getView()->renderTemplate(
-            $this->getHtmlEmailTemplate(),
+        $htmlBody = Craft::$app->getView()->renderTemplate($this->getHtmlEmailTemplate(),
             $this->getTemplateVariables()
         );
 
         // Converts html body to text email if no .txt
         if ($this->getTextEmailTemplate() && Craft::$app->getView()->doesTemplateExist($this->getTextEmailTemplate())) {
-            $textBody = Craft::$app->getView()->renderTemplate(
-                $this->getTextEmailTemplate(),
+            $textBody = Craft::$app->getView()->renderTemplate($this->getTextEmailTemplate(),
                 $this->getTemplateVariables()
             );
         } else {
             $converter = new HtmlConverter([
+                'remove_nodes' => 'head style script',
                 'strip_tags' => true,
+                'hard_break'=> true,
             ]);
 
             // For more advanced html templates, conversion may be tougher. Minifying the HTML
@@ -199,7 +198,9 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
             // things in Markdown, like <p> tags or <h1> tags and not just <td> or <div>, etc.
             $markdown = $converter->convert($htmlBody);
 
-            $textBody = trim($markdown);
+            $textBody = Html::tag('pre', trim($markdown), [
+                'style' => 'white-space: pre-wrap; word-wrap: break-word;'
+            ]);
         }
 
         $view->setTemplateMode($oldTemplateMode);
