@@ -80,6 +80,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public array $mailerInstructionsSettings = [];
 
+    protected ?EmailTheme $_emailTheme = null;
+
     protected ?EmailType $_emailTypeSettingsModel = null;
 
     private ?FieldLayout $_fieldLayout = null;
@@ -300,6 +302,10 @@ class EmailElement extends Element implements EmailPreviewInterface
      */
     public function getEmailTheme(): EmailTheme
     {
+        if ($this->_emailTheme) {
+            return $this->_emailTheme;
+        }
+
         $emailTheme = EmailThemeHelper::getEmailThemeByUid($this->emailThemeUid);
 
         if (!$emailTheme) {
@@ -312,7 +318,12 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailTheme->email = $this;
 
-        return $emailTheme;
+        return $this->_emailTheme = $emailTheme;
+    }
+
+    public function setEmailTheme(?EmailTheme $emailTheme): void
+    {
+        $this->_emailTheme = $emailTheme;
     }
 
     /**
