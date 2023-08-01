@@ -2,14 +2,14 @@
 
 {% set mailerInstructionsSettings = email.getMailerInstructionsSettings() %}
 
-<h6>{{ 'Email Details'|t('sprout-module-sent-email') }}</h6>
+<h6>{{ 'Email Details'|t('sprout-module-mailer') }}</h6>
 <table>
     <tr>
-        <th>{{ 'Subject Line'|t('sprout-module-sent-email') }}</th>
+        <th>{{ 'Subject Line'|t('sprout-module-mailer') }}</th>
         <td>{{ email.subjectLine }}</td>
     </tr>
     <tr>
-        <th>{{ 'From Address'|t('sprout-module-sent-email') }}</th>
+        <th>{{ 'From Address'|t('sprout-module-mailer') }}</th>
         <td>{{ mailerInstructionsSettings.getSenderAsString() }}</td>
     </tr>
 </table>
@@ -25,7 +25,7 @@
 
     {{ forms.textField({
         label: "To"|t('sprout-module-mailer'),
-        instructions: 'Comma-separated list of recipients.'|t('sprout-module-sent-email'),
+        instructions: 'Comma-separated list of recipients.'|t('sprout-module-mailer'),
         name: 'recipients',
         placeholder: placeholder,
         value: '',
