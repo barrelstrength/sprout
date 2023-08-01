@@ -7,7 +7,7 @@
         "apexcharts": "^3.37.2",
         "autoprefixer": "^10.4.14",
         "craftcms-sass": "^3.5.7",
-        "datatables.net": "^1.13.2",
+        "datatables.net": "^1.13.6",
         "dom-autoscroller": "^2.3.4",
         "jquery": "^3.7.0",
         "jquery-tageditor": "^1.0.1",
