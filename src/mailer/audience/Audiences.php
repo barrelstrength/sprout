@@ -59,10 +59,10 @@ class Audiences extends Component
         $recipients = [];
 
         foreach ($audienceIds as $audienceId) {
-            /** @var AudienceTypeInterface $audience */
+            /** @var AudienceElement $audience */
             $audience = AudienceElement::findOne($audienceId);
 
-            $recipients = [...$recipients, ...$audience->getRecipients()];
+            $recipients = [...$recipients, ...$audience->getAudience()->getRecipients()];
         }
 
         return $recipients;
