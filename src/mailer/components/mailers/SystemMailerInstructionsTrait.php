@@ -64,11 +64,9 @@ trait SystemMailerInstructionsTrait
 
     public function getRecipients(array $templateVariables = []): array
     {
-        if (!$this->recipients) {
-            return [];
-        }
-
-        $stringRecipients = MailingListRecipient::stringToMailingListRecipientList($this->recipients);
+        $stringRecipients = $this->recipients
+            ? MailingListRecipient::stringToMailingListRecipientList($this->recipients)
+            : [];
 
         $audienceRecipients = MailerModule::getInstance()->audiences->getAudienceRecipients(
             $this->audienceIds
