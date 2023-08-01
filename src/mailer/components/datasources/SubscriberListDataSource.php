@@ -4,11 +4,10 @@ namespace BarrelStrength\Sprout\mailer\components\datasources;
 
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
+use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
+use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberQueryBehavior;
-use BarrelStrength\Sprout\mailer\db\SproutTable;
 use Craft;
-use craft\db\Query;
-use craft\db\Table;
 use craft\elements\User;
 
 /**
@@ -70,17 +69,16 @@ class SubscriberListDataSource extends DataSource
 
     public function getSettingsHtml(array $settings = []): ?string
     {
-        $subscriberListOptions = (new Query())
-            ->select([
-                'label' => 'lists.name',
-                'value' => 'lists.id',
-            ])
-            ->from(['lists' => SproutTable::AUDIENCES])
-            ->leftJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[lists.id]]')
-            ->where([
-                'elements.dateDeleted' => null,
-            ])
+        $audiences = AudienceElement::find()
+            ->type(SubscriberListAudienceType::class)
             ->all();
+
+        $subscriberListOptions = array_map(static function($audience) {
+            return [
+                'label' => $audience->name,
+                'value' => $audience->id,
+            ];
+        }, $audiences);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/datasources/SubscriberList/settings.twig', [
             'subscriberListOptions' => $subscriberListOptions,
