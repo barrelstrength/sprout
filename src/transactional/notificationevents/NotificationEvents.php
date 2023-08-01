@@ -174,26 +174,23 @@ class NotificationEvents extends Component
         $currentSite = Craft::$app->getSites()->getCurrentSite();
 
         $enabledNotificationEmails = TransactionalEmailElement::find()
-            ->select('emailTypeSettings')
             ->status(Element::STATUS_ENABLED)
             ->siteId($currentSite->id)
             ->indexBy('id')
-            ->column();
-
-        // Return the Element IDs of the Notification Emails that are enabled using this Event
-        $matchedNotificationEmailIds = array_keys(array_map(static function($emailTypeSettings) use ($notificationEventType) {
-            $settings = Json::decodeIfJson($emailTypeSettings);
-
-            return isset($settings['eventId']) &&
-                $settings['eventId'] === $notificationEventType;
-        }, $enabledNotificationEmails));
-
-        $emails = TransactionalEmailElement::find()
-            ->id($matchedNotificationEmailIds)
-            ->siteId($currentSite->id)
             ->all();
 
-        return $emails;
+        // Return the Element IDs of the Notification Emails that are enabled using this Event
+        $matchedNotificationEmails = array_filter(
+            $enabledNotificationEmails,
+            static function($notificationEmail) use ($notificationEventType) {
+                $settings = Json::decodeIfJson($notificationEmail->emailTypeSettings);
+
+                if (isset($settings['eventId']) && $settings['eventId'] === $notificationEventType) {
+                    return $notificationEmail->id;
+                }
+            });
+
+        return $matchedNotificationEmails;
     }
 
     public function registerConditionRuleTypes(RegisterConditionRuleTypesEvent $event): void
