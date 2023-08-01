@@ -104,10 +104,13 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void
     {
+        // Get any variables defined by Email Type to make available to building mailing list recipients
         $templateVariables = $mailerInstructionsSettings->getAdditionalTemplateVariables($email);
-        $email->getEmailTheme()->addTemplateVariables($templateVariables);
-
         $mailingList = $mailerInstructionsSettings->getMailingList($email, $templateVariables);
+
+        $emailTheme = $email->getEmailTheme();
+        $emailTheme->addTemplateVariables($templateVariables);
+        $email->setEmailTheme($emailTheme);
 
         // Prepare the Message
         $message = new Message();
@@ -171,14 +174,14 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         $view = Craft::$app->getView();
         $emailTheme = $email->getEmailTheme();
-
-        $emailTheme->addTemplateVariable('email', $email);
-        $emailTheme->addTemplateVariable('recipient', $recipient);
-
         $templateVariables = $emailTheme->getTemplateVariables();
 
         $subjectLine = $mailerInstructionsSettings->getSubjectLine($email);
-        $subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables);
+        $email->subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables['object'] ?? []);
+        $email->defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables['object'] ?? []);
+
+        $emailTheme->addTemplateVariable('recipient', $recipient);
+        $emailTheme->addTemplateVariable('email', $email);
 
         $textBody = trim($emailTheme->getTextBody());
         $htmlBody = trim($emailTheme->getHtmlBody());
@@ -191,7 +194,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             throw new \yii\base\Exception('HTML template is blank.');
         }
 
-        $message->setSubject($subjectLine);
+        $message->setSubject($email->subjectLine);
         $message->setTextBody($textBody);
         $message->setHtmlBody($htmlBody);
     }

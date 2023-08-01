@@ -87,23 +87,25 @@ class PreviewController extends Controller
             throw new ElementNotFoundException('Email not found using id ' . $emailId);
         }
 
-        $fileExtension = $type === 'text' ? 'txt' : 'html';
-
         $currentUser = Craft::$app->getUser()->getIdentity();
         $recipient = new MailingListRecipient([
             'name' => $currentUser->getName(),
             'email' => $currentUser->email,
         ]);
 
+        // @todo - Can we abstract how we call SystemMailer::_buildMessage() so we can do the same here?
         $mailer = $email->getMailer();
         $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
         $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
 
         $emailTheme = $email->getEmailTheme();
 
-        $emailTheme->addTemplateVariable('email', $email);
         $emailTheme->addTemplateVariable('recipient', $recipient);
         $emailTheme->addTemplateVariables($additionalTemplateVariables);
+
+        $emailTheme->addTemplateVariable('email', $email);
+
+        $fileExtension = $type === 'text' ? 'txt' : 'html';
 
         if ($fileExtension === 'txt') {
             $output = $emailTheme->getTextBody();
