@@ -19,6 +19,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberHelper;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberLists;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberListsVariable;
@@ -209,7 +210,13 @@ class MailerModule extends Module
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            [Mailers::class, 'defineNativeFields']
+            [MailerHelper::class, 'defineNativeFields']
+        );
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_DEFINE_UI_ELEMENTS,
+            [MailerHelper::class, 'defineNativeElements']
         );
     }
 

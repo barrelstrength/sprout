@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\mailers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use craft\base\SavableComponent;
+use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -26,6 +27,11 @@ abstract class Mailer extends SavableComponent implements MailerInterface
     abstract public function getDescription(): string;
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): array
+    {
+        return [];
+    }
+
+    public static function defineNativeElements(DefineFieldLayoutElementsEvent $event): array
     {
         return [];
     }

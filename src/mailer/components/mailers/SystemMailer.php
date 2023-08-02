@@ -6,12 +6,14 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\AudienceField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ReplyToField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderField;
+use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\TestToEmailUiElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\elements\Asset;
+use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\Tip;
@@ -44,6 +46,13 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         ];
     }
 
+    public static function defineNativeElements(DefineFieldLayoutElementsEvent $event): array
+    {
+        return [
+            new TestToEmailUiElement(),
+        ];
+    }
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
@@ -65,6 +74,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             new HorizontalRule(),
             new ToField(),
             new AudienceField(),
+            new TestToEmailUiElement(),
         ]);
 
         $fieldLayout->setTabs([
