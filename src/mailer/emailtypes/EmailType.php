@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use craft\base\SavableComponent;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 
 /**
  * @mixin FieldLayoutBehavior
@@ -43,12 +44,12 @@ abstract class EmailType extends SavableComponent
     abstract public static function getElementIndexType(): string;
 
     /**
-     * Returns an array of [[FieldLayoutTab]] models to display for this Email Type
+     * Returns the [[FieldLayoutTab]] model to display for this Email Type
      * These values will be stored in [[sprout_emails.emailTypeSettings]]
      */
-    public static function getTabs(FieldLayout $fieldLayout): array
+    public static function getFieldLayoutTab(FieldLayout $fieldLayout): ?FieldLayoutTab
     {
-        return [];
+        return null;
     }
 
     /**

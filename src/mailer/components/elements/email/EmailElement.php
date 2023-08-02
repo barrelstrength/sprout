@@ -423,8 +423,6 @@ class EmailElement extends Element implements EmailPreviewInterface
             'type' => static::class,
         ]);
 
-        $emailType = $this->getEmailTypeSettings();
-
         $themes = EmailThemeHelper::getEmailThemes();
 
         $themeTabs = array_map(static function(EmailTheme $theme) use ($fieldLayout) {
@@ -455,6 +453,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $tab;
         }, $mailers);
 
+        $emailType = $this->getEmailTypeSettings();
 
         $elementCondition = new TransactionalEmailCondition(self::class);
         $rule = new PreheaderTextConditionRule();
@@ -494,7 +493,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $newTabs = array_merge(
             [$subjectTab],
             $mailerTabs,
-            $emailType::getTabs($fieldLayout),
+            [$emailType::getFieldLayoutTab($fieldLayout)],
             $themeTabs,
         );
 

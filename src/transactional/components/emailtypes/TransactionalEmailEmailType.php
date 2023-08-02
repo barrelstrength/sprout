@@ -14,7 +14,6 @@ use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNoti
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\fieldlayoutelements\HorizontalRule;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use yii\base\Event;
@@ -67,19 +66,25 @@ class TransactionalEmailEmailType extends EmailType
         return TransactionalEmailElement::class;
     }
 
-    public static function getTabs(FieldLayout $fieldLayout): array
+    public static function getFieldLayoutTab(FieldLayout $fieldLayout): FieldLayoutTab
     {
         $eventTab = new FieldLayoutTab();
         $eventTab->layout = $fieldLayout;
         $eventTab->name = Craft::t('sprout-module-mailer', 'Event');
         $eventTab->uid = 'SPROUT-UID-EMAIL-TYPE-TAB';
         $eventTab->setElements([
-            new NotificationEventField(),
-            new HorizontalRule(),
-            new FileAttachmentsField(),
+            new NotificationEventField([
+                'uid' => 'SPROUT-UID-EMAIL-NOTIFICATION-EVENT-FIELD',
+            ]),
+            new HorizontalRule([
+                'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-EMAIL-TYPE-TAB-1',
+            ]),
+            new FileAttachmentsField([
+                'uid' => 'SPROUT-UID-EMAIL-FIELD-FILE-ATTACHMENT',
+            ]),
         ]);
 
-        return [$eventTab];
+        return $eventTab;
     }
 
     public static function getAdditionalButtonsHtml(EmailElement $email): string
