@@ -12,6 +12,7 @@ use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\elements\Asset;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\Tip;
 use craft\fs\Local;
@@ -33,22 +34,24 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     protected array $_attachmentExternalFilePaths = [];
 
-    public static function getTabs(FieldLayout $fieldLayout): array
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): array
     {
-        $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
+        return [
+            SenderField::class,
+            ReplyToField::class,
+            ToField::class,
+            AudienceField::class,
+        ];
+    }
 
-        $testToEmailAddressField = [];
-        if ($testToEmailAddress) {
-            $testToEmailAddressField = new Tip();
-            $testToEmailAddressField->style = Tip::STYLE_WARNING;
-            $testToEmailAddressField->tip = Craft::t('sprout-module-mailer', 'Test email found in general config. All messages will be sent to the testToEmailAddress: {email}', [
-                'email' => $testToEmailAddress,
-            ]);
-            $testToEmailAddressField->uid = StringHelper::UUID();
+    public function getFieldLayout(): FieldLayout
+    {
+        if ($this->_fieldLayout) {
+            return $this->_fieldLayout;
         }
 
-        $audienceField = new AudienceField([
-            'uid' => StringHelper::UUID(),
+        $fieldLayout = new FieldLayout([
+            'type' => static::class,
         ]);
 
         $mailerTab = new FieldLayoutTab();
@@ -57,23 +60,18 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $mailerTab->sortOrder = 0;
         $mailerTab->uid = StringHelper::UUID();
         $mailerTab->setElements([
-            new SenderField([
-                'uid' => StringHelper::UUID(),
-            ]),
-            new ReplyToField([
-                'uid' => StringHelper::UUID(),
-            ]),
-            new HorizontalRule([
-                'uid' => StringHelper::UUID(),
-            ]),
-            new ToField([
-                'uid' => StringHelper::UUID(),
-            ]),
-            $audienceField,
-            $testToEmailAddressField,
+            new SenderField(),
+            new ReplyToField(),
+            new HorizontalRule(),
+            new ToField(),
+            new AudienceField(),
         ]);
 
-        return [$mailerTab];
+        $fieldLayout->setTabs([
+            $mailerTab,
+        ]);
+
+        return $this->_fieldLayout = $fieldLayout;
     }
 
     public function getSettingsHtml(): ?string

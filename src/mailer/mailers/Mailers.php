@@ -2,12 +2,24 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
+use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\DataSourceSettingsField;
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\AudienceField;
+use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ReplyToField;
+use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderField;
+use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Component;
+use craft\events\DefineFieldLayoutElementsEvent;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\fieldlayoutelements\Tip;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 
 class Mailers extends Component
 {
@@ -107,6 +119,11 @@ class Mailers extends Component
     {
         $type = $mailerSettings['type'];
 
+        $config = reset($mailerSettings['fieldLayouts']);
+        $config['type'] = $type;
+
+        $fieldLayout = FieldLayout::createFromConfig($config);
+
         $settings = $mailerSettings['settings'] ?? [];
 
         $mailer = new $type(array_merge([
@@ -114,6 +131,8 @@ class Mailers extends Component
             'mailerSettings' => $mailerSettings['settings'],
             'uid' => $uid ?? StringHelper::UUID(),
         ], $settings));
+
+        $mailer->setFieldLayout($fieldLayout);
 
         return $mailer;
     }
@@ -123,5 +142,22 @@ class Mailers extends Component
         $mailers = MailerModule::getInstance()->mailers->getMailers();
 
         return reset($mailers);
+    }
+
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $event->sender;
+
+        if (!$fieldLayout->type) {
+            return;
+        }
+        
+        /** @var MailerInterface $type */
+        $type = new $fieldLayout->type();
+
+        if ($type instanceof MailerInterface) {
+            $event->fields = array_merge($event->fields, $type::defineNativeFields($event));
+        }
     }
 }

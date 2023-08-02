@@ -4,16 +4,19 @@ namespace BarrelStrength\Sprout\mailer\mailers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use craft\base\SavableComponent;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 
-abstract class Mailer extends SavableComponent
+abstract class Mailer extends SavableComponent implements MailerInterface
 {
     public ?string $name = null;
 
     public array $mailerSettings = [];
 
     public ?string $uid = null;
+
+    protected ?FieldLayout $_fieldLayout = null;
 
     public function __toString()
     {
@@ -22,12 +25,27 @@ abstract class Mailer extends SavableComponent
 
     abstract public function getDescription(): string;
 
-    /**
-     * Returns any Field Layout tabs required for the Mailer
-     */
-    public static function getTabs(FieldLayout $fieldLayout): array
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): array
     {
         return [];
+    }
+
+    public function getFieldLayout(): FieldLayout
+    {
+        if ($this->_fieldLayout) {
+            return $this->_fieldLayout;
+        }
+
+        $fieldLayout = new FieldLayout([
+            'type' => static::class,
+        ]);
+
+        return $this->_fieldLayout = $fieldLayout;
+    }
+
+    public function setFieldLayout(?FieldLayout $fieldLayout): void
+    {
+        $this->_fieldLayout = $fieldLayout;
     }
 
     /**
@@ -70,6 +88,14 @@ abstract class Mailer extends SavableComponent
             'type' => static::class,
             'settings' => $this->mailerSettings,
         ];
+
+        $fieldLayout = $this->getFieldLayout();
+
+        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
+            $config['fieldLayouts'] = [
+                $fieldLayout->uid => $fieldLayoutConfig,
+            ];
+        }
 
         return $config;
     }

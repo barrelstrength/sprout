@@ -205,6 +205,12 @@ class MailerModule extends Module
             UserQuery::EVENT_DEFINE_BEHAVIORS,
             [SubscriberHelper::class, 'attachSubscriberQueryBehavior']
         );
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
+            [Mailers::class, 'defineNativeFields']
+        );
     }
 
     public function createSettingsModel(): MailerSettings

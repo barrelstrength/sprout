@@ -209,6 +209,10 @@ class MailerController extends Controller
         $mailer->mailerSettings = Craft::$app->request->getBodyParam('mailerSettings');
         $mailer->setAttributes($mailer->mailerSettings, false);
 
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        $fieldLayout->type = $mailer::class;
+        $mailer->setFieldLayout($fieldLayout);
+
         return $mailer;
     }
 }

@@ -3,6 +3,9 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
+use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailThemeConditionRule;
+use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerConditionRule;
+use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
@@ -11,6 +14,7 @@ use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
+use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
 use Craft;
@@ -25,7 +29,6 @@ use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\TextField;
 use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Html;
-use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -248,7 +251,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $mailer = $emailTypeSettings->getMailer($this);
 
         if (!$mailer) {
-            throw new MissingComponentException('No Mailer found.');
+            return Mailers::getDefaultMailer();
         }
 
         return $mailer;
@@ -417,38 +420,66 @@ class EmailElement extends Element implements EmailPreviewInterface
         //}
 
         $fieldLayout = new FieldLayout([
-            'type' => self::class,
+            'type' => static::class,
         ]);
 
         $emailType = $this->getEmailTypeSettings();
-        $mailer = $this->getMailer();
 
-        $emailTheme = $this->getEmailTheme();
-        $themeTabs = $emailTheme->getFieldLayout()->getTabs();
+        $themes = EmailThemeHelper::getEmailThemes();
 
-        $preheaderText = $emailTheme->displayPreheaderText
-            ? new PreheaderTextField([
-                'uid' => StringHelper::UUID(),
-            ])
-            : [];
+        $themeTabs = array_map(static function(EmailTheme $theme) use ($fieldLayout) {
+            $elementCondition = new TransactionalEmailCondition(self::class);
+            $rule = new EmailThemeConditionRule();
+            $rule->setValues([$theme->uid]);
+            $elementCondition->addConditionRule($rule);
+
+            $tab = $theme->getFieldLayout()->getTabs()[0] ?? null;
+            $tab->layout = $fieldLayout;
+            $tab->elementCondition = $elementCondition;
+
+            return $tab;
+        }, $themes);
+
+        $mailers = MailerModule::getInstance()->mailers->getMailers();
+
+        $mailerTabs = array_map(static function($mailer) use ($fieldLayout) {
+            $elementCondition = new TransactionalEmailCondition(self::class);
+            $rule = new MailerConditionRule();
+            $rule->setValues([$mailer->uid]);
+            $elementCondition->addConditionRule($rule);
+
+            $tab = $mailer->getFieldLayout()->getTabs()[0] ?? [];
+            $tab->layout = $fieldLayout;
+            $tab->elementCondition = $elementCondition;
+
+            return $tab;
+        }, $mailers);
+
+
+        $elementCondition = new TransactionalEmailCondition(self::class);
+        $rule = new PreheaderTextConditionRule();
+        $elementCondition->addConditionRule($rule);
 
         $subjectTab = new FieldLayoutTab();
         $subjectTab->layout = $fieldLayout;
         $subjectTab->name = Craft::t('sprout-module-mailer', 'Subject');
         $subjectTab->sortOrder = -1;
-        $subjectTab->uid = StringHelper::UUID();
+        $subjectTab->uid = 'SPROUT-UID-EMAIL-SUBJECT-TAB';
         $subjectTab->setElements([
             new TitleField([
                 'label' => Craft::t('sprout-module-mailer', 'Email Name'),
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-EMAIL-TITLE-FIELD',
             ]),
             new HorizontalRule([
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-SUBJECT-TAB-1',
             ]),
             new SubjectLineField([
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-EMAIL-SUBJECT-LINE-FIELD',
             ]),
-            $preheaderText,
+            new PreheaderTextField([
+                'elementCondition' => $elementCondition,
+                'uid' => 'SPROUT-UID-EMAIL-PREHEADER-FIELD',
+            ]),
             new TextField([
                 'type' => 'hidden',
                 'name' => 'emailType',
@@ -456,13 +487,13 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
-                'uid' => StringHelper::UUID(),
+                'uid' => 'SPROUT-UID-EMAIL-EMAIL-TYPE-FIELD',
             ]),
         ]);
 
         $newTabs = array_merge(
             [$subjectTab],
-            $mailer::getTabs($fieldLayout),
+            $mailerTabs,
             $emailType::getTabs($fieldLayout),
             $themeTabs,
         );

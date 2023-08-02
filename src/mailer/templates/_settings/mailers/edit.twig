@@ -45,6 +45,18 @@
         {{ mailer.getSettingsHtml()|raw }}
     {% endnamespace %}
 
+    {% set fieldLayoutInstructions = "The content fields that can be used in this mailer."|t('sprout-module-mailer') %}
+
+    {{ forms.fieldLayoutDesignerField({
+        instructions: fieldLayoutInstructions,
+        fieldLayout: mailer.getFieldLayout(),
+        required: true,
+        customizableTabs: false,
+        customizableUi: true,
+        pretendTabName: 'Mailer'|t('sprout-module-mailer'),
+        errors: mailer.getErrors('fieldLayout'),
+    }) }}
+
     {{ forms.textField({
         label: "Mailer Type"|t('sprout-module-mailer'),
         value: mailer.displayName(),

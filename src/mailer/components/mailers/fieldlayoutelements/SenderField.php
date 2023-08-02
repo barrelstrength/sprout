@@ -7,9 +7,10 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\BaseField;
+use craft\fieldlayoutelements\BaseNativeField;
 use craft\helpers\App;
 
-class SenderField extends BaseField
+class SenderField extends BaseNativeField
 {
     public string $type = 'select';
 

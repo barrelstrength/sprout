@@ -65,7 +65,7 @@ class EmailThemeHelper
         $type = $emailThemeSettings['type'];
 
         $config = reset($emailThemeSettings['fieldLayouts']);
-        $config['type'] = EmailTheme::class;
+        $config['type'] = $type;
 
         $fieldLayout = FieldLayout::createFromConfig($config);
 
