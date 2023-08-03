@@ -8,7 +8,7 @@ use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberListsVariable;
+use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\MetaModule;
 use BarrelStrength\Sprout\redirects\RedirectsModule;
@@ -24,7 +24,7 @@ use yii\di\ServiceLocator;
  *
  * @property FormsVariable $forms
  * @property MetadataVariable $meta
- * @property SubscriberListsVariable $subscriberLists
+ * @property MailerVariable $subscriberLists
  * @property TwigDataSetVariable $twigDataSet
  */
 class SproutVariable extends ServiceLocator

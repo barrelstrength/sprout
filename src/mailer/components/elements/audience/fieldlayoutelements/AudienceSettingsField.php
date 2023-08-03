@@ -33,7 +33,7 @@ class AudienceSettingsField extends TextField
         }
 
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/audience/settings.twig', [
-            'audience' => $element->getAudience(),
+            'audience' => $element->getAudienceType(),
             'static' => $static,
         ]);
     }

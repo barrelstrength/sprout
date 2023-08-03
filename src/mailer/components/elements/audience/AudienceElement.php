@@ -172,7 +172,7 @@ class AudienceElement extends Element
         return $actions;
     }
 
-    public function getAudience(): AudienceType
+    public function getAudienceType(): AudienceType
     {
         $audience = new $this->type();
         $audience->elementId = $this->id;
@@ -262,7 +262,7 @@ class AudienceElement extends Element
 
     public function getTableAttributeHtml(string $attribute): string
     {
-        $audience = $this->getAudience();
+        $audience = $this->getAudienceType();
 
         switch ($attribute) {
             case 'handle':

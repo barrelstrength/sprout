@@ -1,18 +1,16 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\subscriberlists;
+namespace BarrelStrength\Sprout\mailer\twig;
 
-use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElementQuery;
 use Craft;
 
-class SubscriberListsVariable
+class MailerVariable
 {
-    public function subscriberLists(array $criteria = []): AudienceElementQuery
+    public function audiences(array $criteria = []): AudienceElementQuery
     {
         $query = AudienceElement::find();
-        $query->type(SubscriberListAudienceType::class);
         Craft::configure($query, $criteria);
 
         return $query;

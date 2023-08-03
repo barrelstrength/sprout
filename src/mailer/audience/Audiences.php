@@ -62,7 +62,7 @@ class Audiences extends Component
             /** @var AudienceElement $audience */
             $audience = AudienceElement::findOne($audienceId);
 
-            $recipients = [...$recipients, ...$audience->getAudience()->getRecipients()];
+            $recipients = [...$recipients, ...$audience->getAudienceType()->getRecipients()];
         }
 
         return $recipients;

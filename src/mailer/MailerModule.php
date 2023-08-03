@@ -22,7 +22,7 @@ use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberLists;
-use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberListsVariable;
+use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
@@ -109,7 +109,7 @@ class MailerModule extends Module
             SproutVariable::EVENT_INIT,
             function(Event $event): void {
                 $event->sender->registerModule($this);
-                $event->sender->registerVariable('audiences', new SubscriberListsVariable());
+                $event->sender->registerVariable('mailer', new MailerVariable());
             });
 
         Event::on(
