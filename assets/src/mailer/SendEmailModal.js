@@ -2,7 +2,7 @@ import './send-email-modal.scss';
 
 window.SendEmailModal = function(emailId) {
 
-    let $target = $('.sprout-send-email-btn[data-email-id="'+emailId+'"]');
+    let $target = $('.sprout-send-email-btn[data-email-id="' + emailId + '"]');
 
     let getSendEmailHtmlAction = $target.data('get-send-email-html-action');
     let sendEmailAction = $target.data('send-email-action');

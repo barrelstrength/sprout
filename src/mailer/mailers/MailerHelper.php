@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
-use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\models\FieldLayout;
@@ -44,9 +43,9 @@ class MailerHelper
             $classNames = array_map(static function($element) {
                 if (is_object($element)) {
                     return $element::class;
-                } else {
-                    return $element;
                 }
+
+                return $element;
             }, $event->elements);
 
             $newElements = $type::defineNativeElements($event);

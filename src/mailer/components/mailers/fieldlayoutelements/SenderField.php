@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
-use craft\fieldlayoutelements\BaseField;
 use craft\fieldlayoutelements\BaseNativeField;
 use craft\helpers\App;
 
@@ -19,11 +18,6 @@ class SenderField extends BaseNativeField
     public string $attribute = 'sender';
 
     public bool $required = true;
-
-    public function attribute(): string
-    {
-        return $this->attribute;
-    }
 
     protected function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {

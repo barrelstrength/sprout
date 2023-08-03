@@ -184,4 +184,12 @@ return [
     'Could not save mailer.' => 'Could not save mailer.',
     'The body of this email theme will include the values provided in a form submission.' => 'The body of this email theme will include the values provided in a form submission.',
     'Custom Templates' => 'Custom Templates',
+    'When editing an email, the first theme in the list will be selected as the default.' => 'When editing an email, the first theme in the list will be selected as the default.',
+    'From Address' => 'From Address',
+    'Test Email Warning' => 'Test Email Warning',
+    'Mailer (Sprout)' => 'Mailer (Sprout)',
+    'Comma-separated list of recipients.' => 'Comma-separated list of recipients.',
+    'Email Theme' => 'Email Theme',
+    'The content fields that can be used in this mailer.' => 'The content fields that can be used in this mailer.',
+    'Email Details' => 'Email Details',
 ];

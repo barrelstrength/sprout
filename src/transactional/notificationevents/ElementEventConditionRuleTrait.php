@@ -2,12 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
-use Craft;
-use craft\base\ElementInterface;
-use craft\elements\conditions\ElementCondition;
-use craft\elements\conditions\ElementConditionRuleInterface;
-use craft\helpers\Cp;
-use yii\base\Event;
 use yii\db\QueryInterface;
 
 /**

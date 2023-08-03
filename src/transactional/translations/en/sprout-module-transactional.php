@@ -75,5 +75,12 @@ return [
     'Field Changed (Event)' => 'Field Changed (Event)',
     'Subject Line' => 'Subject Line',
     'Notification Event' => 'Notification Event',
-    'Attribute Changed' => 'Attribute Changed'
+    'Attribute Changed' => 'Attribute Changed',
+    'Preheader Text' => 'Preheader Text',
+    'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.' => 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.',
+    'Email Theme has Preheader Text Enabled' => 'Email Theme has Preheader Text Enabled',
+    'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not filter query results.' => 'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not filter query results.',
+    'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query and does not filter query results.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query and does not filter query results.',
+    'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query so cannot be used to filter query results.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query so cannot be used to filter query results.',
+    'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not change query results.' => 'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not change query results.'
 ];

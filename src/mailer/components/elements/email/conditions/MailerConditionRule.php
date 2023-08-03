@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email\conditions;
 
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;

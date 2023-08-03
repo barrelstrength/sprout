@@ -16,7 +16,6 @@ use craft\elements\Asset;
 use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\HorizontalRule;
-use craft\fieldlayoutelements\Tip;
 use craft\fs\Local;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;

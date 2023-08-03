@@ -3,13 +3,8 @@
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\FieldChangedConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\IsNewEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\UserGroupForNewUserConditionRule;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
@@ -25,7 +20,6 @@ use Craft;
 use craft\base\Component;
 use craft\base\Element;
 use craft\elements\Entry;
-use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterConditionRuleTypesEvent;
 use craft\helpers\Json;
@@ -185,9 +179,7 @@ class NotificationEvents extends Component
             static function($notificationEmail) use ($notificationEventType) {
                 $settings = Json::decodeIfJson($notificationEmail->emailTypeSettings);
 
-                if (isset($settings['eventId']) && $settings['eventId'] === $notificationEventType) {
-                    return $notificationEmail->id;
-                }
+                return isset($settings['eventId']) && $settings['eventId'] === $notificationEventType;
             });
 
         return $matchedNotificationEmails;
@@ -206,7 +198,7 @@ class NotificationEvents extends Component
         }
 
         //if ($elementType === User::class) {
-            //$event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
+        //$event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
         //}
 
         //$event->conditionRuleTypes[] = FieldChangedConditionRule::class;

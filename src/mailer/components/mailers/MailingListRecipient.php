@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use craft\base\Model;
 use Exception;
 use Symfony\Component\Mime\Address;
-use Craft;
 
 class MailingListRecipient extends Model
 {
