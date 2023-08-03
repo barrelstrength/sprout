@@ -72,7 +72,7 @@ class TemplateHelper
     /**
      * Returns an array that can be used in a multiselect field from an array of component types
      */
-    public static function optionsFromComponentTypes($array, string $firstLabel = null): array
+    public static function optionsFromComponentTypes($savableComponentTypes, string $firstLabel = null): array
     {
         $result = [];
 
@@ -83,9 +83,9 @@ class TemplateHelper
             ];
         }
 
-        foreach ($array as $savableComponent) {
-            $label = $savableComponent::displayName();
-            $value = get_class($savableComponent);
+        foreach ($savableComponentTypes as $savableComponentType) {
+            $label = $savableComponentType::displayName();
+            $value = $savableComponentType;
             $result[] = [
                 'label' => $label,
                 'value' => $value,

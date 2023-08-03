@@ -26,7 +26,7 @@ class AudienceTypeConditionRule extends BaseMultiSelectConditionRule implements 
 
     protected function options(): array
     {
-        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypeInstances();
+        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();
 
         return TemplateHelper::optionsFromComponentTypes($audienceTypes);
     }

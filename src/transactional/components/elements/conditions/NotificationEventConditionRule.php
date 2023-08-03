@@ -28,7 +28,7 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
 
     protected function options(): array
     {
-        $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEvents();
+        $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEventTypes();
 
         return TemplateHelper::optionsFromComponentTypes($events);
     }

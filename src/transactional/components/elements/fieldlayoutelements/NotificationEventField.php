@@ -34,7 +34,7 @@ class NotificationEventField extends BaseNativeField
             throw new InvalidArgumentException('Notification Event field can only be used in Email field layouts.');
         }
 
-        $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEvents();
+        $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEventTypes();
 
         $eventOptions = TemplateHelper::optionsFromComponentTypes($events);
 
