@@ -37,19 +37,6 @@ class Audiences extends Component
         return $event->types;
     }
 
-    public function getAudienceTypeInstances(): array
-    {
-        $this->audienceTypes = $this->getAudienceTypes();
-
-        $audiences = [];
-
-        foreach ($this->audienceTypes as $audienceType) {
-            $audiences[$audienceType] = new $audienceType();
-        }
-
-        return $audiences;
-    }
-
     public function getAudienceRecipients($audienceIds): array
     {
         if (empty($audienceIds)) {

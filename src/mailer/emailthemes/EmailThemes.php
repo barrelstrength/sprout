@@ -24,16 +24,4 @@ class EmailThemes extends Component
 
         return $event->types;
     }
-
-    public function getEmailThemeTypeInstances(): array
-    {
-        $emailThemes = $this->getEmailThemeTypes();
-
-        $instances = [];
-        foreach ($emailThemes as $emailTheme) {
-            $instances[$emailTheme] = new $emailTheme();
-        }
-
-        return $instances;
-    }
 }

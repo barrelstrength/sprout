@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\controllers;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
@@ -16,13 +17,13 @@ class EmailThemesController extends Controller
 {
     public function actionEmailThemesIndexTemplate(): Response
     {
-        $themeTypes = MailerModule::getInstance()->emailThemes->getEmailThemeTypeInstances();
+        $themeTypes = MailerModule::getInstance()->emailThemes->getEmailThemeTypes();
 
         $themes = EmailThemeHelper::getEmailThemes();
 
         return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/index.twig', [
             'emailThemes' => $themes,
-            'emailThemeTypes' => $themeTypes,
+            'emailThemeTypes' => ComponentHelper::typesToInstances($themeTypes),
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\controllers;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
@@ -28,7 +29,7 @@ class AudienceController extends Controller
     {
         $this->requirePermission(MailerModule::p('editAudiences'));
 
-        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypeInstances();
+        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();
 
         if (!$audienceTypes) {
             throw new MissingComponentException('No Audience Types are enabled. Enable the Subscriber Audience Type in the settings to get started.');
@@ -37,7 +38,7 @@ class AudienceController extends Controller
         return $this->renderTemplate('sprout-module-mailer/audience/index.twig', [
             'title' => AudienceElement::pluralDisplayName(),
             'elementType' => AudienceElement::class,
-            'audienceTypes' => $audienceTypes,
+            'audienceTypes' => ComponentHelper::typesToInstances($audienceTypes),
         ]);
     }
 
@@ -55,11 +56,12 @@ class AudienceController extends Controller
         $element->siteId = $site->id;
         $element->enabled = true;
 
-        $audiences = MailerModule::getInstance()->audiences->getAudienceTypeInstances();
+        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();
 
-        foreach ($audiences as $audience) {
+        foreach ($audienceTypes as $audienceType) {
+            $audience = new $audienceType();
             if ($audience->getHandle() === $audienceTypeHandle) {
-                $element->type = $audience::class;
+                $element->type = $audienceType;
                 break;
             }
         }

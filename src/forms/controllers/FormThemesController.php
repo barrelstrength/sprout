@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
@@ -16,13 +17,13 @@ class FormThemesController extends Controller
 {
     public function actionFormThemesIndexTemplate(): Response
     {
-        $themeTypes = FormsModule::getInstance()->formThemes->getFormThemeTypeInstances();
+        $themeTypes = FormsModule::getInstance()->formThemes->getFormThemeTypes();
 
         $themes = FormThemeHelper::getFormThemes();
 
         return $this->renderTemplate('sprout-module-forms/_settings/form-themes/index.twig', [
             'formThemes' => $themes,
-            'formThemeTypes' => $themeTypes,
+            'formThemeTypes' => ComponentHelper::typesToInstances($themeTypes),
         ]);
     }
 

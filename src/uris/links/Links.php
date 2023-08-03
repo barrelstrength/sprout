@@ -2,11 +2,14 @@
 
 namespace BarrelStrength\Sprout\uris\links;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\uris\components\links\AbsoluteUrl;
 use BarrelStrength\Sprout\uris\components\links\CategoryElementLink;
 use BarrelStrength\Sprout\uris\components\links\EmailLink;
 use BarrelStrength\Sprout\uris\components\links\EntryElementLink;
 use BarrelStrength\Sprout\uris\components\links\RelativeUrl;
+use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
@@ -40,30 +43,15 @@ class Links extends Component
         });
     }
 
-    public function getLinkInstances(array $excludedLinks = []): array
+    public static function enhancedLinkFieldHtml(array $config = [], array $excludedLinks = []): string
     {
-        $linkTypes = $this->getLinkTypes($excludedLinks);
+        $linksService = UrisModule::getInstance()->links;
 
-        return array_map(static function($linkType) {
-            return new $linkType();
-        }, $linkTypes);
-    }
+        $linkTypes = $linksService->getLinkTypes($excludedLinks);
+        $variables['links'] = ComponentHelper::typesToInstances($linkTypes);
+        $variables['linkOptions'] = TemplateHelper::optionsFromComponentTypes($excludedLinks);
 
-    public function getLinkOptions(array $excludedLinks = []): array
-    {
-        $linkTypes = $this->getLinkTypes($excludedLinks);
-
-        return array_map(static function($type) {
-            return [
-                'label' => $type::displayName(),
-                'value' => $type,
-            ];
-        }, $linkTypes);
-    }
-
-    public static function enhancedLinkFieldHtml(array $config = []): string
-    {
-        return Cp::renderTemplate('sprout-module-uris/links/input.twig', $config);
+        return Cp::renderTemplate('sprout-module-uris/links/input.twig', array_merge($config, $variables));
     }
 
     public static function toLinkField(mixed $value): LinkInterface|false

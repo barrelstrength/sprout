@@ -26,17 +26,6 @@ class FormThemes extends Component
         return $event->types;
     }
 
-    public function getFormThemeTypeInstances(): array
-    {
-        $formThemeTypes = $this->getFormThemeTypes();
-        $instances = [];
-        foreach ($formThemeTypes as $formThemeType) {
-            $instances[$formThemeType] = new $formThemeType();
-        }
-
-        return $instances;
-    }
-
     public function getFormThemeOptions(): array
     {
         $themes = FormThemeHelper::getFormThemes();

@@ -2,9 +2,6 @@
 
 {% set module = sprout.modules.uris %}
 
-{% set links = module.links.getLinkInstances(excludedLinks ?? []) %}
-{% set linkOptions = module.links.getLinkOptions(excludedLinks ?? []) %}
-
 {% set type = type ?? '' %}
 {% set fieldNamespace = fieldNamespace ?? 'enhancedLinkField' %}
 
