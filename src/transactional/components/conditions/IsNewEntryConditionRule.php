@@ -2,16 +2,18 @@
 
 namespace BarrelStrength\Sprout\transactional\components\conditions;
 
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
 use craft\base\conditions\BaseConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
 use craft\helpers\ElementHelper;
 
 class IsNewEntryConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
+    use ElementEventConditionRuleTrait;
+
     public bool $value = true;
 
     public function getLabel(): string
@@ -31,11 +33,13 @@ class IsNewEntryConditionRule extends BaseConditionRule implements ElementCondit
         return [
             '_canonicalId',
             'firstSave',
-            'status',
             'draftId',
             'revisionId',
             'resaving',
             'propagating',
+
+            // Including 'status' makes this not display on the main Element Index
+            'status',
         ];
     }
 
@@ -44,11 +48,6 @@ class IsNewEntryConditionRule extends BaseConditionRule implements ElementCondit
         return array_merge(parent::defineRules(), [
             [['value'], 'safe'],
         ]);
-    }
-
-    public function modifyQuery(ElementQueryInterface $query): void
-    {
-        // No changes
     }
 
     public function matchElement(ElementInterface $element): bool

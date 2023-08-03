@@ -200,20 +200,16 @@ class NotificationEvents extends Component
         }
 
         if ($elementType === Entry::class) {
+            // Condition that modify 'status' and 'site' won't display in Element Index by default
             $event->conditionRuleTypes[] = IsNewEntryConditionRule::class;
             $event->conditionRuleTypes[] = IsUpdatedEntryConditionRule::class;
-
-            // @todo - Is there a way to know if a generic Element supports drafts/revisions?
-            $event->conditionRuleTypes[] = DraftConditionRule::class;
-            $event->conditionRuleTypes[] = RevisionConditionRule::class;
         }
 
-        if ($elementType === User::class) {
-            $event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
-        }
+        //if ($elementType === User::class) {
+            //$event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
+        //}
 
-        $event->conditionRuleTypes[] = FieldChangedConditionRule::class;
-        $event->conditionRuleTypes[] = TwigExpressionConditionRule::class;
+        //$event->conditionRuleTypes[] = FieldChangedConditionRule::class;
     }
 
     private function isNotificationEventContext(): bool

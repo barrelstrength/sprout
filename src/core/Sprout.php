@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\core;
 
 use BarrelStrength\Sprout\core\db\MigrationTrait;
+use BarrelStrength\Sprout\core\helpers\ConditionHelper;
 use BarrelStrength\Sprout\core\helpers\PhoneHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules;
@@ -16,6 +17,7 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\core\web\assetbundles\vite\ViteAssetBundle;
 use Craft;
+use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
 use craft\console\Application as ConsoleApplication;
 use craft\events\RegisterCpNavItemsEvent;
@@ -182,6 +184,12 @@ class Sprout extends Module
                     'permissions' => $this->getUserPermissions(),
                 ];
             });
+
+        Event::on(
+            BaseCondition::class,
+            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
+            [ConditionHelper::class, 'registerConditionRuleTypes']
+        );
     }
 
     public function createSettingsModel(): SproutSettings

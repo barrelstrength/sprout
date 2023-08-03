@@ -2,14 +2,16 @@
 
 namespace BarrelStrength\Sprout\transactional\components\conditions;
 
+use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
-use yii\db\QueryInterface;
 
 class FieldChangedConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
+    use ElementEventConditionRuleTrait;
+
     public function getLabel(): string
     {
         return Craft::t('sprout-module-transactional', 'Field Changed');
@@ -17,7 +19,7 @@ class FieldChangedConditionRule extends BaseMultiSelectConditionRule implements 
 
     public function getExclusiveQueryParams(): array
     {
-        return [];
+        return $this->getValues();
     }
 
     protected function options(): array
@@ -30,11 +32,6 @@ class FieldChangedConditionRule extends BaseMultiSelectConditionRule implements 
                 'value' => $field->handle,
             ];
         }, $fields);
-    }
-
-    public function modifyQuery(QueryInterface $query): void
-    {
-        // No changes
     }
 
     public function matchElement(ElementInterface $element): bool
