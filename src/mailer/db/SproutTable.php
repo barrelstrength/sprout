@@ -6,10 +6,6 @@ abstract class SproutTable
 {
     public const EMAILS = '{{%sprout_emails}}';
 
-    public const EMAIL_THEMES = '{{%sprout_email_themes}}';
-
-    public const MAILERS = '{{%sprout_mailers}}';
-
     public const AUDIENCES = '{{%sprout_audiences}}';
 
     public const SUBSCRIPTIONS = '{{%sprout_subscriptions}}';

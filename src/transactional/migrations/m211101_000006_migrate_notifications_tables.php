@@ -12,7 +12,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
 {
     public const EMAIL_CLASS = 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement';
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
-    public const NEW_EMAIL_THEMES_TABLE = '{{%sprout_email_themes}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
     public function safeUp(): void
@@ -119,9 +118,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 //                $themeMapping[$themeRow['id']] = $themeRow['emailTemplateId'];
             }
 
-            Craft::$app->getDb()->createCommand()
-                ->batchInsert(self::NEW_EMAIL_THEMES_TABLE, $themeCols, $themeRowsMapped)
-                ->execute();
+            // @todo - save $themeRowsMapped to Project Config
 
             $rows = (new Query())
                 ->select(array_diff($oldEmailCols, ['preheaderText', 'emailType']))

@@ -26,8 +26,6 @@ class Uninstall extends Migration
         // Order matters
         $this->dropTableIfExists(SproutTable::SUBSCRIPTIONS);
         $this->dropTableIfExists(SproutTable::AUDIENCES);
-        $this->dropTableIfExists(SproutTable::EMAIL_THEMES);
-        $this->dropTableIfExists(SproutTable::MAILERS);
         $this->dropTableIfExists(SproutTable::EMAILS);
 
         Craft::$app->getProjectConfig()->remove($moduleSettingsKey);
