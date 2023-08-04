@@ -11,10 +11,9 @@ use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\S
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
-use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
-use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
 use Craft;
@@ -251,7 +250,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $mailer = $emailTypeSettings->getMailer($this);
 
         if (!$mailer) {
-            return Mailers::getDefaultMailer();
+            return MailerHelper::getDefaultMailer();
         }
 
         return $mailer;
@@ -438,7 +437,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $tab;
         }, $themes);
 
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers = MailerHelper::getMailers();
 
         $mailerTabs = array_map(static function($mailer) use ($fieldLayout) {
             $elementCondition = new TransactionalEmailCondition(self::class);
@@ -504,7 +503,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getSidebarHtml(bool $static): string
     {
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers = MailerHelper::getMailers();
 
         foreach ($mailers as $mailer) {
             $mailerTypeOptions[] = [

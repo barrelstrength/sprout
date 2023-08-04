@@ -15,8 +15,8 @@ use yii\base\Event;
 
 class RelationsHelper
 {
-    public const EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES = 'registerSproutSourceRelationsElementTypes';
-    public const EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS = 'registerSproutAddSourceElementRelations';
+    public const EVENT_REGISTER_SOURCE_RELATIONS_ELEMENT_TYPES = 'registerSproutSourceRelationsElementTypes';
+    public const EVENT_ADD_SOURCE_ELEMENT_RELATIONS = 'registerSproutAddSourceElementRelations';
 
     /**
      * @todo - create a setting that can be reused in different plugins
@@ -42,7 +42,7 @@ class RelationsHelper
         $event = new RegisterComponentTypesEvent([
             'types' => [],
         ]);
-        Event::trigger(static::class, self::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES, $event);
+        Event::trigger(static::class, self::EVENT_REGISTER_SOURCE_RELATIONS_ELEMENT_TYPES, $event);
 
         $elementTypes = array_merge($elementTypes, $event->types);
 
@@ -66,7 +66,7 @@ class RelationsHelper
             'targetElement' => $element,
             'sourceElements' => [],
         ]);
-        Event::trigger(static::class, self::EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS, $event);
+        Event::trigger(static::class, self::EVENT_ADD_SOURCE_ELEMENT_RELATIONS, $event);
 
         return array_merge([], ...$relations, ...$event->sourceElements);
     }

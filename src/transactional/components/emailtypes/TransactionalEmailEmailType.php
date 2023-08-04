@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\FileAttachmentsField;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\NotificationEventField;
@@ -56,9 +57,7 @@ class TransactionalEmailEmailType extends EmailType
 
     public function getMailer(EmailElement $email): ?Mailer
     {
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
-
-        return $mailers[$email->mailerUid] ?? null;
+        return MailerHelper::getMailerByUid($email->mailerUid);
     }
 
     public static function getElementIndexType(): string

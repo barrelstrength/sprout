@@ -35,7 +35,7 @@ class NotificationEvents extends Component
     /**
      * Registers any available NotificationEvent classes
      */
-    public const EVENT_REGISTER_SPROUT_NOTIFICATION_EVENT_TYPES = 'registerSproutNotificationEventTypes';
+    public const EVENT_REGISTER_NOTIFICATION_EVENT_TYPES = 'registerSproutNotificationEventTypes';
 
     /**
      * Returns all the available Notification Event Types
@@ -59,7 +59,7 @@ class NotificationEvents extends Component
             'types' => $notificationEvents,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_NOTIFICATION_EVENT_TYPES, $event);
+        $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $event);
 
         return $event->types;
     }

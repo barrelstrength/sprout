@@ -135,7 +135,7 @@ class TransactionalModule extends Module
 
         Event::on(
             EmailTypes::class,
-            EmailTypes::EVENT_REGISTER_SPROUT_EMAIL_TYPES,
+            EmailTypes::EVENT_REGISTER_EMAIL_TYPES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalEmailEmailType::class;
             }
@@ -143,7 +143,7 @@ class TransactionalModule extends Module
 
         Event::on(
             RelationsHelper::class,
-            RelationsHelper::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES,
+            RelationsHelper::EVENT_REGISTER_SOURCE_RELATIONS_ELEMENT_TYPES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalEmailElement::class;
             }

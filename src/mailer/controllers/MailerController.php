@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
@@ -17,7 +18,7 @@ class MailerController extends Controller
 {
     public function actionMailersIndexTemplate(): Response
     {
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers = MailerHelper::getMailers();
         $mailerTypes = MailerModule::getInstance()->mailers->getMailerTypes();
 
         return $this->renderTemplate('sprout-module-mailer/_settings/mailers/index.twig', [
@@ -31,7 +32,7 @@ class MailerController extends Controller
         $this->requireAdmin();
 
         if ($mailerUid) {
-            $mailer = MailerModule::getInstance()->mailers->getMailerByUid($mailerUid);
+            $mailer = MailerHelper::getMailerByUid($mailerUid);
         }
 
         if (!$mailer && $type) {
@@ -50,10 +51,10 @@ class MailerController extends Controller
 
         $mailer = $this->populateMailerModel();
 
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers = MailerHelper::getMailers();
         $mailers[$mailer->uid] = $mailer;
 
-        if (!$mailer->validate() || !MailerModule::getInstance()->mailers::saveMailers($mailers)) {
+        if (!$mailer->validate() || !MailerHelper::saveMailers($mailers)) {
 
             Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save mailer.'));
 
@@ -76,7 +77,7 @@ class MailerController extends Controller
 
         $ids = Json::decode(Craft::$app->request->getRequiredBodyParam('ids'));
 
-        if (!MailerModule::getInstance()->mailers::reorderMailers($ids)) {
+        if (!MailerHelper::reorderMailers($ids)) {
             return $this->asJson([
                 'success' => false,
                 'error' => Craft::t('sprout-module-mailer', "Couldn't reorder mailers."),
@@ -95,7 +96,7 @@ class MailerController extends Controller
 
         $mailerUid = Craft::$app->request->getRequiredBodyParam('id');
 
-        if (!MailerModule::getInstance()->mailers::removeMailer($mailerUid)) {
+        if (!MailerHelper::removeMailer($mailerUid)) {
             return $this->asJson([
                 'success' => false,
             ]);

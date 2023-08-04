@@ -139,37 +139,6 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         return $template;
     }
 
-    public function hasAtLeastOneField(): void
-    {
-        $tabs = $this->getFieldLayout()->getTabs();
-
-        if (!count($tabs) || !count($tabs[0]->getElements())) {
-            $this->addError('fieldLayout', Craft::t('sprout-module-mailer', 'Field layout must have at least one field.'));
-        }
-    }
-
-    public function getConfig(): array
-    {
-        $config = [
-            'type' => static::class,
-            'name' => $this->name,
-            'displayPreheaderText' => $this->displayPreheaderText,
-            'htmlEmailTemplate' => $this->htmlEmailTemplate,
-            'textEmailTemplate' => $this->textEmailTemplate,
-            'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,
-        ];
-
-        $fieldLayout = $this->getFieldLayout();
-
-        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
-            $config['fieldLayouts'] = [
-                $fieldLayout->uid => $fieldLayoutConfig,
-            ];
-        }
-
-        return $config;
-    }
-
     protected function processThemeTemplates($recipient = null): void
     {
         $view = Craft::$app->getView();
@@ -218,5 +187,36 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         $rules[] = [['fieldLayout'], 'hasAtLeastOneField'];
 
         return $rules;
+    }
+
+    protected function hasAtLeastOneField(): void
+    {
+        $tabs = $this->getFieldLayout()->getTabs();
+
+        if (!count($tabs) || !count($tabs[0]->getElements())) {
+            $this->addError('fieldLayout', Craft::t('sprout-module-mailer', 'Field layout must have at least one field.'));
+        }
+    }
+
+    public function getConfig(): array
+    {
+        $config = [
+            'type' => static::class,
+            'name' => $this->name,
+            'displayPreheaderText' => $this->displayPreheaderText,
+            'htmlEmailTemplate' => $this->htmlEmailTemplate,
+            'textEmailTemplate' => $this->textEmailTemplate,
+            'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,
+        ];
+
+        $fieldLayout = $this->getFieldLayout();
+
+        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
+            $config['fieldLayouts'] = [
+                $fieldLayout->uid => $fieldLayoutConfig,
+            ];
+        }
+
+        return $config;
     }
 }

@@ -59,9 +59,31 @@ class FormFields extends Component
     public const EVENT_REGISTER_FORM_FIELDS = 'registerSproutFormFields';
 
     /**
-     * @var FormField[]
+     * @var FormFieldTrait[]
      */
-    protected array $registeredFields = [];
+    protected ?array $_formFields = null;
+
+    public function getFormFieldTypes(): array
+    {
+        if ($this->_formFields) {
+            return $this->_formFields;
+        }
+
+        $formFields = FormsModule::getInstance()->formFields->getDefaultFormFieldTypes();
+
+        $event = new RegisterComponentTypesEvent([
+            'types' => $formFields,
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_FORM_FIELDS, $event);
+
+        /** @var FormFieldTrait $instance */
+        foreach ($event->types as $type) {
+            $this->_formFields[$type] = $type;
+        }
+
+        return $this->_formFields;
+    }
 
     public function reorderFields($fieldIds): bool
     {
@@ -145,47 +167,20 @@ class FormFields extends Component
         return $fieldLayout;
     }
 
-    public function getRegisteredFields(): array
-    {
-        if ($this->registeredFields === []) {
-
-            $this->registeredFields = [];
-
-            $formFields = FormsModule::getInstance()->formFields->handleRegisterFormFieldsEvent();
-
-            $event = new RegisterComponentTypesEvent([
-                'types' => $formFields,
-            ]);
-
-            $this->trigger(self::EVENT_REGISTER_FORM_FIELDS, $event);
-
-            $fields = $event->types;
-
-            /**
-             * @var FormField $instance
-             */
-            foreach ($fields as $instance) {
-                $this->registeredFields[$instance::class] = $instance;
-            }
-        }
-
-        return $this->registeredFields;
-    }
-
-    public function handleRegisterFormFieldsEvent(): array
+    public function getDefaultFormFieldTypes(): array
     {
         $fields = [];
-        $fieldsByGroup = $this->getRegisteredFieldsByGroup();
+        $fieldsByGroup = $this->getDefaultFormFieldTypesByGroup();
         foreach ($fieldsByGroup as $group) {
-            foreach ($group as $field) {
-                $fields[] = new $field();
+            foreach ($group as $type) {
+                $fields[] = $type;
             }
         }
 
         return $fields;
     }
 
-    public function getRegisteredFieldsByGroup(): array
+    public function getDefaultFormFieldTypesByGroup(): array
     {
         $groupedFields = [];
         $standardLabel = 'standard';

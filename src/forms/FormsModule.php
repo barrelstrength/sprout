@@ -208,21 +208,21 @@ class FormsModule extends Module
 
         Event::on(
             EmailThemes::class,
-            EmailThemes::EVENT_REGISTER_SPROUT_EMAIL_THEMES,
+            EmailThemes::EVENT_REGISTER_EMAIL_THEMES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = FormSummaryEmailTheme::class;
             });
 
         Event::on(
             NotificationEvents::class,
-            NotificationEvents::EVENT_REGISTER_SPROUT_NOTIFICATION_EVENT_TYPES,
+            NotificationEvents::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = SaveSubmissionNotificationEvent::class;
             });
 
         Event::on(
             RelationsHelper::class,
-            RelationsHelper::EVENT_REGISTER_SPROUT_SOURCE_RELATIONS_ELEMENT_TYPES,
+            RelationsHelper::EVENT_REGISTER_SOURCE_RELATIONS_ELEMENT_TYPES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = FormElement::class;
                 $event->types[] = SubmissionElement::class;
@@ -231,7 +231,7 @@ class FormsModule extends Module
 
         Event::on(
             RelationsHelper::class,
-            RelationsHelper::EVENT_ADD_SPROUT_SOURCE_ELEMENT_RELATIONS,
+            RelationsHelper::EVENT_ADD_SOURCE_ELEMENT_RELATIONS,
             [FormHelper::class, 'getSourceElementRelations'], [
                 'sourceElementType' => TransactionalEmailElement::class,
             ]

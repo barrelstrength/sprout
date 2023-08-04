@@ -53,6 +53,22 @@ class EmailThemeHelper
         return true;
     }
 
+    public static function reorderEmailThemes(array $uids = []): bool
+    {
+        $oldThemes = self::getEmailThemes();
+        $newThemes = [];
+
+        foreach ($uids as $uid) {
+            $newThemes[$uid] = $oldThemes[$uid];
+        }
+
+        if (!self::saveEmailThemes($newThemes)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function getEmailThemeByUid(string $uid): ?EmailTheme
     {
         $themes = self::getEmailThemes();
@@ -81,22 +97,6 @@ class EmailThemeHelper
         $emailTheme->setFieldLayout($fieldLayout);
 
         return $emailTheme;
-    }
-
-    public static function reorderEmailThemes(array $uids = []): bool
-    {
-        $oldThemes = self::getEmailThemes();
-        $newThemes = [];
-
-        foreach ($uids as $uid) {
-            $newThemes[$uid] = $oldThemes[$uid];
-        }
-
-        if (!self::saveEmailThemes($newThemes)) {
-            return false;
-        }
-
-        return true;
     }
 
     public static function getDefaultEmailTheme()

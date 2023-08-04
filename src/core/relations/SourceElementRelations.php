@@ -6,7 +6,7 @@ use yii\base\Component;
 
 class SourceElementRelations extends Component
 {
-    public const EVENT_REGISTER_SPROUT_REVERSE_RELATION = 'registerSproutReverseRelations';
+    public const EVENT_REGISTER_REVERSE_RELATIONS = 'registerSproutReverseRelations';
 
     private array $_relations = [];
 
@@ -16,7 +16,7 @@ class SourceElementRelations extends Component
             'elements' => [],
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_REVERSE_RELATION, $event);
+        $this->trigger(self::EVENT_REGISTER_REVERSE_RELATIONS, $event);
 
         $this->_relations = array_unique($event->sourceElements);
     }

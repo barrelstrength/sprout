@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
@@ -834,17 +835,29 @@ class FormElement extends Element
     {
         $formFieldsService = FormsModule::getInstance()->formFields;
 
-        $fieldTypes = $formFieldsService->getRegisteredFields();
-        $fieldTypesByGroup = $formFieldsService->getRegisteredFieldsByGroup();
+        $fieldTypes = $formFieldsService->getFormFieldTypes();
+        $formFields = ComponentHelper::typesToInstances($fieldTypes);
+
+        $fieldTypesByGroup = $formFieldsService->getDefaultFormFieldTypesByGroup();
 
         $sourceFields = [];
 
         foreach ($fieldTypesByGroup as $groupName => $typesInGroup) {
             foreach ($typesInGroup as $type) {
-                $field = $fieldTypes[$type];
+                $field = $formFields[$type];
+                unset($formFields[$type]);
                 $fieldData = FormBuilderHelper::getFieldData($field);
                 $fieldData['groupName'] = $groupName; // Form Field Sidebar UI specific
                 $sourceFields[] = $fieldData;
+            }
+
+            // if we have more fields add them to the group 'custom'
+            if (count($formFields) > 0) {
+                foreach ($formFields as $formField) {
+                    $fieldData = FormBuilderHelper::getFieldData($formField);
+                    $fieldData['groupName'] = Craft::t('sprout-module-forms', 'Custom');
+                    $sourceFields[] = $fieldData;
+                }
             }
         }
 

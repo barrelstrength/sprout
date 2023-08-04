@@ -9,11 +9,10 @@ use yii\base\Component;
 
 class FormThemes extends Component
 {
-    public const EVENT_REGISTER_SPROUT_FORM_THEMES = 'registerSproutFormThemes';
+    public const EVENT_REGISTER_FORM_THEMES = 'registerSproutFormThemes';
 
     public function getFormThemeTypes(): array
     {
-        $formThemes = [];
         $formThemes[] = DefaultFormTheme::class;
         $formThemes[] = CustomTemplatesFormTheme::class;
 
@@ -21,7 +20,7 @@ class FormThemes extends Component
             'types' => $formThemes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_FORM_THEMES, $event);
+        $this->trigger(self::EVENT_REGISTER_FORM_THEMES, $event);
 
         return $event->types;
     }

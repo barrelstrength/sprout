@@ -2,16 +2,20 @@
 
 namespace BarrelStrength\Sprout\mailer\emailtypes;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 
 class EmailTypes extends Component
 {
-    public const EVENT_REGISTER_SPROUT_EMAIL_TYPES = 'registerSproutEmailTypes';
+    public const EVENT_REGISTER_EMAIL_TYPES = 'registerSproutEmailTypes';
 
-    protected array $_emailTypes = [];
+    protected array $_emailTypeTypes = [];
 
-    public function getRegisteredEmailTypes(): array
+    /**
+     * @return EmailType[]
+     */
+    public function getEmailTypeTypes(): array
     {
         $emailTypes = [];
 
@@ -19,22 +23,10 @@ class EmailTypes extends Component
             'types' => $emailTypes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_EMAIL_TYPES, $event);
+        $this->trigger(self::EVENT_REGISTER_EMAIL_TYPES, $event);
 
-        return $event->types;
-    }
-
-    /**
-     * @return EmailType[]
-     */
-    public function getEmailTypes(): array
-    {
-        $registeredEmailTypes = $this->getRegisteredEmailTypes();
-
-        $emailTypes = [];
-
-        foreach ($registeredEmailTypes as $emailType) {
-            $emailTypes[$emailType] = new $emailType();
+        foreach ($event->types as $emailType) {
+            $emailTypes[$emailType] = $emailType;
         }
 
         return $emailTypes;
@@ -42,7 +34,8 @@ class EmailTypes extends Component
 
     public function getEmailTypeByHandle(string $handle = null): ?EmailType
     {
-        $emailTypes = $this->getEmailTypes();
+        $emailTypeTypes = $this->getEmailTypeTypes();
+        $emailTypes = ComponentHelper::typesToInstances($emailTypeTypes);
 
         foreach ($emailTypes as $emailType) {
             if ($emailType->handle === $handle) {

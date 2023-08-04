@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
@@ -43,7 +44,7 @@ class NotificationEventField extends BaseNativeField
 
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/events.twig', [
             'notificationEvent' => $notificationEvent,
-            'events' => $events,
+            'events' => ComponentHelper::typesToInstances($events),
             'eventOptions' => $eventOptions,
             'static' => $static,
         ]);

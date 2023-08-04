@@ -9,7 +9,7 @@ use craft\events\RegisterComponentTypesEvent;
 
 class EmailThemes extends Component
 {
-    public const EVENT_REGISTER_SPROUT_EMAIL_THEMES = 'registerSproutEmailThemes';
+    public const EVENT_REGISTER_EMAIL_THEMES = 'registerSproutEmailThemes';
 
     public function getEmailThemeTypes(): array
     {
@@ -20,7 +20,7 @@ class EmailThemes extends Component
             'types' => $emailThemes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_EMAIL_THEMES, $event);
+        $this->trigger(self::EVENT_REGISTER_EMAIL_THEMES, $event);
 
         return $event->types;
     }

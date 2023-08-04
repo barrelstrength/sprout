@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email\conditions;
 
-use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
@@ -23,7 +23,7 @@ class MailerConditionRule extends BaseMultiSelectConditionRule implements Elemen
 
     protected function options(): array
     {
-        $mailers = MailerModule::getInstance()->mailers->getMailers();
+        $mailers = MailerHelper::getMailers();
 
         return array_map(static function($mailer) {
             return [
