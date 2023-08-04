@@ -36,22 +36,4 @@ class Audiences extends Component
 
         return $event->types;
     }
-
-    public function getAudienceRecipients($audienceIds): array
-    {
-        if (empty($audienceIds)) {
-            return [];
-        }
-
-        $recipients = [];
-
-        foreach ($audienceIds as $audienceId) {
-            /** @var AudienceElement $audience */
-            $audience = AudienceElement::findOne($audienceId);
-
-            $recipients = [...$recipients, ...$audience->getAudienceType()->getRecipients()];
-        }
-
-        return $recipients;
-    }
 }
