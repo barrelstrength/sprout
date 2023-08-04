@@ -74,10 +74,10 @@ class TemplateHelper
      */
     public static function optionsFromComponentTypes($savableComponentTypes, string $firstLabel = null): array
     {
-        $result = [];
+        $options = [];
 
         if ($firstLabel) {
-            $result[] = [
+            $options[] = [
                 'label' => $firstLabel,
                 'value' => '',
             ];
@@ -86,13 +86,13 @@ class TemplateHelper
         foreach ($savableComponentTypes as $savableComponentType) {
             $label = $savableComponentType::displayName();
             $value = $savableComponentType;
-            $result[] = [
+            $options[] = [
                 'label' => $label,
                 'value' => $value,
             ];
         }
 
-        return $result;
+        return $options;
     }
 
     public static function getConfigWarning(SproutModuleTrait|Module $module, string $setting): string

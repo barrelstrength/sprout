@@ -39,7 +39,6 @@ use http\Exception\InvalidArgumentException;
 use yii\web\Response;
 
 /**
- *
  * @property null|EmailType $emailType
  * @property null|Mailer $mailer
  */
@@ -163,11 +162,6 @@ class EmailElement extends Element implements EmailPreviewInterface
             'preview' => ['label' => Craft::t('sprout-module-mailer', 'Preview'), 'icon' => 'view'],
         ];
     }
-
-    //    public static function isLocalized(): bool
-    //    {
-    //        return true;
-    //    }
 
     protected static function defineSortOptions(): array
     {
@@ -666,30 +660,6 @@ class EmailElement extends Element implements EmailPreviewInterface
             Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailTypeSettings()::displayName(),
         ];
     }
-
-    //    protected static function defineFieldLayouts(string $source): array
-    //    {
-    //        // Get all the sections covered by this source
-    //        $sections = [];
-    //        if ($source === '*') {
-    //            $sections = Craft::$app->getSections()->getAllSections();
-    //        } elseif ($source === 'singles') {
-    //            $sections = Craft::$app->getSections()->getSectionsByType(Section::TYPE_SINGLE);
-    //        } elseif (
-    //            preg_match('/^section:(.+)$/', $source, $matches) &&
-    //            $section = Craft::$app->getSections()->getSectionByUid($matches[1])
-    //        ) {
-    //            $sections = [$section];
-    //        }
-    //
-    //        $fieldLayouts = [];
-    //        foreach ($sections as $section) {
-    //            foreach ($section->getEntryTypes() as $entryType) {
-    //                $fieldLayouts[] = $entryType->getFieldLayout();
-    //            }
-    //        }
-    //        return $fieldLayouts;
-    //    }
 
     protected function defineRules(): array
     {

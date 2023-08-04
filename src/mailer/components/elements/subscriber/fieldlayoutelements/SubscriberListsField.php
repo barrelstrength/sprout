@@ -47,18 +47,18 @@ class SubscriberListsField extends TextField
     protected static function getSubscriberListOptions(): array
     {
         /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()
+        $audiences = AudienceElement::find()
             ->type(SubscriberListAudienceType::class)
             ->all();
 
         $options = [];
 
-        array_map(static function($list) use (&$options) {
+        array_map(static function($audience) use (&$options) {
             $options[] = [
-                'label' => $list->name,
-                'value' => $list->getId(),
+                'label' => $audience->name,
+                'value' => $audience->getId(),
             ];
-        }, $lists);
+        }, $audiences);
 
         return $options;
     }
