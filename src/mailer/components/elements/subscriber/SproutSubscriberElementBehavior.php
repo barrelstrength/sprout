@@ -13,20 +13,36 @@ use yii\db\Transaction;
 
 class SproutSubscriberElementBehavior extends Behavior
 {
-    public array $sproutSubscriberListIds = [];
+    public ?array $sproutSubscriberListIds = null;
 
     public function events(): array
     {
         return array_merge(parent::events(), [
+            User::EVENT_BEFORE_SAVE => 'beforeSave',
             User::EVENT_AFTER_PROPAGATE => 'afterPropagate',
         ]);
     }
 
+    public function beforeSave(): void
+    {
+        $newListIds = Craft::$app->getRequest()->getBodyParam('sproutSubscriberListIds', null);
+
+        if ($newListIds === null) {
+            return;
+        }
+
+        if (is_array($newListIds)) {
+            $this->sproutSubscriberListIds = $newListIds;
+        } else {
+            $this->sproutSubscriberListIds = [];
+        }
+    }
+
     public function afterPropagate(): void
     {
-        $newListIds = Craft::$app->getRequest()->getBodyParam('sproutSubscriberListIds');
-
-        $newListIds = !empty($newListIds) ? $newListIds : [];
+        if ($this->sproutSubscriberListIds === null) {
+            return;
+        }
 
         /** @var Transaction $transaction */
         $transaction = Craft::$app->getDb()->beginTransaction();
@@ -43,7 +59,7 @@ class SproutSubscriberElementBehavior extends Behavior
                 'userId' => $user->id,
             ]);
 
-            foreach ($newListIds as $listId) {
+            foreach ($this->sproutSubscriberListIds as $listId) {
                 $subscriptionRecord = new SubscriptionRecord();
                 $subscriptionRecord->subscriberListId = $listId;
                 $subscriptionRecord->userId = $user->id;
