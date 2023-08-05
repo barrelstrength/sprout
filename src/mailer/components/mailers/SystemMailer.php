@@ -17,6 +17,7 @@ use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\fs\Local;
+use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
@@ -125,8 +126,22 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $assets = $mailerInstructionsSettings->getMessageFileAttachments($email);
         $this->attachFilesToMessage($message, $assets);
 
-        $message->setFrom($mailerInstructionsSettings->getSender());
-        $message->setReplyTo($mailerInstructionsSettings->getReplyToEmail());
+        $sender = $mailerInstructionsSettings->getSender();
+
+        // Make sure the current sender is in the list of approved senders
+        if (!$this->isApprovedSender($sender)) {
+            $email->addError('mailerInstructionsSettings', 'Sender is not in list of approved senders.');
+        }
+
+        $replyTo = $mailerInstructionsSettings->getReplyToEmail();
+
+        // Make sure the current replyTo address is in the list of approved replyTos
+        if (!$this->isApprovedReplyTo($replyTo, key($sender))) {
+            $email->addError('mailerInstructionsSettings', 'Reply To address is not in list of approved addresses.');
+        }
+
+        $message->setFrom($sender);
+        $message->setReplyTo($replyTo);
 
         // If we have errors before we start processing recipients, throw an error
         if ($email->hasErrors()) {
@@ -170,6 +185,36 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         }
 
         $this->deleteExternalFilePaths($this->_attachmentExternalFilePaths);
+    }
+
+    protected function isApprovedSender(array $sender): bool
+    {
+        $approvedSenders = [];
+
+        array_walk($this->approvedSenders,
+            static function($sender) use (&$approvedSenders) {
+                $approvedSenders[App::parseEnv($sender['fromEmail'])] = App::parseEnv($sender['fromName']);
+            });
+
+        foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
+            if (isset($sender[$approvedSenderEmail]) && $sender[$approvedSenderEmail] === $approvedSenderName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function isApprovedReplyTo(mixed $replyTo, string $sender = null): bool
+    {
+        if (is_array($replyTo)) {
+            $replyTo = key($replyTo);
+        }
+
+        $approvedReplyToEmails = array_map(static fn($email) => $email['replyToEmail'], $this->approvedReplyToEmails);
+        $approvedReplyToEmails = array_filter(array_merge($approvedReplyToEmails, [$sender]));
+
+        return in_array($replyTo, $approvedReplyToEmails, true);
     }
 
     protected function _buildMessage(
