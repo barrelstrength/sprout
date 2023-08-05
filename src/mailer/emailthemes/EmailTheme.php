@@ -189,7 +189,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         return $rules;
     }
 
-    protected function hasAtLeastOneField(): void
+    public function hasAtLeastOneField(): void
     {
         $tabs = $this->getFieldLayout()->getTabs();
 

@@ -30,7 +30,7 @@ class MailerSettings {
             deleteAction: 'sprout-module-mailer/mailer/delete',
             deleteConfirmationMessage: Craft.t('sprout-module-mailer', 'Are you sure you want to delete the mailer “{name}”?'),
             deleteSuccessMessage: Craft.t('sprout-module-mailer', 'Mailer deleted'),
-            deleteFailMessage: Craft.t('sprout-module-mailer', 'Unable to delete mailer.'),
+            deleteFailMessage: Craft.t('sprout-module-mailer', 'Unable to delete mailer. Remove mailer from all emails before deleting.'),
             emptyMessage: Craft.t('sprout-module-mailer', 'No mailers exist yet.'),
             minItems: 1,
             padded: true,

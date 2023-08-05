@@ -96,15 +96,15 @@ class MailerController extends Controller
 
         $mailerUid = Craft::$app->request->getRequiredBodyParam('id');
 
-        if (!MailerHelper::removeMailer($mailerUid)) {
-            return $this->asJson([
-                'success' => false,
-            ]);
+        $inUse = EmailElement::find()
+            ->mailerUid($mailerUid)
+            ->exists();
+
+        if ($inUse || !MailerHelper::removeMailer($mailerUid)) {
+            return $this->asFailure();
         }
 
-        return $this->asJson([
-            'success' => true,
-        ]);
+        return $this->asSuccess();
     }
 
     public function actionGetSendTestHtml(): Response

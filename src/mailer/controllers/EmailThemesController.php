@@ -96,15 +96,15 @@ class EmailThemesController extends Controller
 
         $emailThemeUid = Craft::$app->request->getRequiredBodyParam('id');
 
-        if (!EmailThemeHelper::removeEmailTheme($emailThemeUid)) {
-            return $this->asJson([
-                'success' => false,
-            ]);
+        $inUse = EmailElement::find()
+            ->emailThemeUid($emailThemeUid)
+            ->exists();
+
+        if ($inUse || !EmailThemeHelper::removeEmailTheme($emailThemeUid)) {
+            return $this->asFailure();
         }
 
-        return $this->asJson([
-            'success' => true,
-        ]);
+        return $this->asSuccess();
     }
 
     private function populateEmailThemeModel(): EmailTheme

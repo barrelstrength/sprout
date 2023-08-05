@@ -30,7 +30,7 @@ class FormThemesSettings {
             deleteAction: 'sprout-module-forms/form-themes/delete',
             deleteConfirmationMessage: Craft.t('sprout-module-forms', 'Are you sure you want to delete the Form Theme “{name}”?'),
             deleteSuccessMessage: Craft.t('sprout-module-forms', 'Form theme deleted'),
-            deleteFailMessage: Craft.t('sprout-module-forms', 'Unable to delete form theme.'),
+            deleteFailMessage: Craft.t('sprout-module-forms', 'Unable to delete form theme. Remove theme from all forms before deleting.'),
             emptyMessage: Craft.t('sprout-module-forms', 'No form themes exist yet.'),
             minItems: 1,
             padded: true,

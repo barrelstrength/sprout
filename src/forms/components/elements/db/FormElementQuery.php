@@ -13,11 +13,13 @@ class FormElementQuery extends ElementQuery
 {
     public array|int|null $groupId = null;
 
-    public ?int $submissionFieldLayoutId = null;
+    public ?string $name = null;
 
-    public string $name = '';
+    public ?string $handle = null;
 
-    public string $handle = '';
+    public ?string $submissionFieldLayoutId = null;
+
+    public ?string $formThemeUid = null;
 
     //    public string $oldHandle;
     //
@@ -38,8 +40,6 @@ class FormElementQuery extends ElementQuery
     //    public string $submitButtonText;
     //
     //    public bool $saveData = false;
-    //
-    //    public string $formTemplate;
     //
     //    public bool $enableCaptchas = false;
 
@@ -88,37 +88,30 @@ class FormElementQuery extends ElementQuery
         return $this;
     }
 
-    /**
-     * Sets the [[name]] property.
-     *
-     * @param string|string[]|null $value The property value
-     *
-     * @return static self reference
-     */
-    public function name($value): FormElementQuery
+    public function name(string $value): FormElementQuery
     {
         $this->name = $value;
 
         return $this;
     }
 
-    /**
-     * Sets the [[handle]] property.
-     *
-     * @param string|string[]|null $value The property value
-     *
-     * @return static self reference
-     */
-    public function handle($value): FormElementQuery
+    public function handle(string $value): FormElementQuery
     {
         $this->handle = $value;
 
         return $this;
     }
 
-    public function submissionFieldLayoutId(int $value): FormElementQuery
+    public function submissionFieldLayoutId(string $value): FormElementQuery
     {
         $this->submissionFieldLayoutId = $value;
+
+        return $this;
+    }
+
+    public function formThemeUid(string $value): FormElementQuery
+    {
+        $this->formThemeUid = $value;
 
         return $this;
     }
@@ -165,6 +158,12 @@ class FormElementQuery extends ElementQuery
         if ($this->submissionFieldLayoutId) {
             $this->subQuery->andWhere(Db::parseParam(
                 'sprout_forms.submissionFieldLayoutId', $this->submissionFieldLayoutId
+            ));
+        }
+
+        if ($this->formThemeUid) {
+            $this->subQuery->andWhere(Db::parseParam(
+                'sprout_forms.formThemeUid', $this->formThemeUid
             ));
         }
 

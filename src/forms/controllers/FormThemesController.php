@@ -3,9 +3,11 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use Craft;
 use craft\helpers\Json;
@@ -100,7 +102,11 @@ class FormThemesController extends Controller
 
         $formThemeUid = Craft::$app->request->getRequiredBodyParam('id');
 
-        if (!FormThemeHelper::removeFormTheme($formThemeUid)) {
+        $inUse = FormElement::find()
+            ->formThemeUid($formThemeUid)
+            ->exists();
+
+        if ($inUse || !FormThemeHelper::removeFormTheme($formThemeUid)) {
             return $this->asJson([
                 'success' => false,
             ]);

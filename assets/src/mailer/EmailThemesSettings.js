@@ -30,7 +30,7 @@ class EmailThemesSettings {
             deleteAction: 'sprout-module-mailer/email-themes/delete',
             deleteConfirmationMessage: Craft.t('sprout-module-mailer', 'Are you sure you want to delete the Email Theme “{name}”?'),
             deleteSuccessMessage: Craft.t('sprout-module-mailer', 'Email theme deleted'),
-            deleteFailMessage: Craft.t('sprout-module-mailer', 'Unable to delete email theme.'),
+            deleteFailMessage: Craft.t('sprout-module-mailer', 'Unable to delete email theme. Remove theme from all emails before deleting.'),
             emptyMessage: Craft.t('sprout-module-mailer', 'No email themes exist yet.'),
             minItems: 1,
             padded: true,
