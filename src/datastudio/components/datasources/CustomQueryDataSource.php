@@ -14,11 +14,6 @@ class CustomQueryDataSource extends DataSource
      */
     public ?string $query = null;
 
-    public static function getHandle(): string
-    {
-        return 'custom-query';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-data-studio', 'Custom Query');

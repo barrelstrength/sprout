@@ -39,11 +39,6 @@ class SubmissionsDataSource extends DataSource implements DateRangeInterface
         ];
     }
 
-    public static function getHandle(): string
-    {
-        return 'forms-submissions';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Submissions (Sprout)');

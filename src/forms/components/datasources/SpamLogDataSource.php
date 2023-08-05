@@ -26,11 +26,6 @@ class SpamLogDataSource extends DataSource implements DateRangeInterface
         ];
     }
 
-    public static function getHandle(): string
-    {
-        return 'forms-spam-log';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Form Spam Log (Sprout)');

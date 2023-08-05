@@ -28,11 +28,6 @@ class CommerceProductRevenueDataSource extends DataSource implements DateRangeIn
         ];
     }
 
-    public static function getHandle(): string
-    {
-        return 'commerce-product-revenue';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-data-studio', 'Commerce Product Revenue');

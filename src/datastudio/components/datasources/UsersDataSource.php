@@ -14,11 +14,6 @@ class UsersDataSource extends DataSource
 
     public bool $displayUserGroupColumns = false;
 
-    public static function getHandle(): string
-    {
-        return 'users';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-data-studio', 'Users & User Groups');

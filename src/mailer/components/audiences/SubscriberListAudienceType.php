@@ -18,11 +18,6 @@ class SubscriberListAudienceType extends AudienceType
         return Craft::t('sprout-module-mailer', 'Subscriber List');
     }
 
-    public function getHandle(): string
-    {
-        return 'subscriber-list';
-    }
-
     public function getColumnAttributeHtml(): string
     {
         // TODO - update how settings are stored so the Audience Type gets populated correctly

@@ -27,11 +27,6 @@ class CommerceOrderHistoryDataSource extends DataSource implements DateRangeInte
         ];
     }
 
-    public static function getHandle(): string
-    {
-        return 'commerce-order-history';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-data-studio', 'Commerce Order History');

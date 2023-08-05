@@ -46,11 +46,6 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         parent::__construct($config);
     }
 
-    public static function getHandle(): string
-    {
-        return 'custom-twig-template-query';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-data-studio', 'Twig Template Query');

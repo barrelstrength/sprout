@@ -26,11 +26,6 @@ class IntegrationLogDataSource extends DataSource implements DateRangeInterface
         ];
     }
 
-    public static function getHandle(): string
-    {
-        return 'forms-integration-log';
-    }
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Form Integrations Log (Sprout)');

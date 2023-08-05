@@ -22,11 +22,6 @@ class SubscriberListDataSource extends DataSource
         return Craft::t('sprout-module-mailer', 'Subscriber List');
     }
 
-    public static function getHandle(): string
-    {
-        return 'subscriber-list-data-source';
-    }
-
     public function getDescription(): string
     {
         return Craft::t('sprout-module-mailer', 'Create a Subscriber List with your Subscribers');

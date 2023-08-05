@@ -7,8 +7,6 @@ use craft\base\SavableComponentInterface;
 
 interface AudienceTypeInterface extends SavableComponentInterface
 {
-    public function getHandle(): string;
-
     /**
      * @return MailingListRecipient[]
      */

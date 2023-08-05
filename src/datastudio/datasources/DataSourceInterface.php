@@ -8,11 +8,6 @@ use craft\base\SavableComponentInterface;
 interface DataSourceInterface extends SavableComponentInterface
 {
     /**
-     * A unique url-friendly, handle that represents this data source
-     */
-    public static function getHandle(): string;
-
-    /**
      * A description for the Data Source
      */
     public function getDescription(): string;

@@ -243,15 +243,10 @@ class DataStudioModule extends Module
             // Data Sets
             'sprout/data-studio/edit/<elementId:\d+>' =>
                 'elements/edit',
-            //            "sprout/data-studio/<groupId:\d+>" =>
-            //                'sprout-module-data-studio/data-studio/data-index-template',
-
-            'sprout/data-studio/new/<type:(.*)>' =>
+            'sprout/data-studio/new' =>
                 'sprout-module-data-studio/data-set/create-data-set',
-
             'sprout/data-studio/view/<dataSetId:\d+>' =>
                 'sprout-module-data-studio/data-set/results-index-template',
-
             'sprout/data-studio' =>
                 'sprout-module-data-studio/data-set/data-set-index-template',
 

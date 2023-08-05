@@ -21,7 +21,9 @@
                 <ul>
                     {% for audienceType in audienceTypes %}
                         <li>
-                            {% set newAudienceUrl = cpUrl('sprout/email/audiences/' ~ audienceType.getHandle() ~ '/new') %}
+                            {% set newAudienceUrl = cpUrl('sprout/email/audiences/new', {
+                                type: className(audienceType)
+                            }) %}
                             <a href="{{ newAudienceUrl }}">
                                 {{ audienceType.displayName() }}
                             </a>

@@ -24,11 +24,6 @@ class DataSetAudienceType extends AudienceType
         return Craft::t('sprout-module-mailer', 'Data Set List');
     }
 
-    public function getHandle(): string
-    {
-        return 'data-set';
-    }
-
     public function getColumnAttributeHtml(): string
     {
         if (!$dataSet = $this->getDataSet()) {

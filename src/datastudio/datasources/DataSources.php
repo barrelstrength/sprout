@@ -24,7 +24,7 @@ class DataSources extends Component
     /**
      * @var $_dataSources DataSource[]
      */
-    private array $_dataSources = [];
+    private ?array $_dataSources = null;
 
     /**
      * Returns all available Data Source classes
@@ -33,6 +33,10 @@ class DataSources extends Component
      */
     public function getDataSourceTypes(): array
     {
+        if ($this->_dataSources) {
+            return $this->_dataSources;
+        }
+
         $internalDataSourceTypes = [
             CustomQueryDataSource::class,
             CustomTwigTemplateQueryDataSource::class,
@@ -65,53 +69,19 @@ class DataSources extends Component
             ? array_merge($internalEvent->types, $proDataSourceTypes->types)
             : $internalEvent->types;
 
-        // Map data source handles and class names
-        $dataSourceTypeHandles = array_map(static function($dataSourceType): string {
-            /** @var DataSource $dataSourceType */
-            return $dataSourceType::getHandle();
-        }, $availableDataSourceTypes);
+        $types = array_combine($availableDataSourceTypes, $availableDataSourceTypes);
 
-        return array_combine($dataSourceTypeHandles, $availableDataSourceTypes);
-    }
-
-    public function getDataSources(): array
-    {
-        if (!$this->_dataSources) {
-            $this->initDataSources();
-        }
-
-        return $this->_dataSources;
-    }
-
-    public function getDataSourceTypeByHandle(string $handle): ?string
-    {
-        $dataSources = $this->getDataSourceTypes();
-
-        return $dataSources[$handle] ?? null;
-    }
-
-    public function initDataSources(): void
-    {
         $currentUser = Craft::$app->getUser()->getIdentity();
-        $dataSourceTypes = $this->getDataSourceTypes();
 
-        $dataSources = [];
-
-        /** @var DataSource $dataSourceType */
-        foreach ($dataSourceTypes as $dataSourceType) {
-            if (!isset($installedDataSources[$dataSourceType])) {
-
-                $dataSourcePermission = DataStudioModule::p('editDataSet:' . $dataSourceType);
-
-                if (!$currentUser->can($dataSourcePermission) || !class_exists($dataSourceType)) {
-                    continue;
-                }
-
-                $dataSources[$dataSourceType] = new $dataSourceType();
+        $types = array_filter($types, static function($type) use ($currentUser) {
+            $dataSourcePermission = DataStudioModule::p('editDataSet:' . $type);
+            if (!$currentUser->can($dataSourcePermission) || !class_exists($type)) {
+                return false;
             }
-        }
+            return true;
+        });
 
-        uasort($dataSources, static function($a, $b): int {
+        uasort($types, static function($a, $b): int {
             /**
              * @var $a DataSource
              * @var $b DataSource
@@ -119,17 +89,8 @@ class DataSources extends Component
             return $a::displayName() <=> $b::displayName();
         });
 
-        $this->_dataSources = $dataSources;
-    }
+        $this->_dataSources = $types;
 
-    public function getDataSourceOptions(): array
-    {
-        $dataSourceOptions = [];
-
-        foreach ($this->getDataSources() as $dataSource) {
-            $dataSourceOptions[$dataSource::class] = $dataSource::displayName();
-        }
-
-        return $dataSourceOptions;
+        return $this->_dataSources;
     }
 }

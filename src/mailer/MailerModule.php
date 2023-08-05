@@ -307,7 +307,7 @@ class MailerModule extends Module
             // Audience
             'sprout/email/audiences/edit/<elementId:\d+>' =>
                 'elements/edit',
-            'sprout/email/audiences/<audienceTypeHandle:.*>/new' =>
+            'sprout/email/audiences/new' =>
                 'sprout-module-mailer/audience/create-audience',
             'sprout/email/audiences' =>
                 'sprout-module-mailer/audience/audience-index-template',

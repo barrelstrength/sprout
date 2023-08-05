@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\datastudio\components\elements\conditions;
 
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -24,7 +25,9 @@ class DataSourcesConditionRule extends BaseMultiSelectConditionRule implements E
 
     protected function options(): array
     {
-        return DataStudioModule::getInstance()->dataSources->getDataSourceOptions();
+        $types = DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+
+        return TemplateHelper::optionsFromComponentTypes($types);
     }
 
     public function modifyQuery(QueryInterface $query): void

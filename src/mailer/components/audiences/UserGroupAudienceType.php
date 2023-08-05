@@ -20,11 +20,6 @@ class UserGroupAudienceType extends AudienceType
         return Craft::t('sprout-module-mailer', 'User Group');
     }
 
-    public function getHandle(): string
-    {
-        return 'user-group';
-    }
-
     public function getColumnAttributeHtml(): string
     {
         // TODO - update how settings are stored so the Audience Type gets populated correctly

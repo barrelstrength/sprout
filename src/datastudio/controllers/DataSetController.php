@@ -2,19 +2,23 @@
 
 namespace BarrelStrength\Sprout\datastudio\controllers;
 
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
+use BarrelStrength\Sprout\datastudio\datasources\DataSourceInterface;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\datastudio\reports\ExportHelper;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
+use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
+use http\Exception\InvalidArgumentException;
 use Twig\Markup;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -123,16 +127,19 @@ class DataSetController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $dataSet = Craft::createObject(DataSetElement::class);
-        $dataSet->siteId = $site->id;
-
-        $dataSourceType = DataStudioModule::getInstance()->dataSources->getDataSourceTypeByHandle($type);
-
-        if (!$dataSourceType) {
-            throw new NotFoundHttpException('Data Source handle not found.');
+        if (!$type) {
+            throw new InvalidArgumentException('No Data Set Type provided.');
         }
 
-        $dataSet->type = $dataSourceType;
+        $dataSourceType = new $type();
+
+        if (!$dataSourceType instanceof DataSourceInterface) {
+            throw new MissingComponentException('Unable to create data source of type: '.$type);
+        }
+
+        $dataSet = Craft::createObject(DataSetElement::class);
+        $dataSet->siteId = $site->id;
+        $dataSet->type = $dataSourceType::class;
 
         $user = Craft::$app->getUser()->getIdentity();
 
@@ -246,20 +253,21 @@ class DataSetController extends Controller
 
     public static function getNewDataSetButtonHtml(Site $site): ?Markup
     {
-        $dataSources = DataStudioModule::getInstance()->dataSources->getDataSources();
+        $dataSourceTypes = DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
 
         $newDataSetOptions = [];
 
-        foreach ($dataSources as $dataSource) {
+        foreach ($dataSourceTypes as $dataSourceType) {
             $currentUser = Craft::$app->getUser()->getIdentity();
 
-            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSource::class))) {
+            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSourceType))) {
                 continue;
             }
 
             $newDataSetOptions[] = [
-                'name' => $dataSource::displayName(),
-                'url' => UrlHelper::cpUrl('sprout/data-studio/new/' . $dataSource::getHandle(), [
+                'name' => $dataSourceType::displayName(),
+                'url' => UrlHelper::cpUrl('sprout/data-studio/new', [
+                    'type' => $dataSourceType,
                     'site' => $site->handle,
                 ]),
             ];

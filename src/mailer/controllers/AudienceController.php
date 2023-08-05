@@ -3,6 +3,8 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\mailer\audience\AudienceType;
+use BarrelStrength\Sprout\mailer\audience\AudienceTypeInterface;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
@@ -11,6 +13,7 @@ use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
 use craft\models\Site;
 use craft\web\Controller;
+use http\Exception\InvalidArgumentException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -42,7 +45,7 @@ class AudienceController extends Controller
         ]);
     }
 
-    public function actionCreateAudience(string $audienceTypeHandle = null): Response
+    public function actionCreateAudience(string $type = null): Response
     {
         $this->requirePermission(MailerModule::p('editAudiences'));
 
@@ -52,19 +55,20 @@ class AudienceController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
+        if (!$type) {
+            throw new InvalidArgumentException('No Audience Type provided.');
+        }
+
+        $audience = new $type();
+
+        if (!$audience instanceof AudienceTypeInterface) {
+            throw new MissingComponentException('Unable to create audience of type: '.$type);
+        }
+
         $element = Craft::createObject(AudienceElement::class);
         $element->siteId = $site->id;
         $element->enabled = true;
-
-        $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();
-
-        foreach ($audienceTypes as $audienceType) {
-            $audience = new $audienceType();
-            if ($audience->getHandle() === $audienceTypeHandle) {
-                $element->type = $audienceType;
-                break;
-            }
-        }
+        $element->type = $audience::class;
 
         // Save it
         $element->setScenario(Element::SCENARIO_ESSENTIALS);
