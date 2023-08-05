@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use BarrelStrength\Sprout\mailer\audience\AudienceHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\AssetQuery;

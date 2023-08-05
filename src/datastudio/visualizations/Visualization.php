@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\datastudio\visualizations;
 
 use craft\base\SavableComponent;
+use craft\helpers\Html;
 
 /**
  *
@@ -142,12 +143,12 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
 
     public function namespaceInputId($name): string
     {
-        return 'visualizationSettings-' . static::handle() . '-' . $name;
+        return 'visualizationSettings-' . Html::id(static::class) . '-' . $name;
     }
 
     public function namespaceInputName($name): string
     {
-        return 'visualizationSettings[' . static::handle() . '][' . $name . ']';
+        return 'visualizationSettings[' . static::class . '][' . $name . ']';
     }
 
     public function getSettingsHtml(): string

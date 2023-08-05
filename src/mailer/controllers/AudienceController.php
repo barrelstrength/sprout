@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
-use BarrelStrength\Sprout\mailer\audience\AudienceType;
 use BarrelStrength\Sprout\mailer\audience\AudienceTypeInterface;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -62,7 +61,7 @@ class AudienceController extends Controller
         $audience = new $type();
 
         if (!$audience instanceof AudienceTypeInterface) {
-            throw new MissingComponentException('Unable to create audience of type: '.$type);
+            throw new MissingComponentException('Unable to create audience of type: ' . $type);
         }
 
         $element = Craft::createObject(AudienceElement::class);

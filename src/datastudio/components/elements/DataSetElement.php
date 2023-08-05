@@ -280,7 +280,7 @@ class DataSetElement extends Element
         }
 
         // Only grab selected settings array if element post. Convert to array if from db.
-        $visualizationSettings = $this->visualizationSettings[$this->visualizationType::handle()] ?? (
+        $visualizationSettings = $this->visualizationSettings[$this->visualizationType] ?? (
         !is_array($this->visualizationSettings)
             ? Json::decodeIfJson($this->visualizationSettings, true)
             : $this->visualizationSettings

@@ -68,11 +68,5 @@ return [
     'This setting is defined by the {setting} value in the {envFile} file' => 'This setting is defined by the {setting} value in the {envFile} file',
     'Module Name' => 'Module Name',
     'Type' => 'Type',
-    'Email' => 'Email',
-    'Learn More' => 'Learn More',
-    'New Window' => 'New Window',
-    'Link Text' => 'Link Text',
     'Title' => 'Title',
-    'Link Type' => 'Link Type',
-    'URL' => 'URL',
 ];

@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\datastudio\controllers;
 
-use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasets\DataSetHelper;
 use BarrelStrength\Sprout\datastudio\datasources\DataSourceInterface;
@@ -134,7 +133,7 @@ class DataSetController extends Controller
         $dataSourceType = new $type();
 
         if (!$dataSourceType instanceof DataSourceInterface) {
-            throw new MissingComponentException('Unable to create data source of type: '.$type);
+            throw new MissingComponentException('Unable to create data source of type: ' . $type);
         }
 
         $dataSet = Craft::createObject(DataSetElement::class);

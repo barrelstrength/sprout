@@ -21,11 +21,6 @@ class TimeChartVisualization extends Visualization
         return Craft::t('sprout-module-data-studio', 'Time Series');
     }
 
-    public static function handle(): string
-    {
-        return 'timeChart';
-    }
-
     public function getSettingsHtml(): string
     {
         $visualizationAggregateOptions = DataStudioModule::getInstance()->visualizations->getAggregates();

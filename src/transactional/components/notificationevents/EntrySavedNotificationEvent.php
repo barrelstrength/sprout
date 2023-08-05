@@ -10,7 +10,6 @@ use craft\base\ElementInterface;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
-use craft\helpers\Html;
 use craft\helpers\Json;
 use yii\base\Event;
 

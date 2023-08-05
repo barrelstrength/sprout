@@ -459,6 +459,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                     $element->tip = $twigExpressionMessage1;
                 }
             }
+
             return $tab;
         }, $mailers);
 

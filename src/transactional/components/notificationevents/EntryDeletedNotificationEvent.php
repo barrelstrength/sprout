@@ -8,7 +8,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
-use craft\helpers\Html;
 use craft\helpers\Json;
 
 class EntryDeletedNotificationEvent extends NotificationEvent implements ElementEventInterface

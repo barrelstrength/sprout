@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\audience;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\audiences\UserGroupAudienceType;
-use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;

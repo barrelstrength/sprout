@@ -16,11 +16,6 @@ class LineChartVisualization extends Visualization
         return Craft::t('sprout-module-data-studio', 'Line Chart');
     }
 
-    public static function handle(): string
-    {
-        return 'lineChart';
-    }
-
     public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/LineChart/settings.twig', [

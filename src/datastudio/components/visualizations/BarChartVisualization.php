@@ -16,11 +16,6 @@ class BarChartVisualization extends Visualization
         return Craft::t('sprout-module-data-studio', 'Bar Chart');
     }
 
-    public static function handle(): string
-    {
-        return 'barChart';
-    }
-
     public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/BarChart/settings.twig', [

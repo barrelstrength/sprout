@@ -9,7 +9,6 @@ use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
 use craft\events\UserEvent;
-use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\services\Users;
 use yii\base\Event;

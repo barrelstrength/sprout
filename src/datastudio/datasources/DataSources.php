@@ -78,6 +78,7 @@ class DataSources extends Component
             if (!$currentUser->can($dataSourcePermission) || !class_exists($type)) {
                 return false;
             }
+
             return true;
         });
 

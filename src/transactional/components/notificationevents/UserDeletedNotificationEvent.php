@@ -8,7 +8,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
-use craft\helpers\Html;
 use craft\helpers\Json;
 
 class UserDeletedNotificationEvent extends NotificationEvent implements ElementEventInterface

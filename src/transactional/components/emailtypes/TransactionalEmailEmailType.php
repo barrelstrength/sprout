@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional\components\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
-use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;

@@ -7,11 +7,6 @@ use craft\base\SavableComponentInterface;
 interface VisualizationInterface extends SavableComponentInterface
 {
     /**
-     * Unique handle for visualization
-     */
-    public static function handle(): string;
-
-    /**
      * Return the visualization HTML
      *
      * @param array $options override values passed to the javascript charting instance

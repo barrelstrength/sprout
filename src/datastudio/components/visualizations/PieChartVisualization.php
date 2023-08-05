@@ -16,11 +16,6 @@ class PieChartVisualization extends Visualization
         return Craft::t('sprout-module-data-studio', 'Pie Chart');
     }
 
-    public static function handle(): string
-    {
-        return 'pieChart';
-    }
-
     public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_components/visualizations/PieChart/settings.twig', [
