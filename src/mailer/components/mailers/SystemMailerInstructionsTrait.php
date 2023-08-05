@@ -56,7 +56,8 @@ trait SystemMailerInstructionsTrait
     public function getReplyToEmail(): string|array
     {
         if (!$this->replyToEmail) {
-            return $this->getSender();
+            $sender = $this->getSender();
+            return key($sender);
         }
 
         return App::parseEnv($this->replyToEmail);

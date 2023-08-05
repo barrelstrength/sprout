@@ -19,7 +19,7 @@
 {% namespace 'mailerInstructionsSettings' %}
 
     {{ hiddenInput('sender', mailerInstructionsSettings.sender) }}
-    {{ hiddenInput('replyToEmail', mailerInstructionsSettings.replyToEmail) }}
+    {{ hiddenInput('replyToEmail', mailerInstructionsSettings.getReplyToEmail()) }}
 
     {% set placeholder = currentUser.email ~ ', ' ~ currentUser.friendlyName ~ ' <' ~ currentUser.email ~ '>' %}
 
