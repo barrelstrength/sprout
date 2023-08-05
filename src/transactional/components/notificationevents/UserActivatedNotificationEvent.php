@@ -56,12 +56,14 @@ class UserActivatedNotificationEvent extends NotificationEvent implements Elemen
         return $html;
     }
 
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
-        return $this->event->user;
+        return [
+            'user' => $this?->event?->user,
+        ];
     }
 
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
         $user = Craft::$app->getUser()->getIdentity();
 
@@ -76,7 +78,9 @@ class UserActivatedNotificationEvent extends NotificationEvent implements Elemen
             $user = $query->one();
         }
 
-        return $user;
+        return [
+            'user' => $user,
+        ];
     }
 
     public function matchNotificationEvent(Event $event): bool

@@ -56,18 +56,20 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
         return $html;
     }
 
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
-        $event = $this->event ?? null;
-
-        return $event->sender ?? null;
+        return [
+            'entry' => $this?->event?->sender,
+        ];
     }
 
     /**
      * @return array|ElementInterface|Entry|null
      */
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
+        $entry = null;
+
         if ($this->conditionRules) {
             $conditionRules = Json::decodeIfJson($this->conditionRules);
             $condition = Craft::$app->conditions->createCondition($conditionRules);
@@ -75,11 +77,12 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
 
             $query = $condition->elementType::find();
             $condition->modifyQuery($query);
-
-            return $query->one();
+            $entry = $query->one();
         }
 
-        return null;
+        return [
+            'entry' => $entry,
+        ];
     }
 
     public function matchNotificationEvent(Event $event): bool

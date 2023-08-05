@@ -56,18 +56,17 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
         return $html;
     }
 
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
-        /** @var ElementEvent $event */
-        $event = $this->event ?? null;
-
-        return $event->element ?? null;
+        return [
+            'submission' => $this?->event?->element,
+        ];
     }
 
     /**
      * @todo fix bug where incorrect form can be selected.
      */
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
         $criteria = SubmissionElement::find();
         $criteria->orderBy(['id' => SORT_DESC]);
@@ -81,13 +80,17 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
 
         $submission = $criteria->one();
 
-        if ($submission) {
-            return $submission;
+        if (!$submission) {
+            Craft::warning('Unable to generate a mock form Submission. Make sure you have at least one Submission submitted in your database.', __METHOD__);
+
+            return [
+                'submission' => null,
+            ];
         }
 
-        Craft::warning('Unable to generate a mock form Submission. Make sure you have at least one Submission submitted in your database.', __METHOD__);
-
-        return null;
+        return [
+            'submission' => $submission,
+        ];
     }
 
     public function matchNotificationEvent(Event $event): bool

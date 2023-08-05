@@ -53,15 +53,17 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
         return $html;
     }
 
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
-        $event = $this->event ?? null;
-
-        return $event->sender ?? null;
+        return [
+            'entry' => $this?->event?->sender,
+        ];
     }
 
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
+        $entry = null;
+
         if ($this->conditionRules) {
             $conditionRules = Json::decodeIfJson($this->conditionRules);
             $condition = Craft::$app->conditions->createCondition($conditionRules);
@@ -69,10 +71,11 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
 
             $query = $condition->elementType::find();
             $condition->modifyQuery($query);
-
-            return $query->one();
+            $entry = $query->one();
         }
 
-        return null;
+        return [
+            'entry' => $entry,
+        ];
     }
 }

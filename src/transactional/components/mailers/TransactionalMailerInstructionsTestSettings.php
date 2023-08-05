@@ -13,7 +13,7 @@ class TransactionalMailerInstructionsTestSettings extends SystemMailerInstructio
         $notificationEvent = $emailTypeSettings->getNotificationEvent($email);
 
         $emailTypeSettings->addAdditionalTemplateVariables(
-            'object', $notificationEvent->getMockEventObject()
+            $notificationEvent->getMockEventVariables()
         );
 
         return $emailTypeSettings->getAdditionalTemplateVariables();

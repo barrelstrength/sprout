@@ -181,13 +181,13 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         $view = Craft::$app->getView();
         $emailTheme = $email->getEmailTheme();
+        $emailTheme->addTemplateVariable('recipient', $recipient);
         $templateVariables = $emailTheme->getTemplateVariables();
 
         $subjectLine = $mailerInstructionsSettings->getSubjectLine($email);
-        $email->subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables['object'] ?? []);
-        $email->defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables['object'] ?? []);
+        $email->subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables);
+        $email->defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables);
 
-        $emailTheme->addTemplateVariable('recipient', $recipient);
         $emailTheme->addTemplateVariable('email', $email);
 
         $textBody = trim($emailTheme->getTextBody());

@@ -61,32 +61,21 @@ class NotificationEvents extends Component
 
         $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $event);
 
-        return $event->types;
-    }
+        $types = [];
 
-    /**
-     * Returns a list of initialized Notification Events
-     */
-    public function getNotificationEvents(): array
-    {
-        $notificationEventTypes = $this->getNotificationEventTypes();
-
-        $notificationEvents = [];
-
-        foreach ($notificationEventTypes as $notificationEventType) {
-            $event = new $notificationEventType();
-            $notificationEvents[$notificationEventType] = $event;
+        foreach ($event->types as $type) {
+            $types[$type] = $type;
         }
 
-        uasort($notificationEvents, static function($a, $b): int {
+        uasort($types, static function($a, $b): int {
             /**
              * @var $a NotificationEvent
              * @var $b NotificationEvent
              */
-            return $a->displayName() <=> $b->displayName();
+            return $a::displayName() <=> $b::displayName();
         });
 
-        return $notificationEvents;
+        return $types;
     }
 
     /**

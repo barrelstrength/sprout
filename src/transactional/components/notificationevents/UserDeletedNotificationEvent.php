@@ -53,14 +53,14 @@ class UserDeletedNotificationEvent extends NotificationEvent implements ElementE
         return $html;
     }
 
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
-        $event = $this->event ?? null;
-
-        return $event->sender ?? null;
+        return [
+            'user' => $this?->event?->sender,
+        ];
     }
 
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
         $user = Craft::$app->getUser()->getIdentity();
 
@@ -75,6 +75,8 @@ class UserDeletedNotificationEvent extends NotificationEvent implements ElementE
             $user = $query->one();
         }
 
-        return $user;
+        return [
+            'user' => $user,
+        ];
     }
 }

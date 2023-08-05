@@ -71,9 +71,9 @@ abstract class EmailType extends SavableComponent
     /**
      * @see `EmailType::$_additionalTemplateVariables`
      */
-    public function addAdditionalTemplateVariables(string $name, mixed $value): void
+    public function addAdditionalTemplateVariables(mixed $variables): void
     {
-        $this->_additionalTemplateVariables[$name] = $value;
+        $this->_additionalTemplateVariables = $variables;
     }
 
     /**

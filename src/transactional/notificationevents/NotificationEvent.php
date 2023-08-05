@@ -100,15 +100,15 @@ abstract class NotificationEvent extends SavableComponent
 
     /**
      * Returns the object that represents the event. The object returned will be passed to renderObjectTemplate
-     * and be available to output in the Notification Email templates via Craft Object Syntax:
+     * and be available to output in the Notification Email templates via Twig Expressions:
      *
      * @example   - Usage in Notification Email Templates
-     *            If getEventObject returns a craft\elements\Entry model, the Notification Email Templates
-     *            can output data from that model such as {title} OR {{ object.title }}
+     *            If getEventVariables returns a craft\elements\Entry model as 'entry', the Notification
+     *            Email Templates can output data from that model such as {entry.title} OR {{ object.entry.title }}
      *
      * @return mixed
      */
-    public function getEventObject(): mixed
+    public function getEventVariables(): mixed
     {
         return null;
     }
@@ -120,7 +120,7 @@ abstract class NotificationEvent extends SavableComponent
      *
      * @return mixed
      */
-    public function getMockEventObject(): mixed
+    public function getMockEventVariables(): mixed
     {
         return null;
     }

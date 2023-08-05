@@ -10,7 +10,7 @@ use yii\base\Event;
 
 trait ElementEventTrait
 {
-    public array $conditionRules = [];
+    public ?array $conditionRules = null;
 
     public function getSettingsHtml(): ?string
     {
@@ -46,12 +46,13 @@ trait ElementEventTrait
      */
     protected function matchElement(ElementInterface $element): bool
     {
-        if (!$this->conditionRules) {
-            return false;
+        if ($this->conditionRules === null) {
+            return true;
         }
 
         $condition = Craft::$app->conditions->createCondition($this->conditionRules);
         $condition->elementType = $element::class;
+        $condition->matchElement($element);
 
         return $condition->matchElement($element);
     }
