@@ -11,6 +11,8 @@ use craft\helpers\UrlHelper;
 
 class SubscriberListAudienceType extends AudienceType
 {
+    public ?array $userStatuses = null;
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-mailer', 'Subscriber List');
@@ -36,7 +38,33 @@ class SubscriberListAudienceType extends AudienceType
 
     public function getSettingsHtml(): ?string
     {
-        return '';
+        $userStatusOptions = [
+            [
+                'label' => Craft::t('sprout-module-mailer', 'Active'),
+                'value' => User::STATUS_ACTIVE,
+            ],
+            [
+                'label' => Craft::t('sprout-module-mailer', 'Pending'),
+                'value' => User::STATUS_PENDING,
+            ],
+            [
+                'label' => Craft::t('sprout-module-mailer', 'Inactive'),
+                'value' => User::STATUS_INACTIVE,
+            ],
+            [
+                'label' => Craft::t('sprout-module-mailer', 'Suspended'),
+                'value' => User::STATUS_SUSPENDED,
+            ],
+            [
+                'label' => Craft::t('sprout-module-mailer', 'Locked'),
+                'value' => User::STATUS_LOCKED,
+            ],
+        ];
+
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/audiences/SubscriberList/settings.twig', [
+            'audienceType' => $this,
+            'userStatusOptions' => $userStatusOptions,
+        ]);
     }
 
     public function getRecipients(): array
@@ -47,12 +75,16 @@ class SubscriberListAudienceType extends AudienceType
         $users = $query->sproutSubscriberListId($this->elementId)
             ->all();
 
+        $usersWithSelectedStatuses = array_filter($users, static function($user) {
+            return in_array($user->getStatus(), $this->userStatuses, true);
+        });
+
         $recipients = array_map(static function($user) {
             return new MailingListRecipient([
                 'name' => $user->getFriendlyName(),
                 'email' => $user->email,
             ]);
-        }, $users);
+        }, $usersWithSelectedStatuses);
 
         return $recipients;
     }

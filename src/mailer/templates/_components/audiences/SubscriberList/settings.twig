@@ -1,0 +1,17 @@
+{% import "_includes/forms" as forms %}
+
+{% if userStatusOptions|length %}
+    {{ forms.checkboxGroupField({
+        first: true,
+        label: 'Which users in this audience can receive emails?'|t('sprout-module-mailer'),
+        instructions: 'Select the user status groups that will receive emails when this audience is selected as a mailing list.'|t('sprout-module-mailer'),
+        id: 'userStatuses',
+        name: 'userStatuses',
+        options: userStatusOptions,
+        values: audienceType.userStatuses,
+    }) }}
+{% else %}
+    <p class="warning">
+        {{ 'No user groups exist.'|t('sprout-module-mailer') }}
+    </p>
+{% endif %}
