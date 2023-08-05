@@ -8,6 +8,7 @@
         data-send-email-action="sprout-module-mailer/mailer/send-test"
         data-modal-title="{{ 'Send a test'|t('sprout-module-mailer') }}"
         data-modal-action-btn-label="{{ 'Send Test'|t('sprout-module-mailer') }}"
+        onclick="window.SendEmailModal({{ email.id }})"
     >
         {{ "Send a test"|t('sprout-module-mailer') }}
     </a>
