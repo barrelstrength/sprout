@@ -1,39 +1,55 @@
 {% import "_includes/forms" as forms %}
 
-{{ forms.selectField({
-    id: "notificationEvent",
-    name: "emailTypeSettings[eventId]",
-    label: 'Event'|t('sprout-module-mailer'),
-    instructions: 'The event that will trigger your notification.'|t('sprout-module-mailer'),
-    options: eventOptions,
-    value: className(notificationEvent),
-    required: true,
-    toggle: true,
-    targetPrefix: 'notification-event-'
-}) }}
+{% set selectedNotificationEvent = className(notificationEvent) %}
 
-{% for type, event in events %}
-    {% if event.settings is not empty %}
-        <div id="notification-event-{{ className(event)|id }}" class="notification-event-wrapper hidden">
-            {% namespace 'emailTypeSettings[eventSettings][' ~ type ~ ']' %}
-                {% if className(event) is same as className(notificationEvent) %}
-                    {{ notificationEvent.getSettingsHtml()|raw }}
-                {% else %}
-                    {{ event.getSettingsHtml()|raw }}
-                {% endif %}
-            {% endnamespace %}
+<div x-data="NotificationEventTip('{{ selectedNotificationEvent|e('js') }}')">
+    {{ forms.selectField({
+        id: "notificationEvent",
+        name: "emailTypeSettings[eventId]",
+        label: 'Event'|t('sprout-module-mailer'),
+        instructions: 'The event that will trigger your notification.'|t('sprout-module-mailer'),
+        options: eventOptions,
+        value: selectedNotificationEvent,
+        required: true,
+        toggle: true,
+        targetPrefix: 'notification-event-',
+        inputAttributes: {
+            'x-on:change': 'selectedNotificationEvent = $event.target.value'
+        }
+    }) }}
 
+    {% for type, event in events %}
+        {% if event.settings is not empty %}
+            <div id="notification-event-{{ className(event)|id }}" class="notification-event-wrapper hidden">
+                {% namespace 'emailTypeSettings[eventSettings][' ~ type ~ ']' %}
+                    {% if className(event) is same as className(notificationEvent) %}
+                        {{ notificationEvent.getSettingsHtml()|raw }}
+                    {% else %}
+                        {{ event.getSettingsHtml()|raw }}
+                    {% endif %}
+                {% endnamespace %}
+            </div>
+        {% endif %}
+
+        {% if event.settings is not empty %}
             {% set eventTipHtml = event.getTipHtml() %}
 
             {% if currentUser.admin and eventTipHtml %}
-                <div class="readable">
-                    <blockquote class="note tip">
-                        {{ eventTipHtml|raw }}
-                    </blockquote>
-                </div>
-            {% endif %}
-        </div>
-    {% endif %}
-{% endfor %}
+                <template x-teleport="#sprout-notification-event-tip">
 
+                    <div x-show="selectedNotificationEvent === '{{ className(event)|e('js') }}'">
+                        {{ eventTipHtml|markdown }}
+                    </div>
+                </template>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+</div>
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
 {% do sprout.modules.core.vite.register('transactional/NotificationEvents.js', false) %}

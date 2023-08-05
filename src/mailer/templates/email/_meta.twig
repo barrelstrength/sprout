@@ -24,3 +24,7 @@
 
     </div>
 </fieldset>
+
+{% if currentUser.admin %}
+    <fieldset id="sprout-notification-event-tip" class="meta sprout-sidebar-info"></fieldset>
+{% endif %}

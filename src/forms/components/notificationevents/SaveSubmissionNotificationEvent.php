@@ -50,10 +50,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
 
     public function getTipHtml(): ?string
     {
-        $html = Html::tag('p', Craft::t('sprout-module-forms', 'Access the Form Submission Element in your email templates using the <code>object</code> variable. Example:'));
-        $html .= Html::tag('p', Html::tag('em', Craft::t('sprout-module-forms', 'We have received your submission, <code>{{ object.customNameFieldHandle }}</code>')));
-
-        return $html;
+        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/notificationevents/submission-event-info.md');
     }
 
     public function getEventVariables(): mixed

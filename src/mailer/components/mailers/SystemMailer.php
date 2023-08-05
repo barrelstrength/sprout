@@ -186,6 +186,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         $subjectLine = $mailerInstructionsSettings->getSubjectLine($email);
         $email->subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables);
+        $email->preheaderText = $view->renderObjectTemplate($email->preheaderText, $templateVariables);
         $email->defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables);
 
         $emailTheme->addTemplateVariable('email', $email);
