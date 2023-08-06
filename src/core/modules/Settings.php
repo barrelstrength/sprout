@@ -10,11 +10,11 @@ use yii\base\Component;
 
 class Settings extends Component
 {
-    public const EVENT_REGISTER_SPROUT_CRAFT_CP_SETTINGS_NAV_ITEMS = 'registerSproutCraftCpSettingsNavItems';
+    public const INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SETTINGS_NAV_ITEMS = 'registerSproutCraftCpSettingsNavItems';
 
-    public const EVENT_REGISTER_SPROUT_CRAFT_CP_SIDEBAR_NAV_ITEMS = 'registerSproutCraftCpSidebarNavItems';
+    public const INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SIDEBAR_NAV_ITEMS = 'registerSproutCraftCpSidebarNavItems';
 
-    public const EVENT_REGISTER_SPROUT_CP_SETTINGS_NAV_ITEMS = 'registerSproutCpSettingsNavItems';
+    public const INTERNAL_SPROUT_EVENT_REGISTER_CP_SETTINGS_NAV_ITEMS = 'registerSproutCpSettingsNavItems';
 
     /**
      * Returns items that will be added to Craft CP Settings navigation
@@ -53,7 +53,7 @@ class Settings extends Component
             'navItems' => [],
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_CRAFT_CP_SIDEBAR_NAV_ITEMS, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SIDEBAR_NAV_ITEMS, $event);
 
         $this->_craftCpSidebarNavItems = $event->navItems;
     }
@@ -91,7 +91,7 @@ class Settings extends Component
             'navItems' => $navItems,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_CRAFT_CP_SETTINGS_NAV_ITEMS, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SETTINGS_NAV_ITEMS, $event);
 
         $this->_craftCpSettingsNavItems = $event->navItems;
     }
@@ -122,7 +122,7 @@ class Settings extends Component
             'navItems' => [],
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_CP_SETTINGS_NAV_ITEMS, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_CP_SETTINGS_NAV_ITEMS, $event);
 
         $globalHeading = Craft::t('sprout-module-core', 'Global Settings');
 

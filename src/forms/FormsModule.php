@@ -142,7 +142,7 @@ class FormsModule extends Module
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CP_SETTINGS_NAV_ITEMS,
+            Settings::INTERNAL_SPROUT_EVENT_REGISTER_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $groupName = Craft::t('sprout-module-forms', 'Forms');
                 $event->navItems[$groupName] = $this->getSproutCpSettingsNavItems();
@@ -150,14 +150,14 @@ class FormsModule extends Module
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SIDEBAR_NAV_ITEMS,
+            Settings::INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SIDEBAR_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $event->navItems[] = $this->getCraftCpSidebarNavItems();
             });
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SETTINGS_NAV_ITEMS,
+            Settings::INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $event->navItems['sprout-module-forms'] = $this->getCraftCpSettingsNavItems();
             });

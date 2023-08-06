@@ -9,7 +9,7 @@ use yii\base\Component;
 
 class Modules extends Component
 {
-    public const EVENT_REGISTER_SPROUT_AVAILABLE_MODULES = 'registerSproutAvailableModules';
+    public const INTERNAL_SPROUT_EVENT_REGISTER_AVAILABLE_MODULES = 'registerSproutAvailableModules';
 
     /**
      * All Sprout modules class names that registered by the active Sprout plugins
@@ -30,7 +30,7 @@ class Modules extends Component
             'types' => [],
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SPROUT_AVAILABLE_MODULES, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_AVAILABLE_MODULES, $event);
 
         $this->_availableModules = array_unique($event->types);
     }

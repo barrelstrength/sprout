@@ -99,7 +99,7 @@ class SentEmailModule extends Module
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CP_SETTINGS_NAV_ITEMS,
+            Settings::INTERNAL_SPROUT_EVENT_REGISTER_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $groupName = Craft::t('sprout-module-sent-email', 'Email');
                 $newNavItems = $this->getSproutCpSettingsNavItems();
@@ -112,7 +112,7 @@ class SentEmailModule extends Module
 
         Event::on(
             Settings::class,
-            Settings::EVENT_REGISTER_SPROUT_CRAFT_CP_SETTINGS_NAV_ITEMS,
+            Settings::INTERNAL_SPROUT_EVENT_REGISTER_CRAFT_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
                 $event->navItems['sprout-module-sent-email'] = $this->getCraftCpSettingsNavItems();
             });
