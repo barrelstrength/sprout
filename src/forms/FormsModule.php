@@ -215,7 +215,7 @@ class FormsModule extends Module
 
         Event::on(
             NotificationEvents::class,
-            NotificationEvents::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES,
+            NotificationEvents::INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENT_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = SaveSubmissionNotificationEvent::class;
             });

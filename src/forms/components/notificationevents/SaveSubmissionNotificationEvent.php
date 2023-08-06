@@ -10,8 +10,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
-use craft\events\ElementEvent;
-use craft\helpers\Html;
 use yii\base\Event;
 
 class SaveSubmissionNotificationEvent extends NotificationEvent implements ElementEventInterface

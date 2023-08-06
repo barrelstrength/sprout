@@ -43,12 +43,6 @@ class DataSources extends Component
             UsersDataSource::class,
         ];
 
-        $internalEvent = new RegisterComponentTypesEvent([
-            'types' => $internalDataSourceTypes,
-        ]);
-
-        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_DATA_SOURCES, $internalEvent);
-
         if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
             $internalDataSourceTypes = array_merge($internalDataSourceTypes, [
                 CommerceOrderHistoryDataSource::class,
@@ -56,17 +50,23 @@ class DataSources extends Component
             ]);
         }
 
-        $proDataSourceTypes = new RegisterComponentTypesEvent([
+        $internalEvent = new RegisterComponentTypesEvent([
+            'types' => $internalDataSourceTypes,
+        ]);
+
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_DATA_SOURCES, $internalEvent);
+
+        $proEvent = new RegisterComponentTypesEvent([
             'types' => $internalDataSourceTypes,
         ]);
 
         if (DataStudioModule::isPro()) {
-            $this->trigger(self::EVENT_REGISTER_DATA_SOURCES, $proDataSourceTypes);
+            $this->trigger(self::EVENT_REGISTER_DATA_SOURCES, $proEvent);
         }
 
         // Get available Data Sets for current edition
         $availableDataSourceTypes = DataStudioModule::isPro()
-            ? array_merge($internalEvent->types, $proDataSourceTypes->types)
+            ? array_merge($internalEvent->types, $proEvent->types)
             : $internalEvent->types;
 
         $types = array_combine($availableDataSourceTypes, $availableDataSourceTypes);

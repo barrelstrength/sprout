@@ -35,37 +35,55 @@ class NotificationEvents extends Component
     /**
      * Registers any available NotificationEvent classes
      */
+    public const INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENT_TYPES = 'registerInternalSproutNotificationEventTypes';
+
     public const EVENT_REGISTER_NOTIFICATION_EVENT_TYPES = 'registerSproutNotificationEventTypes';
+
+    private ?array $_notificationEventsTypes = null;
 
     /**
      * Returns all the available Notification Event Types
      */
     public function getNotificationEventTypes(): array
     {
-        $notificationEvents[] = EntrySavedNotificationEvent::class;
+        if ($this->_notificationEventsTypes) {
+            return $this->_notificationEventsTypes;
+        }
+
+        $internalNotificationEventsTypes[] = EntrySavedNotificationEvent::class;
 
         if (TransactionalModule::isPro()) {
-            $notificationEvents[] = EntryDeletedNotificationEvent::class;
-            $notificationEvents[] = ManualNotificationEvent::class;
-
-            $notificationEvents[] = UserActivatedNotificationEvent::class;
-            $notificationEvents[] = UserDeletedNotificationEvent::class;
-            $notificationEvents[] = UserLoggedInNotificationEvent::class;
-            $notificationEvents[] = UserCreatedNotificationEvent::class;
-            $notificationEvents[] = UserUpdatedNotificationEvent::class;
+            $internalNotificationEventsTypes = [
+                EntryDeletedNotificationEvent::class,
+                ManualNotificationEvent::class,
+                UserActivatedNotificationEvent::class,
+                UserDeletedNotificationEvent::class,
+                UserLoggedInNotificationEvent::class,
+                UserCreatedNotificationEvent::class,
+                UserUpdatedNotificationEvent::class,
+            ];
         }
 
-        $event = new RegisterComponentTypesEvent([
-            'types' => $notificationEvents,
+        $internalEvent = new RegisterComponentTypesEvent([
+            'types' => $internalNotificationEventsTypes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $internalEvent);
 
-        $types = [];
+        $proEvent = new RegisterComponentTypesEvent([
+            'types' => $internalNotificationEventsTypes,
+        ]);
 
-        foreach ($event->types as $type) {
-            $types[$type] = $type;
+        if (TransactionalModule::isPro()) {
+            $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $proEvent);
         }
+
+        // Get available Notification Event Types for current edition
+        $availableNotificationEventTypes = TransactionalModule::isPro()
+            ? array_merge($internalEvent->types, $proEvent->types)
+            : $internalEvent->types;
+
+        $types = array_combine($availableNotificationEventTypes, $availableNotificationEventTypes);
 
         uasort($types, static function($a, $b): int {
             /**
