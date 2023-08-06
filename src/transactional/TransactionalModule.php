@@ -157,12 +157,20 @@ class TransactionalModule extends Module
                 'sprout-module-core/settings/redirect-nav-item',
 
             // Transactional Email Package
-            'sprout/email/<emailType:transactional-email>/edit/<elementId:\d+>' =>
+            'sprout/email/transactional-email/edit/<elementId:\d+>' =>
                 'elements/edit',
-            'sprout/email/<emailType:transactional-email>/new' =>
-                'sprout-module-mailer/email/create-email',
-            'sprout/email/<emailType:transactional-email>' =>
-                'sprout-module-mailer/email/email-index-template',
+            'sprout/email/transactional-email/new' => [
+                'route' => 'sprout-module-mailer/email/create-email',
+                'params' => [
+                    'emailType' => TransactionalEmailEmailType::class,
+                ],
+            ],
+            'sprout/email/transactional-email' => [
+                'route' => 'sprout-module-mailer/email/email-index-template',
+                'params' => [
+                    'emailType' => TransactionalEmailEmailType::class,
+                ],
+            ],
 
             // Welcome
             'sprout/welcome/transactional-email' => [

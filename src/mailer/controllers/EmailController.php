@@ -24,8 +24,9 @@ class EmailController extends Controller
 {
     public function actionEmailIndexTemplate(string $emailType = null): Response
     {
+
         /** @var string|EmailType $emailType */
-        if (!$emailType = MailerModule::getInstance()->emailTypes->getEmailTypeByHandle($emailType)) {
+        if (!$emailType = new $emailType()) {
             throw new InvalidArgumentException('Unable to find email type: ' . $emailType);
         }
 
@@ -61,7 +62,7 @@ class EmailController extends Controller
             throw new NotFoundHttpException('No email themes exist.');
         }
 
-        $emailType = MailerModule::getInstance()->emailTypes->getEmailTypeByHandle($emailType);
+        $emailType = new $emailType();
 
         if (!$emailType instanceof EmailType) {
             throw new NotFoundHttpException('No email type found.');

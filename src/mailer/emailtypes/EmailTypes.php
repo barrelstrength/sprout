@@ -15,7 +15,7 @@ class EmailTypes extends Component
     /**
      * @return EmailType[]
      */
-    public function getEmailTypeTypes(): array
+    public function getEmailTypes(): array
     {
         $emailTypes = [];
 
@@ -30,19 +30,5 @@ class EmailTypes extends Component
         }
 
         return $emailTypes;
-    }
-
-    public function getEmailTypeByHandle(string $handle = null): ?EmailType
-    {
-        $emailTypeTypes = $this->getEmailTypeTypes();
-        $emailTypes = ComponentHelper::typesToInstances($emailTypeTypes);
-
-        foreach ($emailTypes as $emailType) {
-            if ($emailType->handle === $handle) {
-                return $emailType;
-            }
-        }
-
-        return null;
     }
 }
