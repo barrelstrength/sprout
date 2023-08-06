@@ -1,9 +1,13 @@
 {% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
 {{ forms.lightswitchField({
     first: true,
-    label: 'Enable File Attachments'|t('sprout-module-mailer'),
+    label: 'Enable File Attachments'|t('sprout-module-mailer') ~ sproutCp.infoIcon(
+        "Large file attachments may cause Email Notifications to end up in spam filters or not be sent at all. Alternatively, consider sending Notification Emails with a link to the assets you wish to share."|t('sprout-module-transactional')
+    ),
     instructions: 'All files submitted with your entries will be attached to the triggered email.'|t('sprout-module-mailer'),
     name: 'emailTypeSettings[enableFileAttachments]',
     on: emailType.enableFileAttachments
 }) }}
+
