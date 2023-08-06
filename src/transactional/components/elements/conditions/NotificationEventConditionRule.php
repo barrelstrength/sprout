@@ -113,7 +113,7 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
     public function matchElement(ElementInterface $element): bool
     {
         /** @var TransactionalEmailElement $element */
-        $emailTypeSettings = $element->getEmailTypeSettings();
+        $emailTypeSettings = $element->getEmailType();
         $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
 
         /** @var ElementInterface $element */

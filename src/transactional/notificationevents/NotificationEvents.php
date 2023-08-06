@@ -142,7 +142,7 @@ class NotificationEvents extends Component
         foreach ($emails as $email) {
 
             /** @var TransactionalEmailEmailType $emailTypeSettings */
-            $emailTypeSettings = $email->getEmailTypeSettings();
+            $emailTypeSettings = $email->getEmailType();
             $notificationEvent = $emailTypeSettings->getNotificationEvent($email, $event);
 
             if (!$notificationEvent->matchNotificationEvent($event)) {
@@ -150,7 +150,7 @@ class NotificationEvents extends Component
             }
 
             $emailTypeSettings->setNotificationEvent($notificationEvent);
-            $email->setEmailTypeSettings($emailTypeSettings);
+            $email->setEmailType($emailTypeSettings);
 
             $email->send();
         }

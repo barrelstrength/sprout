@@ -20,8 +20,6 @@ use yii\base\Event;
 
 class TransactionalEmailEmailType extends EmailType
 {
-    public ?string $handle = 'transactional-email';
-
     /**
      * The qualified namespace of the Email Notification Event
      */
@@ -52,6 +50,11 @@ class TransactionalEmailEmailType extends EmailType
     public static function displayName(): string
     {
         return Craft::t('sprout-module-mailer', 'Transactional Email');
+    }
+
+    public static function refHandle(): ?string
+    {
+        return 'transactional-email';
     }
 
     public function getMailer(EmailElement $email): ?Mailer
@@ -112,7 +115,7 @@ class TransactionalEmailEmailType extends EmailType
             return $this->_notificationEvent;
         }
 
-        $emailType = $email->getEmailTypeSettings();
+        $emailType = $email->getEmailType();
 
         $settings = $emailType->getSettings();
 

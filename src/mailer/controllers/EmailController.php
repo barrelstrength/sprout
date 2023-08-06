@@ -70,7 +70,7 @@ class EmailController extends Controller
 
         $defaultMailer = MailerHelper::getDefaultMailer();
 
-        $email->emailType = $emailType::class;
+        $email->type = $emailType::class;
         $email->mailerUid = $defaultMailer->uid ?? null;
 
         $user = Craft::$app->getUser()->getIdentity();

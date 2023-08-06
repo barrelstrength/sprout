@@ -17,11 +17,6 @@ use craft\models\FieldLayoutTab;
 abstract class EmailType extends SavableComponent
 {
     /**
-     * The short name that will be used as an identifier and URL slug for this Email Type
-     */
-    public ?string $handle = null;
-
-    /**
      * Returns an array of data that will be provided to the template
      * as template variables. i.e. {{ object.title }}
      *
@@ -32,6 +27,11 @@ abstract class EmailType extends SavableComponent
      * ]
      */
     protected array $_additionalTemplateVariables = [];
+
+    /**
+     * The short name that will be used as an identifier and URL slug for this Email Type
+     */
+    abstract public static function refHandle(): ?string;
 
     /**
      * Returns the Mailer this Email Type uses when sending email

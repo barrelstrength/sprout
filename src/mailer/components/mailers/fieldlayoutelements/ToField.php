@@ -36,7 +36,7 @@ class ToField extends TextField
             throw new MissingComponentException('Email Element must exist before rendering edit page.');
         }
 
-        $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
+        $mailerInstructionsSettings = $element->getMailerInstructions();
 
         return $mailerInstructionsSettings->{$this->attribute()} ?? null;
     }

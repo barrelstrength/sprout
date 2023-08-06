@@ -65,6 +65,11 @@ class EmailElement extends Element implements EmailPreviewInterface
     //-------  SUBJECT --------
 
     /**
+     * The Email Type of this Email Element
+     */
+    public ?string $type = null;
+
+    /**
      * The Subject Line of your email. Your title will also default to the Subject Line unless you set a Title Format.
      */
     public string $subjectLine = '';
@@ -75,8 +80,6 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public ?string $emailThemeUid = null;
 
-    public ?string $emailType = null;
-
     public array $emailTypeSettings = [];
 
     public ?string $mailerUid = null;
@@ -85,7 +88,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     protected ?EmailTheme $_emailTheme = null;
 
-    protected ?EmailType $_emailTypeSettingsModel = null;
+    protected ?EmailType $_emailType = null;
 
     private ?FieldLayout $_fieldLayout = null;
 
@@ -221,11 +224,11 @@ class EmailElement extends Element implements EmailPreviewInterface
             'url' => UrlHelper::url('sprout/email'),
         ];
 
-        $emailType = $this->getEmailTypeSettings();
+        $emailType = $this->getEmailType();
 
         $crumbs[] = [
             'label' => $emailType::displayName(),
-            'url' => UrlHelper::url('sprout/email/' . $emailType->handle),
+            'url' => UrlHelper::url('sprout/email/' . $emailType::refHandle()),
         ];
 
         /** @var Response|CpScreenResponseBehavior $response */
@@ -241,7 +244,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $this->_mailer;
         }
 
-        $emailTypeSettings = $this->getEmailTypeSettings();
+        $emailTypeSettings = $this->getEmailType();
 
         $mailer = $emailTypeSettings->getMailer($this);
 
@@ -257,7 +260,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailer = $mailer;
     }
 
-    public function getMailerInstructionsSettings(): MailerInstructionsInterface
+    public function getMailerInstructions(): MailerInstructionsInterface
     {
         if ($this->_mailerInstructionsSettingsModel !== null) {
             return $this->_mailerInstructionsSettingsModel;
@@ -272,23 +275,23 @@ class EmailElement extends Element implements EmailPreviewInterface
         return $this->_mailerInstructionsSettingsModel;
     }
 
-    public function setEmailTypeSettings($emailTypeSettings): void
+    public function setEmailType($emailType): void
     {
-        $this->_emailTypeSettingsModel = $emailTypeSettings;
+        $this->_emailType = $emailType;
     }
 
-    public function getEmailTypeSettings(): EmailType
+    public function getEmailType(): EmailType
     {
-        if ($this->_emailTypeSettingsModel !== null) {
-            return $this->_emailTypeSettingsModel;
+        if ($this->_emailType !== null) {
+            return $this->_emailType;
         }
 
-        $emailType = new $this->emailType();
+        $emailType = new $this->type();
         $emailType->setAttributes($this->emailTypeSettings, false);
 
-        $this->_emailTypeSettingsModel = $emailType;
+        $this->_emailType = $emailType;
 
-        return $this->_emailTypeSettingsModel;
+        return $this->_emailType;
     }
 
     /**
@@ -339,12 +342,12 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         $mailer = $this->getMailer();
 
-        $mailer->send($this, $this->getMailerInstructionsSettings());
+        $mailer->send($this, $this->getMailerInstructions());
     }
 
     public function getAdditionalButtons(): string
     {
-        $emailType = $this->getEmailTypeSettings();
+        $emailType = $this->getEmailType();
 
         return $emailType::getAdditionalButtonsHtml($this) . parent::getAdditionalButtons();
     }
@@ -392,16 +395,16 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function cpEditUrl(): ?string
     {
-        $emailTypeSlug = $this->getEmailTypeSettings()->handle;
+        $emailType = $this->getEmailType();
 
-        return UrlHelper::cpUrl('sprout/email/' . $emailTypeSlug . '/edit/' . $this->getCanonicalId());
+        return UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/edit/' . $this->getCanonicalId());
     }
 
     public function getPostEditUrl(): ?string
     {
-        $emailTypeSlug = $this->getEmailTypeSettings()->handle;
+        $emailType = $this->getEmailType();
 
-        return UrlHelper::cpUrl('sprout/email/' . $emailTypeSlug);
+        return UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle());
     }
 
     public function getFieldLayout(): ?FieldLayout
@@ -463,7 +466,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $tab;
         }, $mailers);
 
-        $emailType = $this->getEmailTypeSettings();
+        $emailType = $this->getEmailType();
 
         $elementCondition = new TransactionalEmailCondition(self::class);
         $rule = new PreheaderTextConditionRule();
@@ -493,8 +496,8 @@ class EmailElement extends Element implements EmailPreviewInterface
             ]),
             new TextField([
                 'type' => 'hidden',
-                'name' => 'emailType',
-                'attribute' => 'emailType',
+                'name' => 'type',
+                'attribute' => 'type',
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
@@ -566,7 +569,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->mailerUid = $this->mailerUid;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
 
-        $emailElementRecord->emailType = $this->emailType;
+        $emailElementRecord->emailType = $this->type;
         $emailElementRecord->emailTypeSettings = $this->emailTypeSettings;
 
         $emailElementRecord->dateCreated = $this->dateCreated;
@@ -642,7 +645,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     protected function statusFieldHtml(): string
     {
-        if ($this->getEmailTypeSettings()->canBeDisabled()) {
+        if ($this->getEmailType()->canBeDisabled()) {
             return parent::statusFieldHtml();
         }
 
@@ -676,7 +679,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     protected function metadata(): array
     {
         return [
-            Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailTypeSettings()::displayName(),
+            Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailType()::displayName(),
         ];
     }
 

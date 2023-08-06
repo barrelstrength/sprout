@@ -33,7 +33,7 @@ class SenderField extends BaseNativeField
         $senderOptions = [];
 
         $mailer = $element->getMailer();
-        $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
+        $mailerInstructionsSettings = $element->getMailerInstructions();
 
         foreach ((array)$mailer->approvedSenders as $approvedSender) {
             if (!$approvedSender['fromEmail']) {

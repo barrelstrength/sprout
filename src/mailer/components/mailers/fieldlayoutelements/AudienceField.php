@@ -33,7 +33,7 @@ class AudienceField extends BaseNativeField
             throw new MissingComponentException('Email Element must exist before rendering edit page.');
         }
 
-        $mailerInstructionsSettings = $element->getMailerInstructionsSettings();
+        $mailerInstructionsSettings = $element->getMailerInstructions();
 
         $audiences = $mailerInstructionsSettings->getAudiences();
         $audiencesExist = AudienceElement::find()->exists();

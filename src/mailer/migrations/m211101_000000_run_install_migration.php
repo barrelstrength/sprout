@@ -71,14 +71,14 @@ class m211101_000000_run_install_migration extends Migration
         if (!$this->getDb()->tableExists(self::EMAILS_TABLE)) {
             $this->createTable(self::EMAILS_TABLE, [
                 'id' => $this->primaryKey(),
-                'emailType' => $this->string(),
                 'subjectLine' => $this->string(),
                 'preheaderText' => $this->string(),
                 'defaultMessage' => $this->text(),
-                'emailThemeUid' => $this->uid(),
+                'type' => $this->string(),
+                'emailTypeSettings' => $this->text(),
                 'mailerUid' => $this->uid(),
                 'mailerInstructionsSettings' => $this->text(),
-                'emailTypeSettings' => $this->text(),
+                'emailThemeUid' => $this->uid(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

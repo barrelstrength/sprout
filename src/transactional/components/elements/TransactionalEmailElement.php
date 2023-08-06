@@ -29,16 +29,11 @@ class TransactionalEmailElement extends EmailElement
         return Craft::t('sprout-module-transactional', 'transactional emails');
     }
 
-    public static function refHandle(): ?string
-    {
-        return 'transactional-email';
-    }
-
     public static function find(): ElementQueryInterface
     {
         return EmailElement::find()
             ->where([
-                'emailType' => TransactionalEmailEmailType::class,
+                'sprout_emails.type' => TransactionalEmailEmailType::class,
             ]);
     }
 

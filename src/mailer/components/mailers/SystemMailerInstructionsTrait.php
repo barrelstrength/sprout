@@ -133,12 +133,12 @@ trait SystemMailerInstructionsTrait
 
     public function getAdditionalTemplateVariables(EmailElement $email): array
     {
-        return $email->getEmailTypeSettings()->getAdditionalTemplateVariables();
+        return $email->getEmailType()->getAdditionalTemplateVariables();
     }
 
     public function getMessageFileAttachments(EmailElement $email): array
     {
-        $emailTypeSettings = $email->getEmailTypeSettings();
+        $emailTypeSettings = $email->getEmailType();
 
         if (!$emailTypeSettings->enableFileAttachments) {
             return [];
