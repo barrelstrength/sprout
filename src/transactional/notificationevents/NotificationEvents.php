@@ -35,9 +35,9 @@ class NotificationEvents extends Component
     /**
      * Registers any available NotificationEvent classes
      */
-    public const INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENT_TYPES = 'registerInternalSproutNotificationEventTypes';
+    public const INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENTS = 'registerInternalSproutNotificationEvents';
 
-    public const EVENT_REGISTER_NOTIFICATION_EVENT_TYPES = 'registerSproutNotificationEventTypes';
+    public const EVENT_REGISTER_NOTIFICATION_EVENTS = 'registerSproutNotificationEvents';
 
     private ?array $_notificationEventsTypes = null;
 
@@ -68,14 +68,14 @@ class NotificationEvents extends Component
             'types' => $internalNotificationEventsTypes,
         ]);
 
-        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $internalEvent);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENTS, $internalEvent);
 
         $proEvent = new RegisterComponentTypesEvent([
             'types' => $internalNotificationEventsTypes,
         ]);
 
         if (TransactionalModule::isPro()) {
-            $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_TYPES, $proEvent);
+            $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENTS, $proEvent);
         }
 
         // Get available Notification Event Types for current edition

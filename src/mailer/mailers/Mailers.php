@@ -7,7 +7,7 @@ use craft\events\RegisterComponentTypesEvent;
 
 class Mailers extends Component
 {
-    public const EVENT_REGISTER_MAILER_TYPES = 'registerSproutMailerTypes';
+    public const EVENT_REGISTER_MAILERS = 'registerSproutMailers';
 
     protected array $mailers = [];
 
@@ -22,7 +22,7 @@ class Mailers extends Component
             'types' => $mailers,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_MAILER_TYPES, $event);
+        $this->trigger(self::EVENT_REGISTER_MAILERS, $event);
 
         $eventMailers = $event->types;
 
