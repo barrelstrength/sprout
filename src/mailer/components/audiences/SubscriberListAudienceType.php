@@ -70,8 +70,10 @@ class SubscriberListAudienceType extends AudienceType
         $users = $query->sproutSubscriberListId($this->elementId)
             ->all();
 
-        $usersWithSelectedStatuses = array_filter($users, static function($user) {
-            return in_array($user->getStatus(), $this->userStatuses, true);
+        $userStatuses = $this->userStatuses;
+
+        $usersWithSelectedStatuses = array_filter($users, static function($user) use ($userStatuses) {
+            return in_array($user->getStatus(), $userStatuses, true);
         });
 
         $recipients = array_map(static function($user) {
