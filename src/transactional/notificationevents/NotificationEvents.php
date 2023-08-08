@@ -50,10 +50,12 @@ class NotificationEvents extends Component
             return $this->_notificationEventsTypes;
         }
 
-        $internalNotificationEventsTypes[] = EntrySavedNotificationEvent::class;
+        $internalNotificationEventsTypes = [
+            EntrySavedNotificationEvent::class
+        ];
 
         if (TransactionalModule::isPro()) {
-            $internalNotificationEventsTypes = [
+            $internalNotificationEventsTypes = array_merge($internalNotificationEventsTypes, [
                 EntryDeletedNotificationEvent::class,
                 ManualNotificationEvent::class,
                 UserActivatedNotificationEvent::class,
@@ -61,7 +63,7 @@ class NotificationEvents extends Component
                 UserLoggedInNotificationEvent::class,
                 UserCreatedNotificationEvent::class,
                 UserUpdatedNotificationEvent::class,
-            ];
+            ]);
         }
 
         $internalEvent = new RegisterComponentTypesEvent([
