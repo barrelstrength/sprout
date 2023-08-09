@@ -8,19 +8,60 @@
 
     {% for layoutElement in layoutFieldsElements -%}
         {%- set field = layoutElement.getField() %}
+
+        {%- set name = field.handle -%}
+        {%- set instructions = field.instructions -%}
+        {%- set required = layoutElement.required -%}
+        {%- set value = submission is not empty ? submission.getFieldValue(name) : null -%}
+        {%- set errors = submission is not empty ? submission.getErrors(name) : null -%}
+        {%- set inlineErrorsEnabled = form.errorDisplayMethod in ['both', 'inline'] ? true : false -%}
+
         {%- set fieldNamespace = field.getNamespace() ?? null %}
         {%- set fieldRenderingOptions = field.getRenderingOptions(renderingOptions.fields.container ?? []) %}
         {%- set inputRenderingOptions = field.getRenderingOptions(renderingOptions.fields.input ?? []) %}
 
+        {% set input %}
+            {% set defaultInputVariables = {
+                required: required,
+                instructions: instructions,
+                fieldNamespace: fieldNamespace,
+                errors: errors,
+            } %}
+            {% set customInputVariables = field.getFrontEndInputVariables(value, submission, inputRenderingOptions) %}
+            {% include field.getInputTemplate(form) with defaultInputVariables|merge(customInputVariables) only %}
+        {% endset %}
+
+        {% set inlineErrorHtml %}
+            {% if inlineErrorsEnabled and errors|length %}
+                {% include form.getIncludeTemplate('errors') with {
+                    errors: errors,
+                    name: name
+                } only %}
+            {% endif %}
+        {% endset %}
+
         {%- include form.getIncludeTemplate('field') with {
-            form: form,
-            submission: submission,
-            field: field,
-            required: layoutElement.required,
+            label: field.name,
+            instructions: instructions,
+            name: name,
+            required: required,
+            value: value,
+            errors: errors,
+
+            hasMultipleLabels: field.hasMultipleLabels(),
+            displayLabel: field.displayLabel(),
+            fieldInputFolder: field.getFieldInputFolder(),
+            isPlainInput: field.isPlainInput(),
+            fieldCssClasses: field['cssClasses'] is defined and not null ? field.cssClasses : '',
+
+            inlineErrorHtml: inlineErrorHtml,
+            input: input,
+
             fieldNamespace: fieldNamespace,
             fieldRenderingOptions: fieldRenderingOptions,
             inputRenderingOptions: inputRenderingOptions,
         } %}
+
     {%- endfor %}
 
 </section>

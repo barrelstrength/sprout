@@ -1,15 +1,18 @@
-{%- set label = field.name ?? null %}
-{%- set instructions = field.instructions ?? null %}
-{%- set name = field.handle ?? null %}
-{%- set required = field.required is defined and field.required ? true : false %}
+{%- set label = label ?? null %}
+{%- set instructions = instructions ?? null %}
+{%- set name = name ?? null %}
+{%- set required = required ? true : false %}
 
 {%- set id = fieldRenderingOptions.id ?? name %}
 {%- set class = fieldRenderingOptions.class ?? (name ~ '-field') %}
-{%- set value = submission is not empty ? submission.getFieldValue(name) : null %}
-{%- set inlineErrorsEnabled = form.errorDisplayMethod in ['both', 'inline'] ? true : false %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set value = value ?? null %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = fieldRenderingOptions.errorClass ?? 'errors' %}
-{%- set fieldCssClasses = field['cssClasses'] is defined and not null ? field.cssClasses : '' %}
+{%- set fieldCssClasses = fieldCssClasses ?? '' %}
+{%- set fieldInputFolder = fieldInputFolder ?? '' %}
+{%- set isPlainInput = isPlainInput ?: false %}
+{%- set hasMultipleLabels = hasMultipleLabels ?: false %}
+{%- set displayLabel = displayLabel ?: false %}
 
 {%- set dataAttributes = null %}
 {%- set data = fieldRenderingOptions.data ?? null %}
@@ -17,39 +20,27 @@
     {%- set dataAttributes = dataAttributes ~ ' data-'~key~'="'~dataValue~'"' %}
 {% endfor -%}
 
-{% set input %}
-    {% set defaultInputVariables = {
-        field: field,
-        required: field.required,
-        instructions: field.instructions,
-        fieldNamespace: fieldNamespace,
-        errors: submission is not empty ? submission.getErrors(name) : null,
-    } %}
-    {% set customInputVariables = field.getFrontEndInputVariables(value, submission, inputRenderingOptions) %}
-    {% include field.getInputTemplate(form) with defaultInputVariables|merge(customInputVariables) only %}
-{% endset %}
-
 {%- namespace fieldNamespace -%}
-    {%- if field.isPlainInput() -%}
+    {%- if isPlainInput -%}
 
         {{ input|raw }}
 
     {%- else %}
 
-        {% set fieldHtmlTag = field.hasMultipleLabels() ? 'fieldset' : 'div' -%}
+        {% set fieldHtmlTag = hasMultipleLabels ? 'fieldset' : 'div' -%}
 
         <{{ fieldHtmlTag }}
-        {%- if id %} id="{{ id }}-field"{% endif %} class="field {{ field.getFieldInputFolder() }}
+        {%- if id %} id="{{ id }}-field"{% endif %} class="field {{ fieldInputFolder }}
         {%- if class %} {{ class }}{% endif -%}
         {%- if fieldCssClasses %} {{ fieldCssClasses }}{% endif -%}
         {%- if errors %} {{ errorClass }}{% endif -%}
         {%- if required %} required{% endif -%}
         " {{- dataAttributes|raw -}}
         >
-        {% if (label or instructions) and field.displayLabel() -%}
+        {% if (label or instructions) and displayLabel -%}
             <div data-label="form-field-heading">
                 {% if label -%}
-                    {%- if field.hasMultipleLabels() -%}
+                    {%- if hasMultipleLabels -%}
                         <legend>{{- label|raw|t('site') -}}</legend>
                     {%- else -%}
                         <label{% if name %} for="{{ name }}"{% endif %}>
@@ -68,12 +59,9 @@
         <div data-label="form-field-input">
             {{ input|raw }}
         </div>
-        {% if inlineErrorsEnabled %}
-            {% include form.getIncludeTemplate('errors') with {
-                errors: errors,
-                name: name
-            } only %}
-        {% endif %}
+        {%- if inlineErrorHtml -%}
+            {{ inlineErrorHtml|raw }}
+        {%- endif -%}
 
         </{{ fieldHtmlTag }}>
     {%- endif -%}
