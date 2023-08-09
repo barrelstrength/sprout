@@ -84,8 +84,8 @@ class HiddenFormField extends Field implements FormFieldInterface, PreviewableFi
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
         ];
     }

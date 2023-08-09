@@ -179,10 +179,14 @@ class DateFormField extends CraftDate implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'timeOptions' => $this->getTimeIncrementsAsOptions($this->minuteIncrement),
             'renderingOptions' => $renderingOptions,
+            'showDate' => $this->showDate,
+            'showTime' => $this->showTime,
+            'minimumDate' => $this->minimumDate,
+            'maximumDate' => $this->maximumDate,
         ];
     }
 

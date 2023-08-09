@@ -19,10 +19,11 @@
 
 {% set input %}
     {% set defaultInputVariables = {
-        form: form,
-        submission: submission,
         field: field,
+        required: field.required,
+        instructions: field.instructions,
         fieldNamespace: fieldNamespace,
+        errors: submission is not empty ? submission.getErrors(name) : null,
     } %}
     {% set customInputVariables = field.getFrontEndInputVariables(value, submission, inputRenderingOptions) %}
     {% include field.getInputTemplate(form) with defaultInputVariables|merge(customInputVariables) only %}

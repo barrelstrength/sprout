@@ -1,8 +1,8 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = field.required ? true : false %}
+{%- set required = required ? true : false %}
 {%- set value = value ? value : null %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
 {%- set class = errors and errorClass ? class~' '~errorClass : class %}
 

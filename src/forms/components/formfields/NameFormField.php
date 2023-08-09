@@ -94,9 +94,13 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
+            'displayMultipleFields' => $this->displayMultipleFields,
+            'displayPrefix' => $this->displayPrefix,
+            'displayMiddleName' => $this->displayMiddleName,
+            'displaySuffix' => $this->displaySuffix,
         ];
     }
 

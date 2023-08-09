@@ -1,15 +1,15 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = field.required ? true : false %}
-{%- set hasInstructions = field.instructions ? true : false %}
+{%- set required = required ? true : false %}
+{%- set hasInstructions = instructions ? true : false %}
 {%- set value = value ? value : null %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
 {%- set class = errors and errorClass ? class~' '~errorClass : class %}
 
-{%- set placeholder = field.placeholder ? field.placeholder : null %}
-{%- set maxLength = field.charLimit ? field.charLimit : null %}
-{%- set initialRows = field.initialRows ? field.initialRows : 10 %}
+{%- set placeholder = placeholder ?? null %}
+{%- set maxLength = maxLength ?? null %}
+{%- set initialRows = initialRows ?? 10 %}
 
 {%- set dataAttributes = null %}
 {%- set data = renderingOptions.data ?? null %}
@@ -22,7 +22,7 @@
     {%- if id %} id="{{ id }}"{% endif %}
     {%- if class %} class="{{ class }}"{% endif %}
     {%- if required %} required aria-required="true"{% endif %}
-    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
     {%- if placeholder %} placeholder="{{ placeholder }}"{% endif %}
     {%- if maxLength %} maxlength="{{ maxLength }}"{% endif %}
     {%- if initialRows %} rows="{{ initialRows }}"{% endif %}

@@ -90,9 +90,10 @@ class CustomHtmlFormField extends Field implements FormFieldInterface, Previewab
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
+            'customHtml' => $this->customHtml,
         ];
     }
 

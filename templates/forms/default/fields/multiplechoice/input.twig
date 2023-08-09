@@ -1,13 +1,13 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = field.required ? true : false %}
-{%- set hasInstructions = field.instructions ? true : false %}
+{%- set required = required ? true : false %}
+{%- set hasInstructions = instructions ? true : false %}
 {%- set selectedValue = value is defined ? value : null %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
 {%- set class = errors and errorClass ? class~' '~errorClass : class %}
 
-{%- set options = field.options ? field.options : [] %}
+{%- set options = options ?? [] %}
 
 {%- set dataAttributes = null %}
 {%- set data = renderingOptions.data ?? null %}
@@ -31,7 +31,7 @@
                     {%- if name %} name="{{ name }}"{% endif %}
                     {%- if id %} id="{{ id }}-{{ loop.index }}"{% endif %}
                     {%- if required %} required aria-required="true"{% endif %}
-                    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                     {%- if optionValue %} value="{{ optionValue }}"{% endif %}
                     {%- if checked %} checked aria-checked="true"{% else %} aria-checked="false"{% endif %}
                     {{- dataAttributes|raw -}}

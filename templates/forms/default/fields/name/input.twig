@@ -1,9 +1,9 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = field.required ? true : false %}
-{%- set hasInstructions = field.instructions ? true : false %}
+{%- set required = required ? true : false %}
+{%- set hasInstructions = instructions ? true : false %}
 {%- set value = value ? value : null %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
 {%- set class = errors and errorClass ? class~' '~errorClass : class %}
 
@@ -13,19 +13,19 @@
     {%- set dataAttributes = dataAttributes ~ ' data-'~key~'="'~dataValue~'"' %}
 {% endfor -%}
 
-{% if field.displayMultipleFields %}
+{% if displayMultipleFields %}
 
     <div {%- if id %} id="{{ id }}"{% endif %} class="{{ name }}-wrapper
         {%- if class %} {{ class }}{% endif %}"
         {{- dataAttributes|raw -}}>
 
-        {% if field.displayPrefix %}
+        {% if displayPrefix %}
             <div {%- if id %} id="{{ id }}-prefix"{% endif %}>
                 <label {%- if id %} for="{{ id }}-prefix-input"{% endif %}>{{ "Prefix"|t('site') }}</label>
                 <input type="text"
                     {%- if name %} name="{{ name ~ '[name][prefix]' }}"{% endif %}
                     {%- if id %} id="{{ id }}-prefix-input"{% endif %}
-                    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                     {%- if value %} value="{{ value.prefix }}"{% endif %}
                 >
             </div>
@@ -37,18 +37,18 @@
                 {%- if name %} name="{{ name ~ '[name][firstName]' }}"{% endif %}
                 {%- if id %} id="{{ id }}-firstName-input"{% endif %}
                 {%- if required %} required aria-required="true"{% endif %}
-                {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                 {%- if value %} value="{{ value.firstName }}"{% endif %}
             >
         </div>
 
-        {% if field.displayMiddleName %}
+        {% if displayMiddleName %}
             <div {%- if id %} id="{{ id }}-middleName"{% endif %}>
                 <label {%- if id %} for="{{ id }}-middleName-input"{% endif %}>{{ "Middle"|t('site') }}</label>
                 <input type="text" autocomplete="additional-name"
                     {%- if name %} name="{{ name ~ '[name][middleName]' }}"{% endif %}
                     {%- if id %} id="{{ id }}-middleName-input"{% endif %}
-                    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                     {%- if value %} value="{{ value.middleName }}"{% endif %}
                 >
             </div>
@@ -60,18 +60,18 @@
                 {%- if name %} name="{{ name ~ '[name][lastName]' }}"{% endif %}
                 {%- if id %} id="{{ id }}-lastName-input"{% endif %}
                 {%- if required %} required aria-required=" true"{% endif %}
-                {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                 {%- if value %} value="{{ value.lastName }}"{% endif %}
             >
         </div>
 
-        {% if field.displaySuffix %}
+        {% if displaySuffix %}
             <div {%- if id %} id="{{ id }}-suffix"{% endif %}>
                 <label {%- if id %} for="{{ id }}-suffix-input"{% endif %}>{{ "Suffix"|t('site') }}</label>
                 <input type="text"
                     {%- if name %} name="{{ name ~ '[name][suffix]' }}"{% endif %}
                     {%- if id %} id="{{ id }}-suffix-input"{% endif %}
-                    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+                    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
                     {%- if value %} value="{{ value.suffix }}"{% endif %}
                 >
             </div>
@@ -86,7 +86,7 @@
         {%- if id %} id="{{ id }}"{% endif %}
         {%- if class %} class="{{ class }}"{% endif %}
         {%- if required %} required aria-required="true"{% endif %}
-        {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+        {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
         {%- if value %} value="{{ value.getFullName() }}"{% endif %}
     >
 

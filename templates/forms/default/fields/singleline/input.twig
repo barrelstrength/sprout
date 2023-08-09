@@ -1,7 +1,7 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = required ?? false %}
-{%- set hasInstructions = hasInstructions ?? false %}
+{%- set required = required ? true : false %}
+{%- set hasInstructions = instructions ? true : false %}
 {%- set value = value ?? null %}
 {%- set errors = errors ?? [] %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
@@ -21,7 +21,7 @@
     {%- if id %} id="{{ id }}"{% endif %}
     {%- if class %} class="{{ class }}"{% endif %}
     {%- if required %} required aria-required="true"{% endif %}
-    {%- if hasInstructions %} aria-describedby="{{ field.getNamespace() }}-{{ id }}-instructions"{% endif %}
+    {%- if hasInstructions %} aria-describedby="{{ fieldNamespace }}-{{ id }}-instructions"{% endif %}
     {%- if value %} value="{{ value }}"{% endif %}
     {%- if placeholder %} placeholder="{{ placeholder }}"{% endif %}
     {%- if maxLength %} maxlength="{{ maxLength }}"{% endif %}

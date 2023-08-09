@@ -153,11 +153,14 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         return [
             'name' => $name,
             'value' => $val,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'country' => $country,
             'countries' => $countries,
             'renderingOptions' => $renderingOptions,
+            'placeholder' => $this->placeholder,
+            'limitToSingleCountry' => $this->limitToSingleCountry,
+
         ];
     }
 

@@ -85,17 +85,15 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
 
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
-        $errorMessage = $this->getErrorMessage();
-        $placeholder = $this['placeholder'] ?? '';
-
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
-            'errorMessage' => $errorMessage,
+            //'field' => $this,
+            //'submission' => $submission,
+            'errorMessage' => $this->getErrorMessage(),
             'renderingOptions' => $renderingOptions,
-            'placeholder' => $placeholder,
+            'placeholder' => $this->placeholder,
+            'customPattern' => $this->customPattern,
         ];
     }
 

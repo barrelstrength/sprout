@@ -126,9 +126,12 @@ class NumberFormField extends CraftNumber implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
+            'min' => $this->min,
+            'max' => $this->max,
+            'decimals' => $this->decimals,
         ];
     }
 

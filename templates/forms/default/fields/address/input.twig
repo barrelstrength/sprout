@@ -1,8 +1,8 @@
 {%- set id = renderingOptions.id ?? name %}
 {%- set class = renderingOptions.class ?? name %}
-{%- set required = field.required ? true : false %}
-{%- set hasInstructions = field.instructions ? true : false %}
-{%- set errors = submission is not empty ? submission.getErrors(name) : null %}
+{%- set required = required ? true : false %}
+{%- set hasInstructions = instructions ? true : false %}
+{%- set errors = errors ?? null %}
 {%- set errorClass = renderingOptions.errorClass ?? null %}
 {%- set class = errors and errorClass ? class~' '~errorClass : class %}
 
@@ -13,7 +13,7 @@
 {% endfor -%}
 
 {# This will wrap the generated HTML for all the address fields #}
-<div{%- if id %} id="{{ id }}"{% endif %} class="{{ name }}-wrapper sproutfields-address-formfields {%- if class %} {{ class }}{% endif %}" data-namespace="{{ field.getNamespace() ~ '[' ~ name ~ ']' }}" {{- dataAttributes|raw -}}>
+<div{%- if id %} id="{{ id }}"{% endif %} class="{{ name }}-wrapper sproutfields-address-formfields {%- if class %} {{ class }}{% endif %}" data-namespace="{{ fieldNamespace ~ '[' ~ name ~ ']' }}" {{- dataAttributes|raw -}}>
 
     {# The select.html file is used for the Country dropdown fields. It will also be used used for the Region dropdown fields if hey exist, in the {{ form }} output below. #}
     {{ countryInputHtml }}

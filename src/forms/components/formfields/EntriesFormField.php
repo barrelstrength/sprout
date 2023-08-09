@@ -39,14 +39,17 @@ class EntriesFormField extends CraftEntries implements FormFieldInterface
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $entries = FormsModule::getInstance()->frontEndFields->getFrontEndEntries($this->getSettings());
+        $multiple = $this->maxRelations === null || $this->maxRelations > 1;
 
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'entries' => $entries,
+            'multiple' => $multiple,
+            'selectionLabel' => $this->selectionLabel,
         ];
     }
 

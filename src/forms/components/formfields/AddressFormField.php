@@ -294,8 +294,8 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
         $addressFormHtml = FormsModule::getInstance()->addressFormatter->getAddressFormHtml();
 
         return [
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'name' => $this->handle,
             'renderingOptions' => $renderingOptions,
             'addressFormHtml' => TemplateHelper::raw($addressFormHtml),

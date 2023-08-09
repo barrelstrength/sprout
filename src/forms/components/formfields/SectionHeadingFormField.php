@@ -99,10 +99,6 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
         $inputId = Html::id($name);
         $namespaceInputId = Craft::$app->getView()->namespaceInputId($inputId);
 
-        if ($this->notes === null) {
-            $this->notes = '';
-        }
-
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/fields/SectionHeading/input',
             [
                 'id' => $namespaceInputId,
@@ -123,16 +119,15 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
 
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
-        $name = $this->handle;
-        $namespaceInputId = $this->getNamespace() . '-' . $name;
-
-        if ($this->notes === null) {
-            $this->notes = '';
-        }
+        $namespaceInputId = $this->getNamespace() . '-' . $this->handle;
 
         return [
             'id' => $namespaceInputId,
-            'field' => $this,
+            'name' => $this->name,
+            'handle' => $this->handle,
+            'notes' => $this->notes,
+            'hideLabel' => $this->hideLabel,
+            'output' => $this->output,
         ];
     }
 

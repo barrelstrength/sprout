@@ -83,8 +83,8 @@ class RegularExpressionFormField extends Field implements FormFieldInterface, Pr
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'pattern' => $pattern,
             'errorMessage' => $this->customPatternErrorMessage,
             'renderingOptions' => $renderingOptions,

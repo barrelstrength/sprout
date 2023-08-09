@@ -39,14 +39,17 @@ class CategoriesFormField extends CraftCategories implements FormFieldInterface
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $categories = FormsModule::getInstance()->frontEndFields->getFrontEndCategories($this->getSettings());
+        $multiple = $this->maxRelations === null || $this->maxRelations > 1;
 
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'categories' => $categories,
+            'multiple' => $multiple,
+            'selectionLabel' => $this->selectionLabel,
         ];
     }
 

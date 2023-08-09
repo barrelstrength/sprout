@@ -48,9 +48,10 @@ class MultipleChoiceFormField extends CraftRadioButtons implements FormFieldInte
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
+            'options' => $this->options,
         ];
     }
 

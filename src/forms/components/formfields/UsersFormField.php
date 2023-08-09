@@ -41,14 +41,18 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
         $users = FormsModule::getInstance()->frontEndFields->getFrontEndUsers($this->getSettings());
+        $multiple = $this->maxRelations === null || $this->maxRelations > 1;
 
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'users' => $users,
+            'multiple' => $multiple,
+            'selectionLabel' => $this->selectionLabel,
+            'usernameFormat' => $this->usernameFormat,
         ];
     }
 

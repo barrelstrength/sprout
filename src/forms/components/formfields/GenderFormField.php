@@ -55,8 +55,8 @@ class GenderFormField extends Field implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'errorMessage' => '',
             'renderingOptions' => $renderingOptions,
         ];

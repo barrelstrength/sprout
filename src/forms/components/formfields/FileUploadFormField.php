@@ -101,12 +101,15 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
 
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
+        $multiple = $this->maxRelations === null || $this->maxRelations > 1;
+
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
+            'multiple' => $multiple,
         ];
     }
 

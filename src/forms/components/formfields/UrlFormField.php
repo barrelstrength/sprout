@@ -86,8 +86,8 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            'field' => $this,
-            'submission' => $submission,
+            //'field' => $this,
+            //'submission' => $submission,
             'pattern' => $this->customPattern,
             'errorMessage' => $errorMessage,
             'renderingOptions' => $renderingOptions,
