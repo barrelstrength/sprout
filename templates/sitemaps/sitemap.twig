@@ -1,19 +1,22 @@
 {%- if elements is iterable -%}
     {%- set urls -%}
         {%- for element in elements %}
+            {%- set altLinks = null %}
+            {%- if element.alternates is defined and element.alternates|length -%}
+                {%- set altLinks %}
+                    {%- for alternate in element.alternates %}
+
+                        <xhtml:link rel="alternate" hreflang="{{ alternate.locale }}" href="{{ alternate.url }}"/>
+                    {%- endfor %}
+                {% endset -%}{# end altLinks set #}
+            {%- endif %}{# end alternates if #}
 
             <url>
                 <loc>{{ element.url }}</loc>
                 <lastmod>{{ element.modified }}</lastmod>
                 <changefreq>{{ element.changeFrequency }}</changefreq>
                 <priority>{{ element.priority }}</priority>
-                {% if element.alternates is defined and element.alternates|length -%}
-                    {% for alternate in element.alternates %}
-
-                        <xhtml:link rel="alternate" hreflang="{{ alternate.locale }}" href="{{ alternate.url }}"/>
-                    {%- endfor %}{# alternates #}
-                {%- endif %}{# alternates? #}
-
+                {{- altLinks }}
             </url>
         {%- endfor -%}{# end element loop #}
     {%- endset -%}{# end urls set #}

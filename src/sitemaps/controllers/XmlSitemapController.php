@@ -92,7 +92,7 @@ class XmlSitemapController extends Controller
 
             // Prepare Custom Pages Sitemap
             case SitemapKey::CUSTOM_PAGES:
-                if ($multiSiteSiteIds !== []) {
+                if (!empty($multiSiteSiteIds)) {
                     $elements = $xmlSitemapService->getCustomPagesUrlsForMultipleIds(
                         $multiSiteSiteIds,
                         $sitesInGroup

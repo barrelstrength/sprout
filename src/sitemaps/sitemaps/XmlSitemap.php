@@ -148,7 +148,6 @@ class XmlSitemap extends Component
         }
 
         foreach ($enabledSitemapSections as $sitemapMetadata) {
-
             if (!$sitemapMetadata->enabled) {
                 continue;
             }
@@ -175,6 +174,7 @@ class XmlSitemap extends Component
                 }
 
                 $elements = $elementQuery
+                    ->siteId($currentSitemapSite->id)
                     ->offset($offset)
                     ->limit($totalElementsPerSitemap)
                     ->all();
@@ -193,7 +193,7 @@ class XmlSitemap extends Component
                         continue;
                     }
 
-                    if ($element->getUrl() === null) {
+                    if (!$url = $element->getUrl()) {
                         Craft::info('Element ID ' . $element->id . ' not added to sitemap. Element does not have a URL.', __METHOD__);
                         continue;
                     }
@@ -201,7 +201,7 @@ class XmlSitemap extends Component
                     // Add each location indexed by its id
                     $urls[$element->id][] = [
                         'id' => $element->id,
-                        'url' => $element->getUrl(),
+                        'url' => $url,
                         'locale' => $currentSitemapSite->language,
                         'modified' => $element->dateUpdated->format('Y-m-d\Th:i:s\Z'),
                         'priority' => $sitemapMetadata['priority'],
@@ -243,7 +243,7 @@ class XmlSitemap extends Component
             $urls[$sitemapMetadataGroup['uri']] = $sitemapMetadataGroup;
         }
 
-        return $this->getLocalizedSitemapStructure($urls);
+        return $this->getSitemapStructure($urls);
     }
 
     /**
@@ -281,7 +281,7 @@ class XmlSitemap extends Component
             }
         }
 
-        return $this->getLocalizedSitemapStructure($urls);
+        return $this->getSitemapStructure($urls);
     }
 
     /**
@@ -318,31 +318,41 @@ class XmlSitemap extends Component
     }
 
     /**
+     * Used for Custom Pages where we localized URLs are managed by where they are stored
+     */
+    protected function getSitemapStructure(array $urls): array
+    {
+        $sitemapUrls = [];
+
+        foreach ($urls as $url) {
+            $sitemapUrls[] = $url;
+        }
+
+        return $sitemapUrls;
+    }
+
+    /**
      * Returns an array of localized entries for a sitemap from a set of URLs indexed by id
      *
      * The returned structure is compliant with multiple locale google sitemap spec
      */
-    protected function getLocalizedSitemapStructure(array $stack): array
+    protected function getLocalizedSitemapStructure(array $urls): array
     {
-        // Defining the containing structure
-        $structure = [];
+        $localizedSitemapUrls = [];
 
         /**
          * Looping through all entries indexed by id
          */
-        foreach ($stack as $id => $locations) {
-            if (is_string($id)) {
-                // Adding a custom location indexed by its URL
-                $structure[] = $locations;
-            } else {
-                // Looping through each element and adding it as primary and creating its alternates
-                foreach ($locations as $location) {
-                    // Add secondary locations as alternatives to primary
-                    $structure[] = (is_countable($locations) ? count($locations) : 0) > 1 ? array_merge($location, ['alternates' => $locations]) : $location;
-                }
+        foreach ($urls as $localizedUrls) {
+            // Looping through each element and adding it as primary and creating its alternates
+            foreach ($localizedUrls as $url) {
+                // Add secondary locations as alternatives to primary
+                $localizedSitemapUrls[] = (is_countable($localizedUrls) ? count($localizedUrls) : 0) > 1
+                    ? array_merge($url, ['alternates' => $localizedUrls])
+                    : $url;
             }
         }
 
-        return $structure;
+        return $localizedSitemapUrls;
     }
 }
