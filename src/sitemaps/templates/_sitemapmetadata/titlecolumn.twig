@@ -33,13 +33,6 @@
             {% endif %}
 
         {% endif %}
-
-        {{ hiddenInput('sitemaps['~sourceKey~'][uri]', sitemapMetadata.uri) }}
-    {% endif %}
-
-
-    {% if sourceKey is defined %}
-        {{ hiddenInput('sitemaps['~sourceKey~'][id]', sourceKey) }}
     {% endif %}
 
 </strong>

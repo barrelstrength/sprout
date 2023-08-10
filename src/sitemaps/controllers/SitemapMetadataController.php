@@ -124,7 +124,7 @@ class SitemapMetadataController extends Controller
     /**
      * Renders a Sitemap Edit Page
      */
-    public function actionSitemapMetadataCustomQueryEditTemplate(string $sourceKey, int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadataRecord = null): Response
+    public function actionSitemapMetadataCustomQueryEditTemplate(string $sourceKey, int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadata = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -141,12 +141,12 @@ class SitemapMetadataController extends Controller
             throw new ForbiddenHttpException('User not permitted to edit content for this site.');
         }
 
-        if (!$sitemapMetadataRecord instanceof ActiveRecord) {
+        if (!$sitemapMetadata instanceof ActiveRecord) {
             if ($sitemapMetadataId) {
-                $sitemapMetadataRecord = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataById($sitemapMetadataId);
+                $sitemapMetadata = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataById($sitemapMetadataId);
             } else {
-                $sitemapMetadataRecord = new SitemapMetadataRecord();
-                $sitemapMetadataRecord->siteId = $site->id;
+                $sitemapMetadata = new SitemapMetadataRecord();
+                $sitemapMetadata->siteId = $site->id;
             }
         }
 
@@ -154,8 +154,8 @@ class SitemapMetadataController extends Controller
 
         if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
 
-            if ($sitemapMetadataRecord->settings) {
-                $currentConditionRules = Json::decodeIfJson($sitemapMetadataRecord->settings);
+            if ($sitemapMetadata->settings) {
+                $currentConditionRules = Json::decodeIfJson($sitemapMetadata->settings);
                 $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
             } else {
                 $currentCondition = null;
@@ -199,7 +199,7 @@ class SitemapMetadataController extends Controller
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit.twig', [
             'site' => $site,
-            'sitemapMetadata' => $sitemapMetadataRecord,
+            'sitemapMetadata' => $sitemapMetadata,
             'continueEditingUrl' => $continueEditingUrl,
             'sourceKey' => $sourceKey,
             'elementOptions' => $elementOptions ?? [],

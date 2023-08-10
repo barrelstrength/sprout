@@ -70,11 +70,9 @@ class XmlSitemap extends Component
 
                     if ($devMode) {
                         $debugString =
-                            '?devMode=true'
-                            . '&siteId=' . $sitemapMetadata->siteId
-                            . '&element=' . $elementWithUri::displayName()
-                            . '&sourceKey=' . $sitemapMetadata->sourceKey
-                            . '&sitemapMetadataId=' . $sitemapMetadata->id;
+                            '?siteId=' . $sitemapMetadata->siteId
+                            . '&sitemapMetadataId=' . $sitemapMetadata->id
+                            . '&type=' . $sitemapMetadata->type;
                     }
 
                     // Build Sitemap Index URLs
@@ -106,11 +104,9 @@ class XmlSitemap extends Component
 
                 if ($devMode) {
                     $debugString =
-                        '?devMode=true'
-                        . '&siteId=' . $customQuery->siteId
-                        . '&element=' . $customQuery->type
-                        . '&sourceKey=' . $customQuery->sourceKey
-                        . '&sitemapMetadataId=' . $customQuery->id;
+                        '?siteId=' . $customQuery->siteId
+                        . '&sitemapMetadataId=' . $customQuery->id
+                        . '&type=' . $customQuery->type;
                 }
 
                 // Build Sitemap Index URLs
@@ -261,14 +257,14 @@ class XmlSitemap extends Component
             ->select('[[siteId]], uri, priority, [[changeFrequency]], [[dateUpdated]]')
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
-            ->andWhere(['[[siteId]]' => $siteIds])
+            ->andWhere(['in', '[[siteId]]', $siteIds])
             ->andWhere(['[[sourceKey]]' => SitemapKey::CUSTOM_PAGES])
-            ->indexBy('[[siteId]]')
             ->all();
 
         foreach ($sitesInGroup as $siteInGroup) {
+
             foreach ($sitemapMetadata as $sitemapMetadataGroup) {
-                if ($siteInGroup->id !== $sitemapMetadataGroup['siteId']) {
+                if ($siteInGroup->id !== (int)$sitemapMetadataGroup['siteId']) {
                     continue;
                 }
 
