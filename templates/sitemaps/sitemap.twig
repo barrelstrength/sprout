@@ -1,16 +1,18 @@
 {%- if elements is iterable -%}
     {%- set urls -%}
-        {%- for element in elements -%}
+        {%- for element in elements %}
+
             <url>
                 <loc>{{ element.url }}</loc>
                 <lastmod>{{ element.modified }}</lastmod>
                 <changefreq>{{ element.changeFrequency }}</changefreq>
                 <priority>{{ element.priority }}</priority>
-                {%- if element.alternates is defined and element.alternates|length -%}
-                    {%- for alternate in element.alternates -%}
+                {% if element.alternates is defined and element.alternates|length -%}
+                    {% for alternate in element.alternates %}
+
                         <xhtml:link rel="alternate" hreflang="{{ alternate.locale }}" href="{{ alternate.url }}"/>
                     {%- endfor %}{# alternates #}
-                {%- endif -%}{# alternates? #}
+                {%- endif %}{# alternates? #}
 
             </url>
         {%- endfor -%}{# end element loop #}

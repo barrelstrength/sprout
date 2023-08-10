@@ -283,7 +283,7 @@
                 </div>
                 <div style="flex-shrink: 0;">
                     <div class="buttons right">
-                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-page/new') }}">
+                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-pages/new') }}">
                             {{ "Custom URL"|t('sprout-module-sitemaps') }}
                         </a>
                     </div>
@@ -314,8 +314,8 @@
                         <tr
                             x-data="SitemapMetadataRow"
                             x-ref="sitemapMetadataRow"
-                            data-type="custom-page"
-                            data-source-key="custom-page"
+                            data-type="custom-pages"
+                            data-source-key="custom-pages"
                             data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
                             data-site-id="{{ site.id }}"
                             data-uri="{{ sitemapMetadata.uri }}"
