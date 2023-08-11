@@ -21,7 +21,7 @@ class RelativeUrl extends AbstractLink
     {
         return Cp::textHtml([
             'name' => $this->namespaceInputName('url'),
-            'placeholder' => UrlHelper::siteUrl(),
+            'placeholder' => '/thank-you',
             'value' => $this->url,
         ]);
     }

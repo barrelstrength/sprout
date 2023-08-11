@@ -49,7 +49,7 @@ class Links extends Component
 
         $linkTypes = $linksService->getLinkTypes($excludedLinks);
         $variables['links'] = ComponentHelper::typesToInstances($linkTypes);
-        $variables['linkOptions'] = TemplateHelper::optionsFromComponentTypes($excludedLinks);
+        $variables['linkOptions'] = TemplateHelper::optionsFromComponentTypes($linkTypes);
 
         return Cp::renderTemplate('sprout-module-uris/links/input.twig', array_merge($config, $variables));
     }
