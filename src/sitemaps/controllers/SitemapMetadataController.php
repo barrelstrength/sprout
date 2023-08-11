@@ -36,23 +36,24 @@ class SitemapMetadataController extends Controller
 
         $settings = SitemapsModule::getInstance()->getSettings();
         $isMultiSite = Craft::$app->getIsMultiSite();
+        $isAggregationMethodMultiLanguage = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
 
         // Get Enabled Site IDs. Remove any disabled IDS.
         $enabledSiteIds = array_filter($settings->siteSettings);
         $enabledSiteGroupIds = array_filter($settings->groupSettings);
 
         $missingSettingsScenario1 = !$isMultiSite && empty($enabledSiteIds);
-        $missingSettingsScenario2 = $isMultiSite &&
-            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_SINGLE_LANGUAGE &&
-            empty($enabledSiteGroupIds);
+        $missingSettingsScenario2 = $isMultiSite
+            && !$isAggregationMethodMultiLanguage
+            && empty($enabledSiteGroupIds);
 
         if ($missingSettingsScenario1 && $missingSettingsScenario2) {
             throw new NotFoundHttpException('No Sites are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site for your Sitemap.');
         }
 
-        $missingSettingsScenario3 = $isMultiSite &&
-            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL &&
-            empty($enabledSiteGroupIds);
+        $missingSettingsScenario3 = $isMultiSite
+            && $isAggregationMethodMultiLanguage
+            && empty($enabledSiteGroupIds);
 
         if ($missingSettingsScenario3) {
             throw new NotFoundHttpException('No Site Groups are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site Group for your Sitemap.');
@@ -62,10 +63,7 @@ class SitemapMetadataController extends Controller
         $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
 
         // For per-site sitemaps, only display the Sites enabled in the Sprout SEO settings
-        if ($isMultiSite === false) {
-
-            $editableSiteIds = array_intersect($enabledSiteIds, $editableSiteIds);
-        } else {
+        if ($isAggregationMethodMultiLanguage) {
             $siteIdsFromEditableGroups = [];
 
             foreach ($enabledSiteGroupIds as $enabledSiteGroupId) {
@@ -76,6 +74,8 @@ class SitemapMetadataController extends Controller
             }
 
             $editableSiteIds = array_intersect($siteIdsFromEditableGroups, $editableSiteIds);
+        } else {
+            $editableSiteIds = array_intersect($enabledSiteIds, $editableSiteIds);
         }
 
         if ($isMultiSite) {

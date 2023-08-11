@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
+use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\db\Query;
 use craft\elements\Entry;
@@ -289,18 +290,19 @@ class XmlSitemap extends Component
      */
     public function getSitemapSites(): array
     {
-        $pluginSettings = SitemapsModule::getInstance()->getSettings();
+        $settings = SitemapsModule::getInstance()->getSettings();
 
         $currentSite = Craft::$app->sites->getCurrentSite();
         $isMultisite = Craft::$app->getIsMultiSite();
+        $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
 
         // For multi-lingual sitemaps, get all sites in the Current Site group
-        if ($isMultisite && in_array($currentSite->groupId, $pluginSettings->groupSettings, false)) {
+        if ($isMultisite && $aggregationMethodMultiLingual && in_array($currentSite->groupId, $settings->groupSettings, false)) {
             return Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
         }
 
         // For non-multi-lingual sitemaps, get the current site
-        if (!$isMultisite && in_array($currentSite->id, array_filter($pluginSettings->siteSettings), false)) {
+        if (!$aggregationMethodMultiLingual && in_array($currentSite->id, array_filter($settings->siteSettings), false)) {
             return [$currentSite];
         }
 

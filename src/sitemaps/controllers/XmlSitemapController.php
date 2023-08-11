@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
+use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\models\Site;
 use craft\web\Controller;
@@ -34,8 +35,13 @@ class XmlSitemapController extends Controller
             throw new NotFoundHttpException('XML Sitemap not enabled.');
         }
 
-        if (Craft::$app->getIsMultiSite()) {
-            $sitesInGroup = $xmlSitemapService->getSitemapSites();
+        $settings = SitemapsModule::getInstance()->getSettings();
+        $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
+
+        $sitesInGroup = $xmlSitemapService->getSitemapSites();
+
+        if (Craft::$app->getIsMultiSite() && $aggregationMethodMultiLingual) {
+
             $firstSiteInGroup = $sitesInGroup[0] ?? null;
 
             // Only render sitemaps for the primary site in a group
@@ -46,6 +52,10 @@ class XmlSitemapController extends Controller
             foreach ($sitesInGroup as $siteInGroup) {
                 $multiSiteSiteIds[] = (int)$siteInGroup->id;
             }
+        }
+
+        if (empty($sitesInGroup)) {
+            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
         }
 
         $sitemapIndexUrls = [];

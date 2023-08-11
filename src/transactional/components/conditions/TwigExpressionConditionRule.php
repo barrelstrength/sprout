@@ -80,7 +80,7 @@ class TwigExpressionConditionRule extends BaseConditionRule implements ElementCo
 
         // Evaluate Twig Expression
         try {
-            $resultTemplate = Craft::$app->view->renderObjectTemplate(
+            $resultTemplate = Craft::$app->getView()->renderObjectTemplate(
                 $twigExpression, $element
             );
 
