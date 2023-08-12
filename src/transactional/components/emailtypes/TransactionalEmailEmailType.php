@@ -62,7 +62,7 @@ class TransactionalEmailEmailType extends EmailType
         return MailerHelper::getMailerByUid($email->mailerUid);
     }
 
-    public static function getElementIndexType(): string
+    public static function elementType(): string
     {
         return TransactionalEmailElement::class;
     }

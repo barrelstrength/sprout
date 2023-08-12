@@ -41,7 +41,7 @@ abstract class EmailType extends SavableComponent
     /**
      * Returns the Element Class being used as the Element Index UI layer for this Email Type
      */
-    abstract public static function getElementIndexType(): string;
+    abstract public static function elementType(): string;
 
     /**
      * Returns the [[FieldLayoutTab]] model to display for this Email Type

@@ -5,9 +5,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
-use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
-use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
@@ -25,14 +23,13 @@ class EmailController extends Controller
 {
     public function actionEmailIndexTemplate(string $emailType = null): Response
     {
-
         /** @var string|EmailType $emailType */
         if (!$emailType = new $emailType()) {
             throw new InvalidArgumentException('Unable to find email type: ' . $emailType);
         }
 
         /** @var string|Element $elementType */
-        $elementType = $emailType::getElementIndexType();
+        $elementType = $emailType::elementType();
 
         $newButtonUrl = UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');

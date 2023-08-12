@@ -16,12 +16,10 @@ use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
-use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\SetStatus;
-use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
@@ -419,10 +417,13 @@ class EmailElement extends Element implements EmailPreviewInterface
             'type' => static::class,
         ]);
 
+        $emailType = $this->getEmailType();
+        $emailElementType = $emailType::elementType();
+
         $themes = EmailThemeHelper::getEmailThemes();
 
-        $themeTabs = array_map(static function(EmailTheme $theme) use ($fieldLayout, $twigExpressionMessage2) {
-            $elementCondition = new TransactionalEmailCondition(self::class);
+        $themeTabs = array_map(static function(EmailTheme $theme) use ($emailElementType, $fieldLayout, $twigExpressionMessage2) {
+            $elementCondition = $emailElementType::createCondition();
             $rule = new EmailThemeConditionRule();
             $rule->setValues([$theme->uid]);
             $elementCondition->addConditionRule($rule);
@@ -442,8 +443,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $mailers = MailerHelper::getMailers();
 
-        $mailerTabs = array_map(static function($mailer) use ($fieldLayout, $twigExpressionMessage1) {
-            $elementCondition = new TransactionalEmailCondition(self::class);
+        $mailerTabs = array_map(static function($mailer) use ($emailElementType, $fieldLayout, $twigExpressionMessage1) {
+            $elementCondition = $emailElementType::createCondition();
             $rule = new MailerConditionRule();
             $rule->setValues([$mailer->uid]);
             $elementCondition->addConditionRule($rule);
@@ -461,9 +462,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $tab;
         }, $mailers);
 
-        $emailType = $this->getEmailType();
-
-        $elementCondition = new TransactionalEmailCondition(self::class);
+        $elementCondition = $emailElementType::createCondition();
         $rule = new PreheaderTextConditionRule();
         $elementCondition->addConditionRule($rule);
 
