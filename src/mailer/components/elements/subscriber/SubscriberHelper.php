@@ -57,19 +57,19 @@ class SubscriberHelper
             return;
         }
 
-        /** @var AudienceElement[] $lists */
-        $lists = AudienceElement::find()
+        /** @var AudienceElement[] $subscriberLists */
+        $subscriberLists = AudienceElement::find()
             ->type(SubscriberListAudienceType::class)
             ->all();
 
         $sources = [];
 
-        if (!empty($lists)) {
+        if (!empty($subscriberLists)) {
             $sources[] = [
                 'heading' => Craft::t('sprout-module-mailer', 'Subscriber Lists'),
             ];
 
-            foreach ($lists as $list) {
+            foreach ($subscriberLists as $list) {
                 $source = [
                     'key' => 'subscriber-lists:' . $list->getId(),
                     'label' => $list->name,

@@ -154,8 +154,8 @@ class AudienceElement extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'handle' => ['label' => Craft::t('sprout-module-mailer', 'List Handle')],
-            'id' => ['label' => Craft::t('sprout-module-mailer', 'List ID')],
+            'handle' => ['label' => Craft::t('sprout-module-mailer', 'Audience Handle')],
+            'id' => ['label' => Craft::t('sprout-module-mailer', 'Audience ID')],
             'view' => ['label' => Craft::t('sprout-module-mailer', 'View Subscribers')],
             'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
             'manage' => ['label' => Craft::t('sprout-module-mailer', 'Manage')],
@@ -288,7 +288,7 @@ class AudienceElement extends Element
             $record = AudienceElementRecord::findOne($this->id);
 
             if (!$record instanceof AudienceElementRecord) {
-                throw new ElementNotFoundException('Invalid list ID: ' . $this->id);
+                throw new ElementNotFoundException('Invalid audience ID: ' . $this->id);
             }
             //            $record->elementId = $this->elementId;
         } else {
