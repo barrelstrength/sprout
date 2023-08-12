@@ -53,7 +53,10 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             'enabled' => $newSettings['enableNotificationEmails'],
         ];
 
-        unset($newSettings['pluginNameOverride']);
+        unset(
+            $newSettings['pluginNameOverride'],
+            $newSettings['enableNotificationEmails']
+        );
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newSettings,
             "Update Sprout Settings for “{$moduleSettingsKey}”"
