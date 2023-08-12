@@ -34,15 +34,13 @@ use yii\web\Response;
  */
 class AudienceElement extends Element
 {
-    public ?int $elementId = null;
+    public ?string $name = null;
+
+    public ?string $handle = null;
 
     public ?string $type = null;
 
     public array $settings = [];
-
-    public string $name = '';
-
-    public string $handle = '';
 
     public function __construct($config = [])
     {
@@ -175,7 +173,7 @@ class AudienceElement extends Element
     public function getAudienceType(): AudienceType
     {
         $audience = new $this->type();
-        $audience->elementId = $this->id;
+        $audience->element = $this;
 
         if ($this->settings) {
             $audience->setAttributes($this->settings, false);
@@ -294,9 +292,6 @@ class AudienceElement extends Element
         } else {
             $record = new AudienceElementRecord();
             $record->id = $this->id;
-
-            // Fallback and assign the current listId if no elementId is provided
-            $record->elementId = $this->elementId ?? $this->id;
         }
 
         $record->name = $this->name;
@@ -355,12 +350,6 @@ class AudienceElement extends Element
             ['handle'],
             SlugValidator::class,
             'except' => self::SCENARIO_ESSENTIALS,
-        ];
-        $rules[] = [
-            ['elementId', 'handle'],
-            UniqueValidator::class,
-            'targetClass' => AudienceElementRecord::class,
-            'targetAttribute' => ['elementId', 'handle'],
         ];
 
         return $rules;

@@ -24,7 +24,7 @@ class SubscriberListAudienceType extends AudienceType
         // https://sprout-dev.ddev.site/admin/users?site=en_us&source=subscriber-lists%3A90
         // https://sprout-dev.ddev.site/admin/users/all?site=en_us&source=*
         $editUrl = UrlHelper::cpUrl('users', [
-            'source' => 'subscriber-lists:' . $this->elementId,
+            'source' => 'subscriber-lists:' . $this->id,
         ]);
 
         return '<a href="' . $editUrl . '" class="go">' .
@@ -67,7 +67,7 @@ class SubscriberListAudienceType extends AudienceType
         $query = User::find();
 
         /** @var SproutSubscriberQueryBehavior $query */
-        $users = $query->sproutSubscriberListId($this->elementId)
+        $users = $query->sproutSubscriberListId($this->id)
             ->all();
 
         $userStatuses = $this->userStatuses;

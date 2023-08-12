@@ -14,10 +14,6 @@ class m211101_000002_update_element_types extends Migration
                 'oldType' => 'barrelstrength\sproutlists\elements\ListElement',
                 'newType' => 'BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement',
             ],
-            [
-                'oldType' => 'barrelstrength\sproutlists\elements\Subscriber',
-                'newType' => 'BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberElement',
-            ],
         ];
 
         foreach ($types as $type) {

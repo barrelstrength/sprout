@@ -9,35 +9,20 @@ use craft\helpers\Db;
 
 class AudienceElementQuery extends ElementQuery
 {
-    public ?int $elementId = null;
-
     public string $handle = '';
 
     public mixed $type = null;
 
-    public function __set($name, $value)
-    {
-        switch ($name) {
-            case 'elementId':
-                $this->elementId($value);
-                break;
-            case 'handle':
-                $this->handle($value);
-                break;
-            default:
-                parent::__set($name, $value);
-        }
-    }
-
-    /**
-     * @return static self reference
-     */
-    public function elementId(?int $value): AudienceElementQuery
-    {
-        $this->elementId = $value;
-
-        return $this;
-    }
+    //public function __set($name, $value)
+    //{
+    //    switch ($name) {
+    //        case 'handle':
+    //            $this->handle($value);
+    //            break;
+    //        default:
+    //            parent::__set($name, $value);
+    //    }
+    //}
 
     /**
      * @return static self reference
@@ -61,18 +46,11 @@ class AudienceElementQuery extends ElementQuery
         $this->joinElementTable('sprout_audiences');
 
         $this->query->select([
-            'sprout_audiences.elementId',
             'sprout_audiences.type',
             'sprout_audiences.settings',
             'sprout_audiences.name',
             'sprout_audiences.handle',
         ]);
-
-        if ($this->elementId) {
-            $this->subQuery->andWhere(Db::parseParam(
-                'sprout_audiences.elementId', $this->elementId
-            ));
-        }
 
         if ($this->handle) {
             $this->subQuery->andWhere(Db::parseParam(

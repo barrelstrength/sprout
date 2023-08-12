@@ -65,6 +65,8 @@ class AudienceController extends Controller
         }
 
         $element = Craft::createObject(AudienceElement::class);
+        $element->name = '';
+        $element->handle = '';
         $element->siteId = $site->id;
         $element->enabled = true;
         $element->type = $audience::class;

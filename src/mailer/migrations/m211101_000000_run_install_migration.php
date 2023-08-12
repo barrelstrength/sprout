@@ -34,11 +34,10 @@ class m211101_000000_run_install_migration extends Migration
         if (!$this->getDb()->tableExists(self::AUDIENCES_TABLE)) {
             $this->createTable(self::AUDIENCES_TABLE, [
                 'id' => $this->primaryKey(),
-                'elementId' => $this->integer()->notNull(),
-                'type' => $this->string()->notNull(),
-                'settings' => $this->text(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
+                'type' => $this->string()->notNull(),
+                'settings' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -48,7 +47,7 @@ class m211101_000000_run_install_migration extends Migration
             $this->createIndex(null, self::AUDIENCES_TABLE, ['name']);
             $this->createIndex(null, self::AUDIENCES_TABLE, ['handle']);
 
-            $this->addForeignKey(null, self::AUDIENCES_TABLE, ['elementId'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
+            $this->addForeignKey(null, self::AUDIENCES_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
         }
 
         if (!$this->getDb()->tableExists(self::SUBSCRIPTIONS_TABLE)) {
