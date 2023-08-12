@@ -248,7 +248,7 @@ class MailerModule extends Module
             $userService->checkPermission(TransactionalModule::p('accessModule'))
         ) {
             $navItems['transactional-email'] = [
-                'label' => Craft::t('sprout-module-transactional', 'Transactional'),
+                'label' => Craft::t('sprout-module-mailer', 'Transactional'),
                 'url' => 'sprout/email/transactional-email',
             ];
         }
@@ -257,7 +257,7 @@ class MailerModule extends Module
             $userService->checkPermission(SentEmailModule::p('accessModule'))
         ) {
             $navItems['sent-email'] = [
-                'label' => Craft::t('sprout-module-sent-email', 'Sent Email'),
+                'label' => Craft::t('sprout-module-mailer', 'Sent Email'),
                 'url' => 'sprout/email/sent-email',
             ];
         }

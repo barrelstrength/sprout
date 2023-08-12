@@ -39,6 +39,11 @@ abstract class EmailType extends SavableComponent
     abstract public function getMailer(EmailElement $email): ?Mailer;
 
     /**
+     * Creates a default Mailer in the project config for this Email Type
+     */
+    abstract public static function createDefaultMailer(): void;
+
+    /**
      * Returns the Element Class being used as the Element Index UI layer for this Email Type
      */
     abstract public static function elementType(): string;

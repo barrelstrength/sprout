@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
+use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;
 use craft\db\Migration;
 
@@ -15,14 +17,10 @@ class m211101_000000_run_install_migration extends Migration
 
     public function safeUp(): void
     {
-        $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
         $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
-        // @todo - fix default settings to import
-        Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-            'emailTemplateId' => self::DEFAULT_EMAIL_THEME, // @todo - this needs to be a UID now
-            'enablePerEmailEmailTemplateIdOverride' => false,
-        ], "Update Sprout CP Settings for “{$moduleSettingsKey}”");
+        MailerSchemaHelper::createDefaultMailer(TransactionalEmailEmailType::class);
+        MailerSchemaHelper::createDefaultEmailTheme();
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
             'enabled' => true,

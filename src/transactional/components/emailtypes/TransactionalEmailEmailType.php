@@ -10,10 +10,13 @@ use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\FileAttachmentsField;
 use BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements\NotificationEventField;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\fieldlayoutelements\HorizontalRule;
+use craft\helpers\App;
+use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use yii\base\Event;
@@ -60,6 +63,32 @@ class TransactionalEmailEmailType extends EmailType
     public function getMailer(EmailElement $email): ?Mailer
     {
         return MailerHelper::getMailerByUid($email->mailerUid);
+    }
+
+    public static function createDefaultMailer(): void
+    {
+        $mailSettings = App::mailSettings();
+
+        $mailer = new TransactionalMailer();
+        $mailer->name = 'System Mailer';
+        $mailer->uid = StringHelper::UUID();
+        $mailer->settings = [
+            'approvedSenders' => [
+                [
+                    'fromName' => $mailSettings->fromName,
+                    'fromEmail' => $mailSettings->fromEmail,
+                ],
+            ],
+            'approvedReplyToEmails' => [
+                [
+                    'replyToEmail' => $mailSettings->replyToEmail,
+                ],
+            ],
+        ];
+
+        MailerHelper::saveMailers([
+            $mailer->uid => $mailer,
+        ]);
     }
 
     public static function elementType(): string

@@ -9,6 +9,9 @@ use craft\db\Table;
 
 class m211101_000003_update_subscribers_to_users extends Migration
 {
+    public const SPROUT_KEY = 'sprout';
+    public const MODULE_ID = 'sprout-module-mailer';
+
     public const AUDIENCES_TABLE = '{{%sprout_audiences}}';
 
     public const SUBSCRIPTIONS_TABLE = '{{%sprout_subscriptions}}';
@@ -173,5 +176,15 @@ class m211101_000003_update_subscribers_to_users extends Migration
                     self::AUDIENCES_TABLE, $newCols, $rows)
                 ->execute();
         }
+
+        $key = self::SPROUT_KEY . '.' . self::MODULE_ID . '.enableSubscriberLists';
+
+        // If we have any audiences at this point we can assume they are type SubscriberListAudienceType
+        $audiencesExist = (new Query())
+            ->select(['id'])
+            ->from([self::AUDIENCES_TABLE])
+            ->exists();
+
+        Craft::$app->getProjectConfig()->set($key, $audiencesExist);
     }
 }

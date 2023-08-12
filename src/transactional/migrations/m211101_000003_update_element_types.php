@@ -12,7 +12,7 @@ class m211101_000003_update_element_types extends Migration
         $types = [
             [
                 'oldType' => 'barrelstrength\sproutbaseemail\elements\NotificationEmail',
-                'newType' => 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement',
+                'newType' => 'BarrelStrength\Sprout\mailer\components\elements\email\EmailElement',
             ],
         ];
 
@@ -24,12 +24,12 @@ class m211101_000003_update_element_types extends Migration
 
         // Update Field Layout Classes from Craft 2
         $this->update(Table::FIELDLAYOUTS, [
-            'type' => 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement',
+            'type' => 'BarrelStrength\Sprout\mailer\components\elements\email\EmailElement',
         ], ['type' => 'SproutEmail_NotificationEmail'], [], false);
 
         // Update Field Layout Classes from Craft 3
         $this->update(Table::FIELDLAYOUTS, [
-            'type' => 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement',
+            'type' => 'BarrelStrength\Sprout\mailer\components\elements\email\EmailElement',
         ], ['type' => 'barrelstrength\sproutbaseemail\elements\NotificationEmail'], [], false);
     }
 
