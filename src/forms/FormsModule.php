@@ -26,7 +26,6 @@ use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
 use BarrelStrength\Sprout\forms\formfields\FormFields;
 use BarrelStrength\Sprout\forms\formfields\FrontEndFields;
-use BarrelStrength\Sprout\forms\forms\FormHelper;
 use BarrelStrength\Sprout\forms\forms\Forms;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
@@ -34,7 +33,6 @@ use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formthemes\FormThemes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
-use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\config\BaseConfig;
@@ -227,14 +225,6 @@ class FormsModule extends Module
                 $event->types[] = FormElement::class;
                 $event->types[] = SubmissionElement::class;
             }
-        );
-
-        Event::on(
-            RelationsHelper::class,
-            RelationsHelper::EVENT_ADD_SOURCE_ELEMENT_RELATIONS,
-            [FormHelper::class, 'getSourceElementRelations'], [
-                'sourceElementType' => TransactionalEmailElement::class,
-            ]
         );
 
         Event::on(

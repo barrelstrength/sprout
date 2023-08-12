@@ -12,6 +12,13 @@ class TransactionalEmailElementQuery extends EmailElementQuery
 {
     public ?array $notificationEventFilterRule = null;
 
+    public function notificationEventFilterRule(array $value): static
+    {
+        $this->notificationEventFilterRule = $value;
+
+        return $this;
+    }
+
     protected function beforePrepare(): bool
     {
         $this->subQuery->andWhere([
@@ -40,24 +47,25 @@ class TransactionalEmailElementQuery extends EmailElementQuery
             $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")');
         }
 
+        /**
+         * MULTIPLE VALUES RENDER THIS QUERY
+         * AND (
+         *   JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId") IN (
+         *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntryDeletedNotificationEvent\"',
+         *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntrySavedNotificationEvent\"'
+         *   )
+         * )
+         *
+         * SINGULAR VALUE RENDER THIS QUERY
+         * AND (
+         *   JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")='BarrelStrength\\Sprout\\transactional\\components\\notificationevents\\EntrySavedNotificationEvent'
+         * )
+         */
         if (count($searchValues) > 1) {
             $searchValues = array_map(static function($value) {
                 return Json::encode($value);
             }, $searchValues);
         }
-
-        // MULTIPLE VALUES RENDER THIS QUERY
-        //AND (
-        //JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId") IN (
-        //    '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntryDeletedNotificationEvent\"',
-        //    '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntrySavedNotificationEvent\"'
-        //)
-        //)
-
-        // SINGULAR VALUE RENDER THIS QUERY
-        //AND (
-        //JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")='BarrelStrength\\Sprout\\transactional\\components\\notificationevents\\EntrySavedNotificationEvent'
-        //)
 
         $this->subQuery->andWhere([
             $operator,

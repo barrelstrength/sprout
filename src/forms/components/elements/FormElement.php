@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
 use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
+use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
@@ -413,10 +414,7 @@ class FormElement extends Element
             'module' => FormsModule::getInstance(),
         ]);
 
-        // @todo - this doesn't work yet, TransactionalEmails are related via Event
-        $relations = RelationsHelper::getSourceElementRelations($this, [
-            TransactionalEmailElement::class,
-        ]);
+        $relations = RelationsHelper::getSourceElementRelations($this);
 
         $relationsBtnHtml = Craft::$app->getView()->renderTemplate('sprout-module-core/_components/relations/button', [
             'elementId' => $this->id,
@@ -766,10 +764,15 @@ class FormElement extends Element
 
     public function getNotifications(): array
     {
-        // @todo - this doens't work yet because Transactional Emails aren't directly related
-        return RelationsHelper::getSourceElementRelations($this, [], [
-            TransactionalEmailElement::class,
+        $query = TransactionalEmailElement::find();
+        $query->notificationEventFilterRule([
+            'operator' => 'in',
+            'values' => [
+                SaveSubmissionNotificationEvent::class,
+            ],
         ]);
+
+        return $query->all();
     }
 
     public string|array $additionalTemplates = [];
