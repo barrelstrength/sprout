@@ -148,11 +148,6 @@ class EmailElement extends Element implements EmailPreviewInterface
         return new EmailElementQuery(static::class);
     }
 
-    public static function createCondition(): ElementConditionInterface
-    {
-        return Craft::createObject(TransactionalEmailCondition::class, [static::class]);
-    }
-
     public static function trackChanges(): bool
     {
         return true;

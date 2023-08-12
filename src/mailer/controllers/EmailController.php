@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
@@ -33,7 +34,7 @@ class EmailController extends Controller
         /** @var string|Element $elementType */
         $elementType = $emailType::getElementIndexType();
 
-        $newButtonUrl = UrlHelper::cpUrl('sprout/email/' . $elementType::refHandle() . '/new');
+        $newButtonUrl = UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
 
         return $this->renderTemplate('sprout-module-mailer/email/index.twig', [
@@ -41,7 +42,7 @@ class EmailController extends Controller
             'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
             'newButtonUrl' => $newButtonUrl,
-            'selectedSubnavItem' => $elementType::refHandle(),
+            'selectedSubnavItem' => $emailType::refHandle(),
         ]);
     }
 
