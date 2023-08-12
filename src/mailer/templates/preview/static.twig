@@ -2,7 +2,7 @@
 
 {% block previewBody %}
 
-    <section class="sentemail-pane sentemail-html active">
+    <section class="email-preview-pane email-preview-html active">
         {% if email.htmlBody %}
             <iframe width='100%' src="data:text/html;charset=utf-8,{{ email.htmlBody|raw|url_encode }}"></iframe>
         {% else %}
@@ -10,7 +10,7 @@
         {% endif %}
     </section>
 
-    <section class="sentemail-pane sentemail-text">
+    <section class="email-preview-pane email-preview-text">
         {% if email.textBody %}
             <pre>{{ email.textBody }}</pre>
         {% else %}

@@ -13,7 +13,7 @@ class PreheaderTextConditionRule extends BaseLightswitchConditionRule implements
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Preheader Text');
+        return Craft::t('sprout-module-mailer', 'Preheader Text');
     }
 
     public function getExclusiveQueryParams(): array

@@ -11,7 +11,7 @@ class SubjectLineConditionRule extends TitleConditionRule
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Subject Line');
+        return Craft::t('sprout-module-mailer', 'Subject Line');
     }
 
     public function getExclusiveQueryParams(): array

@@ -3,12 +3,12 @@
 {% set title = "Preview"|t('sprout-base-email') %}
 
 {% block body %}
-    <div class="sproutemail-sentemail-header">
-        <div class="btngroup sentemail-btngroup">
+    <div class="email-preview-header">
+        <div class="btngroup email-preview-btngroup">
             <button data-preview-target="html"
-                class="btn active sentemail-btn preview-html-btn">{{ 'HTML'|t('sprout-base-email') }}</button>
+                class="btn active email-preview-btn preview-html-btn">{{ 'HTML'|t('sprout-base-email') }}</button>
             <button data-preview-target="text"
-                class="btn sentemail-btn preview-text-btn">{{ 'Text'|t('sprout-base-email') }}</button>
+                class="btn email-preview-btn preview-text-btn">{{ 'Text'|t('sprout-base-email') }}</button>
         </div>
     </div>
 
@@ -25,15 +25,15 @@
             });
         {% endif %}
 
-        jQuery(".sentemail-btn").click(function() {
+        jQuery(".email-preview-btn").click(function() {
 
-        jQuery(".sentemail-btn").removeClass('active');
+        jQuery(".email-preview-btn").removeClass('active');
         jQuery(this).addClass('active');
 
         var previewTarget      = jQuery(this).data('preview-target');
-        var previewTargetClass = ".sentemail-" + previewTarget;
+        var previewTargetClass = ".email-preview-" + previewTarget;
 
-        jQuery('.sentemail-pane').removeClass('active');
+        jQuery('.email-preview-pane').removeClass('active');
         jQuery(previewTargetClass).addClass('active');
 
         })
@@ -63,7 +63,7 @@
         }
 
         /* Preview Header */
-        .sproutemail-sentemail-header {
+        .email-preview-header {
             border-bottom: 1px solid #eeeeee;
             padding-right: 20px;
             position: fixed;
@@ -72,14 +72,14 @@
             width: 100%;
         }
 
-        .sentemail-btngroup {
+        .email-preview-btngroup {
             border: 1px solid #ccc;
             border-radius: 6px;
             float: right;
             margin: 15px 15px;
         }
 
-        .sentemail-btngroup .btn {
+        .email-preview-btngroup .btn {
             background: none;
             border: none;
             padding: 6px 12px;
@@ -93,20 +93,20 @@
             margin: 0;
         }
 
-        .sentemail-btngroup .btn.preview-html-btn {
+        .email-preview-btngroup .btn.preview-html-btn {
             border-right: 1px solid #ccc;
             margin-right: 0 !important;
         }
 
-        .sentemail-btngroup .btn.preview-text-btn {
+        .email-preview-btngroup .btn.preview-text-btn {
             padding-right: 16px;
         }
 
-        .sentemail-btngroup .btn:hover {
+        .email-preview-btngroup .btn:hover {
             cursor: pointer;
         }
 
-        .sentemail-btngroup .btn.active {
+        .email-preview-btngroup .btn.active {
             background-image: -webkit-linear-gradient(#e4e5e7, #eaebec);
             background-image: -moz-linear-gradient(#e4e5e7, #eaebec);
             background-image: -ms-linear-gradient(#e4e5e7, #eaebec);
@@ -115,21 +115,21 @@
         }
 
         /* Body */
-        .sentemail-pane {
+        .email-preview-pane {
             display: none;
             height: 100%;
         }
 
-        .sentemail-pane.active {
+        .email-preview-pane.active {
             display: block;
         }
 
         /* Text Preview Body */
-        .sentemail-text {
+        .email-preview-text {
             margin: 10px;
         }
 
-        .sentemail-text pre {
+        .email-preview-text pre {
             height: auto;
             min-height: 500px;
             max-height: 500px;

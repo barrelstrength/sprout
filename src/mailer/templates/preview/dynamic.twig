@@ -4,11 +4,11 @@
 
     {% set previewUrl = actionUrl('sprout-module-mailer/preview/share-email?emailId='~email.id) %}
 
-    <section class="sentemail-pane sentemail-html active">
+    <section class="email-preview-pane email-preview-html active">
         <iframe id="preview-html" src="{{ previewUrl }}"></iframe>
     </section>
 
-    <section class="sentemail-pane sentemail-text">
+    <section class="email-preview-pane email-preview-text">
         <iframe id="preview-text" src="{{ previewUrl }}&type=text"></iframe>
     </section>
 
