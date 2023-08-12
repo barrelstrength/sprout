@@ -4,36 +4,54 @@ namespace BarrelStrength\Sprout\mailer\migrations\helpers;
 
 use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use Craft;
+use craft\helpers\App;
 use craft\helpers\Json;
+use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
 
 class MailerSchemaHelper
 {
     public const SPROUT_KEY = 'sprout';
-    public const DEFAULT_EMAIL_THEME = 'BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme';
 
     public static function insertDefaultMailerSettings(): void
     {
-        $mailerSettingsKey = self::SPROUT_KEY . '.' . MailerModule::getInstance()->id . '.mailers.' . StringHelper::UUID();
+        $mailSettings = App::mailSettings();
 
-        Craft::$app->getProjectConfig()->set($mailerSettingsKey, [
-            'name' => 'System Mailer',
-            'type' => SystemMailer::class,
-            'settings' => Json::encode([]),
+        $mailer = new TransactionalMailer();
+        $mailer->name = 'Transactional Mailer';
+        $mailer->uid = StringHelper::UUID();
+        $mailer->settings = [
+            'approvedSenders' => [
+                [
+                    'fromName' => $mailSettings->fromName,
+                    'fromEmail' => $mailSettings->fromEmail,
+                ]
+            ],
+            'approvedReplyToEmails' => [
+                [
+                    'replyToEmail' => $mailSettings->replyToEmail
+                ]
+            ],
+        ];
+
+        MailerHelper::saveMailers([
+            $mailer->uid => $mailer
         ]);
     }
 
     public static function createDefaultEmailThemeFieldLayout(): void
     {
         $emailTheme = new EmailMessageTheme();
-        $fieldLayout = $emailTheme->getFieldLayout();
+        $emailTheme->name = 'Simple Message';
+        $emailTheme->uid = StringHelper::UUID();
 
-        $projectConfig = Craft::$app->getProjectConfig();
-
-        $layoutUid = StringHelper::UUID();
-        $configPath = MailerModule::projectConfigPath('emailThemes.' . $layoutUid);
-        $projectConfig->set($configPath, $fieldLayout->getConfig());
+        EmailThemeHelper::saveEmailThemes([
+            $emailTheme->uid => $emailTheme
+        ]);
     }
 }

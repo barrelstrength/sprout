@@ -14,7 +14,6 @@ class m211101_000000_run_install_migration extends Migration
 
     public const EMAILS_TABLE = '{{%sprout_emails}}';
     public const AUDIENCES_TABLE = '{{%sprout_audiences}}';
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
     public const SUBSCRIPTIONS_TABLE = '{{%sprout_subscriptions}}';
 
     public function safeUp(): void
@@ -83,7 +82,13 @@ class m211101_000000_run_install_migration extends Migration
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
             ]);
-            // @todo - FKs, etc
+
+            $this->createIndex(null, self::EMAILS_TABLE, ['subjectLine']);
+            $this->createIndex(null, self::EMAILS_TABLE, ['type']);
+            $this->createIndex(null, self::EMAILS_TABLE, ['mailerUid']);
+            $this->createIndex(null, self::EMAILS_TABLE, ['emailThemeUid']);
+
+            $this->addForeignKey(null, self::EMAILS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
         }
     }
 
