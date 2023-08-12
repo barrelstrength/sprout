@@ -49,14 +49,14 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/notificationevents/entry-event-info.md');
     }
 
-    public function getEventVariables(): mixed
+    public function getEventVariables(): array
     {
         return [
             'entry' => $this?->event?->sender,
         ];
     }
 
-    public function getMockEventVariables(): mixed
+    public function getMockEventVariables(): array
     {
         $entry = null;
 

@@ -51,7 +51,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/notificationevents/submission-event-info.md');
     }
 
-    public function getEventVariables(): mixed
+    public function getEventVariables(): array
     {
         return [
             'submission' => $this?->event?->element,
@@ -61,7 +61,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
     /**
      * @todo fix bug where incorrect form can be selected.
      */
-    public function getMockEventVariables(): mixed
+    public function getMockEventVariables(): array
     {
         $criteria = SubmissionElement::find();
         $criteria->orderBy(['id' => SORT_DESC]);

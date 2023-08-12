@@ -51,14 +51,14 @@ class UserUpdatedNotificationEvent extends NotificationEvent implements ElementE
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/notificationevents/user-event-info.md');
     }
 
-    public function getEventVariables(): mixed
+    public function getEventVariables(): array
     {
         return [
             'user' => $this?->event?->sender,
         ];
     }
 
-    public function getMockEventVariables(): mixed
+    public function getMockEventVariables(): array
     {
         $user = Craft::$app->getUser()->getIdentity();
 

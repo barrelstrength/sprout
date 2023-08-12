@@ -105,24 +105,20 @@ abstract class NotificationEvent extends SavableComponent
      * @example   - Usage in Notification Email Templates
      *            If getEventVariables returns a craft\elements\Entry model as 'entry', the Notification
      *            Email Templates can output data from that model such as {entry.title} OR {{ object.entry.title }}
-     *
-     * @return mixed
      */
-    public function getEventVariables(): mixed
+    public function getEventVariables(): array
     {
-        return null;
+        return [];
     }
 
     /**
      * Returns mock data for $event->params that will be used when sending test Notification Emails.
      *
      * Real data can be dynamically retrieved from your database or a static fallback can be provided.
-     *
-     * @return mixed
      */
-    public function getMockEventVariables(): mixed
+    public function getMockEventVariables(): array
     {
-        return null;
+        return [];
     }
 
     /**

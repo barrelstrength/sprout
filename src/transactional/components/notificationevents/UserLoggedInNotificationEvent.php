@@ -53,14 +53,14 @@ class UserLoggedInNotificationEvent extends NotificationEvent implements Element
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/notificationevents/user-event-info.md');
     }
 
-    public function getEventVariables(): mixed
+    public function getEventVariables(): array
     {
         return [
             'user' => $this->event->identity,
         ];
     }
 
-    public function getMockEventVariables(): mixed
+    public function getMockEventVariables(): array
     {
         $user = Craft::$app->getUser()->getIdentity();
 
