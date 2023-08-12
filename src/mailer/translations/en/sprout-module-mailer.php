@@ -207,5 +207,5 @@ return [
     'Inactive' => 'Inactive',
     'The user groups who can receive' => 'The user groups who can receive',
     'Suspended' => 'Suspended',
-    'Pending' => 'Pending'
+    'Pending' => 'Pending',
 ];

@@ -83,4 +83,8 @@ return [
     'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query and does not filter query results.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query and does not filter query results.',
     'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query so cannot be used to filter query results.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'. This rule is evaluated after the Element Query so cannot be used to filter query results.',
     'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not change query results.' => 'This rule is intended for use in Notification Events and conditional layouts. The Twig Expression is evaluated after the Element Query is complete and does not change query results.',
+    'Triggered after a user group is assigned.' => 'Triggered after a user group is assigned.',
+    'When a new user group is assi' => 'When a new user group is assi',
+    'Large file attachments may cause Email Notifications to end up in spam filters or not be sent at all. Alternatively, consider sending Notification Emails with a link to the assets you wish to share.' => 'Large file attachments may cause Email Notifications to end up in spam filters or not be sent at all. Alternatively, consider sending Notification Emails with a link to the assets you wish to share.',
+    'When a user group is assigned' => 'When a user group is assigned'
 ];

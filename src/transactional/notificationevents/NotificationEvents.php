@@ -51,7 +51,7 @@ class NotificationEvents extends Component
         }
 
         $internalNotificationEventsTypes = [
-            EntrySavedNotificationEvent::class
+            EntrySavedNotificationEvent::class,
         ];
 
         if (TransactionalModule::isPro()) {

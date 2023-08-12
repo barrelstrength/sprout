@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\conditions;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
-use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementQuery;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
@@ -11,9 +10,6 @@ use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
-use craft\elements\db\ElementQueryInterface;
-use craft\helpers\Json;
-use yii\db\Expression;
 use yii\db\QueryInterface;
 
 class NotificationEventConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface

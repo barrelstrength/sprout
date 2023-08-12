@@ -3,9 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\components\elements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElementQuery;
 use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;

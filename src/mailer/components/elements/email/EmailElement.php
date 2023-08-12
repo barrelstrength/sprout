@@ -418,6 +418,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         ]);
 
         $emailType = $this->getEmailType();
+        /** @var Element|string $emailElementType */
         $emailElementType = $emailType::elementType();
 
         $themes = EmailThemeHelper::getEmailThemes();

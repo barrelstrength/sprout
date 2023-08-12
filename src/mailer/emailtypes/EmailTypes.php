@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\emailtypes;
 
-use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 

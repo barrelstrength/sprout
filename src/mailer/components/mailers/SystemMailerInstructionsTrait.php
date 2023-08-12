@@ -57,6 +57,7 @@ trait SystemMailerInstructionsTrait
     {
         if (!$this->replyToEmail) {
             $sender = $this->getSender();
+
             return key($sender);
         }
 
