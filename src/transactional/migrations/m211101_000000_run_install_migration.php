@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use Craft;
@@ -19,8 +21,23 @@ class m211101_000000_run_install_migration extends Migration
     {
         $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
-        MailerSchemaHelper::createDefaultMailer(TransactionalEmailEmailType::class);
-        MailerSchemaHelper::createDefaultEmailTheme();
+        MailerSchemaHelper::createDefaultMailerIfNoTypeExists(
+            TransactionalEmailEmailType::class
+        );
+        MailerSchemaHelper::createEmailThemeIfNoTypeExists(
+            EmailMessageTheme::class, [
+            'name' => 'Email Message',
+        ]);
+
+        // Check if plugin is installed:
+        $sproutFormsIsInstalled = Craft::$app->getPlugins()->isPluginInstalled('sprout-forms');
+
+        if ($sproutFormsIsInstalled) {
+            MailerSchemaHelper::createEmailThemeIfNoTypeExists(
+                FormSummaryEmailTheme::class, [
+                'name' => 'Form Summary',
+            ]);
+        }
 
         Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
             'enabled' => true,

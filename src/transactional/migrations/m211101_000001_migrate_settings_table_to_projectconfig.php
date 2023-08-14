@@ -4,10 +4,16 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
+use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\Json;
+use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 
 class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 {
@@ -17,6 +23,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     public const MODULE_CLASS = 'BarrelStrength\Sprout\transactional\TransactionalModule';
     public const OLD_SETTINGS_MODEL = 'barrelstrength\sproutbaseemail\models\Settings';
     public const OLD_SETTINGS_TABLE = '{{%sprout_settings_craft3}}';
+
+    public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
     public function safeUp(): void
     {
@@ -46,8 +54,88 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         // Prepare old settings for new settings format
         $newSettings = Json::decode($oldSettings['settings']);
 
-        // TODO emailTemplateId: migrate Class
-        // enablePerEmailEmailTemplateIdOverride
+        $oldEmailTemplateId = !empty($newSettings['emailTemplateId'])
+            ? $newSettings['emailTemplateId']
+            : null;
+
+        $emailThemeMapping = [
+            'barrelstrength\\sproutbaseemail\\emailtemplates\\BasicTemplates' => EmailMessageTheme::class,
+            'barrelstrength\\sproutforms\\integrations\\sproutemail\\emailtemplates\\basic\\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
+        ];
+
+        // Create Email Message Theme from global settings
+        if ($matchingEmailThemeType = $emailThemeMapping[$oldEmailTemplateId] ?? null) {
+            MailerSchemaHelper::createEmailThemeIfNoTypeExists($matchingEmailThemeType);
+        } else {
+            MailerSchemaHelper::createEmailThemeIfNoTypeExists(CustomTemplatesEmailTheme::class, [
+                'name' => 'Custom Templates',
+                'htmlEmailTemplate' => $oldEmailTemplateId,
+            ]);
+        }
+
+        // Create Email Message Theme from email-specific override settings
+        // Ignore 'enablePerEmailEmailTemplateIdOverride' and just migrate everything we find
+        // as it seems there was a bug where Templates may have displayed as an option irregardless of this setting
+        if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
+            $emails = (new Query())
+                ->select(['id', 'fieldLayoutId', 'emailTemplateId'])
+                ->from([self::OLD_NOTIFICATIONS_TABLE])
+                ->all();
+
+            foreach ($emails as $email) {
+                // Skip pre-defined themes
+                if ($emailThemeMapping[$email->emailTemplateId] ?? null) {
+                    continue;
+                }
+
+                $fieldLayoutId = !empty($email['fieldLayoutId'])
+                    ? $email['fieldLayoutId']
+                    : null;
+
+                $fieldLayouts = [];
+
+                if ($fieldLayoutId) {
+                    $oldFieldLayout = Craft::$app->getFields()->getLayoutById($fieldLayoutId);
+
+                    if (!$oldFieldLayout) {
+                        continue;
+                    }
+
+                    $oldTabs = $oldFieldLayout->getTabs();
+                    $mergedLayoutElements = [];
+
+                    // Merge all layout tabs into one
+                    foreach ($oldTabs as $fieldLayoutTab) {
+                        $layoutElements = $fieldLayoutTab->getElements();
+                        foreach ($layoutElements as $layoutElement) {
+                            $mergedLayoutElements[] = $layoutElement;
+                        }
+                    }
+
+                    $newFieldLayout = new FieldLayout();
+                    $newTab = new FieldLayoutTab();
+                    $newTab->setElements($mergedLayoutElements);
+
+                    $fieldLayouts = [
+                        $newFieldLayout->uid => $newFieldLayout->getConfig(),
+                    ];
+                }
+
+                $emailTheme = MailerSchemaHelper::createEmailThemeIfNoTypeExists(CustomTemplatesEmailTheme::class, [
+                    'name' => 'Custom Templates',
+                    'htmlEmailTemplate' => $email->emailTemplateId,
+                    'fieldLayouts' => $fieldLayouts,
+                ]);
+
+                // Set all emailTemplateId to the new Email Theme UID.
+                // This will be migrated in another migration and correct after the migration is complete.
+                $this->update(self::OLD_NOTIFICATIONS_TABLE, [
+                    'emailTemplateId' => $emailTheme->uid,
+                ], [
+                    'id' => $email['id'],
+                ]);
+            }
+        }
 
         $newCoreSettings = [
             'enabled' => $newSettings['enableNotificationEmails'],
@@ -55,7 +143,9 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         unset(
             $newSettings['pluginNameOverride'],
-            $newSettings['enableNotificationEmails']
+            $newSettings['enableNotificationEmails'],
+            $newSettings['enablePerEmailEmailTemplateIdOverride'],
+            $newSettings['emailTemplateId'],
         );
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newSettings,

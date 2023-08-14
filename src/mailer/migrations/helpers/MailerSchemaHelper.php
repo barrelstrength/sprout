@@ -2,26 +2,65 @@
 
 namespace BarrelStrength\Sprout\mailer\migrations\helpers;
 
-use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use craft\helpers\StringHelper;
 
 class MailerSchemaHelper
 {
-    public static function createDefaultMailer(EmailType $emailType): void
+    public static function createDefaultMailerIfNoTypeExists(string $type): Mailer
     {
-        $emailType::createDefaultMailer();
+        $mailers = MailerHelper::getMailers();
+
+        foreach ($mailers as $mailer) {
+            if ($mailer instanceof $type) {
+                return $mailer;
+            }
+        }
+
+        /** @var EmailType $emailType */
+        $emailType = new $type();
+        $mailer = $emailType::createDefaultMailer();
+
+        $mailers[$mailer->uid] = $mailer;
+
+        MailerHelper::saveMailers($mailers);
+
+        return $mailer;
     }
 
-    public static function createDefaultEmailTheme(): void
+    public static function createEmailThemeIfNoTypeExists(string $type, array $config = []): EmailTheme
     {
-        $emailTheme = new EmailMessageTheme();
-        $emailTheme->name = 'Simple Message';
+        $emailThemes = EmailThemeHelper::getEmailThemes();
+
+        foreach ($emailThemes as $emailTheme) {
+            $matchingCustomTemplates =
+                $emailTheme instanceof CustomTemplatesEmailTheme
+                && $emailTheme->htmlEmailTemplate === $config['htmlEmailTemplate'];
+
+            if ($emailTheme instanceof $type || $matchingCustomTemplates) {
+                return $emailTheme;
+            }
+        }
+
+        $emailTheme = new $type($config);
         $emailTheme->uid = StringHelper::UUID();
 
-        EmailThemeHelper::saveEmailThemes([
-            $emailTheme->uid => $emailTheme,
-        ]);
+        if (!$emailTheme->name) {
+            $reflection = new \ReflectionClass($emailTheme);
+            $words = preg_split('/(?=[A-Z])/', $reflection->getShortName());
+            $string = implode(' ', $words);
+            $emailTheme->name = trim($string);
+        }
+
+        $emailThemes[$emailTheme->uid] = $emailTheme;
+
+        EmailThemeHelper::saveEmailThemes($emailThemes);
+
+        return $emailTheme;
     }
 }

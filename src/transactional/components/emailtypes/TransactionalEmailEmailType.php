@@ -65,7 +65,7 @@ class TransactionalEmailEmailType extends EmailType
         return MailerHelper::getMailerByUid($email->mailerUid);
     }
 
-    public static function createDefaultMailer(): void
+    public static function createDefaultMailer(): Mailer
     {
         $mailSettings = App::mailSettings();
 
@@ -86,9 +86,7 @@ class TransactionalEmailEmailType extends EmailType
             ],
         ];
 
-        MailerHelper::saveMailers([
-            $mailer->uid => $mailer,
-        ]);
+        return $mailer;
     }
 
     public static function elementType(): string

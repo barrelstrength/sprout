@@ -2,151 +2,129 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
-use Psy\Util\Json;
+use craft\helpers\Json;
 
 class m211101_000006_migrate_notifications_tables extends Migration
 {
-    public const EMAIL_CLASS = 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement';
+    public const TRANSACTIONAL_EMAIL_ELEMENT_TYPE = 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement';
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
     public function safeUp(): void
     {
-        $oldThemeCols = [
-            'id', // grab for mapping but don't migrate
-            'emailTemplateId',
-        ];
-
-        $themeCols = [
-            'name',
-            'type',
-            'htmlEmailTemplate',
-            'copyPasteEmailTemplate',
-            'settings',
-            'sortOrder',
-        ];
-
-        // @todo - refactor to correct columns. Lots of changes and need to also
-        // consider how to migrate campaign-specific stuff, send rule, field layout...
-        //        $cols = [
-        //            'id',
-        //            'titleFormat',
-        //            'emailTemplateId',
-        //            'eventId',
-        //            'settings',
-        //            'sendRule',
-        //            'subjectLine',
-        //            'defaultMessage',
-        //            'recipients',
-        //            'cc',
-        //            'bcc',
-        //            'listSettings',
-        //            'fromName',
-        //            'fromEmail',
-        //            'replyToEmail',
-        //            'sendMethod',
-        //            'enableFileAttachments',
-        //            'dateCreated',
-        //            'dateUpdated',
-        //            'fieldLayoutId',
-        //            'uid',
-        //        ];
-
         $oldEmailCols = [
             'id',
             'subjectLine',
-            'fromName',
-            'fromEmail',
-            'replyToEmail',
-            'recipients',
+            'defaultBody as defaultMessage', // => defaultMessage
+            'emailTemplateId as emailThemeUid', // Already migrated to emailThemeUid
             'dateCreated',
             'dateUpdated',
             'uid',
 
-            'defaultBody', // Remap to defaultMessage
-            'emailTemplateId', // Remap to emailThemeUid
-            'preheaderText', // Hard code default
-            'emailType', // Hard code as 'notification' ?
+            // Mailer
+            'fromName', // => Approved Senders && mailerInstructionsSettings
+            'fromEmail', // => Approved Senders && mailerInstructionsSettings
+            'replyToEmail', // => Approved Reply To && mailerInstructionsSettings
+            'recipients', // => mailerInstructionsSettings
+            'cc', // Merge into recipients
+            'bcc', // => sendMethod
+            'listSettings', // => mailerInstructionsSettings Audience?
+            //'sendMethod', // no need to migrate, standardized to use List Method
+
+            // Email Type: Transactional, Notification Event Settings
+            'eventId',
+            'settings',
+            'sendRule',
+            'enableFileAttachments',
         ];
 
         $emailCols = [
             'id',
             'subjectLine',
+            'defaultMessage',
+            'emailThemeUid',
             'dateCreated',
             'dateUpdated',
             'uid',
 
-            'defaultMessage',
-            'emailThemeUid',
-            'preheaderText', // Hard code default
-            'emailType', // Hard code as 'notification' ?
+            //'preheaderText', // No need to migrate, new setting
+
+            // Email Type: Transactional
+            'type',
+            'emailTypeSettings',
+
+            // Mailer: Transactional Mailer
+            'mailerUid',
             'mailerInstructionsSettings',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
 
-            $themeRows = (new Query())
-                ->select($oldThemeCols)
-                ->from([self::OLD_NOTIFICATIONS_TABLE])
-                ->all();
-
-            $themeRowsMapped = [];
-            $sortOrder = 0;
-
-            foreach ($themeRows as $key => $themeRow) {
-
-                // If old setting is a classname, use it, if a path, set to CustomEmailTheme::class
-                //                if ($themeRow['emailTemplateId'] == )
-
-                // @todo fix all this logic... hard coded and wrong at the moment
-                //                $emailTheme = CustomEmailTheme::class;
-
-                $themeRowsMapped[$key] = [
-                    'name' => CustomTemplatesEmailTheme::displayName(),
-                    'type' => CustomTemplatesEmailTheme::class,
-
-                    // Check if custom themes are using same template values, may have multiple themes...
-                    'htmlEmailTemplate' => $themeRow['emailTemplateId'],
-                    'copyPasteEmailTemplate' => $themeRow['emailTemplateId'],
-                    'settings' => '',
-                    'sortOrder' => $sortOrder++,
-                ];
-                //                $themeMapping[$themeRow['id']] = $themeRow['emailTemplateId'];
-            }
-
-            // @todo - save $themeRowsMapped to Project Config
+            $defaultMailer = MailerHelper::getDefaultMailer();
 
             $rows = (new Query())
-                ->select(array_diff($oldEmailCols, ['preheaderText', 'emailType']))
+                ->select($oldEmailCols)
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
 
             foreach ($rows as $key => $value) {
-                $rows[$key]['defaultMessage'] = $rows[$key]['defaultBody'];
-                unset($rows[$key]['defaultBody']);
 
-                // @todo - figure out how we store custom template data...
-                $rows[$key]['emailThemeId'] = 1;
-                unset($rows[$key]['emailTemplateId']);
+                $rows[$key]['type'] = self::TRANSACTIONAL_EMAIL_ELEMENT_TYPE;
 
-                $rows[$key]['preheaderText'] = '';
-                $rows[$key]['emailType'] = self::EMAIL_CLASS;
+                //'eventId',
+                //'settings',
+                //'sendRule',
+                //'enableFileAttachments',
 
-                $rows[$key]['mailerInstructionsSettings'] = Json::encode([
-                    'fromName' => $rows[$key]['fromName'],
-                    'fromEmail' => $rows[$key]['fromEmail'],
-                    'replyToEmail' => $rows[$key]['replyToEmail'],
-                    'recipients' => $rows[$key]['recipients'],
+                $eventId = $rows[$key]['eventId'];
+                $oldEventSettings = Json::decode($rows[$key]['settings'] ?? '[]');
+                $sendRule = $rows[$key]['sendRule'];
+                $eventSettings = $this->prepareEventSettings($eventId, $oldEventSettings, $sendRule);
+
+                $rows[$key]['emailTypeSettings'] = Json::encode([
+                    'eventId' => $rows[$key]['eventId'],
+                    'eventSettings' => $eventSettings,
+                    'enableFileAttachments' => $rows[$key]['enableFileAttachments'] ?? '',
                 ]);
+
+                // merge bcc into recipients if cc not empty
+                $recipients = $rows[$key]['recipients'] ?? '';
+                $cc = $rows[$key]['cc'] ?? '';
+                if (!empty($cc)) {
+                    $recipients .= ',' . $cc;
+                }
+                $bcc = $rows[$key]['bcc'] ?? '';
+                if (!empty($bcc)) {
+                    $recipients .= ',' . $bcc;
+                }
+
+                $sender = $rows[$key]['fromName'] . ' <' . $rows[$key]['fromEmail'] . '>';
+
+                $listSettings = Json::decode($rows[$key]['listSettings'] ?? '[]');
+                $audienceIds = $listSettings['listIds'] ?? [];
+
+                $rows[$key]['mailerUid'] = $defaultMailer->uid;
+                $rows[$key]['mailerInstructionsSettings'] = Json::encode([
+                    'sender' => $sender,
+                    'replyToEmail' => $rows[$key]['replyToEmail'],
+                    'recipients' => trim($recipients),
+                    'audienceIds' => $audienceIds,
+                ]);
+
                 unset(
+                    $rows[$key]['preheaderText'], // No need to migrate, new setting
+                    $rows[$key]['fieldLayoutId'], // Migrated when CustomTemplateEmailTheme created
                     $rows[$key]['fromName'],
                     $rows[$key]['fromEmail'],
                     $rows[$key]['replyToEmail'],
-                    $rows[$key]['recipients']
+                    $rows[$key]['recipients'],
+                    $rows[$key]['cc'],
+                    $rows[$key]['bcc'],
+                    $rows[$key]['listSettings'],
                 );
             }
 
@@ -162,4 +140,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
         return false;
     }
+
+    public function prepareEventSettings($eventId, $oldEventSettings, $sendRule): array
+    {
 }
