@@ -70,18 +70,20 @@ class TransactionalEmailEmailType extends EmailType
 
         $mailer = new TransactionalMailer([
             'name' => 'System Mailer',
+            'mailerSettings' => [
+                'approvedSenders' => [
+                    [
+                        'fromName' => $mailSettings->fromName,
+                        'fromEmail' => $mailSettings->fromEmail,
+                    ],
+                ],
+                'approvedReplyToEmails' => [
+                    [
+                        'replyToEmail' => $mailSettings->replyToEmail,
+                    ],
+                ],
+            ],
             'uid' => StringHelper::UUID(),
-            'approvedSenders' => [
-                [
-                    'fromName' => $mailSettings->fromName,
-                    'fromEmail' => $mailSettings->fromEmail,
-                ],
-            ],
-            'approvedReplyToEmails' => [
-                [
-                    'replyToEmail' => $mailSettings->replyToEmail,
-                ],
-            ],
         ]);
 
         return $mailer;
