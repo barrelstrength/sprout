@@ -3,6 +3,8 @@
 namespace BarrelStrength\Sprout\transactional\migrations;
 
 use craft\db\Migration;
+use craft\db\Query;
+use craft\helpers\Json;
 
 class m211101_000005_update_component_types extends Migration
 {
@@ -10,6 +12,10 @@ class m211101_000005_update_component_types extends Migration
 
     public function safeUp(): void
     {
+        if (!$this->db->columnExists(self::OLD_NOTIFICATIONS_TABLE, 'eventId')) {
+            return;
+        }
+
         $types = [
             // Email
             [
@@ -36,13 +42,6 @@ class m211101_000005_update_component_types extends Migration
                 'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UserLoggedInNotificationEvent',
                 'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersLogin',
             ],
-            [
-                // Temporarily update all of these to UserUpdatedNotificationEvent
-                // And later when checking the event settings we can update any with isNew:true
-                // to UserCreatedNotificationEvent
-                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UsersSave',
-                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent',
-            ],
 
             // Forms
             [
@@ -52,14 +51,36 @@ class m211101_000005_update_component_types extends Migration
         ];
 
         foreach ($types as $type) {
-            if (!$this->db->columnExists(self::OLD_NOTIFICATIONS_TABLE, 'eventId')) {
-                continue;
-            }
-
             $this->update(self::OLD_NOTIFICATIONS_TABLE, [
                 'eventId' => $type['newType'],
             ], [
                 'eventId' => $type['oldType'],
+            ], [], false);
+        }
+
+        $oldType = 'barrelstrength\sproutemail\events\notificationevents\UsersSave';
+
+        $userNotificationEvents = (new Query())
+            ->select(['id', 'eventId', 'settings'])
+            ->from([self::OLD_NOTIFICATIONS_TABLE])
+            ->where(['eventId' => $oldType])
+            ->all();
+
+        foreach ($userNotificationEvents as $userNotificationEvent) {
+            $settings = Json::decode($userNotificationEvent['settings'] ?? []);
+
+            $whenNew = !empty($settings['whenNew']) ? true : false;
+
+            $newType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent';
+
+            if ($whenNew) {
+                $newType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent';
+            }
+
+            $this->update(self::OLD_NOTIFICATIONS_TABLE, [
+                'eventId' => $newType,
+            ], [
+                'eventId' => $oldType,
             ], [], false);
         }
     }

@@ -67,7 +67,7 @@ class SubscriberListAudienceType extends AudienceType
         $query = User::find();
 
         /** @var SproutSubscriberQueryBehavior $query */
-        $users = $query->sproutSubscriberListId($this->id)
+        $users = $query->sproutSubscriberListId($this->element->id)
             ->all();
 
         $userStatuses = $this->userStatuses;

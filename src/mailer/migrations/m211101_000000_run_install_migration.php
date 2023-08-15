@@ -41,7 +41,6 @@ class m211101_000000_run_install_migration extends Migration
                 'uid' => $this->uid(),
             ]);
 
-            $this->createIndex(null, self::AUDIENCES_TABLE, ['elementId']);
             $this->createIndex(null, self::AUDIENCES_TABLE, ['name']);
             $this->createIndex(null, self::AUDIENCES_TABLE, ['handle']);
 

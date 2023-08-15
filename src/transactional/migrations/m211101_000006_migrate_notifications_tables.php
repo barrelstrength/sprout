@@ -2,15 +2,21 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
+use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\Json;
+use craft\helpers\StringHelper;
 
 class m211101_000006_migrate_notifications_tables extends Migration
 {
-    public const TRANSACTIONAL_EMAIL_ELEMENT_TYPE = 'BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement';
+    public const TRANSACTIONAL_EMAIL_TYPE = 'BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType';
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
@@ -73,16 +79,11 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
             foreach ($rows as $key => $value) {
 
-                $rows[$key]['type'] = self::TRANSACTIONAL_EMAIL_ELEMENT_TYPE;
-
-                //'eventId',
-                //'settings',
-                //'sendRule',
-                //'enableFileAttachments',
+                $rows[$key]['type'] = self::TRANSACTIONAL_EMAIL_TYPE;
 
                 $eventId = $rows[$key]['eventId'];
                 $oldEventSettings = Json::decode($rows[$key]['settings'] ?? '[]');
-                $sendRule = $rows[$key]['sendRule'];
+                $sendRule = !empty($rows[$key]['sendRule']) ? $rows[$key]['sendRule'] : null;
                 $eventSettings = $this->prepareEventSettings($eventId, $oldEventSettings, $sendRule);
 
                 $rows[$key]['emailTypeSettings'] = Json::encode([
@@ -90,6 +91,17 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     'eventSettings' => $eventSettings,
                     'enableFileAttachments' => $rows[$key]['enableFileAttachments'] ?? '',
                 ]);
+
+                $emailThemeMapping = [
+                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageTheme::class,
+                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
+                ];
+
+                if ($matchingEmailThemeType = $emailThemeMapping[$rows[$key]['emailThemeUid']] ?? null) {
+                    // Any mapped email themes should already be migrated
+                    $emailTheme = MailerSchemaHelper::createEmailThemeIfNoTypeExists($matchingEmailThemeType);
+                    $rows[$key]['emailThemeUid'] = $emailTheme->uid;
+                }
 
                 // merge bcc into recipients if cc not empty
                 $recipients = $rows[$key]['recipients'] ?? '';
@@ -125,6 +137,10 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $rows[$key]['cc'],
                     $rows[$key]['bcc'],
                     $rows[$key]['listSettings'],
+                    $rows[$key]['eventId'],
+                    $rows[$key]['settings'],
+                    $rows[$key]['sendRule'],
+                    $rows[$key]['enableFileAttachments'],
                 );
             }
 
@@ -143,4 +159,238 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
     public function prepareEventSettings($eventId, $oldEventSettings, $sendRule): array
     {
+        if (empty($oldEventSettings)) {
+            return [];
+        }
+
+        $conditionRules = [];
+
+        switch ($eventId) {
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent':
+                $conditionClass = 'craft\elements\conditions\entries\EntryCondition';
+                $conditionConfig = [
+                    'elementType' => 'craft\elements\Entry',
+                    'fieldContext' => 'global',
+                ];
+
+                // {"whenNew":"1","whenUpdated":"","sectionIds":["1"]}
+                // {"whenNew":"1","whenUpdated":"","sectionIds":"*"}
+                $whenNew = !empty($oldEventSettings['whenNew']) ? true : false;
+                $whenUpdated = !empty($oldEventSettings['whenUpdated']) ? true : false;
+                $sectionIds = $oldEventSettings['sectionIds'] ?? [];
+
+                if ($whenNew) {
+                    $ruleUid = StringHelper::UUID();
+                    $conditionRules[] = [
+                        'uid' => $ruleUid,
+                        'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
+                        'type' => [
+                            'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
+                            'uid' => $ruleUid,
+                            'value' => true,
+                        ],
+                        'operator' => '',
+                        'value' => '1',
+                    ];
+                }
+
+                if ($whenUpdated) {
+                    $ruleUid = StringHelper::UUID();
+                    $conditionRules[] = [
+                        'uid' => $ruleUid,
+                        'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
+                        'type' => [
+                            'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
+                            'uid' => $ruleUid,
+                            'value' => true,
+                        ],
+                        'operator' => '',
+                        'value' => '1',
+                    ];
+                }
+
+                // Do nothing. No condition rule will send to ALL sections.
+                //if ($sectionIds === '*') { }
+
+                if (!empty($sectionIds) && $sectionIds !== '*' && count($sectionIds)) {
+
+                    $sectionUids = (new Query())
+                        ->select(['uid'])
+                        ->from([Table::SECTIONS])
+                        ->where(['id' => $sectionIds])
+                        ->column();
+
+                    $ruleUid = StringHelper::UUID();
+                    $conditionRules[] = [
+                        'uid' => $ruleUid,
+                        'class' => 'craft\\elements\\conditions\\entries\\SectionConditionRule',
+                        'type' => [
+                            'class' => 'craft\\elements\\conditions\\entries\\SectionConditionRule',
+                            'uid' => $ruleUid,
+                            'operator' => 'in',
+                            'values' => $sectionUids,
+                        ],
+                        'operator' => 'in',
+                        'values' => $sectionUids,
+                    ];
+                }
+
+                break;
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent':
+                $conditionClass = 'craft\elements\conditions\entries\EntryCondition';
+                $conditionConfig = [
+                    'elementType' => 'craft\elements\Entry',
+                    'fieldContext' => 'global',
+                ];
+
+                $ruleUid = StringHelper::UUID();
+                $conditionRules[] = [
+                    'uid' => $ruleUid,
+                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                    'type' => [
+                        'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                        'uid' => $ruleUid,
+                        'value' => false,
+                    ],
+                    'operator' => '',
+                    'value' => '',
+                ];
+
+                $ruleUid = StringHelper::UUID();
+                $conditionRules[] = [
+                    'uid' => $ruleUid,
+                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule',
+                    'type' => [
+                        'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                        'uid' => $ruleUid,
+                        'value' => false,
+                    ],
+                    'operator' => '',
+                    'value' => '',
+                ];
+
+                break;
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent':
+                $conditionClass = 'craft\elements\conditions\users\UserCondition';
+                $conditionConfig = [
+                    'elementType' => 'craft\elements\User',
+                    'fieldContext' => 'global',
+                ];
+
+                // When new and When updated are already sorted out when the Event is assigned.
+                // {"whenNew":"","whenUpdated":"1","userGroupIds":"*","adminUsers":""}
+                // {"whenNew":"","whenUpdated":"1","userGroupIds":["1"],"adminUsers":"1"}
+
+                $adminUsers = !empty($oldEventSettings['adminUsers']) ? true : false;
+                $userGroupIds = $oldEventSettings['userGroupIds'] ?? '';
+
+                // Only migrate admin setting if no $sectionIds are selected
+                if ($adminUsers && empty($userGroupIds)) {
+                    $ruleUid = StringHelper::UUID();
+                    $conditionRules[] = [
+                        'uid' => $ruleUid,
+                        'class' => 'craft\elements\conditions\users\AdminConditionRule',
+                        'type' => [
+                            'class' => 'craft\elements\conditions\users\AdminConditionRule',
+                            'uid' => $ruleUid,
+                            'value' => true,
+                        ],
+                        'operator' => '',
+                        'value' => '1',
+                    ];
+                }
+
+                if (!empty($userGroupIds)) {
+                    $ruleUid = StringHelper::UUID();
+
+                    $groupUids = (new Query())
+                        ->select(['uid'])
+                        ->from([Table::USERGROUPS])
+                        ->where(['id' => $userGroupIds])
+                        ->column();
+
+                    $conditionRules[] = [
+                        'uid' => $ruleUid,
+                        'class' => 'craft\elements\conditions\users\GroupConditionRule',
+                        'type' => [
+                            'class' => 'craft\elements\conditions\users\GroupConditionRule',
+                            'uid' => $ruleUid,
+                            'operator' => 'in',
+                            'values' => $groupUids,
+                        ],
+                        'operator' => 'in',
+                        'values' => $groupUids,
+                    ];
+                }
+
+                break;
+            case 'BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent':
+                $conditionClass = 'BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition';
+                $conditionConfig = [
+                    'elementType' => 'BarrelStrength\Sprout\forms\components\elements\SubmissionElement',
+                    'fieldContext' => 'global',
+                ];
+
+                // {"whenNew":"1","whenUpdated":"","formIds":["5"]} // No "All" scenario
+                $whenNew = $oldEventSettings['whenNew'] ?? '';
+                $whenUpdated = $oldEventSettings['whenUpdated'] ?? '';
+                $sectionIds = $oldEventSettings['formIds'] ?? [];
+
+                $ruleUid = StringHelper::UUID();
+                $conditionRules[] = [
+                    'uid' => $ruleUid,
+                    'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
+                    'type' => [
+                        'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
+                        'uid' => $ruleUid,
+                        'operator' => 'in',
+                        'values' => $sectionIds,
+                    ],
+                ];
+
+                break;
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserActivatedNotificationEvent':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersDelete':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersLogin':
+                $conditionClass = 'craft\elements\conditions\users\UserCondition';
+                $conditionConfig = [
+                    'elementType' => 'craft\elements\User',
+                    'fieldContext' => 'global',
+                ];
+                break;
+            default:
+                // case 'BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent':
+                // No Settings or Manual migration. Return no settings.
+                return [];
+                break;
+        }
+
+        if (!empty($sendRule) && $sendRule !== '*') {
+            // Process Send Rule for ALL items
+            $ruleUid = StringHelper::UUID();
+            $conditionRules[] = [
+                'uid' => $ruleUid,
+                'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
+                'type' => [
+                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
+                    'uid' => $ruleUid,
+                    'twigExpression' => '',
+                ],
+                'operator' => '',
+                'twigExpression' => 'EXPRESSION',
+            ];
+        }
+
+        return [
+            $eventId => [
+                'conditionRules' => [
+                    'class' => $conditionClass,
+                    'config' => $conditionConfig,
+                    'conditionRules' => $conditionRules,
+                    'new-rule-type' => '',
+                ],
+            ],
+        ];
+    }
 }

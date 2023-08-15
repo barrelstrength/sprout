@@ -140,7 +140,7 @@ class MailerHelper
 
         $mailer = new $type(array_merge([
             'name' => $mailerSettings['name'],
-            'mailerSettings' => $mailerSettings['settings'],
+            'mailerSettings' => $mailerSettings['settings'] ?? [],
             'uid' => $uid ?? StringHelper::UUID(),
         ], $settings));
 

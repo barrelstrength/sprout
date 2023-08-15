@@ -6,6 +6,7 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\Json;
 
 class m211101_000003_update_subscribers_to_users extends Migration
 {
@@ -29,90 +30,7 @@ class m211101_000003_update_subscribers_to_users extends Migration
     public function safeUp(): void
     {
         $this->migrateListsToAudiencesTable();
-
-        // Get all subscribers
-        $subscribers = (new Query())
-            ->select([
-                'id',
-                'userId',
-                'email',
-                'firstName',
-                'lastName',
-            ])
-            ->from(self::OLD_SUBSCRIBERS_TABLE)
-            ->all();
-
-        if (!$subscribers) {
-            return;
-        }
-
-        $subscriptions = (new Query())
-            ->select([
-                'listId as audienceId',
-                'itemId as userId',
-            ])
-            ->from(self::OLD_SUBSCRIPTIONS_TABLE)
-            ->all();
-
-        foreach ($subscribers as $subscriber) {
-            $subscriberId = !empty($subscriber['id']) ? $subscriber['id'] : null;
-            $userId = !empty($subscriber['userId']) ? $subscriber['userId'] : null;
-            $email = !empty($subscriber['email']) ? $subscriber['email'] : null;
-
-            if (!$userId && !$email) {
-                continue;
-            }
-
-            $user = null;
-
-            // Try to get the User by ID
-            if ($userId) {
-                $user = Craft::$app->getUsers()->getUserById($userId);
-            }
-
-            // Make sure we have a User
-            if (!$user) {
-                $user = Craft::$app->getUsers()->ensureUserByEmail($email);
-
-                if (!$user->firstName) {
-                    $user->firstName = $subscribers['firstName'];
-                }
-
-                if (!$user->lastName) {
-                    $user->lastName = $subscribers['lastName'];
-                }
-            }
-
-            // Mapping: List => Audience
-            // This should be 1:1 since we migrate Lists to a new table, we can keep all the primary key IDs the same.
-            // List ID => Subscriber List ID => Audience ID
-
-            // Find all the subscriptions for this user and insert them into
-            // the new subscriptions table with the new user ID
-            foreach ($subscriptions as $subscription) {
-                if ($subscription['userId'] === $subscriberId) {
-                    $this->insert(self::SUBSCRIPTIONS_TABLE, [
-                        'subscriberListId' => $subscription['audienceId'],
-                        'userId' => $user->id,
-                    ]);
-                }
-            }
-        }
-
-        // Get all IDS from $subscribers
-        $elementIds = array_map(static function($subscriber) {
-            return $subscriber['id'];
-        }, $subscribers);
-
-        // Delete Subscriber Elements
-        $this->delete(Table::ELEMENTS, [
-            'in', 'id', $elementIds,
-        ]);
-
-        // Make sure we got them all
-        $this->delete(Table::ELEMENTS, [
-            'type' => self::OLD_SUBSCRIBER_TYPE,
-        ]);
+        $this->migrateSubscribersToUsers();
     }
 
     public function safeDown(): bool
@@ -160,20 +78,20 @@ class m211101_000003_update_subscribers_to_users extends Migration
                 // Only Migrate ListElement lists.
                 // All other types must be migrated manually.
                 if ($rows[$key]['id'] != $rows[$key]['elementId']) {
+                    unset($rows[$key]['elementId']);
                     continue;
                 }
 
                 unset($rows[$key]['elementId']);
 
                 // {"userStatuses":["active"]}
-                $rows[$key]['settings'] = [
+                $rows[$key]['settings'] = Json::encode([
                     'userStatuses' => ['active'],
-                ];
+                ]);
             }
 
             Craft::$app->getDb()->createCommand()
-                ->batchInsert(
-                    self::AUDIENCES_TABLE, $newCols, $rows)
+                ->batchInsert(self::AUDIENCES_TABLE, $newCols, $rows)
                 ->execute();
         }
 
@@ -186,5 +104,98 @@ class m211101_000003_update_subscribers_to_users extends Migration
             ->exists();
 
         Craft::$app->getProjectConfig()->set($key, $audiencesExist);
+    }
+
+    public function migrateSubscribersToUsers(): void
+    {
+        if (!$this->getDb()->tableExists(self::OLD_SUBSCRIBERS_TABLE)) {
+            return;
+        }
+
+        // Get all subscribers
+        $subscribers = (new Query())
+            ->select([
+                'id',
+                'userId',
+                'email',
+                'firstName',
+                'lastName',
+            ])
+            ->from(self::OLD_SUBSCRIBERS_TABLE)
+            ->all();
+
+        if (!$subscribers) {
+            return;
+        }
+
+        $subscriptions = (new Query())
+            ->select([
+                'listId as audienceId',
+                'itemId as userId',
+            ])
+            ->from(self::OLD_SUBSCRIPTIONS_TABLE)
+            ->all();
+
+        foreach ($subscribers as $subscriber) {
+            $subscriberId = !empty($subscriber['id']) ? $subscriber['id'] : null;
+            $userId = !empty($subscriber['userId']) ? $subscriber['userId'] : null;
+            $email = !empty($subscriber['email']) ? $subscriber['email'] : null;
+            $firstName = !empty($subscriber['firstName']) ? $subscriber['firstName'] : null;
+            $lastName = !empty($subscriber['lastName']) ? $subscriber['lastName'] : null;
+
+            if (!$userId && !$email) {
+                continue;
+            }
+
+            $user = null;
+
+            // Try to get the User by ID
+            if ($userId) {
+                $user = Craft::$app->getUsers()->getUserById($userId);
+            }
+
+            // Make sure we have a User
+            if (!$user) {
+                $user = Craft::$app->getUsers()->ensureUserByEmail($email);
+
+                if (!$user->firstName) {
+                    $user->firstName = $firstName;
+                }
+
+                if (!$user->lastName) {
+                    $user->lastName = $lastName;
+                }
+            }
+
+            // Mapping: List => Audience
+            // This should be 1:1 since we migrate Lists to a new table, we can keep all the primary key IDs the same.
+            // List ID => Subscriber List ID => Audience ID
+
+            // Find all the subscriptions for this user and insert them into
+            // the new subscriptions table with the new user ID
+            foreach ($subscriptions as $subscription) {
+                if ($subscription['userId'] === $subscriberId) {
+                    $this->insert(self::SUBSCRIPTIONS_TABLE, [
+                        'subscriberListId' => $subscription['audienceId'],
+                        'userId' => $user->id,
+                    ]);
+                }
+            }
+        }
+
+        // Get all IDS from $subscribers
+        $elementIds = array_map(static function($subscriber) {
+            return $subscriber['id'];
+        }, $subscribers);
+
+        // Delete Subscriber Elements
+        $this->delete(Table::ELEMENTS, [
+            'in', 'id', $elementIds,
+        ]);
+
+        // Make sure we got them all
+        $this->delete(Table::ELEMENTS, [
+            'type' => self::OLD_SUBSCRIBER_TYPE,
+        ]);
     }
 }

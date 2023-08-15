@@ -7,10 +7,12 @@ namespace BarrelStrength\Sprout\transactional\migrations;
 use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
 use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
 use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
+use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\Json;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -21,6 +23,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-transactional';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\transactional\TransactionalModule';
+    public const EMAIL_ELEMENT_TYPE = 'BarrelStrength\Sprout\mailer\components\elements\email\EmailElement';
     public const OLD_SETTINGS_MODEL = 'barrelstrength\sproutbaseemail\models\Settings';
     public const OLD_SETTINGS_TABLE = '{{%sprout_settings_craft3}}';
 
@@ -59,8 +62,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             : null;
 
         $emailThemeMapping = [
-            'barrelstrength\\sproutbaseemail\\emailtemplates\\BasicTemplates' => EmailMessageTheme::class,
-            'barrelstrength\\sproutforms\\integrations\\sproutemail\\emailtemplates\\basic\\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
+            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageTheme::class,
+            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
         ];
 
         // Create Email Message Theme from global settings
@@ -84,7 +87,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
             foreach ($emails as $email) {
                 // Skip pre-defined themes
-                if ($emailThemeMapping[$email->emailTemplateId] ?? null) {
+                if ($emailThemeMapping[$email['emailTemplateId']] ?? null) {
                     continue;
                 }
 
@@ -92,39 +95,60 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                     ? $email['fieldLayoutId']
                     : null;
 
-                $fieldLayouts = [];
+                $fieldLayout = [];
 
                 if ($fieldLayoutId) {
-                    $oldFieldLayout = Craft::$app->getFields()->getLayoutById($fieldLayoutId);
+                    $oldTabs = (new Query())
+                        ->from(Table::FIELDLAYOUTTABS)
+                        ->where(['layoutId' => $fieldLayoutId])
+                        ->orderBy(['sortOrder' => SORT_ASC])
+                        ->all();
 
-                    if (!$oldFieldLayout) {
+                    if (!$oldTabs) {
                         continue;
                     }
 
-                    $oldTabs = $oldFieldLayout->getTabs();
+                    $oldFieldLayoutTabIds = array_map(static function($tab) {
+                        return $tab['id'];
+                    }, $oldTabs);
+
                     $mergedLayoutElements = [];
 
                     // Merge all layout tabs into one
                     foreach ($oldTabs as $fieldLayoutTab) {
-                        $layoutElements = $fieldLayoutTab->getElements();
+                        $layoutElements = Json::decode($fieldLayoutTab['elements']);
+                        if (!$layoutElements) {
+                            continue;
+                        }
                         foreach ($layoutElements as $layoutElement) {
                             $mergedLayoutElements[] = $layoutElement;
                         }
                     }
 
-                    $newFieldLayout = new FieldLayout();
-                    $newTab = new FieldLayoutTab();
+                    $newFieldLayout = new FieldLayout([
+                        'type' => self::EMAIL_ELEMENT_TYPE,
+                    ]);
+                    $newTab = new FieldLayoutTab([
+                        'layout' => $newFieldLayout,
+                    ]);
                     $newTab->setElements($mergedLayoutElements);
 
-                    $fieldLayouts = [
-                        $newFieldLayout->uid => $newFieldLayout->getConfig(),
-                    ];
+                    $newFieldLayout->setTabs([$newTab]);
+
+                    $fieldLayout = $newFieldLayout;
+                    //$fieldLayouts = [
+                    //    $newFieldLayout->uid => $newFieldLayout->getConfig(),
+                    //];
+
+                    Craft::$app->getDb()->createCommand()
+                        ->delete(Table::FIELDLAYOUTFIELDS, ['id' => $oldFieldLayoutTabIds])
+                        ->execute();
                 }
 
                 $emailTheme = MailerSchemaHelper::createEmailThemeIfNoTypeExists(CustomTemplatesEmailTheme::class, [
                     'name' => 'Custom Templates',
-                    'htmlEmailTemplate' => $email->emailTemplateId,
-                    'fieldLayouts' => $fieldLayouts,
+                    'htmlEmailTemplate' => $email['emailTemplateId'],
+                    'fieldLayout' => $fieldLayout,
                 ]);
 
                 // Set all emailTemplateId to the new Email Theme UID.

@@ -19,7 +19,6 @@ use craft\helpers\App;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
-use yii\base\Event;
 
 class TransactionalEmailEmailType extends EmailType
 {
@@ -69,10 +68,9 @@ class TransactionalEmailEmailType extends EmailType
     {
         $mailSettings = App::mailSettings();
 
-        $mailer = new TransactionalMailer();
-        $mailer->name = 'System Mailer';
-        $mailer->uid = StringHelper::UUID();
-        $mailer->settings = [
+        $mailer = new TransactionalMailer([
+            'name' => 'System Mailer',
+            'uid' => StringHelper::UUID(),
             'approvedSenders' => [
                 [
                     'fromName' => $mailSettings->fromName,
@@ -84,7 +82,7 @@ class TransactionalEmailEmailType extends EmailType
                     'replyToEmail' => $mailSettings->replyToEmail,
                 ],
             ],
-        ];
+        ]);
 
         return $mailer;
     }
