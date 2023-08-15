@@ -56,6 +56,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             $newSettings['pluginNameOverride'],
             $newSettings['enableMultilingualSitemaps'],
             $newSettings['enableDynamicSitemaps'],
+            $newSettings['enableCustomSections'],
         );
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newSettings,
@@ -97,11 +98,11 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         }
 
         if ($newSettings['enableCustomSections'] === '1') {
-            $newSettings['enableCustomSections'] = true;
+            $newSettings['enableCustomPagesSitemap'] = true;
         }
 
         if ($newSettings['enableCustomSections'] === '') {
-            $newSettings['enableCustomSections'] = false;
+            $newSettings['enableCustomPagesSitemap'] = false;
         }
 
         if ($newSettings['enableMultilingualSitemaps'] === '1') {
