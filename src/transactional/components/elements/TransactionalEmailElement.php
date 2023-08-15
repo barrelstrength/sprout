@@ -37,7 +37,7 @@ class TransactionalEmailElement extends EmailElement
 
     public static function find(): ElementQueryInterface
     {
-        return new TransactionalEmailElementQuery(static::class);
+        return new TransactionalEmailElementQuery(EmailElement::class);
     }
 
     protected static function defineSources(string $context = null): array

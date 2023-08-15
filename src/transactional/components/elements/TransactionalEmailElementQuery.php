@@ -10,6 +10,8 @@ use yii\db\Expression;
 
 class TransactionalEmailElementQuery extends EmailElementQuery
 {
+    public ?string $type = TransactionalEmailEmailType::class;
+
     public ?array $notificationEventFilterRule = null;
 
     public function notificationEventFilterRule(array $value): static

@@ -10,7 +10,7 @@ class EmailElementQuery extends ElementQuery
 {
     public ?string $subjectLine = null;
 
-    public ?string $emailType = null;
+    public ?string $type = null;
 
     public ?string $emailThemeUid = null;
 
@@ -23,9 +23,9 @@ class EmailElementQuery extends ElementQuery
         return $this;
     }
 
-    public function emailType(string $value): static
+    public function type(string $value): static
     {
-        $this->emailType = $value;
+        $this->type = $value;
 
         return $this;
     }
@@ -65,8 +65,8 @@ class EmailElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('sprout_emails.subjectLine', $this->subjectLine));
         }
 
-        if ($this->emailType) {
-            $this->subQuery->andWhere(Db::parseParam('sprout_emails.emailType', $this->emailType));
+        if ($this->type) {
+            $this->subQuery->andWhere(Db::parseParam('sprout_emails.type', $this->type));
         }
 
         if ($this->emailThemeUid) {
@@ -82,12 +82,12 @@ class EmailElementQuery extends ElementQuery
 
     protected function statusCondition(string $status): mixed
     {
-        if (!$this->emailType) {
+        if (!$this->type) {
             return parent::statusCondition($status);
         }
 
         /** @var EmailType $emailType */
-        $emailType = new $this->emailType();
+        $emailType = new $this->type();
 
         if (!$emailType->hasCustomStatuses()) {
             return parent::statusCondition($status);
