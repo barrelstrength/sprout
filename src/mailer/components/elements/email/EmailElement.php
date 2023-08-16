@@ -564,8 +564,11 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->mailerUid = $this->mailerUid;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
 
+        $emailType = $this->getEmailType();
+        $emailTypeSettings = $emailType->prepareEmailTypeSettingsForDb($this->emailTypeSettings);
+
         $emailElementRecord->type = $this->type;
-        $emailElementRecord->emailTypeSettings = $this->emailTypeSettings;
+        $emailElementRecord->emailTypeSettings = $emailTypeSettings;
 
         $emailElementRecord->dateCreated = $this->dateCreated;
         $emailElementRecord->dateUpdated = $this->dateUpdated;

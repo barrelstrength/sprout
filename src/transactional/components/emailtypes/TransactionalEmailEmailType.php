@@ -152,12 +152,25 @@ class TransactionalEmailEmailType extends EmailType
             $notificationEvent = new $eventId([
                 'event' => $event,
             ]);
-            $eventSettings = $settings['eventSettings'][$eventId] ?? [];
+            $eventSettings = $settings['eventSettings'] ?? [];
             $notificationEvent->setAttributes($eventSettings, false);
         } else {
             $notificationEvent = new ManualNotificationEvent();
         }
 
         return $notificationEvent;
+    }
+
+    public function prepareEmailTypeSettingsForDb(array $settings): array
+    {
+        $settings['eventId'] = $this->eventId;
+        $settings['eventSettings'] = $this->eventSettings;
+
+        if (isset($settings['eventId'])) {
+            $eventSettings = $settings['eventSettings'][$settings['eventId']] ?? null;
+            $settings['eventSettings'] = $eventSettings;
+        }
+
+        return $settings;
     }
 }
