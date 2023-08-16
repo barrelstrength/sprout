@@ -159,10 +159,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
     public function prepareEventSettings($eventId, $oldEventSettings, $sendRule): array
     {
-        if (empty($oldEventSettings)) {
-            return [];
-        }
-
         $conditionRules = [];
 
         switch ($eventId) {
@@ -184,11 +180,11 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $conditionRules[] = [
                         'uid' => $ruleUid,
                         'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
-                        'type' => [
+                        'type' => Json::encode([
                             'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
                             'uid' => $ruleUid,
                             'value' => true,
-                        ],
+                        ]),
                         'operator' => '',
                         'value' => '1',
                     ];
@@ -199,11 +195,11 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $conditionRules[] = [
                         'uid' => $ruleUid,
                         'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
-                        'type' => [
+                        'type' => Json::encode([
                             'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
                             'uid' => $ruleUid,
                             'value' => true,
-                        ],
+                        ]),
                         'operator' => '',
                         'value' => '1',
                     ];
@@ -224,12 +220,12 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $conditionRules[] = [
                         'uid' => $ruleUid,
                         'class' => 'craft\\elements\\conditions\\entries\\SectionConditionRule',
-                        'type' => [
+                        'type' => Json::encode([
                             'class' => 'craft\\elements\\conditions\\entries\\SectionConditionRule',
                             'uid' => $ruleUid,
                             'operator' => 'in',
                             'values' => $sectionUids,
-                        ],
+                        ]),
                         'operator' => 'in',
                         'values' => $sectionUids,
                     ];
@@ -247,11 +243,11 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $conditionRules[] = [
                     'uid' => $ruleUid,
                     'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
-                    'type' => [
+                    'type' => Json::encode([
                         'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
                         'uid' => $ruleUid,
                         'value' => false,
-                    ],
+                    ]),
                     'operator' => '',
                     'value' => '',
                 ];
@@ -260,11 +256,11 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $conditionRules[] = [
                     'uid' => $ruleUid,
                     'class' => 'BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule',
-                    'type' => [
+                    'type' => Json::encode([
                         'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
                         'uid' => $ruleUid,
                         'value' => false,
-                    ],
+                    ]),
                     'operator' => '',
                     'value' => '',
                 ];
@@ -283,7 +279,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 // {"whenNew":"","whenUpdated":"1","userGroupIds":["1"],"adminUsers":"1"}
 
                 $adminUsers = !empty($oldEventSettings['adminUsers']) ? true : false;
-                $userGroupIds = $oldEventSettings['userGroupIds'] ?? '';
+                $userGroupIds = !empty($oldEventSettings['userGroupIds']) ? $oldEventSettings['userGroupIds'] : null;
 
                 // Only migrate admin setting if no $sectionIds are selected
                 if ($adminUsers && empty($userGroupIds)) {
@@ -291,17 +287,17 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $conditionRules[] = [
                         'uid' => $ruleUid,
                         'class' => 'craft\elements\conditions\users\AdminConditionRule',
-                        'type' => [
+                        'type' => Json::encode([
                             'class' => 'craft\elements\conditions\users\AdminConditionRule',
                             'uid' => $ruleUid,
                             'value' => true,
-                        ],
+                        ]),
                         'operator' => '',
                         'value' => '1',
                     ];
                 }
 
-                if (!empty($userGroupIds)) {
+                if (!empty($userGroupIds) && $userGroupIds !== '*') {
                     $ruleUid = StringHelper::UUID();
 
                     $groupUids = (new Query())
@@ -313,12 +309,12 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $conditionRules[] = [
                         'uid' => $ruleUid,
                         'class' => 'craft\elements\conditions\users\GroupConditionRule',
-                        'type' => [
+                        'type' => Json::encode([
                             'class' => 'craft\elements\conditions\users\GroupConditionRule',
                             'uid' => $ruleUid,
                             'operator' => 'in',
                             'values' => $groupUids,
-                        ],
+                        ]),
                         'operator' => 'in',
                         'values' => $groupUids,
                     ];
@@ -341,18 +337,18 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $conditionRules[] = [
                     'uid' => $ruleUid,
                     'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
-                    'type' => [
+                    'type' => Json::encode([
                         'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
                         'uid' => $ruleUid,
                         'operator' => 'in',
                         'values' => $sectionIds,
-                    ],
+                    ]),
                 ];
 
                 break;
             case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserActivatedNotificationEvent':
-            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersDelete':
-            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersLogin':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserDeletedNotificationEvent':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserLoggedInNotificationEvent':
                 $conditionClass = 'craft\elements\conditions\users\UserCondition';
                 $conditionConfig = [
                     'elementType' => 'craft\elements\User',
@@ -372,24 +368,26 @@ class m211101_000006_migrate_notifications_tables extends Migration
             $conditionRules[] = [
                 'uid' => $ruleUid,
                 'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
-                'type' => [
+                'type' => Json::encode([
                     'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
                     'uid' => $ruleUid,
-                    'twigExpression' => '',
-                ],
+                    'twigExpression' => $sendRule,
+                ]),
                 'operator' => '',
-                'twigExpression' => 'EXPRESSION',
+                'twigExpression' => $sendRule,
             ];
         }
 
+        if (!$conditionRules) {
+            return [];
+        }
+
         return [
-            $eventId => [
-                'conditionRules' => [
-                    'class' => $conditionClass,
-                    'config' => $conditionConfig,
-                    'conditionRules' => $conditionRules,
-                    'new-rule-type' => '',
-                ],
+            'conditionRules' => [
+                'class' => $conditionClass,
+                'config' => Json::encode($conditionConfig),
+                'conditionRules' => $conditionRules,
+                'new-rule-type' => '',
             ],
         ];
     }

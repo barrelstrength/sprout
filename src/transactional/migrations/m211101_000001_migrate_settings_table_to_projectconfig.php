@@ -130,6 +130,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                     ]);
                     $newTab = new FieldLayoutTab([
                         'layout' => $newFieldLayout,
+                        'name' => 'Content',
                     ]);
                     $newTab->setElements($mergedLayoutElements);
 

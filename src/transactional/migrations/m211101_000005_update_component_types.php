@@ -35,12 +35,13 @@ class m211101_000005_update_component_types extends Migration
                 'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UserActivatedNotificationEvent',
             ],
             [
-                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UserDeletedNotificationEvent',
-                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersDelete',
+
+                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UsersDelete',
+                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UserDeletedNotificationEvent',
             ],
             [
-                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UserLoggedInNotificationEvent',
-                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UsersLogin',
+                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\UsersLogin',
+                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\UserLoggedInNotificationEvent',
             ],
 
             // Forms
@@ -80,7 +81,7 @@ class m211101_000005_update_component_types extends Migration
             $this->update(self::OLD_NOTIFICATIONS_TABLE, [
                 'eventId' => $newType,
             ], [
-                'eventId' => $oldType,
+                'id' => $userNotificationEvent['id'],
             ], [], false);
         }
     }
