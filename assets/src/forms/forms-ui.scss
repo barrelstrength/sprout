@@ -150,6 +150,10 @@ $detailsWidth: 350px;
     border-bottom: 2px solid transparent;
 }
 
+#form-builder-tabs .lightswitch-outer-container {
+    margin-bottom: var(--s);
+}
+
 #form-builder-action-buttons {
     //flex: 0 0 ($detailsWidth);
     //margin-left: auto;
@@ -507,6 +511,12 @@ $detailsWidth: 350px;
     [sproutforms-fieldlayouteditor] #details-container {
         overflow-x: hidden;
         overflow-y: auto;
+    }
+}
+
+@media only screen and (max-width: 1340px) {
+    .sprout-mediathumb {
+        display:none;
     }
 }
 

@@ -958,23 +958,21 @@ class FormElement extends Element
 
     public function setAttributes($values, $safeOnly = true): void
     {
-        if (!isset($values['redirectUri'])) {
-            parent::setAttributes($values, $safeOnly);
-        }
-
         if ($this->redirectUri instanceof LinkInterface) {
             $values['redirectUri'] = $this->redirectUri;
-            parent::setAttributes($values, $safeOnly);
         } else {
             $type = $values['redirectUri']['type'] ?? null;
-            $attributes = array_merge(
-                ['type' => $type],
-                $values['redirectUri'][$type] ?? []
-            );
 
-            $values['redirectUri'] = Links::toLinkField($attributes) ?: null;
+            if ($type !== null) {
+                $attributes = array_merge(
+                    ['type' => $type],
+                    $values['redirectUri'][$type] ?? []
+                );
 
-            parent::setAttributes($values, $safeOnly);
+                $values['redirectUri'] = Links::toLinkField($attributes) ?: null;
+            }
         }
+
+        parent::setAttributes($values, $safeOnly);
     }
 }
