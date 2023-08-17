@@ -8,6 +8,9 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
+{% set fieldLayout = settings.getFieldLayout() %}
+{% set customizableTabs = false %}
+
 {% block settings %}
 
     {{ forms.selectField({

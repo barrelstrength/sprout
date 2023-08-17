@@ -10,13 +10,14 @@ use yii\db\ActiveQueryInterface;
 
 /**
  * @property int $id
+ * @property string $formId
  * @property int $statusId
+ * @property string $title
  * @property string $ipAddress
  * @property string $userAgent
  * @property ActiveQueryInterface $element
  * @property ActiveQueryInterface $submissionStatuses
  * @property ActiveQueryInterface $form
- * @property string $formId
  */
 class SubmissionRecord extends ActiveRecord
 {

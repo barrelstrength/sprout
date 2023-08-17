@@ -114,13 +114,14 @@ class SubmissionElementQuery extends ElementQuery
             $form = FormsModule::getInstance()->forms->getFormById($this->formId);
 
             if ($form) {
-                $this->contentTable = $form->getContentTable();
+                $this->contentTable = $form->getSubmissionContentTable();
             }
         }
 
         $this->query->select([
-            'sprout_form_submissions.statusId',
             'sprout_form_submissions.formId',
+            'sprout_form_submissions.statusId',
+            'sprout_form_submissions.title',
             'sprout_form_submissions.ipAddress',
             'sprout_form_submissions.userAgent',
             'sprout_form_submissions.dateCreated',

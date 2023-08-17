@@ -64,6 +64,7 @@
             <hr>
             {{ forms.fieldLayoutDesignerField({
                 fieldLayout: fieldLayout,
+                customizableTabs: customizableTabs is defined ? customizableTabs : true,
             }) }}
         {% endif %}
 

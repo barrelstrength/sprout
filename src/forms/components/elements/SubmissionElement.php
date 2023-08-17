@@ -20,6 +20,7 @@ use craft\db\Query;
 use craft\elements\actions\Delete;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -89,11 +90,6 @@ class SubmissionElement extends Element
         return true;
     }
 
-    public static function hasTitles(): bool
-    {
-        return true;
-    }
-
     public static function hasStatuses(): bool
     {
         return true;
@@ -145,58 +141,20 @@ class SubmissionElement extends Element
         // Prepare the data for our sources sidebar
         $forms = FormsModule::getInstance()->forms->getAllForms();
 
-        $noSources = [];
-        $prepSources = [];
-
         foreach ($forms as $form) {
             $saveData = FormsModule::getInstance()->submissions->isSaveDataEnabled($form);
             if ($saveData) {
-                $noSources[$form->id] = [
+
+                $sources[] = [
+                    'key' => 'id:' . $form->id,
                     'label' => $form->name,
-                    'data' => ['formId' => $form->getId()],
+                    'data' => [
+                        'formId' => $form->id,
+                    ],
                     'criteria' => [
-                        'formId' => $form->getId(),
+                        'formId' => $form->id,
                     ],
                     'defaultSort' => ['dateCreated', 'desc'],
-                ];
-            }
-        }
-
-        // Build our sources for forms with no group
-        foreach ($noSources as $form) {
-            $key = 'form:' . $form['data']['formId'];
-            $sources[] = [
-                'key' => $key,
-                'label' => $form['label'],
-                'data' => [
-                    'formId' => $form['data']['formId'],
-                ],
-                'criteria' => [
-                    'formId' => $form['criteria']['formId'],
-                ],
-                'defaultSort' => ['dateCreated', 'desc'],
-            ];
-        }
-
-        // Build our sources sidebar for forms in groups
-        foreach ($prepSources as $source) {
-            if (isset($source['heading'])) {
-                $sources[] = [
-                    'heading' => $source['heading'],
-                ];
-            }
-
-            foreach ($source['forms'] as $form) {
-                $key = 'form:' . $form['data']['formId'];
-                $sources[] = [
-                    'key' => $key,
-                    'label' => $form['label'],
-                    'data' => [
-                        'formId' => $form['data']['formId'],
-                    ],
-                    'criteria' => [
-                        'formId' => $form['criteria']['formId'],
-                    ],
                 ];
             }
         }
@@ -313,12 +271,40 @@ class SubmissionElement extends Element
      */
     public function getContentTable(): string
     {
-        return FormContentTableHelper::getContentTable($this->getForm());
+        return FormContentTableHelper::getContentTable($this->getForm()->handle);
     }
 
     public function cpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('sprout/forms/submissions/edit/' . $this->id);
+        $path = UrlHelper::cpUrl('sprout/forms/submissions/edit/' . $this->id);
+
+        $params = [];
+
+        if (Craft::$app->getIsMultiSite()) {
+            $params['site'] = $this->getSite()->handle;
+        }
+
+        return UrlHelper::cpUrl($path, $params);
+    }
+
+    public function getPostEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl('sprout/forms/submissions');
+    }
+
+    public function canView(User $user): bool
+    {
+        return Craft::$app->getUser()->getIdentity()->can(FormsModule::p('viewSubmissions'));
+    }
+
+    public function canSave(User $user): bool
+    {
+        return Craft::$app->getUser()->getIdentity()->can(FormsModule::p('editSubmissions'));
+    }
+
+    public function canDelete(User $user): bool
+    {
+        return Craft::$app->getUser()->getIdentity()->can(FormsModule::p('editSubmissions'));
     }
 
     public function __toString(): string
@@ -331,7 +317,7 @@ class SubmissionElement extends Element
         //$fieldsLocation = $this->request->getParam('fieldsLocation', 'fields');
         $this->setFieldValuesFromRequest('fields');
 
-        return parent::__toString();
+        return (string)$this->title;
     }
 
     public function getFieldLayout(): ?FieldLayout
@@ -359,9 +345,10 @@ class SubmissionElement extends Element
             $record->id = $this->id;
         }
 
-        $record->ipAddress = $this->ipAddress;
         $record->formId = $this->formId;
         $record->statusId = $this->statusId;
+        $record->title = $this->title;
+        $record->ipAddress = $this->ipAddress;
         $record->userAgent = $this->userAgent;
 
         $record->save(false);

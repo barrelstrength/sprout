@@ -160,6 +160,7 @@ class m211101_000000_run_install_migration extends Migration
                 'id' => $this->primaryKey(),
                 'formId' => $this->integer()->notNull(),
                 'statusId' => $this->integer(),
+                'title' => $this->string(),
                 'ipAddress' => $this->string(),
                 'referrer' => $this->string(),
                 'userAgent' => $this->longText(),

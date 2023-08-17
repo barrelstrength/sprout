@@ -73,11 +73,9 @@
         </div>
 
         {{ forms.lightswitch({
-            label: "Enable Captchas"|t('sprout-module-forms'),
-            instructions: "Enable or disable the global captchas for this specific form."|t('sprout-module-forms'),
-            id: 'enableCaptchas',
-            name: 'enableCaptchas',
-            on: false,
+            id: 'enabled',
+            name: 'enabled',
+            on: form.enabled,
             onLabel: "Accept Submissions"|t('sprout-module-forms'),
         }) }}
         {#    <button type="button" class="btn menubtn hidden" title="List all tabs" aria-label="List all tabs" tabindex="0" aria-controls="menu.Garnish926770551" aria-haspopup="listbox" aria-expanded="false"></button> #}

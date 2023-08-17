@@ -33,6 +33,7 @@ use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\CustomField;
 use craft\fieldlayoutelements\Html as HtmlFieldLayoutElement;
 use craft\helpers\Db;
+use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -107,6 +108,25 @@ class FormElement extends Element
         return Craft::t('sprout-module-forms', 'forms');
     }
 
+    public static function hasContent(): bool
+    {
+        return true;
+    }
+
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+    public static function statuses(): array
+    {
+        $statuses = parent::statuses();
+        $statuses[self::STATUS_ENABLED] = Craft::t('sprout-module-forms', 'Accepting Submissions');
+        $statuses[self::STATUS_DISABLED] = Craft::t('sprout-module-forms', 'Closed to Submissions');
+
+        return $statuses;
+    }
+
     public static function refHandle(): ?string
     {
         return 'form';
@@ -126,6 +146,10 @@ class FormElement extends Element
 
     public function getFieldLayout(): ?FieldLayout
     {
+        if ($this->_fieldLayout) {
+            return $this->_fieldLayout;
+        }
+
         $this->_fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);
@@ -138,6 +162,9 @@ class FormElement extends Element
         $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($this->id);
         $config = FormsModule::getInstance()->getSettings();
 
+        $contentTabs = $config->getFieldLayout()->getTabs();
+        $contentTab = reset($contentTabs) ?: [];
+
         $formBuilderTab = new FieldLayoutTab();
         $formBuilderTab->layout = $this->_fieldLayout;
         $formBuilderTab->name = Craft::t('sprout-module-forms', 'Layout');
@@ -146,7 +173,7 @@ class FormElement extends Element
             new FormBuilderField(),
         ]);
 
-        $templatesHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/templates', [
+        $templatesHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/templates.twig', [
             'form' => $this,
             'config' => $config,
         ]);
@@ -159,7 +186,7 @@ class FormElement extends Element
             new HtmlFieldLayoutElement($templatesHtml),
         ]);
 
-        $notificationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/notifications', [
+        $notificationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/notifications.twig', [
             'form' => $this,
             'config' => $config,
         ]);
@@ -172,7 +199,7 @@ class FormElement extends Element
             new HtmlFieldLayoutElement($notificationsHtml),
         ]);
 
-        $integrationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/integrations', [
+        $integrationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/integrations.twig', [
             'form' => $this,
             'integrations' => $integrations,
             'config' => $config,
@@ -192,7 +219,7 @@ class FormElement extends Element
             'type' => isset($this->redirectUri) ? $this->redirectUri::class : null,
         ]);
 
-        $settingsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/general', [
+        $settingsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/general.twig', [
             'form' => $this,
             'config' => $config,
             'linkHtml' => $linkHtml,
@@ -208,6 +235,7 @@ class FormElement extends Element
 
         $this->_fieldLayout->setTabs([
             $formBuilderTab,
+            $contentTab,
             $templatesTab,
             $notificationsTab,
             $integrationsTab,
@@ -337,20 +365,12 @@ class FormElement extends Element
         ]);
     }
 
-    /**
-     * Returns the field context this element's content uses.
-     *
-     * @access protected
-     */
-    public function getFieldContext(): string
+    public function getSubmissionFieldContext(): string
     {
         return 'sproutForms:' . $this->id;
     }
 
-    /**
-     * Returns the name of the table this element's content is stored in.
-     */
-    public function getContentTable(): string
+    public function getSubmissionContentTable(): string
     {
         return FormContentTableHelper::getContentTable($this->handle);
     }
@@ -430,13 +450,6 @@ class FormElement extends Element
 
     public function afterSave(bool $isNew): void
     {
-        $oldFieldContext = Craft::$app->content->fieldContext;
-        $oldContentTable = Craft::$app->content->contentTable;
-
-        // Set our field content and content table to work with our form output
-        Craft::$app->content->fieldContext = $this->getFieldContext();
-        Craft::$app->content->contentTable = $this->getContentTable();
-
         // Get the form record
         if (!$isNew) {
             $record = FormRecord::findOne($this->id);
@@ -463,27 +476,37 @@ class FormElement extends Element
         $record->formThemeUid = $this->formThemeUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
-        $oldHandle = $record->getOldAttribute('handle');
-        $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
-        $newContentDbTable = FormContentTableHelper::getContentTable($record->handle);
+        if (!ElementHelper::isDraftOrRevision($this)) {
+            $oldFieldContext = Craft::$app->content->fieldContext;
+            $oldContentTable = Craft::$app->content->contentTable;
 
-        // Do we need to create/rename the content table?
-        if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
-            if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
-                Db::renameTable($oldContentDbTable, $newContentDbTable);
-            } else {
-                FormContentTableHelper::createContentTable($newContentDbTable);
+            //Set our field content and content table to work with our form output
+            Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
+            Craft::$app->content->contentTable = $this->getSubmissionContentTable();
+
+            $oldHandle = $record->getOldAttribute('handle');
+            $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
+            $newContentDbTable = FormContentTableHelper::getContentTable($record->handle);
+
+            // Do we need to create/rename the content table?
+            if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
+                if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
+                    Db::renameTable($oldContentDbTable, $newContentDbTable);
+                } else {
+                    FormContentTableHelper::createContentTable($newContentDbTable);
+                }
             }
+
+            $this->updateSubmissionLayout();
+
+            // Reset field context and content table to original values
+            Craft::$app->content->fieldContext = $oldFieldContext;
+            Craft::$app->content->contentTable = $oldContentTable;
         }
 
-        $this->updateSubmissionLayout();
         $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
 
         $record->save(false);
-
-        // Reset field context and content table to original values
-        Craft::$app->content->fieldContext = $oldFieldContext;
-        Craft::$app->content->contentTable = $oldContentTable;
 
         // Re-save Submission Elements if titleFormat has changed
         $oldTitleFormat = $record->getOldAttribute('titleFormat');

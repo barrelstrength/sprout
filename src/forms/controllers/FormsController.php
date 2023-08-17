@@ -402,8 +402,8 @@ class FormsController extends BaseController
             $oldContentTable = Craft::$app->content->contentTable;
 
             // Set our field content and content table to work with our form output
-            Craft::$app->content->fieldContext = $form->getFieldContext();
-            Craft::$app->content->contentTable = $form->getContentTable();
+            Craft::$app->content->fieldContext = $form->getSubmissionFieldContext();
+            Craft::$app->content->contentTable = $form->getSubmissionContentTable();
 
             $currentTitleFormat = null;
 

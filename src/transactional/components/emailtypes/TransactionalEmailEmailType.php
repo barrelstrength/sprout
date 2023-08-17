@@ -19,6 +19,7 @@ use craft\helpers\App;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
+use yii\base\Event;
 
 class TransactionalEmailEmailType extends EmailType
 {

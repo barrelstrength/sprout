@@ -5,7 +5,9 @@ namespace BarrelStrength\Sprout\forms;
 use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\HoneypotCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\JavascriptCaptcha;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use craft\config\BaseConfig;
+use craft\models\FieldLayout;
 
 class FormsSettings extends BaseConfig
 {
@@ -56,6 +58,11 @@ class FormsSettings extends BaseConfig
     public string|array $allowedAssetVolumes = '*';
 
     public string $defaultUploadLocationSubpath = '';
+
+    /**
+     * The Field Layout Config that will be saved to Project Config
+     */
+    public array $fieldLayouts = [];
 
     public function defaultSection(string $value): self
     {
@@ -176,6 +183,18 @@ class FormsSettings extends BaseConfig
                 'value' => self::SPAM_REDIRECT_BEHAVIOR_BACK_TO_FORM,
             ],
         ];
+    }
+
+    public function getFieldLayout(): FieldLayout
+    {
+        // If there is a field layout, it's saved with a UID key and we just need the first value
+        if ($fieldLayout = reset($this->fieldLayouts)) {
+            return FieldLayout::createFromConfig($fieldLayout);
+        }
+
+        return new FieldLayout([
+            'type' => self::class,
+        ]);
     }
 }
 

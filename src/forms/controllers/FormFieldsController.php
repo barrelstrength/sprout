@@ -112,8 +112,8 @@ class FormFieldsController extends BaseController
         ]);
 
         // Set our field context
-        Craft::$app->content->fieldContext = $form->getFieldContext();
-        Craft::$app->content->contentTable = $form->getContentTable();
+        Craft::$app->content->fieldContext = $form->getSubmissionFieldContext();
+        Craft::$app->content->contentTable = $form->getSubmissionContentTable();
 
         // Save a new field
         if ($field->id) {
@@ -261,8 +261,8 @@ class FormFieldsController extends BaseController
         $oldContentTable = Craft::$app->getContent()->contentTable;
 
         // Set our field content and content table to work with our form output
-        Craft::$app->getContent()->fieldContext = $form->getFieldContext();
-        Craft::$app->getContent()->contentTable = $form->getContentTable();
+        Craft::$app->getContent()->fieldContext = $form->getSubmissionFieldContext();
+        Craft::$app->getContent()->contentTable = $form->getSubmissionContentTable();
 
         $response = Craft::$app->fields->deleteFieldById($fieldId);
 

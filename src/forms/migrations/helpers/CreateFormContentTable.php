@@ -15,7 +15,6 @@ class CreateFormContentTable extends Migration
             'id' => $this->primaryKey(),
             'elementId' => $this->integer()->notNull(),
             'siteId' => $this->integer()->notNull(),
-            'title' => $this->string(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
