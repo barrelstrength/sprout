@@ -338,8 +338,6 @@ class FormsModule extends Module
                 'sprout-module-forms/submissions/submissions-index-template',
             'sprout/forms/submissions/edit/<submissionId:\d+>' =>
                 'sprout-module-forms/submissions/edit-submission-template',
-            'sprout/forms/<groupId:\d+>' =>
-                'sprout-module-forms/forms',
 
             // Welcome
             'sprout/welcome/forms' => [

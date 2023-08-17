@@ -9,7 +9,6 @@ use yii\db\ActiveQueryInterface;
 
 /**
  * @property int $id
- * @property int $groupId
  * @property int $submissionFieldLayoutId
  * @property string $fieldLayoutSettings
  * @property string $name

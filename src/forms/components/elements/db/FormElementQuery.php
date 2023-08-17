@@ -11,8 +11,6 @@ use craft\helpers\Db;
 
 class FormElementQuery extends ElementQuery
 {
-    public array|int|null $groupId = null;
-
     public ?string $name = null;
 
     public ?string $handle = null;
@@ -57,37 +55,6 @@ class FormElementQuery extends ElementQuery
         parent::__construct($elementType, $config);
     }
 
-    public function group($value): FormElementQuery
-    {
-        if ($value instanceof FormGroup) {
-            $this->groupId = $value->id;
-        } elseif ($value !== null) {
-            $this->groupId = (new Query())
-                ->select(['id'])
-                ->from([SproutTable::FORM_GROUPS])
-                ->where(Db::parseParam('name', $value))
-                ->column();
-        } else {
-            $this->groupId = null;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets the [[groupId]] property.
-     *
-     * @param int|int[]|null $value The property value
-     *
-     * @return static self reference
-     */
-    public function groupId($value): FormElementQuery
-    {
-        $this->groupId = $value;
-
-        return $this;
-    }
-
     public function name(string $value): FormElementQuery
     {
         $this->name = $value;
@@ -118,18 +85,11 @@ class FormElementQuery extends ElementQuery
 
     protected function beforePrepare(): bool
     {
-        // See if 'group' was set to an invalid handle
-        if ($this->groupId === []) {
-            return false;
-        }
-
         $this->joinElementTable('sprout_forms');
 
         $this->query->select([
-            'sprout_forms.groupId',
             'sprout_forms.id',
             'sprout_forms.submissionFieldLayoutId',
-            'sprout_forms.groupId',
             'sprout_forms.name',
             'sprout_forms.handle',
             'sprout_forms.titleFormat',
@@ -164,12 +124,6 @@ class FormElementQuery extends ElementQuery
         if ($this->formThemeUid) {
             $this->subQuery->andWhere(Db::parseParam(
                 'sprout_forms.formThemeUid', $this->formThemeUid
-            ));
-        }
-
-        if ($this->groupId) {
-            $this->subQuery->andWhere(Db::parseParam(
-                'sprout_forms.groupId', $this->groupId
             ));
         }
 

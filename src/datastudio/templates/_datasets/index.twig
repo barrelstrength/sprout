@@ -11,20 +11,6 @@
 
 {% endblock %}
 
-{% block sidebar %}
-
-    {{ parent() }}
-
-    {{ sproutCp.sproutGroupAdminButtons(groupId) }}
-
-{% endblock %}
-
-{% js on ready %}
-
-    {{ sproutCp.sproutGroupAdmin(elementType, title) }}
-
-{% endjs %}
-
 {% block initJs %}
     SproutDataSetElementIndexInit = function() {
     {{ parent() }}

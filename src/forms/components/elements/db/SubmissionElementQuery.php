@@ -24,8 +24,6 @@ class SubmissionElementQuery extends ElementQuery
 
     public string $formName = '';
 
-    public ?int $formGroupId = null;
-
     public array|string|null $status = [];
 
     private bool $excludeSpam = true;
@@ -130,7 +128,6 @@ class SubmissionElementQuery extends ElementQuery
             'sprout_form_submissions.uid',
             'sprout_forms.name as formName',
             'sprout_forms.handle as formHandle',
-            'sprout_forms.groupId as formGroupId',
             'sprout_form_submissions_statuses.handle as statusHandle',
         ]);
 

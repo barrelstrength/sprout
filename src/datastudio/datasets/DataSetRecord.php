@@ -23,7 +23,6 @@ use yii\db\ActiveQueryInterface;
  * @property string $settings
  * @property bool $enabled
  * @property ActiveQueryInterface $element
- * @property int $groupId
  */
 class DataSetRecord extends ActiveRecord
 {

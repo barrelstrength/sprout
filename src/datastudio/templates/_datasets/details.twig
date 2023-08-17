@@ -9,22 +9,6 @@
 <fieldset>
     <div class="meta">
 
-        {% if groups | length %}
-
-            {{ forms.selectField({
-                first: true,
-                label: 'Group'|t('sprout-module-data-studio') ~ sproutCp.infoIcon(
-                    'The group where this data set should be displayed'|t('sprout-module-data-studio')
-                ),
-                id: 'groupId',
-                name: 'groupId',
-                options: groups,
-                value: dataSet.groupId,
-                disabled: static,
-            }) }}
-
-        {% endif %}
-
         {{ forms.textField({
             label: "Handle"|t('sprout-module-data-studio'),
             id: 'handle',

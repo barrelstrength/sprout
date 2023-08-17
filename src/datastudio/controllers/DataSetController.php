@@ -26,7 +26,7 @@ use yii\web\ServerErrorHttpException;
 
 class DataSetController extends Controller
 {
-    public function actionDataSetIndexTemplate($groupId = null): Response
+    public function actionDataSetIndexTemplate(): Response
     {
         $site = Cp::requestedSite();
 
@@ -39,7 +39,6 @@ class DataSetController extends Controller
         return $this->renderTemplate('sprout-module-data-studio/_datasets/index.twig', [
             'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
-            'groupId' => $groupId,
             'newDataSetButtonHtml' => self::getNewDataSetButtonHtml($site),
         ]);
     }

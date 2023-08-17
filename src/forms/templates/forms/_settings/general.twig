@@ -36,27 +36,6 @@
     required: true
 }) }}
 
-{% if groups is defined and groups|length %}
-
-    {% set groupOptions = [
-        { label: 'All Forms'|t('sprout-module-forms') , value: '*' }
-    ] %}
-    {% for group in groups %}
-        {% set groupOptions = groupOptions|merge([{ label: group.name, value: group.id }]) %}
-    {% endfor %}
-
-    {{ forms.selectField({
-        first: true,
-        label: "Group"|t('sprout-module-forms'),
-        instructions: "Which group should this form be displayed in?"|t('sprout-module-forms'),
-        id: 'groupId',
-        name: 'groupId',
-        options: groupOptions,
-        value: groupId
-    }) }}
-
-{% endif %}
-
 <hr>
 
 {% if settings.enableSaveData %}

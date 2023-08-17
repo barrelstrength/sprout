@@ -15,8 +15,6 @@ class DataSetElementQuery extends ElementQuery
      */
     public ?bool $viewable = null;
 
-    public ?int $groupId = null;
-
     public string|array|null $type = null;
 
     public function type(string|array|null $value = null): self
@@ -50,15 +48,8 @@ class DataSetElementQuery extends ElementQuery
             'sprout_datasets.visualizationType',
             'sprout_datasets.visualizationSettings',
             'sprout_datasets.settings',
-            'sprout_datasets.groupId',
             'sprout_datasets.enabled',
         ]);
-
-        if ($this->groupId) {
-            $this->query->andWhere(Db::parseParam(
-                '[[sprout_datasets.groupId]]', $this->groupId)
-            );
-        }
 
         if ($this->type) {
             $this->query->andWhere(

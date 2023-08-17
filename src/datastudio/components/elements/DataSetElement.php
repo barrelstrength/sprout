@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\datastudio\components\elements;
 
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\datastudio\components\elements\conditions\DataSetCondition;
 use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\DataSourceSettingsField;
 use BarrelStrength\Sprout\datastudio\components\elements\fieldlayoutelements\DescriptionField;
@@ -35,8 +34,6 @@ use yii\web\Response;
  */
 class DataSetElement extends Element
 {
-    use SourceGroupTrait;
-
     public ?string $name = null;
 
     public ?string $nameFormat = null;
@@ -177,30 +174,6 @@ class DataSetElement extends Element
             ],
         ];
 
-        $groups = self::getSourceGroups();
-
-        if ($groups) {
-
-            $sources[] = [
-                'heading' => Craft::t('sprout-module-data-studio', 'Group'),
-            ];
-
-            foreach ($groups as $group) {
-                $key = 'groupId:' . $group->id;
-
-                $sources[] = [
-                    'key' => $key,
-                    'label' => Craft::t('sprout-module-data-studio', $group->name),
-                    'data' => ['id' => $group->id],
-                    'criteria' => [
-                        'groupId' => $group->id,
-                        'viewable' => true,
-                    ],
-                    'defaultSort' => ['name', 'asc'],
-                ];
-            }
-        }
-
         return $sources;
     }
 
@@ -314,24 +287,8 @@ class DataSetElement extends Element
 
     public function getSidebarHtml(bool $static): string
     {
-        $groups = self::getSourceGroups();
-
-        $groupOptions = [];
-        $groupOptions[] = [
-            'label' => Craft::t('sprout-module-data-studio', 'None'),
-            'value' => '',
-        ];
-
-        foreach ($groups as $group) {
-            $groupOptions[] = [
-                'label' => Craft::t('sprout-module-data-studio', $group->name),
-                'value' => $group->id,
-            ];
-        }
-
         $html = Craft::$app->getView()->renderTemplate('sprout-module-data-studio/_datasets/details.twig', [
             'dataSet' => $this,
-            'groups' => $groupOptions,
             'static' => $static,
         ]);
 
@@ -493,7 +450,6 @@ class DataSetElement extends Element
             ],
         ];
         $rules[] = [['description'], 'string', 'max' => 255];
-        $rules[] = [['groupId'], 'safe'];
         $rules[] = [['nameFormat'], 'safe'];
         $rules[] = [['type'], 'safe'];
         $rules[] = [['sortOrder'], 'safe'];
@@ -535,7 +491,6 @@ class DataSetElement extends Element
             ? $visualization->getSettings()
             : [];
 
-        $dataSetRecord->groupId = $this->groupId;
         $dataSetRecord->name = $this->name;
         $dataSetRecord->nameFormat = $this->nameFormat;
         $dataSetRecord->handle = $this->handle;

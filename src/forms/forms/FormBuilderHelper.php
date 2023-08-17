@@ -31,7 +31,6 @@ class FormBuilderHelper
         // Exclude any settings attributes (we add them later)
         // And stuff we don't need in the FormBuilder UI
         $fieldData = $field->getAttributes(null, array_merge(array_keys($field->getSettings()), [
-            'groupId',
             'describedBy',
             'layoutId',
             'columnPrefix',

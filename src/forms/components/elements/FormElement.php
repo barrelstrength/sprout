@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\forms\components\elements;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
 use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
@@ -54,8 +53,6 @@ use yii\web\Response;
  */
 class FormElement extends Element
 {
-    use SourceGroupTrait;
-
     public ?string $name = null;
 
     public ?string $handle = null;
@@ -138,9 +135,6 @@ class FormElement extends Element
             return $this->_fieldLayout;
         }
 
-        $groups = self::getSourceGroups();
-        $groupId = $form->groupId ?? null;
-
         $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($this->id);
         $config = FormsModule::getInstance()->getSettings();
 
@@ -200,8 +194,6 @@ class FormElement extends Element
 
         $settingsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/general', [
             'form' => $this,
-            'groups' => $groups,
-            'groupId' => $groupId,
             'config' => $config,
             'linkHtml' => $linkHtml,
         ]);
@@ -272,19 +264,6 @@ class FormElement extends Element
                 'label' => Craft::t('sprout-module-forms', 'All Forms'),
             ],
         ];
-
-        $groups = self::getSourceGroups();
-
-        foreach ($groups as $group) {
-            $key = 'group:' . $group->id;
-
-            $sources[] = [
-                'key' => $key,
-                'label' => Craft::t('sprout-module-forms', $group->name),
-                'data' => ['id' => $group->id],
-                'criteria' => ['groupId' => $group->id],
-            ];
-        }
 
         return $sources;
     }
@@ -474,7 +453,6 @@ class FormElement extends Element
         $record->handle = $this->handle;
         $record->titleFormat = $this->titleFormat;
         $record->displaySectionTitles = $this->displaySectionTitles;
-        $record->groupId = $this->groupId;
         $record->redirectUri = Db::prepareValueForDb($this->redirectUri);
         $record->saveData = $this->saveData;
         $record->submissionMethod = $this->submissionMethod;
@@ -922,7 +900,6 @@ class FormElement extends Element
             'targetClass' => FormRecord::class,
         ];
 
-        $rules[] = [['groupId'], 'safe'];
         $rules[] = [['submissionFieldLayoutId'], 'safe'];
         $rules[] = [['submissionFieldLayout'], 'safe'];
         $rules[] = [['titleFormat'], 'required'];

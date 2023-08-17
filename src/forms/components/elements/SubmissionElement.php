@@ -2,15 +2,12 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupsHelper;
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupTrait;
 use BarrelStrength\Sprout\forms\captchas\Captcha;
 use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsDefaultStatus;
 use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsSpam;
 use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
 use BarrelStrength\Sprout\forms\db\SproutTable;
-use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\SubmissionRecord;
@@ -35,8 +32,6 @@ use yii\base\Exception;
  */
 class SubmissionElement extends Element
 {
-    use SourceGroupTrait;
-
     public ?int $formId = null;
 
     public ?string $formHandle = null;
@@ -44,8 +39,6 @@ class SubmissionElement extends Element
     public ?int $statusId = null;
 
     public ?string $statusHandle = null;
-
-    public ?int $formGroupId = null;
 
     public ?string $formName = null;
 
@@ -150,7 +143,6 @@ class SubmissionElement extends Element
         ];
 
         // Prepare the data for our sources sidebar
-        $groups = self::getSourceGroups();
         $forms = FormsModule::getInstance()->forms->getAllForms();
 
         $noSources = [];
@@ -159,29 +151,14 @@ class SubmissionElement extends Element
         foreach ($forms as $form) {
             $saveData = FormsModule::getInstance()->submissions->isSaveDataEnabled($form);
             if ($saveData) {
-                if ($form->groupId) {
-                    if (!isset($prepSources[$form->groupId]['heading']) && isset($groups[$form->groupId])) {
-                        $prepSources[$form->groupId]['heading'] = $groups[$form->groupId]->name;
-                    }
-
-                    $prepSources[$form->groupId]['forms'][$form->id] = [
-                        'label' => $form->name,
-                        'data' => ['formId' => $form->getId()],
-                        'criteria' => [
-                            'formId' => $form->getId(),
-                        ],
-                        'defaultSort' => ['dateCreated', 'desc'],
-                    ];
-                } else {
-                    $noSources[$form->id] = [
-                        'label' => $form->name,
-                        'data' => ['formId' => $form->getId()],
-                        'criteria' => [
-                            'formId' => $form->getId(),
-                        ],
-                        'defaultSort' => ['dateCreated', 'desc'],
-                    ];
-                }
+                $noSources[$form->id] = [
+                    'label' => $form->name,
+                    'data' => ['formId' => $form->getId()],
+                    'criteria' => [
+                        'formId' => $form->getId(),
+                    ],
+                    'defaultSort' => ['dateCreated', 'desc'],
+                ];
             }
         }
 

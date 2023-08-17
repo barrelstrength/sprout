@@ -22,8 +22,6 @@
 
     {{ parent() }}
 
-    {{ sproutCp.sproutGroupAdminButtons(groupId) }}
-
 {% endblock %}
 
 {% js on ready %}
@@ -32,9 +30,6 @@
         e.preventDefault();
         });
     {% endif %}
-
-    {{ sproutCp.sproutGroupAdmin(elementType, title) }}
-
 {% endjs %}
 
 {% css %}

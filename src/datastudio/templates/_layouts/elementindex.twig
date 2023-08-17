@@ -6,12 +6,6 @@
     ]
 }) %}
 
-{% do sprout.modules.core.vite.register('core/SourceGroups.js', false, {
-    'depends': [
-        'craft\\web\\assets\\cp\\CpAsset'
-    ]
-}) %}
-
 {% do sprout.modules.core.vite.register('data-studio/DataSetIndex.js', false, {
     'depends': [
         'craft\\web\\assets\\cp\\CpAsset'

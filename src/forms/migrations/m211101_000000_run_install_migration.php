@@ -16,7 +16,6 @@ class m211101_000000_run_install_migration extends Migration
     public const FORM_THEME = 'BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme';
     public const SPAM_REDIRECT_BEHAVIOR_NORMAL = 'redirectAsNormal';
 
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
     public const FORMS_TABLE = '{{%sprout_forms}}';
     public const FORM_INTEGRATIONS_TABLE = '{{%sprout_form_integrations}}';
     public const FORM_INTEGRATIONS_LOG_TABLE = '{{%sprout_form_integrations_log}}';
@@ -106,7 +105,6 @@ class m211101_000000_run_install_migration extends Migration
             $this->createTable(self::FORMS_TABLE, [
                 'id' => $this->primaryKey(),
                 'submissionFieldLayoutId' => $this->integer(),
-                'groupId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'titleFormat' => $this->string()->notNull(),
@@ -131,7 +129,6 @@ class m211101_000000_run_install_migration extends Migration
 
             $this->addForeignKey(null, self::FORMS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
             $this->addForeignKey(null, self::FORMS_TABLE, ['submissionFieldLayoutId'], Table::FIELDLAYOUTS, ['id'], 'SET NULL');
-            $this->addForeignKey(null, self::FORMS_TABLE, ['groupId'], self::SOURCE_GROUPS_TABLE, ['id'], 'SET NULL');
         }
 
         if (!$this->getDb()->tableExists(self::FORM_SUBMISSIONS_STATUSES_TABLE)) {

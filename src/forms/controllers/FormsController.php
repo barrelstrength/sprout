@@ -2,11 +2,9 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
-use BarrelStrength\Sprout\core\sourcegroups\SourceGroupsHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
-use BarrelStrength\Sprout\forms\forms\FormGroupRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use Craft;
@@ -43,14 +41,13 @@ class FormsController extends BaseController
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('sprout/forms'));
     }
 
-    public function actionFormsIndexTemplate($groupId = null): Response
+    public function actionFormsIndexTemplate(): Response
     {
         $this->requirePermission(FormsModule::p('editForms'));
 
         return $this->renderTemplate('sprout-module-forms/forms/index', [
             'title' => FormElement::pluralDisplayName(),
             'elementType' => FormElement::class,
-            'groupId' => $groupId,
         ]);
     }
 
@@ -62,12 +59,8 @@ class FormsController extends BaseController
 
         $config = FormsModule::getInstance()->getSettings();
 
-        $groups = SourceGroupsHelper::getSourceGroups(FormGroupRecord::class);
-
         return $this->renderTemplate('sprout-module-forms/forms/_settings/' . $subNavKey, [
             'form' => $form,
-            'groups' => $groups,
-            'groupId' => $form->groupId ?? null,
             'settings' => FormsModule::getInstance()->getSettings(),
             'rules' => FormsModule::getInstance()->formRules->getRulesByFormId($formId),
             'ruleOptions' => FormsModule::getInstance()->formRules->getRuleOptions(),
@@ -629,7 +622,6 @@ class FormsController extends BaseController
     //    $request = Craft::$app->getRequest();
     //
     //    // Set the form attributes, defaulting to the existing values for whatever is missing from the post data
-    //    $form->groupId = $request->getBodyParam('groupId', $form->groupId);
     //    $form->name = $request->getBodyParam('name', $form->name);
     //    $form->handle = $request->getBodyParam('handle', $form->handle);
     //    $form->displaySectionTitles = $request->getBodyParam('displaySectionTitles', $form->displaySectionTitles);
