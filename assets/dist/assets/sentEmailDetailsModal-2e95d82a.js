@@ -1,0 +1,2 @@
+window.SentEmailDetailsModal=function(n){Craft.sendActionRequest("POST","sprout-module-sent-email/sent-email/get-sent-email-details-modal-html",{data:{emailId:n}}).then(e=>{if(e.data.success){const a=$("<div/>",{class:"so-body"});$(e.data.html).appendTo(a);const t=$("<div/>",{class:"so-footer"}),o=Craft.ui.createButton({label:Craft.t("app","Close"),spinner:!0});$("<div/>",{class:"flex-grow"}).appendTo(t),o.appendTo(t);const l=a.add(t),s=new Craft.Slideout(l);Craft.initUiElements(l),o.on("click",()=>{s.close()})}})};
+//# sourceMappingURL=sentEmailDetailsModal-2e95d82a.js.map

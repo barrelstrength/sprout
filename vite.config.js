@@ -18,7 +18,6 @@ export default ({command}) => ({
                 cp: '/core/SproutCp.js',
                 alpine: '/core/SproutAlpine.js',
                 adminTable: '/core/SproutAdminTable.js',
-                groups: '/core/SourceGroups.js',
                 emailThemes: '/mailer/EmailThemesSettings.js',
                 sentEmailDetailsModal: '/sent-email/SentEmailDetailsModal.js',
                 transactionalEmail: '/transactional/NotificationEvents.js',
