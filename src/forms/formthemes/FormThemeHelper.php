@@ -8,6 +8,7 @@ use Craft;
 use craft\errors\MissingComponentException;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 
 class FormThemeHelper
 {
@@ -63,15 +64,23 @@ class FormThemeHelper
 
     public static function getFormThemeModel(array $formThemeSettings, string $uid = null): ?FormTheme
     {
-        //$fieldLayout = FieldLayout::createFromConfig(reset($formThemeSettings['fieldLayouts']));
-
         $type = $formThemeSettings['type'];
 
         $formTheme = new $type([
             'name' => $formThemeSettings['name'] ?? null,
             'formTemplate' => $formThemeSettings['formTemplate'] ?? null,
+            'formTemplateOverrideFolder' => $formThemeSettings['formTemplateOverrideFolder'] ?? null,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);
+
+        if (isset($formThemeSettings['fieldLayouts'])) {
+            $config = reset($formThemeSettings['fieldLayouts']);
+            $config['type'] = $type;
+
+            $fieldLayout = FieldLayout::createFromConfig($config);
+
+            $formTheme->setFieldLayout($fieldLayout);
+        }
 
         return $formTheme;
     }

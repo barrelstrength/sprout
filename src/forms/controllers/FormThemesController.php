@@ -53,16 +53,12 @@ class FormThemesController extends Controller
 
         $formTheme = $this->populateFormThemeModel();
 
-        if (!$formTheme->uid) {
-            $formTheme->uid = StringHelper::UUID();
-        }
-
         $formThemesConfig = FormThemeHelper::getFormThemes();
         $formThemesConfig[$formTheme->uid] = $formTheme;
 
         if (!$formTheme->validate() || !FormThemeHelper::saveFormThemes($formThemesConfig)) {
 
-            Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Form Type.'));
+            Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Form Theme.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'formTheme' => $formTheme,
@@ -71,7 +67,7 @@ class FormThemesController extends Controller
             return null;
         }
 
-        Craft::$app->session->setNotice(Craft::t('sprout-module-forms', 'Form Type saved.'));
+        Craft::$app->session->setNotice(Craft::t('sprout-module-forms', 'Form Theme saved.'));
 
         return $this->redirectToPostedUrl();
     }
@@ -125,13 +121,18 @@ class FormThemesController extends Controller
         /** @var FormTheme $formTheme */
         $formTheme = new $type();
         $formTheme->name = Craft::$app->request->getBodyParam('name');
-        $formTheme->uid = $uid ?? StringHelper::UUID();
+        $formTheme->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
         if (!$formTheme::isEditable()) {
             return $formTheme;
         }
 
         $formTheme->formTemplate = Craft::$app->request->getBodyParam('formTemplate');
+        $formTheme->formTemplateOverrideFolder = Craft::$app->request->getBodyParam('formTemplateOverrideFolder');
+
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        $fieldLayout->type = FormElement::class;
+        $formTheme->setFieldLayout($fieldLayout);
 
         return $formTheme;
     }

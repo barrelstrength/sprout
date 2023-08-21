@@ -4,6 +4,10 @@ namespace BarrelStrength\Sprout\forms\components\elements;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
+use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
+use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
+use BarrelStrength\Sprout\forms\components\elements\conditions\FormThemeConditionRule;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
 use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
@@ -16,6 +20,7 @@ use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
 use BarrelStrength\Sprout\uris\links\Links;
@@ -27,13 +32,13 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
-use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\CustomField;
 use craft\fieldlayoutelements\Html as HtmlFieldLayoutElement;
+use craft\helpers\Cp;
 use craft\helpers\Db;
-use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -86,6 +91,8 @@ class FormElement extends Element
 
     public bool $enableCaptchas = true;
 
+    private ?FormRecord $_formRecord = null;
+
     private array $_fields = [];
 
     public static function displayName(): string
@@ -118,28 +125,9 @@ class FormElement extends Element
         return true;
     }
 
-    public static function statuses(): array
-    {
-        $statuses = parent::statuses();
-        $statuses[self::STATUS_ENABLED] = Craft::t('sprout-module-forms', 'Accepting Submissions');
-        $statuses[self::STATUS_DISABLED] = Craft::t('sprout-module-forms', 'Closed to Submissions');
-
-        return $statuses;
-    }
-
     public static function refHandle(): ?string
     {
         return 'form';
-    }
-
-    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
-    {
-        /** @var FieldLayout $fieldLayout */
-        $fieldLayout = $event->sender;
-
-        if ($fieldLayout->type === self::class) {
-            $event->fields[] = FormBuilderField::class;
-        }
     }
 
     private ?FieldLayout $_fieldLayout = null;
@@ -150,13 +138,13 @@ class FormElement extends Element
             return $this->_fieldLayout;
         }
 
-        $this->_fieldLayout = new FieldLayout([
+        $fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);
 
         // No need to build UI for command line requests
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
-            return $this->_fieldLayout;
+            return $fieldLayout;
         }
 
         $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($this->id);
@@ -165,38 +153,69 @@ class FormElement extends Element
         $contentTabs = $config->getFieldLayout()->getTabs();
         $contentTab = reset($contentTabs) ?: [];
 
+        $themes = FormThemeHelper::getFormThemes();
+
+        $themeTabs = array_map(static function(FormTheme $theme) use ($fieldLayout) {
+            $elementCondition = FormElement::createCondition();
+            $rule = new FormThemeConditionRule();
+            $rule->setValues([$theme->uid]);
+            $elementCondition->addConditionRule($rule);
+
+            $tab = $theme->getFieldLayout()->getTabs()[0] ?? null;
+            $tab->layout = $fieldLayout;
+            $tab->elementCondition = $elementCondition;
+
+            //foreach ($tab->elements as $element) {
+            //    if ($element instanceof TextareaField && $element->attribute === 'defaultMessage') {
+            //        $element->tip = $twigExpressionMessage2;
+            //    }
+            //}
+
+            return $tab;
+        }, $themes);
+
         $formBuilderTab = new FieldLayoutTab();
-        $formBuilderTab->layout = $this->_fieldLayout;
+        $formBuilderTab->layout = $fieldLayout;
         $formBuilderTab->name = Craft::t('sprout-module-forms', 'Layout');
-        $formBuilderTab->uid = StringHelper::UUID();
+        $formBuilderTab->uid = 'SPROUT-UID-FORMS-LAYOUT-TAB';
         $formBuilderTab->setElements([
             new FormBuilderField(),
-        ]);
-
-        $templatesHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/templates.twig', [
-            'form' => $this,
-            'config' => $config,
-        ]);
-
-        $templatesTab = new FieldLayoutTab();
-        $templatesTab->layout = $this->_fieldLayout;
-        $templatesTab->name = Craft::t('sprout-module-forms', 'Design');
-        $templatesTab->uid = StringHelper::UUID();
-        $templatesTab->setElements([
-            new HtmlFieldLayoutElement($templatesHtml),
         ]);
 
         $notificationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/notifications.twig', [
             'form' => $this,
             'config' => $config,
+            'newTransactionalEmailCpEditUrl' => UrlHelper::cpUrl('sprout/email/' . TransactionalEmailEmailType::refHandle() . '/new', [
+                'emailTypeSettings' => [
+                    'eventId' => SaveSubmissionNotificationEvent::class,
+                ],
+                'site' => Cp::requestedSite()->handle,
+            ]),
         ]);
 
         $notificationsTab = new FieldLayoutTab();
-        $notificationsTab->layout = $this->_fieldLayout;
+        $notificationsTab->layout = $fieldLayout;
         $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
-        $notificationsTab->uid = StringHelper::UUID();
+        $notificationsTab->uid = 'SPROUT-UID-FORMS-NOTIFICATIONS-TAB';
         $notificationsTab->setElements([
             new HtmlFieldLayoutElement($notificationsHtml),
+        ]);
+
+        $reportsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/reports.twig', [
+            'form' => $this,
+            'config' => $config,
+            'newDataSetCpEditUrl' => UrlHelper::cpUrl('sprout/data-studio/new', [
+                'type' => SubmissionsDataSource::class,
+                'site' => Cp::requestedSite()->handle,
+            ]),
+        ]);
+
+        $reportsTab = new FieldLayoutTab();
+        $reportsTab->layout = $fieldLayout;
+        $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
+        $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
+        $reportsTab->setElements([
+            new HtmlFieldLayoutElement($reportsHtml),
         ]);
 
         $integrationsHtml = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_settings/integrations.twig', [
@@ -206,9 +225,9 @@ class FormElement extends Element
         ]);
 
         $integrationsTab = new FieldLayoutTab();
-        $integrationsTab->layout = $this->_fieldLayout;
+        $integrationsTab->layout = $fieldLayout;
         $integrationsTab->name = Craft::t('sprout-module-forms', 'Integrations');
-        $integrationsTab->uid = StringHelper::UUID();
+        $integrationsTab->uid = 'SPROUT-UID-FORMS-INTEGRATIONS-TAB';
         $integrationsTab->setElements([
             new HtmlFieldLayoutElement($integrationsHtml),
         ]);
@@ -226,23 +245,26 @@ class FormElement extends Element
         ]);
 
         $settingsTab = new FieldLayoutTab();
-        $settingsTab->layout = $this->_fieldLayout;
+        $settingsTab->layout = $fieldLayout;
         $settingsTab->name = Craft::t('sprout-module-forms', 'Settings');
-        $settingsTab->uid = StringHelper::UUID();
+        $settingsTab->uid = 'SPROUT-UID-FORMS-SETTINGS-TAB';
         $settingsTab->setElements([
             new HtmlFieldLayoutElement($settingsHtml),
         ]);
 
-        $this->_fieldLayout->setTabs([
-            $formBuilderTab,
-            $contentTab,
-            $templatesTab,
-            $notificationsTab,
-            $integrationsTab,
-            $settingsTab,
-        ]);
+        $tabs = array_merge(
+            [$formBuilderTab],
+            $themeTabs,
+            [$contentTab],
+            [$notificationsTab],
+            [$reportsTab],
+            [$integrationsTab],
+            [$settingsTab],
+        );
 
-        return $this->_fieldLayout;
+        $fieldLayout->setTabs($tabs);
+
+        return $this->_fieldLayout = $fieldLayout;
     }
 
     public function getSubmissionFieldLayout(): ?FieldLayout
@@ -254,18 +276,6 @@ class FormElement extends Element
         return Craft::$app->getFields()->getLayoutById($this->submissionFieldLayoutId);
     }
 
-    public function getSubmissionFieldLayoutTabs(): array
-    {
-        $tabs = $this->getSubmissionFieldLayout()?->getTabs();
-
-        // Provide default Tab if no layout exists
-        if (!$tabs) {
-            $tabs = $this->getDefaultSubmissionTabs();
-        }
-
-        return $tabs;
-    }
-
     public function getDefaultSubmissionTabs(): array
     {
         $fieldLayoutTab = new FieldLayoutTab();
@@ -274,6 +284,11 @@ class FormElement extends Element
         return [
             $fieldLayoutTab,
         ];
+    }
+
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(FormCondition::class, [static::class]);
     }
 
     /**
@@ -443,11 +458,6 @@ class FormElement extends Element
         return (!$id || str_starts_with($id, 'new'));
     }
 
-    public function beforeSave(bool $isNew): bool
-    {
-        return parent::beforeSave($isNew);
-    }
-
     public function afterSave(bool $isNew): void
     {
         // Get the form record
@@ -476,37 +486,12 @@ class FormElement extends Element
         $record->formThemeUid = $this->formThemeUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
-        if (!ElementHelper::isDraftOrRevision($this)) {
-            $oldFieldContext = Craft::$app->content->fieldContext;
-            $oldContentTable = Craft::$app->content->contentTable;
-
-            //Set our field content and content table to work with our form output
-            Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
-            Craft::$app->content->contentTable = $this->getSubmissionContentTable();
-
-            $oldHandle = $record->getOldAttribute('handle');
-            $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
-            $newContentDbTable = FormContentTableHelper::getContentTable($record->handle);
-
-            // Do we need to create/rename the content table?
-            if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
-                if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
-                    Db::renameTable($oldContentDbTable, $newContentDbTable);
-                } else {
-                    FormContentTableHelper::createContentTable($newContentDbTable);
-                }
-            }
-
-            $this->updateSubmissionLayout();
-
-            // Reset field context and content table to original values
-            Craft::$app->content->fieldContext = $oldFieldContext;
-            Craft::$app->content->contentTable = $oldContentTable;
-        }
-
         $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
 
         $record->save(false);
+
+        // Set our form record so we can use it in afterPropagate
+        $this->_formRecord = $record;
 
         // Re-save Submission Elements if titleFormat has changed
         $oldTitleFormat = $record->getOldAttribute('titleFormat');
@@ -516,6 +501,41 @@ class FormElement extends Element
         }
 
         parent::afterSave($isNew);
+    }
+
+    public function afterPropagate(bool $isNew): void
+    {
+        if (!$this->_formRecord) {
+            return;
+        }
+
+        $oldFieldContext = Craft::$app->content->fieldContext;
+        $oldContentTable = Craft::$app->content->contentTable;
+
+        //Set our field content and content table to work with our form output
+        Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
+        Craft::$app->content->contentTable = $this->getSubmissionContentTable();
+
+        $oldHandle = $this->_formRecord->getOldAttribute('handle');
+        $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
+        $newContentDbTable = FormContentTableHelper::getContentTable($this->_formRecord->handle);
+
+        // Do we need to create/rename the content table?
+        if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
+            if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
+                Db::renameTable($oldContentDbTable, $newContentDbTable);
+            } else {
+                FormContentTableHelper::createContentTable($newContentDbTable);
+            }
+        }
+
+        $this->updateSubmissionLayout();
+
+        // Reset field context and content table to original values
+        Craft::$app->content->fieldContext = $oldFieldContext;
+        Craft::$app->content->contentTable = $oldContentTable;
+
+        parent::afterPropagate($isNew); // TODO: Change the autogenerated stub
     }
 
     public function updateSubmissionLayout(): void
@@ -776,6 +796,18 @@ class FormElement extends Element
         return $query->all();
     }
 
+    public function getReports(): array
+    {
+        $query = DataSetElement::find()
+            ->select([
+                'sprout_datasets.id AS id',
+                'sprout_datasets.name AS title',
+            ])
+            ->type(SubmissionsDataSource::class);
+
+        return $query->all();
+    }
+
     public string|array $additionalTemplates = [];
 
     public function addTemplateOverridePaths(string|array $additionalTemplates = []): void
@@ -958,9 +990,9 @@ class FormElement extends Element
 
     public function setAttributes($values, $safeOnly = true): void
     {
-        if ($this->redirectUri instanceof LinkInterface) {
-            $values['redirectUri'] = $this->redirectUri;
-        } else {
+        $redirectUri = $values['redirectUri'] ?? null;
+
+        if (!$redirectUri instanceof LinkInterface) {
             $type = $values['redirectUri']['type'] ?? null;
 
             if ($type !== null) {

@@ -4,14 +4,14 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
-{{ sproutCp.relationsTable(form.getNotifications()) }}
+{{ sproutCp.relationsTable(form.getReports()) }}
 
 <div style="margin: var(--row-gap) 0 0; text-align: right;">
     <a
-        href="{{ newTransactionalEmailCpEditUrl }}"
+        href="{{ newDataSetCpEditUrl }}"
         target="_blank"
         class="btn secondary add icon"
     >
-        {{ 'New Notification'|t('sprout-module-forms') }}
+        {{ 'New Data Set'|t('sprout-module-forms') }}
     </a>
 </div>

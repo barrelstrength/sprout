@@ -71,6 +71,10 @@ class EmailController extends Controller
         $email->type = $emailType::class;
         $email->mailerUid = $defaultMailer->uid ?? null;
 
+        if ($emailTypeSettings = Craft::$app->request->getParam('emailTypeSettings')) {
+            $email->emailTypeSettings = $emailTypeSettings;
+        }
+
         $user = Craft::$app->getUser()->getIdentity();
 
         if (!$email->canSave($user)) {

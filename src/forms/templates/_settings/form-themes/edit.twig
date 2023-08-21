@@ -2,14 +2,14 @@
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 {% import "_includes/forms" as forms %}
 
-{% set module = sprout.modules.mailer %}
+{% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
 {% set currentSubNavKey = 'form-themes' %}
 
 {% set crumbs = [
-    { label: "Settings"|t('sprout-module-mailer'), url: cpUrl('settings') },
-    { label: "Form Themes"|t('sprout-module-mailer'), url: cpUrl('sprout/settings/forms/form-themes') }
+    { label: "Settings"|t('sprout-module-forms'), url: cpUrl('settings') },
+    { label: "Form Themes"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/form-themes') }
 ] %}
 
 {% set fullPageForm = true %}
@@ -58,6 +58,18 @@
         disabled: not formTheme.isEditable(),
     }) }}
 
+    {{ forms.autosuggestField({
+        label: "Form Template Override Folder"|t('sprout-module-forms'),
+        instructions: "The folder that will take precedence over any form theme files."|t('sprout-module-forms'),
+        id: 'formTemplateOverrideFolder',
+        name: 'formTemplateOverrideFolder',
+        suggestEnvVars: false,
+        suggestions: craft.cp.getTemplateSuggestions(),
+        placeholder: "_forms/themes/overrides"|t('sprout-module-forms'),
+        value: formTheme.formTemplateOverrideFolder ?? null,
+        errors: formTheme.getErrors('formTemplateOverrideFolder'),
+    }) }}
+
     {#    {{ forms.autosuggestField({ #}
     {#        label: "Email Template (Text)"|t('sprout-module-mailer'), #}
     {#        instructions: "Leave blank to render the text email by converting the HTML template to Markdown."|t('sprout-module-mailer'), #}
@@ -85,63 +97,68 @@
 
     <hr>
 
-    {#    {% set fieldLayoutInstructions = "The content fields that can be used in this email theme."|t('sprout-module-mailer') %} #}
+    {% set fieldLayoutInstructions = "The content fields that can be used in this form theme."|t('sprout-module-forms') %}
 
-    {#    {% if emailTheme.isEditable() %} #}
+    {% if formTheme.isEditable() %}
 
-    {#        {{ forms.fieldLayoutDesignerField({ #}
-    {#            instructions: fieldLayoutInstructions, #}
-    {#            fieldLayout: emailTheme.getFieldLayout(), #}
-    {#            required: true, #}
-    {#            customizableTabs: false, #}
-    {#            customizableUi: false, #}
-    {#            errors: emailTheme.getErrors('fieldLayout'), #}
-    {#        }) }} #}
+        {{ forms.fieldLayoutDesignerField({
+            instructions: fieldLayoutInstructions,
+            fieldLayout: formTheme.getFieldLayout(),
+            required: true,
+            customizableTabs: false,
+            customizableUi: true,
+            errors: formTheme.getErrors('fieldLayout'),
+        }) }}
 
-    {#    {% else %} #}
+    {% else %}
 
-    {#        {% set tabs = emailTheme.getFieldLayout().getTabs() %} #}
+        {% set tabs = formTheme.getFieldLayout().getTabs() %}
 
-    {#        <div class="field"> #}
-    {#            <div class="heading"> #}
-    {#                <label>{{ "Field Layout"|t('sprout-module-mailer') }}</label> #}
-    {#            </div> #}
-    {#            <div class="instructions"> #}
-    {#                <p>{{ fieldLayoutInstructions }}</p> #}
-    {#            </div> #}
-    {#            <div class="layoutdesigner"> #}
-    {#                <div class="fld-workspace"> #}
-    {#                    <div class="fld-tabs" style="position: relative;"> #}
-    {#                        {% for tab in tabs %} #}
-    {#                            <div class="fld-tab last" style="height: 144px;"> #}
-    {#                                <div class="tabs"> #}
-    {#                                    <div class="tab"><span>{{ tab.name }}</span></div> #}
-    {#                                </div> #}
-    {#                                <div class="fld-tabcontent"> #}
-    {#                                    {% for element in tab.elements %} #}
-    {#                                        <div class="fld-field fld-required fld-element"> #}
-    {#                                            <div class="field-name"> #}
-    {#                                                <div class="fld-element-label"><h4>{{ element.label }}</h4> #}
-    {#                                                    {% if element.required %} #}
-    {#                                                        <div class="fld-required-indicator" title="This field is required" aria-label="This field is required" data-icon="asterisk"></div> #}
-    {#                                                    {% endif %} #}
-    {#                                                </div> #}
-    {#                                                <div class="fld-attribute"> #}
-    {#                                                    <div class="smalltext light code">{{ element.attribute }}</div> #}
-    {#                                                </div> #}
-    {#                                            </div> #}
-    {#                                            <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a> #}
-    {#                                        </div> #}
-    {#                                    {% endfor %} #}
-    {#                                </div> #}
-    {#                            </div> #}
-    {#                        {% endfor %} #}
-    {#                    </div> #}
-    {#                </div> #}
-    {#            </div> #}
-    {#        </div> #}
+        <div class="field">
+            <div class="heading">
+                <label>{{ "Field Layout"|t('sprout-module-forms') }}</label>
+            </div>
+            <div class="instructions">
+                <p>{{ fieldLayoutInstructions }}</p>
+            </div>
+            <div class="layoutdesigner">
+                <div class="fld-workspace">
+                    <div class="fld-tabs" style="position: relative;">
+                        {% for tab in tabs %}
+                            <div class="fld-tab last" style="height: 144px;">
+                                <div class="tabs">
+                                    <div class="tab"><span>{{ tab.name }}</span></div>
+                                </div>
+                                <div class="fld-tabcontent">
+                                    {% for element in tab.elements %}
+                                        {% if className(element) is same as ('craft\\fieldlayoutelements\\Tip') %}
+                                        {% elseif className(element) is same as ('craft\\fieldlayoutelements\\HorizontalRule') %}
+                                            {# Skip #}
+                                        {% else %}
+                                            <div class="fld-field fld-required fld-element">
+                                                <div class="field-name">
+                                                    <div class="fld-element-label"><h4>{{ element.label }}</h4>
+                                                        {% if element.required %}
+                                                            <div class="fld-required-indicator" title="This field is required" aria-label="This field is required" data-icon="asterisk"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="fld-attribute">
+                                                        <div class="smalltext light code">{{ element.attribute }}</div>
+                                                    </div>
+                                                </div>
+                                                <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    {#    {% endif %} #}
+    {% endif %}
 
     {{ forms.textField({
         label: "Theme Type"|t('sprout-module-forms'),

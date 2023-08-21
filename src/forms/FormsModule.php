@@ -227,14 +227,6 @@ class FormsModule extends Module
             }
         );
 
-        Event::on(
-            FieldLayout::class,
-            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            static function(DefineFieldLayoutFieldsEvent $event): void {
-                FormElement::defineNativeFields($event);
-            }
-        );
-
         $this->registerProjectConfigEventListeners();
     }
 
