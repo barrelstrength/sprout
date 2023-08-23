@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\uris\components\links\AbsoluteUrl;
 use BarrelStrength\Sprout\uris\components\links\CategoryElementLink;
+use BarrelStrength\Sprout\uris\components\links\CurrentPageUrl;
 use BarrelStrength\Sprout\uris\components\links\EmailLink;
 use BarrelStrength\Sprout\uris\components\links\EntryElementLink;
 use BarrelStrength\Sprout\uris\components\links\RelativeUrl;
@@ -23,6 +24,7 @@ class Links extends Component
     public function getLinkTypes(array $excludedLinks = []): array
     {
         $linkTypes = [
+            CurrentPageUrl::class,
             AbsoluteUrl::class,
             RelativeUrl::class,
             EmailLink::class,
