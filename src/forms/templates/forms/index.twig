@@ -8,11 +8,28 @@
 
 {% block actionButton %}
     <div class="buttons">
-        <a id="create-new-form" class="btn submit add icon {% if not canCreateForm %}sprout-disabled{% endif %}"
-            href="{{ cpUrl('sprout/forms/new') }}">{{ "New Form"|t('sprout-module-forms') }}</a>
+        <div class="btngroup submit">
+            <div class="btn menubtn submit add icon">
+                {{ "New Form"|t('sprout-module-forms') }}
+            </div>
+            <div class="menu">
+                <ul>
+                    {% for formThemeUid, formTheme in formThemes %}
+                        <li>
+                            {{ tag('a', {
+                                href: cpUrl('sprout/forms/new', {
+                                    formThemeUid: formThemeUid,
+                                }),
+                                text: formTheme.name,
+                                class: 'menu-option',
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
         {{ sproutCp.upgradeToProButton(module) }}
-
     </div>
 {% endblock %}
 

@@ -26,145 +26,286 @@
 
 {% block content %}
 
+    <header id="content-header" class="pane-header">
+        {% set tabs = {
+            general: {
+                label: 'General'|t('sprout-module-forms'),
+                url: '#general'
+            },
+            features: {
+                label: 'Features'|t('sprout-module-forms'),
+                url: '#features'
+            },
+            behavior: {
+                label: 'Behavior'|t('sprout-module-forms'),
+                url: '#behavior'
+            },
+            themeLayout: {
+                label: 'Template Fields'|t('sprout-module-forms'),
+                url: '#fields'
+            },
+        } %}
+        {% include "_includes/tabs" with {
+            containerAttributes: {
+                id: 'tabs',
+            },
+        } %}
+    </header>
+
+    <div id="general">
+        {{ forms.textField({
+            label: "Name"|t('sprout-module-forms'),
+            instructions: "How you will refer to this Form Theme."|t('sprout-module-forms'),
+            id: 'name',
+            name: 'name',
+            value: formTheme.name,
+            errors: formTheme.getErrors('name'),
+            warning: sproutConfigWarning(module, 'name'),
+            required: true,
+            first: true,
+        }) }}
+
+        {{ forms.autosuggestField({
+            label: "Form Template"|t('sprout-module-forms'),
+            instructions: "The template that will be used to render your form."|t('sprout-module-forms'),
+            id: 'formTemplate',
+            name: 'formTemplate',
+            suggestEnvVars: false,
+            suggestions: craft.cp.getTemplateSuggestions(),
+            placeholder: "_forms/theme/form.twig"|t('sprout-module-forms'),
+            value: formTheme.formTemplate ?? null,
+            errors: formTheme.getErrors('formTemplate'),
+            required: true,
+            disabled: not formTheme.isEditable(),
+        }) }}
+
+        {{ forms.autosuggestField({
+            label: "Form Template Override Folder"|t('sprout-module-forms'),
+            instructions: "The folder that will take precedence over any form theme files."|t('sprout-module-forms'),
+            id: 'formTemplateOverrideFolder',
+            name: 'formTemplateOverrideFolder',
+            suggestEnvVars: false,
+            suggestions: craft.cp.getTemplateSuggestions(),
+            placeholder: "_forms/themes/overrides"|t('sprout-module-forms'),
+            value: formTheme.formTemplateOverrideFolder ?? null,
+            errors: formTheme.getErrors('formTemplateOverrideFolder'),
+        }) }}
+
+        {{ forms.textField({
+            label: "Theme Type"|t('sprout-module-forms'),
+            value: formTheme.displayName(),
+            disabled: true,
+        }) }}
+
+    </div>
+
+    <div id="features" class="hidden">
+
+        {{ forms.editableTableField({
+            label: "Features"|t('sprout-module-forms'),
+            instructions: "Select the features to display when authoring forms of this type."|t('sprout-module-forms'),
+            id: 'enabledFeatures',
+            name: 'enabledFeatures',
+            cols: {
+                heading: {
+                    type: 'heading',
+                    heading: "Feature"|t('sprout-module-forms'),
+                    info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
+                },
+                enabled: {
+                    type: 'heading',
+                    heading: "Enabled"|t('sprout-module-forms'),
+                    thin: true
+                },
+            }|filter,
+            rows: formTheme.getFeatureRows(),
+            fullWidth: true,
+            staticRows: true,
+            errors: settings.getErrors('modules'),
+        }) }}
+
+        <hr>
+
+        {{ forms.editableTableField({
+            label: "Form Fields"|t('sprout-module-forms'),
+            instructions: "Select the form fields to display when authoring forms of this type."|t('sprout-module-forms'),
+            id: 'enabledFormFields',
+            name: 'enabledFormFields',
+            cols: {
+                heading: {
+                    type: 'heading',
+                    heading: "Form Field"|t('sprout-module-forms'),
+                    info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
+                },
+                group: {
+                    type: 'heading',
+                    heading: "Group"|t('sprout-module-forms'),
+                },
+                enabled: {
+                    type: 'heading',
+                    heading: "Enabled"|t('sprout-module-forms'),
+                    thin: true
+                },
+            }|filter,
+            rows: formTheme.getFormFieldRows(),
+            fullWidth: true,
+            staticRows: true,
+            errors: settings.getErrors('modules'),
+        }) }}
+
+    </div>
+
+    <div id="behavior" class="hidden">
+
+        {{ forms.selectField({
+            label: 'Submission Method'|t('sprout-module-forms'),
+            instructions: 'The method used to submit your forms.'|t('sprout-module-forms'),
+            id: 'submissionMethod',
+            name: 'submissionMethod',
+            value: formTheme.submissionMethod,
+            options: [{
+                value: "sync",
+                label: "Reload Page (Synchronous)"|t('sprout-module-forms')
+            },{
+                value: "async",
+                label: "AJAX (Asynchronous)"|t('sprout-module-forms'),
+            }],
+        }) }}
+
+        <hr>
+
+        {{ forms.lightswitchField({
+            label: "Save data to the Craft database"|t('sprout-module-forms'),
+            instructions: "Disable this setting to stop Sprout Forms from saving all form submission data to the Craft database and hide the Submissions tab. Existing data will not be deleted, but will no longer be accessible via the Control Panel."|t('sprout-module-forms'),
+            id: 'enableSaveData',
+            name: 'enableSaveData',
+            toggle: 'settings-savedatadetails',
+            on: formTheme.enableSaveData,
+            onLabel: "Save Data"|t('sprout-module-forms'),
+            offLabel: "Don't Save Data"|t('sprout-module-forms'),
+        }) }}
+
+        <div id="settings-savedatadetails"
+            class="{{ not formTheme.enableSaveData ? "hidden" : '' }}">
+
+            {{ forms.lightswitchField({
+                label: "Track Remote IP"|t('sprout-module-forms'),
+                instructions: "Enable to capture the IP Address used when a Submission is saved. IP Addresses may be considered personal information."|t('sprout-module-forms'),
+                name: 'trackRemoteIp',
+                on: formTheme.trackRemoteIp ? true : false,
+                onLabel: "Save Data"|t('sprout-module-forms'),
+                offLabel: "Don't Save Data"|t('sprout-module-forms'),
+            }) }}
+
+        </div>
+
+        <hr>
+
+        {% set assetField = create('craft\\fields\\Assets') %}
+
+        {{ forms.checkboxSelectField({
+            label: 'Allowed Asset Volumes'|t('sprout-forms'),
+            instructions: 'The asset volumes that will be available to select when adding a File Upload field to a form.'|t('sprout-forms'),
+            name: 'allowedAssetVolumes',
+            options: assetField.getSourceOptions(),
+            values: formTheme.allowedAssetVolumes,
+            showAllOption: true,
+        }) }}
+
+        {{ forms.textField({
+            label: "Default File Upload Location Subpath"|t('sprout-forms'),
+            instructions: "The default subpath will be used whenever a new File Upload field is added to a form. The subfolder path can contain variables like the Form Entry ID <code>{id}</code> or the Form handle <code>{{ object.getForm().handle }}</code>"|t
+                ('sprout-forms'),
+            id: 'defaultUploadLocationSubpath',
+            name: 'defaultUploadLocationSubpath',
+            value: formTheme.defaultUploadLocationSubpath,
+            placeholder: '{{ object.getForm().handle }}',
+        }) }}
+
+        <hr>
+
+        {{ forms.lightswitchField({
+            label: "Allow Forms to be edited in front-end templates"|t('sprout-module-forms'),
+            instructions: "Enable this setting to allow users to edit existing submissions in front-end templates. Enabling this feature may have some workflow or security considerations as forms allow anonymous submissions."|t('sprout-module-forms'),
+            id: 'enableEditSubmissionViaFrontEnd',
+            name: 'enableEditSubmissionViaFrontEnd',
+            on: formTheme.enableEditSubmissionViaFrontEnd,
+            onLabel: "Allow Edits"|t('sprout-module-forms'),
+            offLabel: "Don't Allow Edits"|t('sprout-module-forms'),
+        }) }}
+
+    </div>
+
+    <div id="fields" class="hidden">
+        {% set fieldLayoutInstructions = "The content fields that can be used in this form theme."|t('sprout-module-forms') %}
+
+        {% if formTheme.isEditable() %}
+
+            {{ forms.fieldLayoutDesignerField({
+                instructions: fieldLayoutInstructions,
+                fieldLayout: formTheme.getFieldLayout(),
+                required: true,
+                customizableTabs: true,
+                customizableUi: false,
+                errors: formTheme.getErrors('fieldLayout'),
+            }) }}
+
+        {% else %}
+
+            {% set tabs = formTheme.getFieldLayout().getTabs() %}
+
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Field Layout"|t('sprout-module-forms') }}</label>
+                </div>
+                <div class="instructions">
+                    <p>{{ fieldLayoutInstructions }}</p>
+                </div>
+                <div class="layoutdesigner">
+                    <div class="fld-workspace">
+                        <div class="fld-tabs" style="position: relative;">
+                            {% for tab in tabs %}
+                                <div class="fld-tab last" style="height: 144px;">
+                                    <div class="tabs">
+                                        <div class="tab"><span>{{ tab.name }}</span></div>
+                                    </div>
+                                    <div class="fld-tabcontent">
+                                        {% for element in tab.elements %}
+                                            {% if className(element) is same as ('craft\\fieldlayoutelements\\Tip') %}
+                                            {% elseif className(element) is same as ('craft\\fieldlayoutelements\\HorizontalRule') %}
+                                                {# Skip #}
+                                            {% else %}
+                                                <div class="fld-field fld-required fld-element">
+                                                    <div class="field-name">
+                                                        <div class="fld-element-label"><h4>{{ element.label }}</h4>
+                                                            {% if element.required %}
+                                                                <div class="fld-required-indicator" title="This field is required" aria-label="This field is required" data-icon="asterisk"></div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="fld-attribute">
+                                                            <div class="smalltext light code">{{ element.attribute }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+    </div>
+
     {{ actionInput('sprout-module-forms/form-themes/save') }}
     {{ redirectInput('sprout/settings/forms/form-themes') }}
 
     {{ hiddenInput('uid', formTheme.uid) }}
     {{ hiddenInput('type', className(formTheme)) }}
-
-    {{ forms.textField({
-        label: "Name"|t('sprout-module-forms'),
-        instructions: "How you will refer to this Form Theme."|t('sprout-module-forms'),
-        id: 'name',
-        name: 'name',
-        value: formTheme.name,
-        errors: formTheme.getErrors('name'),
-        warning: sproutConfigWarning(module, 'name'),
-        required: true,
-        first: true,
-    }) }}
-
-    {{ forms.autosuggestField({
-        label: "Form Template"|t('sprout-module-forms'),
-        instructions: "The template that will be used to render your form."|t('sprout-module-forms'),
-        id: 'formTemplate',
-        name: 'formTemplate',
-        suggestEnvVars: false,
-        suggestions: craft.cp.getTemplateSuggestions(),
-        placeholder: "_forms/theme/form.twig"|t('sprout-module-forms'),
-        value: formTheme.formTemplate ?? null,
-        errors: formTheme.getErrors('formTemplate'),
-        required: true,
-        disabled: not formTheme.isEditable(),
-    }) }}
-
-    {{ forms.autosuggestField({
-        label: "Form Template Override Folder"|t('sprout-module-forms'),
-        instructions: "The folder that will take precedence over any form theme files."|t('sprout-module-forms'),
-        id: 'formTemplateOverrideFolder',
-        name: 'formTemplateOverrideFolder',
-        suggestEnvVars: false,
-        suggestions: craft.cp.getTemplateSuggestions(),
-        placeholder: "_forms/themes/overrides"|t('sprout-module-forms'),
-        value: formTheme.formTemplateOverrideFolder ?? null,
-        errors: formTheme.getErrors('formTemplateOverrideFolder'),
-    }) }}
-
-    {#    {{ forms.autosuggestField({ #}
-    {#        label: "Email Template (Text)"|t('sprout-module-mailer'), #}
-    {#        instructions: "Leave blank to render the text email by converting the HTML template to Markdown."|t('sprout-module-mailer'), #}
-    {#        id: 'textEmailTemplate', #}
-    {#        name: 'textEmailTemplate', #}
-    {#        suggestEnvVars: false, #}
-    {#        suggestions: craft.cp.getTemplateSuggestions(), #}
-    {#        placeholder: emailTheme.isEditable() ? "_emails/theme/email.txt"|t('sprout-module-mailer') : '', #}
-    {#        value: emailTheme.textEmailTemplate ?? null, #}
-    {#        errors: emailTheme.getErrors('textEmailTemplate'), #}
-    {#        disabled: not emailTheme.isEditable(), #}
-    {#    }) }} #}
-
-    {#    {{ forms.autosuggestField({ #}
-    {#        label: "Copy/Paste Email Template Folder"|t('sprout-module-mailer'), #}
-    {#        instructions: "The templates that will be used to display your email."|t('sprout-module-mailer'), #}
-    {#        id: 'copyPasteEmailTemplatePath', #}
-    {#        name: 'copyPasteEmailTemplatePath', #}
-    {#        suggestEnvVars: false, #}
-    {#        suggestions: sproutTemplateFolderSuggestions(), #}
-    {#        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'), #}
-    {#        value: emailTheme.copyPasteEmailTemplatePath ?? null, #}
-    {#        disabled: not emailTheme.isEditable(), #}
-    {#    }) }} #}
-
-    <hr>
-
-    {% set fieldLayoutInstructions = "The content fields that can be used in this form theme."|t('sprout-module-forms') %}
-
-    {% if formTheme.isEditable() %}
-
-        {{ forms.fieldLayoutDesignerField({
-            instructions: fieldLayoutInstructions,
-            fieldLayout: formTheme.getFieldLayout(),
-            required: true,
-            customizableTabs: false,
-            customizableUi: true,
-            errors: formTheme.getErrors('fieldLayout'),
-        }) }}
-
-    {% else %}
-
-        {% set tabs = formTheme.getFieldLayout().getTabs() %}
-
-        <div class="field">
-            <div class="heading">
-                <label>{{ "Field Layout"|t('sprout-module-forms') }}</label>
-            </div>
-            <div class="instructions">
-                <p>{{ fieldLayoutInstructions }}</p>
-            </div>
-            <div class="layoutdesigner">
-                <div class="fld-workspace">
-                    <div class="fld-tabs" style="position: relative;">
-                        {% for tab in tabs %}
-                            <div class="fld-tab last" style="height: 144px;">
-                                <div class="tabs">
-                                    <div class="tab"><span>{{ tab.name }}</span></div>
-                                </div>
-                                <div class="fld-tabcontent">
-                                    {% for element in tab.elements %}
-                                        {% if className(element) is same as ('craft\\fieldlayoutelements\\Tip') %}
-                                        {% elseif className(element) is same as ('craft\\fieldlayoutelements\\HorizontalRule') %}
-                                            {# Skip #}
-                                        {% else %}
-                                            <div class="fld-field fld-required fld-element">
-                                                <div class="field-name">
-                                                    <div class="fld-element-label"><h4>{{ element.label }}</h4>
-                                                        {% if element.required %}
-                                                            <div class="fld-required-indicator" title="This field is required" aria-label="This field is required" data-icon="asterisk"></div>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="fld-attribute">
-                                                        <div class="smalltext light code">{{ element.attribute }}</div>
-                                                    </div>
-                                                </div>
-                                                <a role="button" tabindex="0" class="settings icon disabled" style="cursor:inherit;" title="Edit"></a>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
-
-    {{ forms.textField({
-        label: "Theme Type"|t('sprout-module-forms'),
-        value: formTheme.displayName(),
-        disabled: true,
-    }) }}
 
 {% endblock %}
 

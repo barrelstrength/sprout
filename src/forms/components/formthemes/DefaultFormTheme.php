@@ -36,7 +36,7 @@ class DefaultFormTheme extends FormTheme
 
         $fieldLayoutTab = new FieldLayoutTab([
             'layout' => $fieldLayout,
-            'name' => Craft::t('sprout-module-forms', 'Behavior'),
+            'name' => Craft::t('sprout-module-forms', 'Templates'),
             'sortOrder' => 1,
             'uid' => StringHelper::UUID(),
         ]);

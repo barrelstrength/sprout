@@ -2,8 +2,11 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\formfields\CustomFormField;
+use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
@@ -11,10 +14,13 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\errors\WrongEditionException;
+use craft\fieldlayoutelements\CustomField;
+use craft\fields\MissingField;
 use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\records\FieldLayout as FieldLayoutRecord;
@@ -45,9 +51,12 @@ class FormsController extends BaseController
     {
         $this->requirePermission(FormsModule::p('editForms'));
 
+        $formThemes = FormThemeHelper::getFormThemes();
+
         return $this->renderTemplate('sprout-module-forms/forms/index', [
             'title' => FormElement::pluralDisplayName(),
             'elementType' => FormElement::class,
+            'formThemes' => $formThemes,
         ]);
     }
 
@@ -157,8 +166,7 @@ class FormsController extends BaseController
         $form->handle = $formsService->getFieldAsNew('handle', $handle);
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
 
-        $theme = FormThemeHelper::getDefaultFormTheme();
-        $form->formThemeUid = $theme->uid;
+        $form->formThemeUid = Craft::$app->getRequest()->getRequiredParam('formThemeUid');
         $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
         $form->submissionMethod = $settings->defaultSubmissionMethod ?: 'sync';
 
@@ -192,36 +200,65 @@ class FormsController extends BaseController
         $formId = Craft::$app->getRequest()->getRequiredBodyParam('formId');
 
         $form = Craft::$app->getElements()->getElementById($formId, FormElement::class);
-        $tabs = $form->getSubmissionFieldLayoutTabs();
 
-        $firstTab = $tabs[0];
-        $selectedTabId = $firstTab->id;
+        if (!$form) {
+            return $this->asJson([
+                'success' => false,
+                'errors' => 'Form not found.',
+            ]);
+        }
+
+        $submissionFieldLayout = $form->getSubmissionFieldLayout();
 
         $uiTabs = [];
+        $selectedTabId = null;
 
-        foreach ($tabs as $tab) {
+        if ($submissionFieldLayout) {
+            $tabs = $submissionFieldLayout->getTabs();
 
-            $fields = [];
-
-            foreach ($tab->getElements() as $element) {
-                $field = $element->getField();
-                $fieldData = FormBuilderHelper::getFieldData($field);
-                $fields[] = $fieldData;
+            if (!$tabs) {
+                $tabs = $form->getDefaultSubmissionTabs();
             }
 
-            $uiTabs[] = [
-                'id' => $tab->id,
-                'uid' => $tab->uid,
-                'name' => $tab->name,
-                'userCondition' => null,
-                'elementCondition' => null,
-                'fields' => $fields,
-            ];
+            $firstTab = $tabs[0];
+            $selectedTabId = $firstTab->id;
+
+            foreach ($tabs as $tab) {
+
+                $elements = [];
+
+                $tabConfig = $tab->getConfig();
+                $elements = $tabConfig['elements'] ?? [];
+                foreach ($elements as $element) {
+
+                    $field = Craft::$app->getFields()->getFieldByUid($element['fieldUid']);
+                    if (!$field) {
+                        $field = new MissingField();
+                    }
+
+                    $fieldData = FormBuilderHelper::getFieldUiSettings($field);
+
+                    $elements[] = array_merge($element, [
+                        'field' => $fieldData['field'],
+                        'uiSettings' => $fieldData['uiSettings'],
+                    ]);
+                }
+
+                $uiTabs[] = [
+                    'id' => $tab->id,
+                    'uid' => $tab->uid,
+                    'name' => $tab->name,
+                    'userCondition' => $tab->getUserCondition(),
+                    'elementCondition' => $tab->getElementCondition(),
+                    'elements' => $elements,
+                ];
+            }
         }
 
         return $this->asJson([
             'success' => true,
             'formId' => $formId,
+            'fieldLayoutUid' => $submissionFieldLayout->uid,
             'tabs' => $uiTabs,
             'selectedTabId' => $selectedTabId,
         ]);
@@ -327,6 +364,26 @@ class FormsController extends BaseController
         return $this->asJson([
             'success' => true,
             'settingsHtml' => StringHelper::collapseWhitespace($html),
+
+    public function actionGetFormFieldObject(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $required = Craft::$app->getRequest()->getRequiredBodyParam('required');
+        $name = Craft::$app->getRequest()->getRequiredBodyParam('name');
+        $instructions = Craft::$app->getRequest()->getRequiredBodyParam('instructions');
+        $userCondition = Craft::$app->getRequest()->getRequiredBodyParam('userCondition');
+        $elementCondition = Craft::$app->getRequest()->getRequiredBodyParam('elementCondition');
+        $settings = Craft::$app->getRequest()->getRequiredBodyParam('settings');
+
+        return $this->asJson([
+            'required' => $required,
+            'name' => $name,
+            'instructions' => $instructions,
+            'userCondition' => $userCondition,
+            'elementCondition' => $elementCondition,
+            'settings' => $settings,
         ]);
     }
 

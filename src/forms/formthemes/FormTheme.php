@@ -3,7 +3,8 @@
 namespace BarrelStrength\Sprout\forms\formthemes;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\forms\FormsModule;
+use Craft;
 use craft\base\SavableComponent;
 use craft\models\FieldLayout;
 
@@ -14,6 +15,18 @@ abstract class FormTheme extends SavableComponent implements FormThemeInterface
     public ?string $formTemplate = null;
 
     public ?string $formTemplateOverrideFolder = null;
+
+    public ?string $submissionMethod = null;
+    public bool $enableSaveData = true;
+
+    public bool $trackRemoteIp = false;
+    public array $allowedAssetVolumes = [];
+
+    public ?string $defaultUploadLocationSubpath = null;
+
+    public bool $enableEditSubmissionViaFrontEnd = false;
+
+    public ?FormElement $form = null;
 
     protected ?FieldLayout $_fieldLayout = null;
 
@@ -51,6 +64,59 @@ abstract class FormTheme extends SavableComponent implements FormThemeInterface
     public function setFieldLayout(?FieldLayout $fieldLayout): void
     {
         $this->_fieldLayout = $fieldLayout;
+    }
+
+    public function getFeatureRows(): array
+    {
+        return [
+            [
+                'heading' => 'Notifications',
+                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
+                    'name' => 'features[notifications][enabled]',
+                    'on' => true,
+                    'small' => true,
+                ]),
+            ],
+            [
+                'heading' => 'Reports',
+                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
+                    'name' => 'features[reports][enabled]',
+                    'on' => true,
+                    'small' => true,
+                ]),
+            ],
+            [
+                'heading' => 'Integrations',
+                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
+                    'name' => 'features[integrations][enabled]',
+                    'on' => false,
+                    'small' => true,
+                ]),
+            ],
+        ];
+    }
+
+    public function getFormFieldRows(): array
+    {
+        $formFieldGroups = FormsModule::getInstance()->formFields->getDefaultFormFieldTypesByGroup();
+
+        $rows = [];
+
+        foreach ($formFieldGroups as $formFieldGroupKey => $formFields) {
+            foreach ($formFields as $formFieldType) {
+                $rows[] = [
+                    'heading' => $formFieldType::displayName(),
+                    'group' => $formFieldGroupKey,
+                    'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
+                        'name' => 'formFields[' . $formFieldType . '][enabled]',
+                        'on' => true,
+                        'small' => true,
+                    ]),
+                ];
+            }
+        }
+
+        return $rows;
     }
 
     public function getConfig(): array
