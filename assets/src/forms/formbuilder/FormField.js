@@ -1,6 +1,6 @@
-export const FormField = (field) => ({
+export const FormField = (element) => ({
 
-    field: field,
+    element: element,
     dragHover: false,
 
     init() {
@@ -36,16 +36,16 @@ export const FormField = (field) => ({
         return '<div\n' +
             'class="source-field"\n' +
             'draggable="true"\n' +
-            'x-bind:class="[dragHover ? \'drag-hover\' : \'\', field.sortOrder % 2 == 0 ? \'even\' : \'odd\']"\n' +
+            'x-bind:class="[dragHover ? \'drag-hover\' : \'\', element.field.sortOrder % 2 == 0 ? \'even\' : \'odd\']"\n' +
             'x-on:mouseover="dragHover = true"\n' +
             'x-on:mouseleave="dragHover = false"\n' +
             'x-on:dragstart.self="dragStartSourceField"\n' +
             'x-on:dragend.self="dragEndSourceField"\n' +
-            'x-bind:data-type="field.type"' +
+            'x-bind:data-type="element.field.type"' +
             '>' +
             '<h3>' +
-            '<span x-html="field.uiSettings.icon" class="sproutforms-icon"></span>' +
-            '<span x-text="field.name" x-bind:data-handle="field.name" class="sproutforms-sourcefield-name"></span>' +
+            '<span x-html="element.uiSettings.icon" class="sproutforms-icon"></span>' +
+            '<span x-text="element.field.name" x-bind:data-handle="element.field.name" class="sproutforms-sourcefield-name"></span>' +
             '</h3>' +
             '</div>';
     },

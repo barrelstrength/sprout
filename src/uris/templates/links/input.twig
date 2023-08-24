@@ -10,7 +10,6 @@
 {% set displayNewWindowToggle = displayNewWindowToggle ?? false %}
 {% set defaultLinkText = defaultLinkText ?? 'Learn More'|t('sprout-module-uris') %}
 
-
 {% namespace fieldNamespace %}
     <div class="sprout-link-field {% if linkOnly %} link-only{% endif %}">
         {% if linkOnly %}
@@ -20,7 +19,7 @@
                     name: 'type',
                     class: 'sprout-link-type-link-only-toggle',
                     options: linkOptions,
-                    value: className(selectedLink),
+                    value: selectedLink ? className(selectedLink) : null,
                     errors: '',
                     toggle: true,
                     targetPrefix: 'link-settings-',

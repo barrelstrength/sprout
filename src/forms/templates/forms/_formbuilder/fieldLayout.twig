@@ -102,16 +102,16 @@
                     x-on:drop="dropOnLayoutTabBody"
                 >
                     {# Tab with Fields #}
-                    <template x-if="tab.fields.length > 0">
+                    <template x-if="tab.elements.length > 0">
 
-                        <template x-for="field in tab.fields">
+                        <template x-for="element in tab.elements">
 
                             {# Layout Field #}
                             <div
                                 class="layout-field drag-target"
-                                x-on:dblclick="editFormField(field)"
-                                x-bind:data-type="field.type"
-                                x-bind:data-field-id="field.id"
+                                x-on:dblclick="editFormField(element.field)"
+                                x-bind:data-type="element.field.type"
+                                x-bind:data-field-id="element.field.id"
 
                                 draggable="true"
                                 x-on:dragover="dragOverLayoutField"
@@ -123,18 +123,18 @@
                             >
 
                                 <div class="layout-field-header">
-                                    <h2 x-bind:class="field.required" x-text="field.name"></h2>
-                                    <p x-show="field.instructions" x-text="field.instructions"></p>
+                                    <h2 x-bind:class="element.required" x-text="element.field.name"></h2>
+                                    <p x-show="element.field.instructions" x-text="element.field.instructions"></p>
                                 </div>
 
-                                <div class="body" x-html="field.uiSettings.exampleInputHtml"></div>
+                                <div class="body" x-html="element.uiSettings.exampleInputHtml"></div>
                                 <div class="form-field-details">
-                                    <span x-text="field.uiSettings.displayName"></span>
+                                    <span x-text="element.uiSettings.displayName"></span>
                                     {# <code x-text="field.uiSettings.fieldHandleHtml"></code> #}
                                 </div>
 
                                 <a
-                                    x-on:click="editFormField(field)"
+                                    x-on:click="editFormField(element.field)"
                                     class="settings icon edit-field-button"
                                     title="{{ 'Edit'|t('sprout-module-forms') }}"
                                     role="button"
@@ -147,7 +147,7 @@
                     </template>
 
                     {# Tab with no Fields #}
-                    <template x-if="tab.fields.length === 0">
+                    <template x-if="tab.elements.length === 0">
 
                         <div class="field placeholder-field">
                             {{ zilchHtml }}
@@ -161,7 +161,7 @@
 
             <template x-for="tab in tabs">
 
-                <template x-for="field in tab.fields">
+                <template x-for="field in tab.elements">
                     <div
                         x-bind:id="'field-settings-slideout-' + field.id"
                         x-bind:data-field-id="field.id"
@@ -204,21 +204,6 @@
                 </template>
             </div>
 
-            <hr>
-
-            {% set themes = module.formThemes.getFormThemeOptions() %}
-
-            {{ forms.selectField({
-                label: "Form Theme"|t('sprout-module-forms'),
-                instructions: "The Form Theme that will be used to output your forms. Update the 'Default Form Theme' in the general settings."|t('sprout-module-forms'),
-                name: "formThemeUid",
-                required: true,
-                first: true,
-                errors: (form is defined ? form.getErrors('formThemeUid') : null),
-                options: themes,
-                value: form.formThemeUid ?? settings.formThemeUid ?? null,
-                required: true,
-            }) }}
         </div>
 
     </div>

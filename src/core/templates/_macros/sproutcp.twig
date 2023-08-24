@@ -103,28 +103,28 @@
     <span class='info'>{{ message }}</span>
 {%- endmacro %}
 
-{% macro relationsTable(relations) %}
+{% macro relationsTable(relations, dataIcon = 'view') %}
     <table class="data fullwidth">
         <thead>
         <tr>
             <th>{{ "Title"|t('sprout-module-core') }}</th>
             <th>{{ "Type"|t('sprout-module-core') }}</th>
-            <th data-icon="world"></th>
+            <th data-icon="{{ dataIcon }}"></th>
         </tr>
         </thead>
         <tbody>
         {% for relation in relations %}
             <tr>
                 <td>
-                    <a href="{{ relation.getCpEditUrl() }}" target="_blank">
-                        {{ relation.title }}
+                    <a href="{{ relation.cpEditUrl }}" target="_blank">
+                        {{ relation.name }}
                     </a>
                 </td>
-                <td>{{ relation.displayName() }}</td>
+                <td>{{ relation.type }}</td>
                 <td>
-                    {% if relation.getUrl() %}
-                        <a href="{{ relation.getUrl() }}" target="_blank">
-                            <span data-icon="world"></span>
+                    {% if relation.actionUrl %}
+                        <a href="{{ relation.actionUrl }}" target="_blank">
+                            <span data-icon="{{ dataIcon }}"></span>
                         </a>
                     {% endif %}
                 </td>

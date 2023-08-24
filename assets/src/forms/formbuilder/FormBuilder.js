@@ -22,7 +22,7 @@ export const FormBuilder = (formId) => ({
      *   {
      *     id: 123,
      *     label: 'X',
-     *     fields: [
+     *     elements: [
      *        {
      *          id: 123,
      *          name: 'Y',
@@ -37,6 +37,8 @@ export const FormBuilder = (formId) => ({
      * ]
      */
     tabs: [],
+    fieldLayoutUid: null,
+
     selectedTabId: null,
     editTabId: null,
     editFieldId: null,
@@ -64,7 +66,6 @@ export const FormBuilder = (formId) => ({
                 formId: this.formId,
             },
         }).then((response) => {
-
             // self.tabs = [
             //   {
             //     id: 123,
@@ -73,6 +74,7 @@ export const FormBuilder = (formId) => ({
             //   },
             // ];
             self.tabs = response.data.tabs;
+            self.fieldLayoutUid = response.data.fieldLayoutUid;
             self.selectedTabId = response.data.selectedTabId;
 
             self.ensureTabIds();
@@ -119,7 +121,7 @@ export const FormBuilder = (formId) => ({
 
         let fieldLayout = {};
 
-        if (this.tabs.length && !this.tabs[0].fields.length) {
+        if (this.tabs.length && !this.tabs[0].elements.length) {
             return [];
         }
 
@@ -129,11 +131,11 @@ export const FormBuilder = (formId) => ({
 
             let fieldLayoutFields = [];
 
-            for (const fieldData of tab.fields) {
+            for (const element of tab.elements) {
 
                 // let field = this.defaultFieldAttributes[layoutField.type] ?? null;
 
-                let field = this.getFormFieldAttributes(fieldData);
+                let field = this.getFormFieldAttributes(element.field);
 
                 fieldLayoutFields.push(field);
             }
@@ -145,7 +147,7 @@ export const FormBuilder = (formId) => ({
                 sortOrder: null,
                 userCondition: null,
                 elementCondition: null,
-                fields: fieldLayoutFields,
+                elements: fieldLayoutFields,
             });
         }
 
@@ -430,17 +432,17 @@ export const FormBuilder = (formId) => ({
 
     // Returns the field data for a given type
     getFieldByType(type) {
-        return this.sourceFields.filter(item => item.type === type)[0] ?? null;
+        return this.sourceFields.filter(item => item.field.type === type)[0] ?? null;
     },
 
     getCurrentTabIdFromFieldId(fieldId) {
-        // loop through this.tabs and find the this.tabs.fields.id that matches
+        // loop through this.tabs and find the this.tabs.elements.id that matches
         // return the field.tabId
         let self = this;
         this.tabs.forEach(tab => {
             let fieldIndex = self.getFieldIndexByFieldId(tab, fieldId);
             if (fieldIndex > -1) {
-                return tab.fields[fieldIndex].tabId;
+                return tab.elements[fieldIndex].tabId;
             }
         });
     },
@@ -451,7 +453,7 @@ export const FormBuilder = (formId) => ({
 
     getFieldIndexByFieldId(tab, fieldId) {
         // @todo - testing for == because we might have strings or numbers, fix at origin.
-        return tab.fields.findIndex(item => item.id == fieldId);
+        return tab.elements.findIndex(item => item.id == fieldId);
     },
 
     getNewFormTabId() {
@@ -483,7 +485,7 @@ export const FormBuilder = (formId) => ({
         let tab = this.tabs[tabIndex];
 
         let fieldIndex = this.getFieldIndexByFieldId(tab, fieldId);
-        let targetField = tab.fields[fieldIndex];
+        let targetField = tab.elements[fieldIndex];
         //
         // console.log(targetField);
         // console.log(fieldSettings);
@@ -495,10 +497,14 @@ export const FormBuilder = (formId) => ({
         // // targetField.name = fieldSettings.name;
         // console.log(targetField);
 
+
+
+        // console.log(fieldSettings)
+        targetField.settings = fieldSettings.settings;
         // loop through fieldSettings.settings and update the targetField.settings
         // console.log(fieldSettings);
 
-        tab.fields[fieldIndex] = targetField;
+        tab.elements[fieldIndex] = targetField;
     },
 
     updateTabPosition(tabId, beforeTabId = null) {
@@ -534,13 +540,13 @@ export const FormBuilder = (formId) => ({
         let originTab = this.tabs[originTabIndex];
 
         let fieldIndex = this.getFieldIndexByFieldId(originTab, fieldId);
-        let targetField = originTab.fields[fieldIndex];
+        let targetField = originTab.elements[fieldIndex];
 
         // Remove the updated field from origin tab
-        originTab.fields.splice(fieldIndex, 1);
+        originTab.elements.splice(fieldIndex, 1);
 
         // Push field onto target tab
-        targetTab.fields.push(targetField);
+        targetTab.elements.push(targetField);
 
         // Update tab
         this.tabs[targetTabIndex] = targetTab;
@@ -561,19 +567,19 @@ export const FormBuilder = (formId) => ({
         let tab = this.tabs[tabIndex];
 
         let fieldIndex = this.getFieldIndexByFieldId(tab, fieldId);
-        let targetField = tab.fields[fieldIndex];
+        let targetField = tab.elements[fieldIndex];
 
         // Remove the updated field
-        tab.fields.splice(fieldIndex, 1);
+        tab.elements.splice(fieldIndex, 1);
 
         if (beforeFieldId) {
-            // let beforeFieldIndex = tab.fields.length + 1;
+            // let beforeFieldIndex = tab.elements.length + 1;
             let beforeFieldIndex = this.getFieldIndexByFieldId(tab, beforeFieldId);
 
             // Insert the updated field before the target field
-            tab.fields.splice(beforeFieldIndex, 0, targetField);
+            tab.elements.splice(beforeFieldIndex, 0, targetField);
         } else {
-            tab.fields.push(targetField);
+            tab.elements.push(targetField);
         }
 
         // Update tab
@@ -596,7 +602,7 @@ export const FormBuilder = (formId) => ({
             name: 'Page 2',
             elementCondition: null,
             tabCondition: null,
-            fields: [],
+            elements: [],
         };
 
         this.tabs.push(tab);
@@ -606,11 +612,11 @@ export const FormBuilder = (formId) => ({
     addFieldToLayoutTab(type, beforeFieldId) {
 
         let fieldData = this.getFieldByType(type);
-        fieldData.type = type;
+        fieldData.field.type = type;
 
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
-            fieldData.id = this.getNewFormFieldId();
+            fieldData.field.id = this.getNewFormFieldId();
         }
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
@@ -618,7 +624,7 @@ export const FormBuilder = (formId) => ({
         }
 
         let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
-        this.tabs[tabIndex].fields.push(fieldData);
+        this.tabs[tabIndex].elements.push(fieldData);
 
         if (beforeFieldId) {
             this.updateFieldPosition(fieldData.id, beforeFieldId);
@@ -792,7 +798,7 @@ export const FormBuilder = (formId) => ({
         let tabIndex = self.getTabIndexByTabId(this.selectedTabId);
         let tab = self.tabs[tabIndex];
         let fieldIndex = self.getFieldIndexByFieldId(tab, self.editFieldId);
-        let currentFieldData = self.tabs[tabIndex].fields[fieldIndex];
+        let currentFieldData = self.tabs[tabIndex].elements[fieldIndex];
 
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-settings-html', {
             data: {
@@ -838,23 +844,32 @@ export const FormBuilder = (formId) => ({
 
             Craft.initUiElements($body);
 
+            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.fieldId);
+            Craft.appendBodyHtml(conditionBuilderJs);
+
             $form.on('submit', function(event) {
                 event.preventDefault();
 
                 let formData = new FormData($form[0]);
-                let fieldSettings = JSON.stringify(Object.fromEntries(formData));
-                console.log(fieldSettings);
+                // let fieldSettings = JSON.stringify(Object.fromEntries(formData));
+                // console.log(fieldSettings);
 
-                Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-settings-data', {
-                    data: {
-                        fieldSettings: fieldSettings,
-                    },
+                Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-object', {
+                    data: formData,
                 }).then((response) => {
+
+                    // self.updateTabSettings(self.editTabId, {
+                    //     name: response.data.name,
+                    //     userCondition: response.data.userCondition,
+                    //     elementCondition: response.data.elementCondition,
+                    // });
+                    //
                     self.updateFieldSettings(self.editFieldId, JSON.parse(response.data.fieldSettings));
                 });
 
                 slideout.close();
             });
+
 
             $removeBtn.on('click', () => {
                 // console.log(self.editFieldId);
