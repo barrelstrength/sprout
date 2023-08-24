@@ -31,15 +31,19 @@ class EmailController extends Controller
         /** @var string|Element $elementType */
         $elementType = $emailType::elementType();
 
-        $newButtonUrl = UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/new');
+        $newEmailUrl = UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
+
+        $emailThemes = EmailThemeHelper::getEmailThemes();
 
         return $this->renderTemplate('sprout-module-mailer/email/index.twig', [
             'title' => $elementType::pluralDisplayName(),
             'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
-            'newButtonUrl' => $newButtonUrl,
+            'newEmailUrl' => $newEmailUrl,
             'selectedSubnavItem' => $emailType::refHandle(),
+            'emailTypeHandle' => $emailType::refHandle(),
+            'emailThemes' => $emailThemes,
         ]);
     }
 
@@ -52,9 +56,7 @@ class EmailController extends Controller
         }
 
         $email = Craft::createObject(EmailElement::class);
-
-        $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
-        $email->emailThemeUid = $emailTheme->uid;
+        $email->emailThemeUid = Craft::$app->getRequest()->getRequiredParam('emailThemeUid');
 
         if (!$email->emailThemeUid) {
             throw new NotFoundHttpException('No email themes exist.');

@@ -498,6 +498,15 @@ class EmailElement extends Element implements EmailPreviewInterface
                 ],
                 'uid' => 'SPROUT-UID-EMAIL-EMAIL-TYPE-FIELD',
             ]),
+            new TextField([
+                'type' => 'hidden',
+                'name' => 'emailThemeUid',
+                'attribute' => 'emailThemeUid',
+                'containerAttributes' => [
+                    'class' => 'hidden',
+                ],
+                'uid' => 'SPROUT-UID-EMAIL-THEME-UID-FIELD',
+            ]),
         ]);
 
         $newTabs = array_merge(
@@ -514,32 +523,12 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getSidebarHtml(bool $static): string
     {
-        $mailers = MailerHelper::getMailers();
+        $currentUser = Craft::$app->getUser()->getIdentity();
 
-        foreach ($mailers as $mailer) {
-            $mailerTypeOptions[] = [
-                'label' => $mailer->name,
-                'value' => $mailer->uid,
-            ];
-        }
-
-        $themes = EmailThemeHelper::getEmailThemes();
-
-        foreach ($themes as $theme) {
-            $templateOptions[] = [
-                'label' => $theme->name,
-                'value' => $theme->uid,
-            ];
-        }
-
-        $meta = Craft::$app->getView()->renderTemplate('sprout-module-mailer/email/_meta.twig', [
-            'element' => $this,
-            'mailer' => $this->getMailer(),
-            'templateOptions' => $templateOptions ?? [],
-            'mailerTypeOptions' => $mailerTypeOptions ?? [],
-        ]);
-
-        return $meta . parent::getSidebarHtml($static);
+        return $currentUser->admin
+            ? Html::tag('div', '', [
+                'id' => 'sprout-notification-event-tip',
+            ]) : "\n";
     }
 
     public function afterSave(bool $isNew): void
@@ -678,6 +667,8 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailType()::displayName(),
+            Craft::t('sprout-module-mailer', 'Email Theme') => $this->getEmailTheme()->name,
+            Craft::t('sprout-module-mailer', 'Mailer') => $this->getMailer()->name,
         ];
     }
 

@@ -5,16 +5,26 @@
 
 {% block actionButton %}
     <div class="buttons">
-        <a href="{{ newButtonUrl }}" class="btn submit add icon">
-            {{ newButtonLabel }}
-        </a>
+        <div class="btngroup submit">
+            <div class="btn menubtn submit add icon">
+                {{ "New Email"|t('sprout-module-mailer') }}
+            </div>
+            <div class="menu">
+                <ul>
+                    {% for emailThemeUid, emailTheme in emailThemes %}
+                        <li>
+                            {{ tag('a', {
+                                href: cpUrl(newEmailUrl, {
+                                    emailThemeUid: emailThemeUid,
+                                }),
+                                text: emailTheme.name,
+                                class: 'menu-option',
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
-
-{# {% block initJs %} #}
-
-{# Craft.defaultIndexCriteria = { emailType: '{{ className(emailType)|e("js") }}' }; #}
-
-{# {{ parent() }} #}
-
-{# {% endblock %} #}

@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -39,8 +40,23 @@ class EmailThemesController extends Controller
             $emailTheme = new $type();
         }
 
+        $mailers = MailerHelper::getMailers();
+
+        $mailerTypeOptions[] = [
+            'label' => Craft::t('sprout-module-mailer', 'Craft Default Mailer'),
+            'value' => 'craft',
+        ];
+
+        foreach ($mailers as $mailer) {
+            $mailerTypeOptions[] = [
+                'label' => $mailer->name,
+                'value' => $mailer->uid,
+            ];
+        }
+
         return $this->renderTemplate('sprout-module-mailer/_settings/email-themes/edit.twig', [
             'emailTheme' => $emailTheme,
+            'mailerTypeOptions' => $mailerTypeOptions ?? [],
         ]);
     }
 

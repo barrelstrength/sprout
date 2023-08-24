@@ -37,9 +37,12 @@
             {% if currentUser.admin and eventTipHtml %}
                 <template x-teleport="#sprout-notification-event-tip">
 
-                    <div x-show="selectedNotificationEvent === '{{ className(event)|e('js') }}'">
+                    <fieldset
+                        x-show="selectedNotificationEvent === '{{ className(event)|e('js') }}'"
+                        class="sprout-sidebar-info meta"
+                        style="margin-top:0;margin-bottom:18px!important;">
                         {{ eventTipHtml|markdown }}
-                    </div>
+                    </fieldset>
                 </template>
             {% endif %}
         {% endif %}

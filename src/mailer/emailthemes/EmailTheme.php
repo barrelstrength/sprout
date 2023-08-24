@@ -28,6 +28,8 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     public ?string $copyPasteEmailTemplate = null;
 
+    public ?string $mailerUid = null;
+
     public ?EmailElement $email = null;
 
     private array $_templateVariables = [];
