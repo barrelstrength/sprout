@@ -16,7 +16,6 @@ use craft\helpers\Db;
  */
 class m211101_000007_migrate_forms_tables extends Migration
 {
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
     public const FORMS_TABLE = '{{%sprout_forms}}';
     public const FORM_INTEGRATIONS_TABLE = '{{%sprout_form_integrations}}';
     public const FORM_INTEGRATIONS_LOG_TABLE = '{{%sprout_form_integrations_log}}';
@@ -36,41 +35,6 @@ class m211101_000007_migrate_forms_tables extends Migration
 
     public function safeUp(): void
     {
-        $newSourceGroupIds = [];
-
-        $cols = [
-            'id',
-            'name',
-            'dateCreated',
-            'dateUpdated',
-            'uid',
-        ];
-
-        if ($this->getDb()->tableExists(self::OLD_FORM_GROUPS_TABLE)) {
-            $rows = (new Query())
-                ->select($cols)
-                ->from([self::OLD_FORM_GROUPS_TABLE])
-                ->all();
-
-            foreach ($rows as $key => $row) {
-                $row['type'] = self::FORM_ELEMENT_CLASS;
-
-                $oldId = $row['id'];
-                unset($row['id']);
-
-                $this->insert(self::SOURCE_GROUPS_TABLE, $row);
-                $newSourceGroupId = $this->db->getLastInsertID(self::SOURCE_GROUPS_TABLE);
-
-                $this->update(self::OLD_FORMS_TABLE, [
-                    'groupId' => $newSourceGroupId,
-                ], [
-                    'groupId' => $oldId,
-                ], [], false);
-
-                $newSourceGroupIds[] = $newSourceGroupId;
-            }
-        }
-
         $cols = [
             'id',
             'name',
@@ -97,7 +61,6 @@ class m211101_000007_migrate_forms_tables extends Migration
         $cols = [
             'id',
             'fieldLayoutId', // submissionFieldLayout
-            'groupId',
             'name',
             'handle',
             'titleFormat',
@@ -120,7 +83,6 @@ class m211101_000007_migrate_forms_tables extends Migration
         $colsNew = [
             'id',
             'submissionFieldLayoutId', // fieldLayoutId
-            'groupId',
             'name',
             'handle',
             'titleFormat',
@@ -147,12 +109,7 @@ class m211101_000007_migrate_forms_tables extends Migration
                 ->from([self::OLD_FORMS_TABLE])
                 ->all();
 
-            // Map old groupId to new groupId
             foreach ($rows as $key => $row) {
-                if (!in_array($row['groupId'], $newSourceGroupIds, true)) {
-                    $rows[$key]['groupId'] = null;
-                }
-
                 /** @todo - figure out formTempateUid */
                 $rows[$key]['formTemplateUid'] = 'REPLACE_ME';
                 unset($rows[$key]['formTemplateId']);

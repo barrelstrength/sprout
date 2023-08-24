@@ -14,7 +14,6 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULE_CLASS = 'BarrelStrength\Sprout\datastudio\DataStudioModule';
 
     public const DATASETS_TABLE = '{{%sprout_datasets}}';
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
 
     public function safeUp(): void
     {
@@ -45,7 +44,6 @@ class m211101_000000_run_install_migration extends Migration
         if (!$this->getDb()->tableExists(self::DATASETS_TABLE)) {
             $this->createTable(self::DATASETS_TABLE, [
                 'id' => $this->primaryKey(),
-                'groupId' => $this->integer(),
                 'name' => $this->string(),
                 'handle' => $this->string(),
                 'description' => $this->text(),
@@ -64,13 +62,11 @@ class m211101_000000_run_install_migration extends Migration
                 'uid' => $this->uid(),
             ]);
 
-            $this->createIndex(null, self::DATASETS_TABLE, ['groupId']);
             $this->createIndex(null, self::DATASETS_TABLE, ['name']);
             $this->createIndex(null, self::DATASETS_TABLE, ['handle']);
             $this->createIndex(null, self::DATASETS_TABLE, ['type']);
 
             $this->addForeignKey(null, self::DATASETS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
-            $this->addForeignKey(null, self::DATASETS_TABLE, ['groupId'], self::SOURCE_GROUPS_TABLE, ['id'], 'SET NULL');
         }
     }
 }

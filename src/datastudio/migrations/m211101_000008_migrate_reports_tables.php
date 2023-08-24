@@ -13,7 +13,6 @@ use craft\helpers\StringHelper;
 class m211101_000008_migrate_reports_tables extends Migration
 {
     public const DATASETS_TABLE = '{{%sprout_datasets}}';
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
 
     public const OLD_DATASOURCES_TABLE = '{{%sproutreports_datasources}}';
     public const OLD_REPORTS_TABLE = '{{%sproutreports_reports}}';
