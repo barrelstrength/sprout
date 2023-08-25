@@ -4,10 +4,10 @@ namespace BarrelStrength\Sprout\forms\components\formthemes;
 
 use BarrelStrength\Sprout\core\fieldlayoutelements\LightswitchField;
 use BarrelStrength\Sprout\core\fieldlayoutelements\SelectField;
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use BarrelStrength\Sprout\uris\links\fieldlayoutelements\EnhancedLinkField;
 use Craft;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\TextareaField;
 use craft\fieldlayoutelements\TextField;
@@ -24,6 +24,11 @@ class DefaultFormTheme extends FormTheme
         return Craft::t('sprout-module-forms', 'Default Templates');
     }
 
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+
+    }
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
@@ -31,7 +36,7 @@ class DefaultFormTheme extends FormTheme
         }
 
         $fieldLayout = new FieldLayout([
-            'type' => FormElement::class,
+            'type' => static::class,
         ]);
 
         $fieldLayoutTab = new FieldLayoutTab([
@@ -72,7 +77,7 @@ class DefaultFormTheme extends FormTheme
                     [
                         'label' => 'Inline & Globally - Display errors everywhere!',
                         'value' => 'both',
-                    ]
+                    ],
                 ],
             ]),
             new TextareaField([

@@ -30,6 +30,7 @@ use BarrelStrength\Sprout\forms\forms\Forms;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
+use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use BarrelStrength\Sprout\forms\formthemes\FormThemes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
@@ -226,6 +227,11 @@ class FormsModule extends Module
                 $event->types[] = SubmissionElement::class;
             }
         );
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
+            [FormThemeHelper::class, 'defineNativeFieldsPerTheme']);
 
         $this->registerProjectConfigEventListeners();
     }

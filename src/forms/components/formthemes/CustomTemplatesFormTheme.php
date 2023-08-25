@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\forms\components\formthemes;
 
 use BarrelStrength\Sprout\forms\formthemes\FormTheme;
 use Craft;
+use craft\events\DefineFieldLayoutFieldsEvent;
 
 /**
  * The CustomFormTheme is used to dynamically create a FormTheme
@@ -25,6 +26,11 @@ class CustomTemplatesFormTheme extends FormTheme
     public static function isEditable(): bool
     {
         return true;
+    }
+
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+
     }
 }
 

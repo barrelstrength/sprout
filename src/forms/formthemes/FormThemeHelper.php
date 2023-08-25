@@ -6,12 +6,27 @@ use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\errors\MissingComponentException;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 
 class FormThemeHelper
 {
+    public static function defineNativeFieldsPerTheme(DefineFieldLayoutFieldsEvent $event): void
+    {
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $event->sender;
+
+        $themeTypes = FormsModule::getInstance()->formThemes->getFormThemeTypes();
+
+        foreach ($themeTypes as $formThemeType) {
+            if ($fieldLayout->type === $formThemeType) {
+                $formThemeType::defineNativeFields($event);
+            }
+        }
+    }
+
     public static function getFormThemes(): array
     {
         $settings = FormsModule::getInstance()->getSettings();
