@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\migrations;
 
-use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Table;
@@ -73,7 +72,7 @@ class m211101_000000_run_install_migration extends Migration
                 'emailVariantSettings' => $this->text(),
                 'mailerUid' => $this->uid(),
                 'mailerInstructionsSettings' => $this->text(),
-                'emailThemeUid' => $this->uid(),
+                'emailTypeUid' => $this->uid(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -82,7 +81,7 @@ class m211101_000000_run_install_migration extends Migration
             $this->createIndex(null, self::EMAILS_TABLE, ['subjectLine']);
             $this->createIndex(null, self::EMAILS_TABLE, ['type']);
             $this->createIndex(null, self::EMAILS_TABLE, ['mailerUid']);
-            $this->createIndex(null, self::EMAILS_TABLE, ['emailThemeUid']);
+            $this->createIndex(null, self::EMAILS_TABLE, ['emailTypeUid']);
 
             $this->addForeignKey(null, self::EMAILS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
         }

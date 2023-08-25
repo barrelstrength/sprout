@@ -18,7 +18,7 @@ use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
+use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
@@ -33,7 +33,7 @@ use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
 use BarrelStrength\Sprout\forms\formthemes\FormThemes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\config\BaseConfig;
@@ -206,10 +206,10 @@ class FormsModule extends Module
             });
 
         Event::on(
-            EmailThemes::class,
-            EmailThemes::EVENT_REGISTER_EMAIL_THEMES,
+            EmailTypes::class,
+            EmailTypes::EVENT_REGISTER_EMAIL_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
-                $event->types[] = FormSummaryEmailTheme::class;
+                $event->types[] = FormSummaryEmailType::class;
             });
 
         Event::on(

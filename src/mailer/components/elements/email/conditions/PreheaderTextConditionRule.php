@@ -29,8 +29,8 @@ class PreheaderTextConditionRule extends BaseLightswitchConditionRule implements
     public function matchElement(ElementInterface $element): bool
     {
         /** @var EmailElement $element */
-        $emailTheme = $element->getEmailTheme();
+        $emailType = $element->getEmailType();
 
-        return $this->matchValue($emailTheme->displayPreheaderText);
+        return $this->matchValue($emailType->displayPreheaderText);
     }
 }

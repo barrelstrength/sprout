@@ -4,10 +4,9 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
-use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
-use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
+use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
+use BarrelStrength\Sprout\mailer\components\emailtypes\CustomTemplatesEmailType;
+use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
@@ -61,22 +60,22 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             ? $newSettings['emailTemplateId']
             : null;
 
-        $emailThemeMapping = [
-            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageTheme::class,
-            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
+        $emailTypeMapping = [
+            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageEmailType::class,
+            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailType::class,
         ];
 
-        // Create Email Message Theme from global settings
-        if ($matchingEmailThemeType = $emailThemeMapping[$oldEmailTemplateId] ?? null) {
-            MailerSchemaHelper::createEmailThemeIfNoTypeExists($matchingEmailThemeType);
+        // Create Email Message Email Type from global settings
+        if ($matchingType = $emailTypeMapping[$oldEmailTemplateId] ?? null) {
+            MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
         } else {
-            MailerSchemaHelper::createEmailThemeIfNoTypeExists(CustomTemplatesEmailTheme::class, [
+            MailerSchemaHelper::createEmailTypeIfNoTypeExists(CustomTemplatesEmailType::class, [
                 'name' => 'Custom Templates',
                 'htmlEmailTemplate' => $oldEmailTemplateId,
             ]);
         }
 
-        // Create Email Message Theme from email-specific override settings
+        // Create Email Message Email Type from email-specific override settings
         // Ignore 'enablePerEmailEmailTemplateIdOverride' and just migrate everything we find
         // as it seems there was a bug where Templates may have displayed as an option irregardless of this setting
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
@@ -86,8 +85,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 ->all();
 
             foreach ($emails as $email) {
-                // Skip pre-defined themes
-                if ($emailThemeMapping[$email['emailTemplateId']] ?? null) {
+                // Skip pre-defined email types
+                if ($emailTypeMapping[$email['emailTemplateId']] ?? null) {
                     continue;
                 }
 
@@ -146,16 +145,16 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         ->execute();
                 }
 
-                $emailTheme = MailerSchemaHelper::createEmailThemeIfNoTypeExists(CustomTemplatesEmailTheme::class, [
+                $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(CustomTemplatesEmailType::class, [
                     'name' => 'Custom Templates',
                     'htmlEmailTemplate' => $email['emailTemplateId'],
                     'fieldLayout' => $fieldLayout,
                 ]);
 
-                // Set all emailTemplateId to the new Email Theme UID.
+                // Set all emailTemplateId to the new Email Type UID.
                 // This will be migrated in another migration and correct after the migration is complete.
                 $this->update(self::OLD_NOTIFICATIONS_TABLE, [
-                    'emailTemplateId' => $emailTheme->uid,
+                    'emailTemplateId' => $emailType->uid,
                 ], [
                     'id' => $email['id'],
                 ]);

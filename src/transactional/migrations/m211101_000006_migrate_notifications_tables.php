@@ -2,9 +2,8 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
-use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
-use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
+use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
+use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
@@ -26,7 +25,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'id',
             'subjectLine',
             'defaultBody as defaultMessage', // => defaultMessage
-            'emailTemplateId as emailThemeUid', // Already migrated to emailThemeUid
+            'emailTemplateId as emailTypeUid', // Already migrated to emailTypeUid
             'dateCreated',
             'dateUpdated',
             'uid',
@@ -52,7 +51,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'id',
             'subjectLine',
             'defaultMessage',
-            'emailThemeUid',
+            'emailTypeUid',
             'dateCreated',
             'dateUpdated',
             'uid',
@@ -92,15 +91,15 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     'enableFileAttachments' => $rows[$key]['enableFileAttachments'] ?? '',
                 ]);
 
-                $emailThemeMapping = [
-                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageTheme::class,
-                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailTheme::class,
+                $emailTypeMapping = [
+                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageEmailType::class,
+                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailType::class,
                 ];
 
-                if ($matchingEmailThemeType = $emailThemeMapping[$rows[$key]['emailThemeUid']] ?? null) {
-                    // Any mapped email themes should already be migrated
-                    $emailTheme = MailerSchemaHelper::createEmailThemeIfNoTypeExists($matchingEmailThemeType);
-                    $rows[$key]['emailThemeUid'] = $emailTheme->uid;
+                if ($matchingType = $emailTypeMapping[$rows[$key]['emailTypeUid']] ?? null) {
+                    // Any mapped email types should already be migrated
+                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
+                    $rows[$key]['emailTypeUid'] = $emailType->uid;
                 }
 
                 // merge bcc into recipients if cc not empty
@@ -129,7 +128,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
                 unset(
                     $rows[$key]['preheaderText'], // No need to migrate, new setting
-                    $rows[$key]['fieldLayoutId'], // Migrated when CustomTemplateEmailTheme created
+                    $rows[$key]['fieldLayoutId'], // Migrated when CustomTemplateEmailType created
                     $rows[$key]['fromName'],
                     $rows[$key]['fromEmail'],
                     $rows[$key]['replyToEmail'],

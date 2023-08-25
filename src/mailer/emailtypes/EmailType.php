@@ -1,19 +1,15 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\emailthemes;
+namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\OptionalDefaultMessageField;
+use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\OptionalDefaultMessageField;
 use Craft;
 use craft\base\SavableComponent;
 use craft\events\DefineFieldLayoutFieldsEvent;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Html;
-use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
-use craft\models\FieldLayoutTab;
 use craft\web\View;
 use League\HTMLToMarkdown\HtmlConverter;
 
@@ -22,7 +18,7 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @property string $htmlBody
  * @property null|FieldLayout $fieldLayout
  */
-abstract class EmailTheme extends SavableComponent implements EmailThemeInterface
+abstract class EmailType extends SavableComponent implements EmailTypeInterface
 {
     public ?string $name = null;
 
@@ -55,7 +51,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
 
     final public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('sprout/settings/email-themes/edit/' . $this->uid);
+        return UrlHelper::cpUrl('sprout/settings/email-types/edit/' . $this->uid);
     }
 
     public function getTemplateVariables(): array
@@ -104,7 +100,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
     public function getHtmlBody($recipient = null): string
     {
         if (!$this->_htmlBody) {
-            $this->processThemeTemplates($recipient);
+            $this->processEmailTemplates($recipient);
         }
 
         return $this->_htmlBody;
@@ -118,7 +114,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
     public function getTextBody($recipient = null): string
     {
         if (!$this->_textBody) {
-            $this->processThemeTemplates($recipient);
+            $this->processEmailTemplates($recipient);
         }
 
         return $this->_textBody;
@@ -155,7 +151,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         return $template;
     }
 
-    protected function processThemeTemplates($recipient = null): void
+    protected function processEmailTemplates($recipient = null): void
     {
         $view = Craft::$app->getView();
 

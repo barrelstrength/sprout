@@ -2,35 +2,35 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email\conditions;
 
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use yii\db\QueryInterface;
 
-class EmailThemeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
+class EmailTypeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-mailer', 'Email Theme');
+        return Craft::t('sprout-module-mailer', 'Email Type');
     }
 
     public function getExclusiveQueryParams(): array
     {
-        return ['emailThemeUid'];
+        return ['emailTypeUid'];
     }
 
     protected function options(): array
     {
-        $themes = EmailThemeHelper::getEmailThemes();
+        $emailTypes = EmailTypeHelper::getEmailTypes();
 
-        return array_map(static function($theme) {
+        return array_map(static function($emailType) {
             return [
-                'label' => $theme->name,
-                'value' => $theme->uid,
+                'label' => $emailType->name,
+                'value' => $emailType->uid,
             ];
-        }, $themes);
+        }, $emailTypes);
     }
 
     public function modifyQuery(QueryInterface $query): void
@@ -40,6 +40,6 @@ class EmailThemeConditionRule extends BaseMultiSelectConditionRule implements El
 
     public function matchElement(ElementInterface $element): bool
     {
-        return in_array($element->emailThemeUid, $this->getValues(), true);
+        return in_array($element->emailTypeUid, $this->getValues(), true);
     }
 }

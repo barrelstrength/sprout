@@ -6,7 +6,7 @@ use craft\config\BaseConfig;
 
 class MailerSettings extends BaseConfig
 {
-    public array $emailThemes = [];
+    public array $emailTypes = [];
 
     public array $mailers = [];
 
@@ -19,9 +19,9 @@ class MailerSettings extends BaseConfig
         return $this;
     }
 
-    public function emailThemes(array $value): self
+    public function emailTypes(array $value): self
     {
-        $this->emailThemes = $value;
+        $this->emailTypes = $value;
 
         return $this;
     }

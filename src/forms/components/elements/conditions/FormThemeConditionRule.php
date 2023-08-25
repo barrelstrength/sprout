@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\forms\components\elements\conditions;
 
 use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;

@@ -1,23 +1,23 @@
 {% extends "sprout-module-core/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set currentSubNavKey = 'email-themes' %}
+{% set currentSubNavKey = 'email-types' %}
 
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
             <div class="btn menubtn submit add icon">
-                {{ "New Email Theme"|t('sprout-module-mailer') }}
+                {{ "New Email Type"|t('sprout-module-mailer') }}
             </div>
             <div class="menu">
                 <ul>
-                    {% for emailTheme in emailThemeTypes %}
+                    {% for emailType in emailTypeTypes %}
                         <li>
                             {{ tag('a', {
-                                href: cpUrl('sprout/settings/email-themes/new', {
-                                    type: className(emailTheme),
+                                href: cpUrl('sprout/settings/email-types/new', {
+                                    type: className(emailType),
                                 }),
-                                text: emailTheme.displayName(),
+                                text: emailType.displayName(),
                                 class: 'menu-option',
                             }) }}
                         </li>
@@ -30,18 +30,18 @@
 
 {% set tableData = [] %}
 
-{% if emailThemes|length %}
-    {% for emailTheme in emailThemes %}
+{% if emailTypes|length %}
+    {% for emailType in emailTypes %}
 
         {% set tableData = tableData|merge([{
-            id: emailTheme.uid,
+            id: emailType.uid,
             labelHtml: {
-                url: emailTheme.getCpEditUrl(),
-                name: emailTheme.name ?? emailTheme.displayName()
+                url: emailType.getCpEditUrl(),
+                name: emailType.name ?? emailType.displayName()
             },
-            emailThemeType: emailTheme.displayName,
-            title: emailTheme.name|t('sprout-module-mailer')|e,
-            url: emailTheme.getCpEditUrl(),
+            emailTypeType: emailType.displayName,
+            title: emailType.name|t('sprout-module-mailer')|e,
+            url: emailType.getCpEditUrl(),
             _showDelete: true,
         }]) %}
 
@@ -58,7 +58,7 @@
     <br>
     <div class="readable">
         <blockquote class="tip note">
-            {{ "When editing an email, the first theme in the list will be selected as the default."|t('sprout-module-mailer') }}
+            {{ "When editing an email, the first email type in the list will be selected as the default."|t('sprout-module-mailer') }}
         </blockquote>
     </div>
 
@@ -66,10 +66,10 @@
 
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
 
-{% do sprout.modules.core.vite.register('mailer/EmailThemesSettings.js', false) %}
+{% do sprout.modules.core.vite.register('mailer/EmailTypesSettings.js', false) %}
 
  {% js on ready %}
 
-     new EmailThemesSettings('#admin-table');
+     new EmailTypesSettings('#admin-table');
 
  {% endjs %}

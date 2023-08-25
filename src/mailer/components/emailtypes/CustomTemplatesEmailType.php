@@ -1,11 +1,11 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\components\emailthemes;
+namespace BarrelStrength\Sprout\mailer\components\emailtypes;
 
-use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use Craft;
 
-class CustomTemplatesEmailTheme extends EmailTheme
+class CustomTemplatesEmailType extends EmailType
 {
     public static function displayName(): string
     {

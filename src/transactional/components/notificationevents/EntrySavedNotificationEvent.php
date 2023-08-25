@@ -6,12 +6,12 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
-use craft\base\ElementInterface;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
 use craft\helpers\Json;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 
 class EntrySavedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
@@ -60,7 +60,8 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
     }
 
     /**
-     * @return array|ElementInterface|Entry|null
+     * @return array
+     * @throws InvalidConfigException
      */
     public function getMockEventVariables(): array
     {

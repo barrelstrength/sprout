@@ -116,9 +116,9 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $templateVariables = $mailerInstructionsSettings->getAdditionalTemplateVariables($email);
         $mailingList = $mailerInstructionsSettings->getMailingList($email, $templateVariables);
 
-        $emailTheme = $email->getEmailTheme();
-        $emailTheme->addTemplateVariables($templateVariables);
-        $email->setEmailTheme($emailTheme);
+        $emailType = $email->getEmailType();
+        $emailType->addTemplateVariables($templateVariables);
+        $email->setEmailType($emailType);
 
         // Prepare the Message
         $message = new Message();
@@ -225,19 +225,19 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     ): void {
 
         $view = Craft::$app->getView();
-        $emailTheme = $email->getEmailTheme();
-        $emailTheme->addTemplateVariable('recipient', $recipient);
-        $templateVariables = $emailTheme->getTemplateVariables();
+        $emailType = $email->getEmailType();
+        $emailType->addTemplateVariable('recipient', $recipient);
+        $templateVariables = $emailType->getTemplateVariables();
 
         $subjectLine = $mailerInstructionsSettings->getSubjectLine($email);
         $email->subjectLine = $view->renderObjectTemplate($subjectLine, $templateVariables);
         $email->preheaderText = $view->renderObjectTemplate($email->preheaderText, $templateVariables);
         $email->defaultMessage = $view->renderObjectTemplate($email->defaultMessage, $templateVariables);
 
-        $emailTheme->addTemplateVariable('email', $email);
+        $emailType->addTemplateVariable('email', $email);
 
-        $textBody = trim($emailTheme->getTextBody());
-        $htmlBody = trim($emailTheme->getHtmlBody());
+        $textBody = trim($emailType->getTextBody());
+        $htmlBody = trim($emailType->getHtmlBody());
 
         if (empty($textBody)) {
             throw new \yii\base\Exception('Text template is blank.');

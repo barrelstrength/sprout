@@ -5,11 +5,11 @@
 {% set module = sprout.modules.mailer %}
 {% set settings = module.getSettings() %}
 
-{% set currentSubNavKey = 'email-themes' %}
+{% set currentSubNavKey = 'email-types' %}
 
 {% set crumbs = [
     { label: "Settings"|t('sprout-module-mailer'), url: cpUrl('settings') },
-    { label: "Email Themes"|t('sprout-module-mailer'), url: cpUrl('sprout/settings/email-themes') }
+    { label: "Email Types"|t('sprout-module-mailer'), url: cpUrl('sprout/settings/email-types') }
 ] %}
 
 {% set fullPageForm = true %}
@@ -30,7 +30,7 @@
                 label: 'Settings'|t('sprout-module-mailer'),
                 url: '#settings'
             },
-            themeLayout: {
+            emailFieldLayout: {
                 label: 'Email Fields'|t('sprout-module-mailer'),
                 url: '#fields'
             }
@@ -45,11 +45,11 @@
     <div id="settings">
         {{ forms.textField({
             label: "Name"|t('sprout-module-mailer'),
-            instructions: "How you will refer to this Email Theme."|t('sprout-module-mailer'),
+            instructions: "How you will refer to this Email Type."|t('sprout-module-mailer'),
             id: 'name',
             name: 'name',
-            value: emailTheme.name,
-            errors: emailTheme.getErrors('name'),
+            value: emailType.name,
+            errors: emailType.getErrors('name'),
             warning: sproutConfigWarning(module, 'name'),
             required: true,
             first: true,
@@ -62,11 +62,11 @@
             name: 'htmlEmailTemplate',
             suggestEnvVars: false,
             suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: "_emails/theme/email.twig"|t('sprout-module-mailer'),
-            value: emailTheme.htmlEmailTemplate ?? null,
-            errors: emailTheme.getErrors('htmlEmailTemplate'),
+            placeholder: "_emails/email-type/email.twig"|t('sprout-module-mailer'),
+            value: emailType.htmlEmailTemplate ?? null,
+            errors: emailType.getErrors('htmlEmailTemplate'),
             required: true,
-            disabled: not emailTheme.isEditable(),
+            disabled: not emailType.isEditable(),
         }) }}
 
         {{ forms.autosuggestField({
@@ -76,10 +76,10 @@
             name: 'textEmailTemplate',
             suggestEnvVars: false,
             suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: emailTheme.isEditable() ? "_emails/theme/email.txt"|t('sprout-module-mailer') : '',
-            value: emailTheme.textEmailTemplate ?? null,
-            errors: emailTheme.getErrors('textEmailTemplate'),
-            disabled: not emailTheme.isEditable(),
+            placeholder: emailType.isEditable() ? "_emails/email-type/email.txt"|t('sprout-module-mailer') : '',
+            value: emailType.textEmailTemplate ?? null,
+            errors: emailType.getErrors('textEmailTemplate'),
+            disabled: not emailType.isEditable(),
         }) }}
 
         {#    {{ forms.autosuggestField({ #}
@@ -90,8 +90,8 @@
         {#        suggestEnvVars: false, #}
         {#        suggestions: sproutTemplateFolderSuggestions(), #}
         {#        placeholder: "_emails/custom-folder"|t('sprout-module-mailer'), #}
-        {#        value: emailTheme.copyPasteEmailTemplatePath ?? null, #}
-        {#        disabled: not emailTheme.isEditable(), #}
+        {#        value: emailType.copyPasteEmailTemplatePath ?? null, #}
+        {#        disabled: not emailType.isEditable(), #}
         {#    }) }} #}
 
 
@@ -101,12 +101,12 @@
             ),
             name: 'mailerUid',
             options: mailerTypeOptions,
-            value: emailTheme.mailerUid,
+            value: emailType.mailerUid,
         }) }}
 
         {{ forms.textField({
-            label: "Theme Type"|t('sprout-module-mailer'),
-            value: emailTheme.displayName(),
+            label: "Email Type"|t('sprout-module-mailer'),
+            value: emailType.displayName(),
             disabled: true,
         }) }}
 
@@ -117,33 +117,33 @@
             label: "Preheader Text Field",
             instructions: "Displays a field that can be used for a preview message of the email content in some email clients.",
             name: 'displayPreheaderText',
-            on: emailTheme.displayPreheaderText,
-            disabled: not emailTheme.isEditable(),
+            on: emailType.displayPreheaderText,
+            disabled: not emailType.isEditable(),
         }) }}
 
         <hr>
 
-        {% set fieldLayoutInstructions = "The content fields that can be used in this email theme."|t('sprout-module-mailer') %}
+        {% set fieldLayoutInstructions = "The content fields that can be used in this email type."|t('sprout-module-mailer') %}
 
-{#        {% if emailTheme.isEditable() %} #}
+{#        {% if emailType.isEditable() %} #}
 
         {{ forms.fieldLayoutDesignerField({
             instructions: fieldLayoutInstructions,
-            fieldLayout: emailTheme.getFieldLayout(),
+            fieldLayout: emailType.getFieldLayout(),
             required: true,
             customizableTabs: false,
             customizableUi: true,
-            errors: emailTheme.getErrors('fieldLayout'),
+            errors: emailType.getErrors('fieldLayout'),
         }) }}
 
     </div>
 
 
-    {{ actionInput('sprout-module-mailer/email-themes/save') }}
-    {{ redirectInput('sprout/settings/email-themes') }}
+    {{ actionInput('sprout-module-mailer/email-types/save') }}
+    {{ redirectInput('sprout/settings/email-types') }}
 
-    {{ hiddenInput('uid', emailTheme.uid) }}
-    {{ hiddenInput('type', className(emailTheme)) }}
+    {{ hiddenInput('uid', emailType.uid) }}
+    {{ hiddenInput('type', className(emailType)) }}
 
 
 {% endblock %}

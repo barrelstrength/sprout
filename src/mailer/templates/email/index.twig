@@ -11,13 +11,13 @@
             </div>
             <div class="menu">
                 <ul>
-                    {% for emailThemeUid, emailTheme in emailThemes %}
+                    {% for emailTypeUid, emailType in emailTypes %}
                         <li>
                             {{ tag('a', {
                                 href: cpUrl(newEmailUrl, {
-                                    emailThemeUid: emailThemeUid,
+                                    emailTypeUid: emailTypeUid,
                                 }),
-                                text: emailTheme.name,
+                                text: emailType.name,
                                 class: 'menu-option',
                             }) }}
                         </li>

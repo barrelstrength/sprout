@@ -98,19 +98,19 @@ class PreviewController extends Controller
         $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
         $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
 
-        $emailTheme = $email->getEmailTheme();
+        $emailType = $email->getEmailType();
 
-        $emailTheme->addTemplateVariable('recipient', $recipient);
-        $emailTheme->addTemplateVariables($additionalTemplateVariables);
+        $emailType->addTemplateVariable('recipient', $recipient);
+        $emailType->addTemplateVariables($additionalTemplateVariables);
 
-        $emailTheme->addTemplateVariable('email', $email);
+        $emailType->addTemplateVariable('email', $email);
 
         $fileExtension = $type === 'text' ? 'txt' : 'html';
 
         if ($fileExtension === 'txt') {
-            $output = $emailTheme->getTextBody();
+            $output = $emailType->getTextBody();
         } else {
-            $output = $emailTheme->getHtmlBody();
+            $output = $emailType->getHtmlBody();
         }
 
         echo $output;

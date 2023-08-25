@@ -2,8 +2,8 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
-use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
+use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
+use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
@@ -16,7 +16,7 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULES_KEY = self::SPROUT_KEY . '.sprout-module-core.modules';
     public const MODULE_ID = 'sprout-module-transactional';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\transactional\TransactionalModule';
-    public const DEFAULT_EMAIL_THEME = 'BarrelStrength\Sprout\mailer\components\emailthemes';
+    public const DEFAULT_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes';
 
     public function safeUp(): void
     {
@@ -26,8 +26,8 @@ class m211101_000000_run_install_migration extends Migration
             TransactionalEmailEmailVariant::class,
             TransactionalMailer::class
         );
-        MailerSchemaHelper::createEmailThemeIfNoTypeExists(
-            EmailMessageTheme::class, [
+        MailerSchemaHelper::createEmailTypeIfNoTypeExists(
+            EmailMessageEmailType::class, [
             'name' => 'Email Message',
         ]);
 
@@ -35,8 +35,8 @@ class m211101_000000_run_install_migration extends Migration
         $sproutFormsIsInstalled = Craft::$app->getPlugins()->isPluginInstalled('sprout-forms');
 
         if ($sproutFormsIsInstalled) {
-            MailerSchemaHelper::createEmailThemeIfNoTypeExists(
-                FormSummaryEmailTheme::class, [
+            MailerSchemaHelper::createEmailTypeIfNoTypeExists(
+                FormSummaryEmailType::class, [
                 'name' => 'Form Summary',
             ]);
         }

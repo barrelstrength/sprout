@@ -1,10 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\components\emailthemes;
+namespace BarrelStrength\Sprout\forms\components\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\TextareaField;
@@ -13,7 +13,7 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
-class FormSummaryEmailTheme extends EmailTheme
+class FormSummaryEmailType extends EmailType
 {
     public bool $displayPreheaderText = true;
 
@@ -55,7 +55,7 @@ class FormSummaryEmailTheme extends EmailTheme
         $fieldLayoutTab->setElements([
             new Tip([
                 'style' => Tip::STYLE_TIP,
-                'tip' => Craft::t('sprout-module-mailer', 'The body of this email theme will include a summary of the form submission.'),
+                'tip' => Craft::t('sprout-module-mailer', 'The body of this email will include a summary of the form submission.'),
                 'uid' => StringHelper::UUID(),
             ]),
         ]);

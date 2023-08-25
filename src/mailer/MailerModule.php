@@ -17,9 +17,8 @@ use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberHelper;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
-use BarrelStrength\Sprout\mailer\emailvariants\EmailVariants;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberLists;
@@ -47,7 +46,7 @@ use yii\base\Module;
 /**
  * @property Audiences $audiences
  * @property Mailers $mailers
- * @property EmailThemes $emailThemes
+ * @property EmailTypes $emailTypes
  * @property SubscriberLists $subscriberLists
  */
 class MailerModule extends Module
@@ -97,7 +96,7 @@ class MailerModule extends Module
         $this->setComponents([
             'audiences' => Audiences::class,
             'mailers' => Mailers::class,
-            'emailThemes' => EmailThemes::class,
+            'emailTypes' => EmailTypes::class,
             'subscriberLists' => SubscriberLists::class,
         ]);
 
@@ -143,7 +142,7 @@ class MailerModule extends Module
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            [EmailThemeHelper::class, 'defineNativeFieldsPerTheme']);
+            [EmailTypeHelper::class, 'defineNativeFieldsPerEmailType']);
 
         Event::on(
             DataSources::class,
@@ -278,7 +277,7 @@ class MailerModule extends Module
     {
         return [
             'label' => Craft::t('sprout-module-mailer', 'Email'),
-            'url' => 'sprout/settings/email-themes',
+            'url' => 'sprout/settings/email-types',
             'icon' => self::svg('icons/icon.svg'),
         ];
     }
@@ -294,9 +293,9 @@ class MailerModule extends Module
                 'label' => Craft::t('sprout-module-mailer', 'Mailers'),
                 'url' => 'sprout/settings/mailers',
             ],
-            'email-themes' => [
-                'label' => Craft::t('sprout-module-mailer', 'Email Themes'),
-                'url' => 'sprout/settings/email-themes',
+            'email-types' => [
+                'label' => Craft::t('sprout-module-mailer', 'Email Types'),
+                'url' => 'sprout/settings/email-types',
             ],
         ];
     }
@@ -316,13 +315,13 @@ class MailerModule extends Module
             'sprout/email/audiences' =>
                 'sprout-module-mailer/audience/audience-index-template',
 
-            // Settings: Email Themes
-            'sprout/settings/email-themes/new' =>
-                'sprout-module-mailer/email-themes/edit',
-            'sprout/settings/email-themes/edit/<emailThemeUid:.*>' =>
-                'sprout-module-mailer/email-themes/edit',
-            'sprout/settings/email-themes' =>
-                'sprout-module-mailer/email-themes/email-themes-index-template',
+            // Settings: Email Types
+            'sprout/settings/email-types/new' =>
+                'sprout-module-mailer/email-types/edit',
+            'sprout/settings/email-types/edit/<emailTypeUid:.*>' =>
+                'sprout-module-mailer/email-types/edit',
+            'sprout/settings/email-types' =>
+                'sprout-module-mailer/email-types/email-types-index-template',
 
             // Settings: Mailers
             'sprout/settings/mailers/new' =>

@@ -23,7 +23,6 @@ use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\SlugValidator;
-use craft\validators\UniqueValidator;
 use craft\web\CpScreenResponseBehavior;
 use Throwable;
 use yii\web\ErrorHandler;

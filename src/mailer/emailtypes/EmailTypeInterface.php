@@ -1,10 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\emailthemes;
+namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use craft\models\FieldLayout;
 
-interface EmailThemeInterface
+interface EmailTypeInterface
 {
     public static function isEditable(): bool;
 

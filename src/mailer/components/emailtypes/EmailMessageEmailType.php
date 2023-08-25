@@ -1,19 +1,16 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\components\emailthemes;
+namespace BarrelStrength\Sprout\mailer\components\emailtypes;
 
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
+use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
-use craft\fieldlayoutelements\TextareaField;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
-class EmailMessageTheme extends EmailTheme
+class EmailMessageEmailType extends EmailType
 {
     public ?string $htmlEmailTemplate = '@Sprout/TemplateRoot/emails/default/email.twig';
 

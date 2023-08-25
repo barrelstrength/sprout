@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
@@ -34,7 +34,7 @@ class EmailController extends Controller
         $newEmailUrl = UrlHelper::cpUrl('sprout/email/' . $emailVariant::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
 
-        $emailThemes = EmailThemeHelper::getEmailThemes();
+        $emailTypes = EmailTypeHelper::getEmailTypes();
 
         return $this->renderTemplate('sprout-module-mailer/email/index.twig', [
             'title' => $elementType::pluralDisplayName(),
@@ -43,7 +43,7 @@ class EmailController extends Controller
             'newEmailUrl' => $newEmailUrl,
             'selectedSubnavItem' => $emailVariant::refHandle(),
             'emailVariantHandle' => $emailVariant::refHandle(),
-            'emailThemes' => $emailThemes,
+            'emailTypes' => $emailTypes,
         ]);
     }
 
@@ -56,10 +56,10 @@ class EmailController extends Controller
         }
 
         $email = Craft::createObject(EmailElement::class);
-        $email->emailThemeUid = Craft::$app->getRequest()->getRequiredParam('emailThemeUid');
+        $email->emailTypeUid = Craft::$app->getRequest()->getRequiredParam('emailTypeUid');
 
-        if (!$email->emailThemeUid) {
-            throw new NotFoundHttpException('No email themes exist.');
+        if (!$email->emailTypeUid) {
+            throw new NotFoundHttpException('No email types exist.');
         }
 
         $emailVariant = new $emailVariant();

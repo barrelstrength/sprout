@@ -1,11 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields;
+namespace BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TextareaField;
-use craft\fieldlayoutelements\TextField;
 
 class DefaultMessageField extends TextareaField
 {

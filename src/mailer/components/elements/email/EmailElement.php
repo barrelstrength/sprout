@@ -3,14 +3,14 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailThemeConditionRule;
+use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailTypeConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
-use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
@@ -77,7 +77,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public string $defaultMessage = '';
 
-    public ?string $emailThemeUid = null;
+    public ?string $emailTypeUid = null;
 
     public array $emailVariantSettings = [];
 
@@ -85,7 +85,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public array $mailerInstructionsSettings = [];
 
-    protected ?EmailTheme $_emailTheme = null;
+    protected ?EmailType $_emailType = null;
 
     protected ?EmailVariant $_emailVariant = null;
 
@@ -293,32 +293,32 @@ class EmailElement extends Element implements EmailPreviewInterface
      *
      * Email Variant determines:
      * $fieldLayout
-     * $emailThemeUid
+     * $emailTypeUid
      */
-    public function getEmailTheme(): EmailTheme
+    public function getEmailType(): EmailType
     {
-        if ($this->_emailTheme) {
-            return $this->_emailTheme;
+        if ($this->_emailType) {
+            return $this->_emailType;
         }
 
-        $emailTheme = EmailThemeHelper::getEmailThemeByUid($this->emailThemeUid);
+        $emailType = EmailTypeHelper::getEmailTypeByUid($this->emailTypeUid);
 
-        if (!$emailTheme) {
-            $emailTheme = EmailThemeHelper::getDefaultEmailTheme();
+        if (!$emailType) {
+            $emailType = EmailTypeHelper::getDefaultEmailType();
         }
 
-        if (!$emailTheme) {
-            throw new MissingComponentException('No Email Theme found.');
+        if (!$emailType) {
+            throw new MissingComponentException('No Email Type found.');
         }
 
-        $emailTheme->email = $this;
+        $emailType->email = $this;
 
-        return $this->_emailTheme = $emailTheme;
+        return $this->_emailType = $emailType;
     }
 
-    public function setEmailTheme(?EmailTheme $emailTheme): void
+    public function setEmailType(?EmailType $emailType): void
     {
-        $this->_emailTheme = $emailTheme;
+        $this->_emailType = $emailType;
     }
 
     /**
@@ -403,10 +403,6 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function getFieldLayout(): ?FieldLayout
     {
-        // Memoizing the field layout breaks the UI when the Theme switches
-        // and generates the first provisional draft. The user then has to
-        // reload or trigger another draft before the Content tab layout gets updated
-        // with the new email theme layout.
         //if ($this->_fieldLayout) {
         //    return $this->_fieldLayout;
         //}
@@ -422,15 +418,15 @@ class EmailElement extends Element implements EmailPreviewInterface
         /** @var Element|string $emailElementType */
         $emailElementType = $emailVariant::elementType();
 
-        $themes = EmailThemeHelper::getEmailThemes();
+        $emailTypes = EmailTypeHelper::getEmailTypes();
 
-        $themeTabs = array_map(static function(EmailTheme $theme) use ($emailElementType, $fieldLayout, $twigExpressionMessage2) {
+        $emailTypeTabs = array_map(static function(EmailType $emailType) use ($emailElementType, $fieldLayout, $twigExpressionMessage2) {
             $elementCondition = $emailElementType::createCondition();
-            $rule = new EmailThemeConditionRule();
-            $rule->setValues([$theme->uid]);
+            $rule = new EmailTypeConditionRule();
+            $rule->setValues([$emailType->uid]);
             $elementCondition->addConditionRule($rule);
 
-            $tab = $theme->getFieldLayout()->getTabs()[0] ?? null;
+            $tab = $emailType->getFieldLayout()->getTabs()[0] ?? null;
             $tab->layout = $fieldLayout;
             $tab->elementCondition = $elementCondition;
 
@@ -441,7 +437,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             }
 
             return $tab;
-        }, $themes);
+        }, $emailTypes);
 
         $mailers = MailerHelper::getMailers();
 
@@ -501,12 +497,12 @@ class EmailElement extends Element implements EmailPreviewInterface
             ]),
             new TextField([
                 'type' => 'hidden',
-                'name' => 'emailThemeUid',
-                'attribute' => 'emailThemeUid',
+                'name' => 'emailTypeUid',
+                'attribute' => 'emailTypeUid',
                 'containerAttributes' => [
                     'class' => 'hidden',
                 ],
-                'uid' => 'SPROUT-UID-EMAIL-THEME-UID-FIELD',
+                'uid' => 'SPROUT-UID-EMAIL-TYPE-UID-FIELD',
             ]),
         ]);
 
@@ -514,7 +510,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             [$subjectTab],
             $mailerTabs,
             [$emailVariant::getFieldLayoutTab($fieldLayout)],
-            $themeTabs,
+            $emailTypeTabs,
         );
 
         $fieldLayout->setTabs($newTabs);
@@ -553,7 +549,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->preheaderText = $this->preheaderText;
         $emailElementRecord->defaultMessage = $this->defaultMessage;
 
-        $emailElementRecord->emailThemeUid = $this->emailThemeUid;
+        $emailElementRecord->emailTypeUid = $this->emailTypeUid;
 
         $emailElementRecord->mailerUid = $this->mailerUid;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
@@ -561,7 +557,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailVariant = $this->getEmailVariant();
         $emailVariantSettings = $emailVariant->prepareEmailVariantSettingsForDb($this->emailVariantSettings);
 
-        $emailElementRecord->type = $this->emailVariantType;
+        $emailElementRecord->emailVariantType = $this->emailVariantType;
         $emailElementRecord->emailVariantSettings = $emailVariantSettings;
 
         $emailElementRecord->dateCreated = $this->dateCreated;
@@ -670,7 +666,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             'templates/render', [
-                'template' => $this->getEmailTheme()->getHtmlEmailTemplate(),
+                'template' => $this->getEmailType()->getHtmlEmailTemplate(),
                 'variables' => [
                     'email' => $this,
                 ],
@@ -682,7 +678,7 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             Craft::t('sprout-module-mailer', 'Email Variant') => $this->getEmailVariant()::displayName(),
-            Craft::t('sprout-module-mailer', 'Email Theme') => $this->getEmailTheme()->name,
+            Craft::t('sprout-module-mailer', 'Email Type') => $this->getEmailType()->name,
             Craft::t('sprout-module-mailer', 'Mailer') => $this->getMailer()->name,
         ];
     }
@@ -696,7 +692,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         $rules[] = [['preheaderText'], 'safe'];
         $rules[] = [['defaultMessage'], 'safe'];
 
-        $rules[] = [['emailThemeUid'], 'safe'];
+        $rules[] = [['emailTypeUid'], 'safe'];
         $rules[] = [['mailerUid'], 'safe'];
 
         $rules[] = [['emailVariant'], 'safe'];
