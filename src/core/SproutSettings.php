@@ -50,8 +50,8 @@ class SproutSettings extends BaseConfig
             }
 
             $cpSettingsRows[$module] = [
-                'heading' => $module::getDisplayName() . $infoHtml,
                 'enabled' => $enabledInputHtml,
+                'heading' => $module::getDisplayName() . $infoHtml,
                 'edition' => $editionHtml,
             ];
         }

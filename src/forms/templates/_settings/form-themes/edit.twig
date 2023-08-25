@@ -107,15 +107,14 @@
             id: 'enabledFeatures',
             name: 'enabledFeatures',
             cols: {
+                enabled: {
+                    type: 'heading',
+                    thin: true
+                },
                 heading: {
                     type: 'heading',
                     heading: "Feature"|t('sprout-module-forms'),
                     info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
-                },
-                enabled: {
-                    type: 'heading',
-                    heading: "Enabled"|t('sprout-module-forms'),
-                    thin: true
                 },
             }|filter,
             rows: formTheme.getFeatureRows(),
@@ -132,6 +131,10 @@
             id: 'enabledFormFields',
             name: 'enabledFormFields',
             cols: {
+                enabled: {
+                    type: 'heading',
+                    thin: true
+                },
                 heading: {
                     type: 'heading',
                     heading: "Form Field"|t('sprout-module-forms'),
@@ -140,11 +143,6 @@
                 group: {
                     type: 'heading',
                     heading: "Group"|t('sprout-module-forms'),
-                },
-                enabled: {
-                    type: 'heading',
-                    heading: "Enabled"|t('sprout-module-forms'),
-                    thin: true
                 },
             }|filter,
             rows: formTheme.getFormFieldRows(),

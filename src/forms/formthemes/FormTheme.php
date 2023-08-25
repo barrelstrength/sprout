@@ -70,28 +70,28 @@ abstract class FormTheme extends SavableComponent implements FormThemeInterface
     {
         return [
             [
-                'heading' => 'Notifications',
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
                     'name' => 'features[notifications][enabled]',
                     'on' => true,
                     'small' => true,
                 ]),
+                'heading' => 'Notifications',
             ],
             [
-                'heading' => 'Reports',
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
                     'name' => 'features[reports][enabled]',
                     'on' => true,
                     'small' => true,
                 ]),
+                'heading' => 'Reports',
             ],
             [
-                'heading' => 'Integrations',
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
                     'name' => 'features[integrations][enabled]',
                     'on' => false,
                     'small' => true,
                 ]),
+                'heading' => 'Integrations',
             ],
         ];
     }
@@ -105,13 +105,13 @@ abstract class FormTheme extends SavableComponent implements FormThemeInterface
         foreach ($formFieldGroups as $formFieldGroupKey => $formFields) {
             foreach ($formFields as $formFieldType) {
                 $rows[] = [
-                    'heading' => $formFieldType::displayName(),
-                    'group' => $formFieldGroupKey,
                     'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
                         'name' => 'formFields[' . $formFieldType . '][enabled]',
                         'on' => true,
                         'small' => true,
                     ]),
+                    'heading' => $formFieldType::displayName(),
+                    'group' => $formFieldGroupKey,
                 ];
             }
         }
