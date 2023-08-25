@@ -291,9 +291,9 @@ class FormsModule extends Module
     protected function getSproutCpSettingsNavItems(): array
     {
         return [
-            'forms' => [
-                'label' => self::getDisplayName(),
-                'url' => 'sprout/settings/forms',
+            'general' => [
+                'label' => Craft::t('sprout-module-forms', 'General'),
+                'url' => 'sprout/settings/general',
             ],
             'form-themes' => [
                 'label' => Craft::t('sprout-module-forms', 'Form Themes'),
@@ -348,7 +348,7 @@ class FormsModule extends Module
                 'sprout-module-forms/form-themes/form-themes-index-template',
 
             // Settings
-            'sprout/settings/forms' => [
+            'sprout/settings/general' => [
                 'template' => 'sprout-module-forms/_settings/forms',
             ],
             'sprout/settings/forms/spam-protection' => [
