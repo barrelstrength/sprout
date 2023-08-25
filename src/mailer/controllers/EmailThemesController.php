@@ -72,7 +72,7 @@ class EmailThemesController extends Controller
 
         if (!$emailTheme->validate() || !EmailThemeHelper::saveEmailThemes($emailThemesConfig)) {
 
-            Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save Email Type.'));
+            Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save Email Variant.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'emailTheme' => $emailTheme,
@@ -81,7 +81,7 @@ class EmailThemesController extends Controller
             return null;
         }
 
-        Craft::$app->session->setNotice(Craft::t('sprout-module-mailer', 'Email Type saved.'));
+        Craft::$app->session->setNotice(Craft::t('sprout-module-mailer', 'Email Variant saved.'));
 
         return $this->redirectToPostedUrl();
     }

@@ -19,7 +19,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberHelper;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemes;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariants;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\mailer\subscriberlists\SubscriberLists;
@@ -48,7 +48,6 @@ use yii\base\Module;
  * @property Audiences $audiences
  * @property Mailers $mailers
  * @property EmailThemes $emailThemes
- * @property EmailTypes $emailTypes
  * @property SubscriberLists $subscriberLists
  */
 class MailerModule extends Module
@@ -99,7 +98,6 @@ class MailerModule extends Module
             'audiences' => Audiences::class,
             'mailers' => Mailers::class,
             'emailThemes' => EmailThemes::class,
-            'emailTypes' => EmailTypes::class,
             'subscriberLists' => SubscriberLists::class,
         ]);
 

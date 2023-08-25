@@ -17,7 +17,7 @@
 
 {% block details %}
 
-    {% set emailType = element.getEmailTypeSettings() %}
+    {% set emailVariant = element.getEmailVariantSettings() %}
 
     <fieldset>
         <div class="meta" x-data="{ buttonValue : 'now' }">
@@ -34,7 +34,7 @@
                     { value: 'scheduled', label: "Schedule for later"|t('sprout-module-mailer') }
                 ],
                 default: 'now',
-                value: emailType.sendBehavior ?? 'now',
+                value: emailVariant.sendBehavior ?? 'now',
                 first: true,
                 toggle: true,
                 targetPrefix: 'send-behavior-',
@@ -45,11 +45,11 @@
                 instructions: "Date to send the campaign."|t('sprout-module-mailer'),
                 fieldId: 'send-behavior-scheduled',
                 fieldClass: [
-                    emailType.sendBehavior != 'scheduled' ? 'hidden',
+                    emailVariant.sendBehavior != 'scheduled' ? 'hidden',
                 ]|filter,
                 name: 'sendDate',
-                value: emailType.sendDate ?? '',
-                errors: emailType.getErrors('sendDate'),
+                value: emailVariant.sendDate ?? '',
+                errors: emailVariant.getErrors('sendDate'),
             }) }}
 
             <div class="field" style="padding: 24px;">

@@ -5,7 +5,7 @@
 <div x-data="NotificationEventTip('{{ selectedNotificationEvent|e('js') }}')">
     {{ forms.selectField({
         id: "notificationEvent",
-        name: "emailTypeSettings[eventId]",
+        name: "emailVariantSettings[eventId]",
         label: 'Event'|t('sprout-module-mailer'),
         instructions: 'The event that will trigger your notification.'|t('sprout-module-mailer'),
         options: eventOptions,
@@ -21,7 +21,7 @@
     {% for type, event in events %}
         {% if event.settings is not empty %}
             <div id="notification-event-{{ className(event)|id }}" class="notification-event-wrapper hidden">
-                {% namespace 'emailTypeSettings[eventSettings][' ~ type ~ ']' %}
+                {% namespace 'emailVariantSettings[eventSettings][' ~ type ~ ']' %}
                     {% if className(event) is same as className(notificationEvent) %}
                         {{ notificationEvent.getSettingsHtml()|raw }}
                     {% else %}

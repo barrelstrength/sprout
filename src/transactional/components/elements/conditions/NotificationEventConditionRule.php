@@ -21,7 +21,7 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
 
     public function getExclusiveQueryParams(): array
     {
-        return ['emailTypeSettings'];
+        return ['emailVariantSettings'];
     }
 
     protected function options(): array
@@ -45,8 +45,8 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
     public function matchElement(ElementInterface $element): bool
     {
         /** @var TransactionalEmailElement $element */
-        $emailTypeSettings = $element->getEmailType();
-        $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
+        $emailVariantSettings = $element->getEmailVariant();
+        $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
 
         /** @var ElementInterface $element */
         return $this->matchValue($notificationEvent::class);

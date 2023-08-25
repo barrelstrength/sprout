@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\mailer\emailtypes;
+namespace BarrelStrength\Sprout\mailer\emailvariants;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
@@ -14,7 +14,7 @@ use craft\models\FieldLayoutTab;
  *
  * @property array $additionalTemplateVariables
  */
-abstract class EmailType extends SavableComponent
+abstract class EmailVariant extends SavableComponent
 {
     /**
      * Returns an array of data that will be provided to the template
@@ -29,28 +29,28 @@ abstract class EmailType extends SavableComponent
     protected array $_additionalTemplateVariables = [];
 
     /**
-     * The short name that will be used as an identifier and URL slug for this Email Type
+     * The short name that will be used as an identifier and URL slug for this Email Variant
      */
     abstract public static function refHandle(): ?string;
 
     /**
-     * Returns the Mailer this Email Type uses when sending email
+     * Returns the Mailer this Email Variant uses when sending email
      */
     abstract public function getMailer(EmailElement $email): ?Mailer;
 
     /**
-     * Returns default Mailer settings for this Email Type
+     * Returns default Mailer settings for this Email Variant
      */
     abstract public static function createDefaultMailer(): Mailer;
 
     /**
-     * Returns the Element Class being used as the Element Index UI layer for this Email Type
+     * Returns the Element Class being used as the Element Index UI layer for this Email Variant
      */
     abstract public static function elementType(): string;
 
     /**
-     * Returns the [[FieldLayoutTab]] model to display for this Email Type
-     * These values will be stored in [[sprout_emails.emailTypeSettings]]
+     * Returns the [[FieldLayoutTab]] model to display for this Email Variant
+     * These values will be stored in [[sprout_emails.emailVariantSettings]]
      */
     public static function getFieldLayoutTab(FieldLayout $fieldLayout): ?FieldLayoutTab
     {
@@ -58,7 +58,7 @@ abstract class EmailType extends SavableComponent
     }
 
     /**
-     * Returns any additional buttons desired for this Email Type on the Email editor page
+     * Returns any additional buttons desired for this Email Variant on the Email editor page
      */
     public static function getAdditionalButtonsHtml(EmailElement $email): string
     {
@@ -66,7 +66,7 @@ abstract class EmailType extends SavableComponent
     }
 
     /**
-     * @see `EmailType::$_additionalTemplateVariables`
+     * @see `EmailVariant::$_additionalTemplateVariables`
      */
     public function getAdditionalTemplateVariables(): mixed
     {
@@ -74,7 +74,7 @@ abstract class EmailType extends SavableComponent
     }
 
     /**
-     * @see `EmailType::$_additionalTemplateVariables`
+     * @see `EmailVariant::$_additionalTemplateVariables`
      */
     public function addAdditionalTemplateVariables(mixed $variables): void
     {
@@ -82,7 +82,7 @@ abstract class EmailType extends SavableComponent
     }
 
     /**
-     * Show or hide the Element Editor Status Enabled setting for this Email Type
+     * Show or hide the Element Editor Status Enabled setting for this Email Variant
      */
     public function canBeDisabled(): bool
     {
@@ -90,7 +90,7 @@ abstract class EmailType extends SavableComponent
     }
 
     /**
-     * Set to true if this Email Type needs to define custom EmailType::getStatusCondition() rules
+     * Set to true if this Email Variant needs to define custom EmailVariant::getStatusCondition() rules
      */
     public function hasCustomStatuses(): bool
     {

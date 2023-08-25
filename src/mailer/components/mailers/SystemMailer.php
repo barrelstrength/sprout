@@ -112,7 +112,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void
     {
-        // Get any variables defined by Email Type to make available to building mailing list recipients
+        // Get any variables defined by Email Variant to make available to building mailing list recipients
         $templateVariables = $mailerInstructionsSettings->getAdditionalTemplateVariables($email);
         $mailingList = $mailerInstructionsSettings->getMailingList($email, $templateVariables);
 

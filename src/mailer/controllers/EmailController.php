@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\base\Element;
@@ -21,17 +21,17 @@ use yii\web\ServerErrorHttpException;
 
 class EmailController extends Controller
 {
-    public function actionEmailIndexTemplate(string $emailType = null): Response
+    public function actionEmailIndexTemplate(string $emailVariant = null): Response
     {
-        /** @var string|EmailType $emailType */
-        if (!$emailType = new $emailType()) {
-            throw new InvalidArgumentException('Unable to find email type: ' . $emailType);
+        /** @var string|EmailVariant $emailVariant */
+        if (!$emailVariant = new $emailVariant()) {
+            throw new InvalidArgumentException('Unable to find email variant: ' . $emailVariant);
         }
 
         /** @var string|Element $elementType */
-        $elementType = $emailType::elementType();
+        $elementType = $emailVariant::elementType();
 
-        $newEmailUrl = UrlHelper::cpUrl('sprout/email/' . $emailType::refHandle() . '/new');
+        $newEmailUrl = UrlHelper::cpUrl('sprout/email/' . $emailVariant::refHandle() . '/new');
         $newButtonLabel = Craft::t('sprout-module-mailer', 'New Email');
 
         $emailThemes = EmailThemeHelper::getEmailThemes();
@@ -41,13 +41,13 @@ class EmailController extends Controller
             'elementType' => $elementType,
             'newButtonLabel' => $newButtonLabel,
             'newEmailUrl' => $newEmailUrl,
-            'selectedSubnavItem' => $emailType::refHandle(),
-            'emailTypeHandle' => $emailType::refHandle(),
+            'selectedSubnavItem' => $emailVariant::refHandle(),
+            'emailVariantHandle' => $emailVariant::refHandle(),
             'emailThemes' => $emailThemes,
         ]);
     }
 
-    public function actionCreateEmail(string $emailType = null): Response
+    public function actionCreateEmail(string $emailVariant = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -62,19 +62,19 @@ class EmailController extends Controller
             throw new NotFoundHttpException('No email themes exist.');
         }
 
-        $emailType = new $emailType();
+        $emailVariant = new $emailVariant();
 
-        if (!$emailType instanceof EmailType) {
-            throw new NotFoundHttpException('No email type found.');
+        if (!$emailVariant instanceof EmailVariant) {
+            throw new NotFoundHttpException('No email variant found.');
         }
 
         $defaultMailer = MailerHelper::getDefaultMailer();
 
-        $email->type = $emailType::class;
+        $email->emailVariantType = $emailVariant::class;
         $email->mailerUid = $defaultMailer->uid ?? null;
 
-        if ($emailTypeSettings = Craft::$app->request->getParam('emailTypeSettings')) {
-            $email->emailTypeSettings = $emailTypeSettings;
+        if ($emailVariantSettings = Craft::$app->request->getParam('emailVariantSettings')) {
+            $email->emailVariantSettings = $emailVariantSettings;
         }
 
         $user = Craft::$app->getUser()->getIdentity();

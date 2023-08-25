@@ -5,26 +5,26 @@ namespace BarrelStrength\Sprout\mailer\migrations\helpers;
 use BarrelStrength\Sprout\mailer\components\emailthemes\CustomTemplatesEmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailThemeHelper;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use craft\helpers\StringHelper;
 
 class MailerSchemaHelper
 {
-    public static function createDefaultMailerIfNoTypeExists(string $type): Mailer
+    public static function createDefaultMailerIfNoTypeExists(string $emailVariantType, string $mailerType): Mailer
     {
         $mailers = MailerHelper::getMailers();
 
         foreach ($mailers as $mailer) {
-            if ($mailer instanceof $type) {
+            if ($mailer instanceof $mailerType) {
                 return $mailer;
             }
         }
 
-        /** @var EmailType $emailType */
-        $emailType = new $type();
-        $mailer = $emailType::createDefaultMailer();
+        /** @var EmailVariant $emailVariant */
+        $emailVariant = new $emailVariantType();
+        $mailer = $emailVariant::createDefaultMailer();
 
         $mailers[$mailer->uid] = $mailer;
 

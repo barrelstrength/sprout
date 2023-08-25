@@ -9,11 +9,11 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariants;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
@@ -133,13 +133,13 @@ class TransactionalModule extends Module
                 $e->types[] = TransactionalMailer::class;
             });
 
-        Event::on(
-            EmailTypes::class,
-            EmailTypes::EVENT_REGISTER_EMAIL_TYPES,
-            static function(RegisterComponentTypesEvent $event) {
-                $event->types[] = TransactionalEmailEmailType::class;
-            }
-        );
+        //Event::on(
+        //    EmailVariants::class,
+        //    EmailVariants::EVENT_REGISTER_EMAIL_TYPES,
+        //    static function(RegisterComponentTypesEvent $event) {
+        //        $event->types[] = TransactionalEmailEmailVariant::class;
+        //    }
+        //);
 
         Event::on(
             RelationsHelper::class,
@@ -162,13 +162,13 @@ class TransactionalModule extends Module
             'sprout/email/transactional-email/new' => [
                 'route' => 'sprout-module-mailer/email/create-email',
                 'params' => [
-                    'emailType' => TransactionalEmailEmailType::class,
+                    'emailVariant' => TransactionalEmailEmailVariant::class,
                 ],
             ],
             'sprout/email/transactional-email' => [
                 'route' => 'sprout-module-mailer/email/email-index-template',
                 'params' => [
-                    'emailType' => TransactionalEmailEmailType::class,
+                    'emailVariant' => TransactionalEmailEmailVariant::class,
                 ],
             ],
 

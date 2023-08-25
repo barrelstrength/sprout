@@ -3,14 +3,14 @@
 namespace BarrelStrength\Sprout\transactional\components\elements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElementQuery;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
 use Craft;
 use craft\helpers\Json;
 use yii\db\Expression;
 
 class TransactionalEmailElementQuery extends EmailElementQuery
 {
-    public ?string $type = TransactionalEmailEmailType::class;
+    public ?string $emailVariantType = TransactionalEmailEmailVariant::class;
 
     public ?array $notificationEventFilterRule = null;
 
@@ -24,7 +24,7 @@ class TransactionalEmailElementQuery extends EmailElementQuery
     protected function beforePrepare(): bool
     {
         $this->subQuery->andWhere([
-            'sprout_emails.type' => TransactionalEmailEmailType::class,
+            'sprout_emails.emailVariantType' => TransactionalEmailEmailVariant::class,
         ]);
 
         if ($this->notificationEventFilterRule) {
@@ -44,15 +44,15 @@ class TransactionalEmailElementQuery extends EmailElementQuery
         }
 
         if (Craft::$app->getDb()->getIsPgsql()) {
-            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "eventId")');
+            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailVariantSettings, "eventId")');
         } else {
-            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")');
+            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailVariantSettings, "$.eventId")');
         }
 
         /**
          * MULTIPLE VALUES RENDER THIS QUERY
          * AND (
-         *   JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId") IN (
+         *   JSON_EXTRACT(sprout_emails.emailVariantSettings, "$.eventId") IN (
          *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntryDeletedNotificationEvent\"',
          *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntrySavedNotificationEvent\"'
          *   )
@@ -60,7 +60,7 @@ class TransactionalEmailElementQuery extends EmailElementQuery
          *
          * SINGULAR VALUE RENDER THIS QUERY
          * AND (
-         *   JSON_EXTRACT(sprout_emails.emailTypeSettings, "$.eventId")='BarrelStrength\\Sprout\\transactional\\components\\notificationevents\\EntrySavedNotificationEvent'
+         *   JSON_EXTRACT(sprout_emails.emailVariantSettings, "$.eventId")='BarrelStrength\\Sprout\\transactional\\components\\notificationevents\\EntrySavedNotificationEvent'
          * )
          */
         if (count($searchValues) > 1) {

@@ -30,12 +30,12 @@ class FileAttachmentsField extends BaseNativeField
             throw new InvalidArgumentException('File Attachments field can only be used in Email field layouts.');
         }
 
-        $emailTypeSettings = $element->getEmailType();
-        $notificationEvent = $emailTypeSettings->getNotificationEvent($element);
+        $emailVariantSettings = $element->getEmailVariant();
+        $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/fileAttachments.twig', [
             'notificationEvent' => $notificationEvent,
-            'emailType' => $element->getEmailType(),
+            'emailVariant' => $element->getEmailVariant(),
             'static' => $static,
         ]);
     }

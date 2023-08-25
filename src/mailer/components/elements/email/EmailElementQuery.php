@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
-use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 
@@ -10,7 +10,7 @@ class EmailElementQuery extends ElementQuery
 {
     public ?string $subjectLine = null;
 
-    public ?string $type = null;
+    public ?string $emailVariantType = null;
 
     public ?string $emailThemeUid = null;
 
@@ -23,9 +23,9 @@ class EmailElementQuery extends ElementQuery
         return $this;
     }
 
-    public function type(string $value): static
+    public function emailVariantType(string $value): static
     {
-        $this->type = $value;
+        $this->emailVariantType = $value;
 
         return $this;
     }
@@ -52,8 +52,8 @@ class EmailElementQuery extends ElementQuery
             'sprout_emails.subjectLine',
             'sprout_emails.preheaderText',
             'sprout_emails.defaultMessage',
-            'sprout_emails.type',
-            'sprout_emails.emailTypeSettings',
+            'sprout_emails.emailVariantType',
+            'sprout_emails.emailVariantSettings',
             'sprout_emails.mailerUid',
             'sprout_emails.mailerInstructionsSettings',
             'sprout_emails.emailThemeUid',
@@ -65,8 +65,8 @@ class EmailElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('sprout_emails.subjectLine', $this->subjectLine));
         }
 
-        if ($this->type) {
-            $this->subQuery->andWhere(Db::parseParam('sprout_emails.type', $this->type));
+        if ($this->emailVariantType) {
+            $this->subQuery->andWhere(Db::parseParam('sprout_emails.emailVariantType', $this->emailVariantType));
         }
 
         if ($this->emailThemeUid) {
@@ -82,17 +82,17 @@ class EmailElementQuery extends ElementQuery
 
     protected function statusCondition(string $status): mixed
     {
-        if (!$this->type) {
+        if (!$this->emailVariantType) {
             return parent::statusCondition($status);
         }
 
-        /** @var EmailType $emailType */
-        $emailType = new $this->type();
+        /** @var EmailVariant $emailVariant */
+        $emailVariant = new $this->emailVariantType();
 
-        if (!$emailType->hasCustomStatuses()) {
+        if (!$emailVariant->hasCustomStatuses()) {
             return parent::statusCondition($status);
         }
 
-        return $emailType->getStatusCondition($status);
+        return $emailVariant->getStatusCondition($status);
     }
 }

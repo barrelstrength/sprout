@@ -1,9 +1,9 @@
 <?php
 
-namespace BarrelStrength\Sprout\transactional\components\emailtypes;
+namespace BarrelStrength\Sprout\transactional\components\emailvariants;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
@@ -21,7 +21,7 @@ use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use yii\base\Event;
 
-class TransactionalEmailEmailType extends EmailType
+class TransactionalEmailEmailVariant extends EmailVariant
 {
     /**
      * The qualified namespace of the Email Notification Event
@@ -124,7 +124,7 @@ class TransactionalEmailEmailType extends EmailType
             return '';
         }
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/emailtypes/sendTestButton.twig', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/emailvariants/sendTestButton.twig', [
             'email' => $email,
         ]);
     }
@@ -143,9 +143,9 @@ class TransactionalEmailEmailType extends EmailType
             return $this->_notificationEvent;
         }
 
-        $emailType = $email->getEmailType();
+        $emailVariant = $email->getEmailVariant();
 
-        $settings = $emailType->getSettings();
+        $settings = $emailVariant->getSettings();
 
         $eventId = $settings['eventId'] ?? null;
 
@@ -162,7 +162,7 @@ class TransactionalEmailEmailType extends EmailType
         return $notificationEvent;
     }
 
-    public function prepareEmailTypeSettingsForDb(array $settings): array
+    public function prepareEmailVariantSettingsForDb(array $settings): array
     {
         $settings['eventId'] = $this->eventId;
         $settings['eventSettings'] = $this->eventSettings;

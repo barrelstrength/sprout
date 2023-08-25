@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\conditions\IsNewEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
@@ -143,16 +143,16 @@ class NotificationEvents extends Component
         /** @var EmailElement[]|TransactionalEmailElement[] $emails */
         foreach ($emails as $email) {
 
-            /** @var TransactionalEmailEmailType $emailTypeSettings */
-            $emailTypeSettings = $email->getEmailType();
-            $notificationEvent = $emailTypeSettings->getNotificationEvent($email, $event);
+            /** @var TransactionalEmailEmailVariant $emailVariantSettings */
+            $emailVariantSettings = $email->getEmailVariant();
+            $notificationEvent = $emailVariantSettings->getNotificationEvent($email, $event);
 
             if (!$notificationEvent->matchNotificationEvent($event)) {
                 continue;
             }
 
-            $emailTypeSettings->setNotificationEvent($notificationEvent);
-            $email->setEmailType($emailTypeSettings);
+            $emailVariantSettings->setNotificationEvent($notificationEvent);
+            $email->setEmailVariant($emailVariantSettings);
 
             $email->send();
         }
@@ -161,12 +161,12 @@ class NotificationEvents extends Component
     private function getEnabledNotificationEventTypes(): array
     {
         $enabledNotificationEmails = TransactionalEmailElement::find()
-            ->select('sprout_emails.emailTypeSettings')
+            ->select('sprout_emails.emailVariantSettings')
             ->status(Element::STATUS_ENABLED)
             ->column();
 
-        return array_map(static function($emailTypeSettings) {
-            $settings = Json::decodeIfJson($emailTypeSettings);
+        return array_map(static function($emailVariantSettings) {
+            $settings = Json::decodeIfJson($emailVariantSettings);
 
             return $settings['eventId'] ?? null;
         }, $enabledNotificationEmails);
@@ -186,7 +186,7 @@ class NotificationEvents extends Component
         $matchedNotificationEmails = array_filter(
             $enabledNotificationEmails,
             static function($notificationEmail) use ($notificationEventType) {
-                $settings = Json::decodeIfJson($notificationEmail->emailTypeSettings);
+                $settings = Json::decodeIfJson($notificationEmail->emailVariantSettings);
 
                 return isset($settings['eventId']) && $settings['eventId'] === $notificationEventType;
             });

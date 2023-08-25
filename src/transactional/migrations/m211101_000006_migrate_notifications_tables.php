@@ -16,7 +16,7 @@ use craft\helpers\StringHelper;
 
 class m211101_000006_migrate_notifications_tables extends Migration
 {
-    public const TRANSACTIONAL_EMAIL_TYPE = 'BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType';
+    public const TRANSACTIONAL_EMAIL_TYPE = 'BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant';
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
@@ -41,7 +41,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'listSettings', // => mailerInstructionsSettings Audience?
             //'sendMethod', // no need to migrate, standardized to use List Method
 
-            // Email Type: Transactional, Notification Event Settings
+            // Email Variant: Transactional, Notification Event Settings
             'eventId',
             'settings',
             'sendRule',
@@ -59,9 +59,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
             //'preheaderText', // No need to migrate, new setting
 
-            // Email Type: Transactional
+            // Email Variant: Transactional
             'type',
-            'emailTypeSettings',
+            'emailVariantSettings',
 
             // Mailer: Transactional Mailer
             'mailerUid',
@@ -86,7 +86,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $sendRule = !empty($rows[$key]['sendRule']) ? $rows[$key]['sendRule'] : null;
                 $eventSettings = $this->prepareEventSettings($eventId, $oldEventSettings, $sendRule);
 
-                $rows[$key]['emailTypeSettings'] = Json::encode([
+                $rows[$key]['emailVariantSettings'] = Json::encode([
                     'eventId' => $rows[$key]['eventId'],
                     'eventSettings' => $eventSettings,
                     'enableFileAttachments' => $rows[$key]['enableFileAttachments'] ?? '',

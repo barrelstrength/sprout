@@ -9,14 +9,14 @@ class TransactionalMailerInstructionsTestSettings extends SystemMailerInstructio
 {
     public function getAdditionalTemplateVariables(EmailElement $email): array
     {
-        $emailTypeSettings = $email->getEmailType();
-        $notificationEvent = $emailTypeSettings->getNotificationEvent($email);
+        $emailVariantSettings = $email->getEmailVariant();
+        $notificationEvent = $emailVariantSettings->getNotificationEvent($email);
 
-        $emailTypeSettings->addAdditionalTemplateVariables(
+        $emailVariantSettings->addAdditionalTemplateVariables(
             $notificationEvent->getMockEventVariables()
         );
 
-        return $emailTypeSettings->getAdditionalTemplateVariables();
+        return $emailVariantSettings->getAdditionalTemplateVariables();
     }
 }
 

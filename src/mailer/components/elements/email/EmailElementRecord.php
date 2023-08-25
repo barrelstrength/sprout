@@ -17,7 +17,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $mailerUid
  * @property string $mailerInstructionsSettings
  * @property string $type
- * @property string $emailTypeSettings
+ * @property string $emailVariantSettings
  * @property DateTime $dateCreated
  * @property DateTime $dateUpdated
  * @property string $uid

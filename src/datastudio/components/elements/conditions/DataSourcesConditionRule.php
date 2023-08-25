@@ -33,11 +33,11 @@ class DataSourcesConditionRule extends BaseMultiSelectConditionRule implements E
     public function modifyQuery(QueryInterface $query): void
     {
         /** @var ElementQueryInterface $query */
-        $query->type($this->paramValue());
+        $query->emailVariantType($this->paramValue());
     }
 
     public function matchElement(ElementInterface $element): bool
     {
-        return $this->matchValue($element->type);
+        return $this->matchValue($element->emailVariantType);
     }
 }

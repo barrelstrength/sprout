@@ -64,7 +64,7 @@ class m211101_000005_migrate_sent_email_tables extends Migration
                 $info['transportType'] = $info['mailer'] ?? null;
 
                 unset(
-                    $info['emailType'],
+                    $info['emailVariant'],
                     $info['deliveryType'],
                     $info['source'],
                     $info['sourceVersion'],

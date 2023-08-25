@@ -5,7 +5,8 @@ namespace BarrelStrength\Sprout\transactional\migrations;
 use BarrelStrength\Sprout\forms\components\emailthemes\FormSummaryEmailTheme;
 use BarrelStrength\Sprout\mailer\components\emailthemes\EmailMessageTheme;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
-use BarrelStrength\Sprout\transactional\components\emailtypes\TransactionalEmailEmailType;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use Craft;
 use craft\db\Migration;
 
@@ -22,7 +23,8 @@ class m211101_000000_run_install_migration extends Migration
         $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
         MailerSchemaHelper::createDefaultMailerIfNoTypeExists(
-            TransactionalEmailEmailType::class
+            TransactionalEmailEmailVariant::class,
+            TransactionalMailer::class
         );
         MailerSchemaHelper::createEmailThemeIfNoTypeExists(
             EmailMessageTheme::class, [
