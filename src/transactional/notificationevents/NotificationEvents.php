@@ -161,7 +161,7 @@ class NotificationEvents extends Component
     private function getEnabledNotificationEventTypes(): array
     {
         $enabledNotificationEmails = TransactionalEmailElement::find()
-            ->select('emailTypeSettings')
+            ->select('sprout_emails.emailTypeSettings')
             ->status(Element::STATUS_ENABLED)
             ->column();
 
