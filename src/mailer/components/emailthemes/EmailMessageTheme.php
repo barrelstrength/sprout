@@ -3,9 +3,12 @@
 namespace BarrelStrength\Sprout\mailer\components\emailthemes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\DefaultMessageField;
 use BarrelStrength\Sprout\mailer\emailthemes\EmailTheme;
 use Craft;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\fieldlayoutelements\TextareaField;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -19,6 +22,11 @@ class EmailMessageTheme extends EmailTheme
         return Craft::t('sprout-module-mailer', 'Simple Message');
     }
 
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+        $event->fields[] = DefaultMessageField::class;
+    }
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
@@ -26,7 +34,7 @@ class EmailMessageTheme extends EmailTheme
         }
 
         $fieldLayout = new FieldLayout([
-            'type' => EmailElement::class,
+            'type' => self::class,
         ]);
 
         $fieldLayoutTab = new FieldLayoutTab([
@@ -34,18 +42,6 @@ class EmailMessageTheme extends EmailTheme
             'name' => Craft::t('sprout-module-mailer', 'Content'),
             'sortOrder' => 1,
             'uid' => StringHelper::UUID(),
-        ]);
-
-        $fieldLayoutTab->setElements([
-            new TextareaField([
-                'label' => Craft::t('sprout-module-mailer', 'Message'),
-                'instructions' => Craft::t('sprout-module-mailer', 'A message that will appear in the body of your email content.'),
-                'attribute' => 'defaultMessage',
-                'class' => 'nicetext fullwidth',
-                'rows' => 11,
-                'mandatory' => true,
-                'uid' => StringHelper::UUID(),
-            ]),
         ]);
 
         $fieldLayout->setTabs([

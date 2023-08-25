@@ -3,11 +3,17 @@
 namespace BarrelStrength\Sprout\mailer\emailthemes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\DefaultMessageField;
+use BarrelStrength\Sprout\mailer\components\emailthemes\fieldlayoutfields\OptionalDefaultMessageField;
 use Craft;
 use craft\base\SavableComponent;
+use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Html;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 use craft\web\View;
 use League\HTMLToMarkdown\HtmlConverter;
 
@@ -69,6 +75,14 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         }
     }
 
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+        // @todo - for some reason this registers twice, so we can probably fix this logic somewhere else
+        if (!in_array(OptionalDefaultMessageField::class, $event->fields, true)) {
+            $event->fields[] = OptionalDefaultMessageField::class;
+        }
+    }
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
@@ -76,7 +90,7 @@ abstract class EmailTheme extends SavableComponent implements EmailThemeInterfac
         }
 
         $fieldLayout = new FieldLayout([
-            'type' => EmailElement::class,
+            'type' => static::class,
         ]);
 
         return $this->_fieldLayout = $fieldLayout;

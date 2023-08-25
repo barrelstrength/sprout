@@ -27,6 +27,7 @@ use craft\fieldlayoutelements\HorizontalRule;
 use craft\fieldlayoutelements\TextareaField;
 use craft\fieldlayoutelements\TextField;
 use craft\fieldlayoutelements\TitleField;
+use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -525,10 +526,14 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         $currentUser = Craft::$app->getUser()->getIdentity();
 
-        return $currentUser->admin
+        $tipHtml = $currentUser->admin
             ? Html::tag('div', '', [
                 'id' => 'sprout-notification-event-tip',
             ]) : "\n";
+
+        $statusHtml = $this->statusFieldHtml();
+
+        return $statusHtml . $tipHtml;
     }
 
     public function afterSave(bool $isNew): void
@@ -633,7 +638,17 @@ class EmailElement extends Element implements EmailPreviewInterface
     protected function statusFieldHtml(): string
     {
         if ($this->getEmailType()->canBeDisabled()) {
-            return parent::statusFieldHtml();
+
+            $statusField = Cp::lightswitchFieldHtml([
+                'id' => 'enabled',
+                'label' => Craft::t('app', 'Enabled'),
+                'name' => 'enabled',
+                'on' => $this->enabled,
+                'disabled' => $this->getIsRevision(),
+                'status' => $this->getAttributeStatus('enabled'),
+            ]);
+
+            return Html::tag('div', $statusField, ['class' => 'meta']);
         }
 
         return '';

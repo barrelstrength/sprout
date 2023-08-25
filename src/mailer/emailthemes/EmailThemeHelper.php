@@ -4,12 +4,27 @@ namespace BarrelStrength\Sprout\mailer\emailthemes;
 
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 
 class EmailThemeHelper
 {
+    public static function defineNativeFieldsPerTheme(DefineFieldLayoutFieldsEvent $event): void
+    {
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $event->sender;
+
+        $themeTypes = MailerModule::getInstance()->emailThemes->getEmailThemeTypes();
+
+        foreach ($themeTypes as $themeType) {
+            if ($fieldLayout->type === $themeType) {
+                $themeType::defineNativeFields($event);
+            }
+        }
+    }
+
     public static function getEmailThemes(): array
     {
         $settings = MailerModule::getInstance()->getSettings();

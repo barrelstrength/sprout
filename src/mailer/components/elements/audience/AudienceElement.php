@@ -74,20 +74,18 @@ class AudienceElement extends Element
         return true;
     }
 
-    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): DefineFieldLayoutFieldsEvent
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
         /** @var FieldLayout $fieldLayout */
         $fieldLayout = $event->sender;
 
         if ($event->sender->type !== self::class || $fieldLayout->type !== self::class) {
-            return $event;
+            return;
         }
 
         $event->fields[] = AudienceNameField::class;
         $event->fields[] = AudienceHandleField::class;
         $event->fields[] = AudienceSettingsField::class;
-
-        return $event;
     }
 
     public static function find(): AudienceElementQuery
