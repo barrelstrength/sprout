@@ -62,26 +62,30 @@ class TransactionalEmailEmailVariant extends EmailVariant
 
     public function getMailer(EmailElement $email): ?Mailer
     {
-        return MailerHelper::getMailerByUid($email->mailerUid);
+        $emailType = $email->getEmailType();
+
+        if ($emailType->mailerUid === MailerHelper::CRAFT_DEFAULT_MAILER) {
+            return self::getCraftDefaultMailer();
+        }
+
+        return MailerHelper::getMailerByUid($emailType->mailerUid);
     }
 
-    public static function createDefaultMailer(): Mailer
+    public static function getCraftDefaultMailer(): Mailer
     {
         $mailSettings = App::mailSettings();
 
         $mailer = new TransactionalMailer([
-            'name' => 'System Mailer',
-            'mailerSettings' => [
-                'approvedSenders' => [
-                    [
-                        'fromName' => $mailSettings->fromName,
-                        'fromEmail' => $mailSettings->fromEmail,
-                    ],
+            'name' => Craft::t('sprout-module-transactional', 'Craft Default Mailer'),
+            'approvedSenders' => [
+                [
+                    'fromName' => $mailSettings->fromName,
+                    'fromEmail' => $mailSettings->fromEmail,
                 ],
-                'approvedReplyToEmails' => [
-                    [
-                        'replyToEmail' => $mailSettings->replyToEmail,
-                    ],
+            ],
+            'approvedReplyToEmails' => [
+                [
+                    'replyToEmail' => $mailSettings->replyToEmail,
                 ],
             ],
             'uid' => StringHelper::UUID(),

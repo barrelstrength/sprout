@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use BarrelStrength\Sprout\mailer\MailerModule;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\ProjectConfig;
@@ -103,6 +104,7 @@ class EmailTypeHelper
 
         $emailType = new $type([
             'name' => $emailTypeConfig['name'],
+            'mailerUid' => $emailTypeConfig['mailerUid'] ?? MailerHelper::CRAFT_DEFAULT_MAILER,
             'displayPreheaderText' => $emailTypeConfig['displayPreheaderText'] ?? false,
             'htmlEmailTemplate' => $emailTypeConfig['htmlEmailTemplate'] ?? null,
             'textEmailTemplate' => $emailTypeConfig['textEmailTemplate'] ?? null,

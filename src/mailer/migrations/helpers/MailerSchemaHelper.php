@@ -13,27 +13,6 @@ use ReflectionClass;
 
 class MailerSchemaHelper
 {
-    public static function createDefaultMailerIfNoTypeExists(string $emailVariantType, string $mailerType): Mailer
-    {
-        $mailers = MailerHelper::getMailers();
-
-        foreach ($mailers as $mailer) {
-            if ($mailer instanceof $mailerType) {
-                return $mailer;
-            }
-        }
-
-        /** @var EmailVariant $emailVariant */
-        $emailVariant = new $emailVariantType();
-        $mailer = $emailVariant::createDefaultMailer();
-
-        $mailers[$mailer->uid] = $mailer;
-
-        MailerHelper::saveMailers($mailers);
-
-        return $mailer;
-    }
-
     public static function createEmailTypeIfNoTypeExists(string $type, array $config = []): EmailType
     {
         $emailTypes = EmailTypeHelper::getEmailTypes();
@@ -49,6 +28,7 @@ class MailerSchemaHelper
         }
 
         $emailType = new $type($config);
+        $emailType->mailerUid = MailerHelper::CRAFT_DEFAULT_MAILER;
         $emailType->uid = StringHelper::UUID();
 
         if (!$emailType->name) {

@@ -39,11 +39,6 @@ abstract class EmailVariant extends SavableComponent
     abstract public function getMailer(EmailElement $email): ?Mailer;
 
     /**
-     * Returns default Mailer settings for this Email Variant
-     */
-    abstract public static function createDefaultMailer(): Mailer;
-
-    /**
      * Returns the Element Class being used as the Element Index UI layer for this Email Variant
      */
     abstract public static function elementType(): string;

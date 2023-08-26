@@ -44,7 +44,7 @@ class EmailTypesController extends Controller
 
         $mailerTypeOptions[] = [
             'label' => Craft::t('sprout-module-mailer', 'Craft Default Mailer'),
-            'value' => 'craft',
+            'value' => MailerHelper::CRAFT_DEFAULT_MAILER,
         ];
 
         foreach ($mailers as $mailer) {
@@ -131,6 +131,7 @@ class EmailTypesController extends Controller
         /** @var EmailType $emailType */
         $emailType = new $type();
         $emailType->name = Craft::$app->request->getRequiredBodyParam('name');
+        $emailType->mailerUid = Craft::$app->request->getRequiredBodyParam('mailerUid');
         $emailType->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
         // Allow UI Elements to be added to the Field Layout

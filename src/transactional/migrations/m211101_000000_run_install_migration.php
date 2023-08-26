@@ -22,10 +22,6 @@ class m211101_000000_run_install_migration extends Migration
     {
         $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
 
-        MailerSchemaHelper::createDefaultMailerIfNoTypeExists(
-            TransactionalEmailEmailVariant::class,
-            TransactionalMailer::class
-        );
         MailerSchemaHelper::createEmailTypeIfNoTypeExists(
             EmailMessageEmailType::class, [
             'name' => 'Email Message',

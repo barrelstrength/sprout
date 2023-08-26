@@ -215,6 +215,7 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
         $config = [
             'type' => static::class,
             'name' => $this->name,
+            'mailerUid' => $this->mailerUid,
             'displayPreheaderText' => $this->displayPreheaderText,
             'htmlEmailTemplate' => $this->htmlEmailTemplate,
             'textEmailTemplate' => $this->textEmailTemplate,

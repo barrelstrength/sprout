@@ -12,6 +12,8 @@ use craft\models\FieldLayout;
 
 class MailerHelper
 {
+    public const CRAFT_DEFAULT_MAILER = 'craft';
+
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
         /** @var FieldLayout $fieldLayout */
