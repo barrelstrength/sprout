@@ -77,7 +77,7 @@ class m211101_000007_migrate_forms_tables extends Migration
             'dateUpdated',
             'uid',
 
-            'formTemplateId', // @todo - create theme and insert UID
+            'formTemplateId', // @todo - create form type and insert UID
         ];
 
         $colsNew = [
@@ -99,7 +99,7 @@ class m211101_000007_migrate_forms_tables extends Migration
             'dateUpdated',
             'uid',
 
-            'formThemeUid',
+            'formTypeUid',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_FORMS_TABLE)) {

@@ -14,13 +14,13 @@
             </div>
             <div class="menu">
                 <ul>
-                    {% for formThemeUid, formTheme in formThemes %}
+                    {% for formTypeUid, formType in formTypes %}
                         <li>
                             {{ tag('a', {
                                 href: cpUrl('sprout/forms/new', {
-                                    formThemeUid: formThemeUid,
+                                    formTypeUid: formTypeUid,
                                 }),
-                                text: formTheme.name,
+                                text: formType.name,
                                 class: 'menu-option',
                             }) }}
                         </li>

@@ -59,7 +59,7 @@ class FormsVariable
     }
 
     /**
-     * Set an active submission for use in your Form Themes
+     * Set an active submission for use in your Form Types
      *
      * See the Entries service setSubmission method for more details.
      */

@@ -5,18 +5,18 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
-{% set currentSubNavKey = 'form-themes' %}
+{% set currentSubNavKey = 'form-types' %}
 
 {% set crumbs = [
     { label: "Settings"|t('sprout-module-forms'), url: cpUrl('settings') },
-    { label: "Form Themes"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/form-themes') }
+    { label: "Form Types"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/form-types') }
 ] %}
 
 {% set fullPageForm = true %}
 
 {% block actionButton %}
 
-    {#    {% if formTheme.isEditable() %} #}
+    {#    {% if formType.isEditable() %} #}
     <div class="buttons">
         <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
     </div>
@@ -52,14 +52,16 @@
         } %}
     </header>
 
+    {% set notEditableTipMessage = not formType.isEditable() ? "This setting is defined by the selected form type and is not editable."|t('sprout-module-forms') : null %}
+
     <div id="general">
         {{ forms.textField({
             label: "Name"|t('sprout-module-forms'),
-            instructions: "How you will refer to this Form Theme."|t('sprout-module-forms'),
+            instructions: "How you will refer to this Form Type."|t('sprout-module-forms'),
             id: 'name',
             name: 'name',
-            value: formTheme.name,
-            errors: formTheme.getErrors('name'),
+            value: formType.name,
+            errors: formType.getErrors('name'),
             warning: sproutConfigWarning(module, 'name'),
             required: true,
             first: true,
@@ -68,32 +70,33 @@
         {{ forms.autosuggestField({
             label: "Form Template"|t('sprout-module-forms'),
             instructions: "The template that will be used to render your form."|t('sprout-module-forms'),
+            tip: notEditableTipMessage,
             id: 'formTemplate',
             name: 'formTemplate',
             suggestEnvVars: false,
             suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: "_forms/theme/form.twig"|t('sprout-module-forms'),
-            value: formTheme.formTemplate ?? null,
-            errors: formTheme.getErrors('formTemplate'),
+            placeholder: "_forms/form-type/form.twig"|t('sprout-module-forms'),
+            value: formType.formTemplate ?? null,
+            errors: formType.getErrors('formTemplate'),
             required: true,
-            disabled: not formTheme.isEditable(),
+            disabled: not formType.isEditable(),
         }) }}
 
         {{ forms.autosuggestField({
             label: "Form Template Override Folder"|t('sprout-module-forms'),
-            instructions: "The folder that will take precedence over any form theme files."|t('sprout-module-forms'),
+            instructions: "The folder that will take precedence over any form type files."|t('sprout-module-forms'),
             id: 'formTemplateOverrideFolder',
             name: 'formTemplateOverrideFolder',
             suggestEnvVars: false,
             suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: "_forms/themes/overrides"|t('sprout-module-forms'),
-            value: formTheme.formTemplateOverrideFolder ?? null,
-            errors: formTheme.getErrors('formTemplateOverrideFolder'),
+            placeholder: "_forms/form-type/overrides"|t('sprout-module-forms'),
+            value: formType.formTemplateOverrideFolder ?? null,
+            errors: formType.getErrors('formTemplateOverrideFolder'),
         }) }}
 
         {{ forms.textField({
-            label: "Theme Type"|t('sprout-module-forms'),
-            value: formTheme.displayName(),
+            label: "Form Type"|t('sprout-module-forms'),
+            value: formType.displayName(),
             disabled: true,
         }) }}
 
@@ -117,7 +120,7 @@
                     info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
                 },
             }|filter,
-            rows: formTheme.getFeatureRows(),
+            rows: formType.getFeatureRows(),
             fullWidth: true,
             staticRows: true,
             errors: settings.getErrors('modules'),
@@ -145,7 +148,7 @@
                     heading: "Group"|t('sprout-module-forms'),
                 },
             }|filter,
-            rows: formTheme.getFormFieldRows(),
+            rows: formType.getFormFieldRows(),
             fullWidth: true,
             staticRows: true,
             errors: settings.getErrors('modules'),
@@ -160,7 +163,7 @@
             instructions: 'The method used to submit your forms.'|t('sprout-module-forms'),
             id: 'submissionMethod',
             name: 'submissionMethod',
-            value: formTheme.submissionMethod,
+            value: formType.submissionMethod,
             options: [{
                 value: "sync",
                 label: "Reload Page (Synchronous)"|t('sprout-module-forms')
@@ -178,19 +181,19 @@
             id: 'enableSaveData',
             name: 'enableSaveData',
             toggle: 'settings-savedatadetails',
-            on: formTheme.enableSaveData,
+            on: formType.enableSaveData,
             onLabel: "Save Data"|t('sprout-module-forms'),
             offLabel: "Don't Save Data"|t('sprout-module-forms'),
         }) }}
 
         <div id="settings-savedatadetails"
-            class="{{ not formTheme.enableSaveData ? "hidden" : '' }}">
+            class="{{ not formType.enableSaveData ? "hidden" : '' }}">
 
             {{ forms.lightswitchField({
                 label: "Track Remote IP"|t('sprout-module-forms'),
                 instructions: "Enable to capture the IP Address used when a Submission is saved. IP Addresses may be considered personal information."|t('sprout-module-forms'),
                 name: 'trackRemoteIp',
-                on: formTheme.trackRemoteIp ? true : false,
+                on: formType.trackRemoteIp ? true : false,
                 onLabel: "Save Data"|t('sprout-module-forms'),
                 offLabel: "Don't Save Data"|t('sprout-module-forms'),
             }) }}
@@ -206,7 +209,7 @@
             instructions: 'The asset volumes that will be available to select when adding a File Upload field to a form.'|t('sprout-forms'),
             name: 'allowedAssetVolumes',
             options: assetField.getSourceOptions(),
-            values: formTheme.allowedAssetVolumes,
+            values: formType.allowedAssetVolumes,
             showAllOption: true,
         }) }}
 
@@ -216,7 +219,7 @@
                 ('sprout-forms'),
             id: 'defaultUploadLocationSubpath',
             name: 'defaultUploadLocationSubpath',
-            value: formTheme.defaultUploadLocationSubpath,
+            value: formType.defaultUploadLocationSubpath,
             placeholder: '{{ object.getForm().handle }}',
         }) }}
 
@@ -227,7 +230,7 @@
             instructions: "Enable this setting to allow users to edit existing submissions in front-end templates. Enabling this feature may have some workflow or security considerations as forms allow anonymous submissions."|t('sprout-module-forms'),
             id: 'enableEditSubmissionViaFrontEnd',
             name: 'enableEditSubmissionViaFrontEnd',
-            on: formTheme.enableEditSubmissionViaFrontEnd,
+            on: formType.enableEditSubmissionViaFrontEnd,
             onLabel: "Allow Edits"|t('sprout-module-forms'),
             offLabel: "Don't Allow Edits"|t('sprout-module-forms'),
         }) }}
@@ -235,26 +238,22 @@
     </div>
 
     <div id="fields" class="hidden">
-        {% set fieldLayoutInstructions = "The content fields that can be used in this form theme."|t('sprout-module-forms') %}
+        {% set fieldLayoutInstructions = "The content fields that can be used in this form type."|t('sprout-module-forms') %}
 
-{#        {% if not formTheme.isEditable() %}#}
+{#        {% if not formType.isEditable() %}#}
 
         {{ forms.fieldLayoutDesignerField({
-            instructions: fieldLayoutInstructions,
-            fieldLayout: formTheme.getFieldLayout(),
-            required: true,
-            customizableTabs: true,
-            customizableUi: false,
-            errors: formTheme.getErrors('fieldLayout'),
+            fieldLayout: formType.getFieldLayout(),
+            errors: formType.getErrors('fieldLayout'),
         }) }}
 
     </div>
 
-    {{ actionInput('sprout-module-forms/form-themes/save') }}
-    {{ redirectInput('sprout/settings/forms/form-themes') }}
+    {{ actionInput('sprout-module-forms/form-types/save') }}
+    {{ redirectInput('sprout/settings/forms/form-types') }}
 
-    {{ hiddenInput('uid', formTheme.uid) }}
-    {{ hiddenInput('type', className(formTheme)) }}
+    {{ hiddenInput('uid', formType.uid) }}
+    {{ hiddenInput('type', className(formType)) }}
 
 {% endblock %}
 

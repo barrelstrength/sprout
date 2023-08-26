@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\formthemes;
+namespace BarrelStrength\Sprout\forms\formtypes;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
@@ -8,7 +8,7 @@ use Craft;
 use craft\base\SavableComponent;
 use craft\models\FieldLayout;
 
-abstract class FormTheme extends SavableComponent implements FormThemeInterface
+abstract class FormType extends SavableComponent implements FormTypeInterface
 {
     public ?string $name = null;
 

@@ -1,7 +1,7 @@
 <?php
 
 use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
-use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
+use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\FormsSettings;
 
 /**
@@ -31,7 +31,7 @@ use BarrelStrength\Sprout\forms\FormsSettings;
  */
 return [
     'defaultSection' => 'entries',
-    'formTemplateId' => DefaultFormTheme::class,
+    'formTemplateId' => DefaultFormType::class,
     'enableSaveData' => true,
     'saveSpamToDatabase' => false,
     'enableSaveDataDefaultValue' => true,

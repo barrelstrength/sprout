@@ -9,7 +9,7 @@ use BarrelStrength\Sprout\forms\formfields\CustomFormField;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
@@ -51,12 +51,12 @@ class FormsController extends BaseController
     {
         $this->requirePermission(FormsModule::p('editForms'));
 
-        $formThemes = FormThemeHelper::getFormThemes();
+        $formTypes = FormTypeHelper::getFormTypes();
 
         return $this->renderTemplate('sprout-module-forms/forms/index', [
             'title' => FormElement::pluralDisplayName(),
             'elementType' => FormElement::class,
-            'formThemes' => $formThemes,
+            'formTypes' => $formTypes,
         ]);
     }
 
@@ -166,7 +166,7 @@ class FormsController extends BaseController
         $form->handle = $formsService->getFieldAsNew('handle', $handle);
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
 
-        $form->formThemeUid = Craft::$app->getRequest()->getRequiredParam('formThemeUid');
+        $form->formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
         $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
         $form->submissionMethod = $settings->defaultSubmissionMethod ?: 'sync';
 
@@ -364,6 +364,8 @@ class FormsController extends BaseController
         return $this->asJson([
             'success' => true,
             'settingsHtml' => StringHelper::collapseWhitespace($html),
+        ]);
+    }
 
     public function actionGetFormFieldObject(): Response
     {
@@ -690,7 +692,7 @@ class FormsController extends BaseController
     //    $form->messageOnError = $request->getBodyParam('messageOnError', $form->messageOnError);
     //    $form->submitButtonText = $request->getBodyParam('submitButtonText', $form->submitButtonText);
     //    $form->titleFormat = $request->getBodyParam('titleFormat', $form->titleFormat);
-    //    $form->formThemeUid = $request->getBodyParam('formThemeUid', $form->formThemeUid);
+    //    $form->formTypeUid = $request->getBodyParam('formTypeUid', $form->formTypeUid);
     //    $form->enableCaptchas = $request->getBodyParam('enableCaptchas', $form->enableCaptchas);
     //
     //    if (!$form->titleFormat) {

@@ -106,7 +106,7 @@ return [
     'A message that will appear in the body of your email content.' => 'A message that will appear in the body of your email content.',
     'Leave blank to render the text email by converting the HTML template to Markdown.' => 'Leave blank to render the text email by converting the HTML template to Markdown.',
     'Data Set List' => 'Data Set List',
-    'Form Themes' => 'Form Themes',
+    'Form Types' => 'Form Types',
     'Email Template (HTML)' => 'Email Template (HTML)',
     '[Test]' => '[Test]',
     'Audience Settings' => 'Audience Settings',

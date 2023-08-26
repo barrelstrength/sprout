@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements\conditions;
 
-use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -10,28 +10,28 @@ use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use yii\db\QueryInterface;
 
-class FormThemeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
+class FormTypeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-forms', 'Form Theme');
+        return Craft::t('sprout-module-forms', 'Form Type');
     }
 
     public function getExclusiveQueryParams(): array
     {
-        return ['formThemeUid'];
+        return ['formTypeUid'];
     }
 
     protected function options(): array
     {
-        $themes = FormThemeHelper::getFormThemes();
+        $formTypes = FormTypeHelper::getFormTypes();
 
-        return array_map(static function($theme) {
+        return array_map(static function($formType) {
             return [
-                'label' => $theme->name,
-                'value' => $theme->uid,
+                'label' => $formType->name,
+                'value' => $formType->uid,
             ];
-        }, $themes);
+        }, $formTypes);
     }
 
     public function modifyQuery(QueryInterface $query): void
@@ -41,6 +41,6 @@ class FormThemeConditionRule extends BaseMultiSelectConditionRule implements Ele
 
     public function matchElement(ElementInterface $element): bool
     {
-        return in_array($element->formThemeUid, $this->getValues(), true);
+        return in_array($element->formTypeUid, $this->getValues(), true);
     }
 }

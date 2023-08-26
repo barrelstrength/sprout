@@ -17,7 +17,7 @@ class FormElementQuery extends ElementQuery
 
     public ?string $submissionFieldLayoutId = null;
 
-    public ?string $formThemeUid = null;
+    public ?string $formTypeUid = null;
 
     //    public string $oldHandle;
     //
@@ -76,9 +76,9 @@ class FormElementQuery extends ElementQuery
         return $this;
     }
 
-    public function formThemeUid(string $value): FormElementQuery
+    public function formTypeUid(string $value): FormElementQuery
     {
-        $this->formThemeUid = $value;
+        $this->formTypeUid = $value;
 
         return $this;
     }
@@ -101,7 +101,7 @@ class FormElementQuery extends ElementQuery
             'sprout_forms.messageOnSuccess',
             'sprout_forms.messageOnError',
             'sprout_forms.submitButtonText',
-            'sprout_forms.formThemeUid',
+            'sprout_forms.formTypeUid',
             'sprout_forms.enableCaptchas',
         ]);
 
@@ -121,9 +121,9 @@ class FormElementQuery extends ElementQuery
             ));
         }
 
-        if ($this->formThemeUid) {
+        if ($this->formTypeUid) {
             $this->subQuery->andWhere(Db::parseParam(
-                'sprout_forms.formThemeUid', $this->formThemeUid
+                'sprout_forms.formTypeUid', $this->formTypeUid
             ));
         }
 

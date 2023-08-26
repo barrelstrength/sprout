@@ -33,9 +33,9 @@ class FormsSettings extends BaseConfig
 
     public string $defaultSubmissionMethod = 'sync';
 
-    public array $formThemes = [];
+    public array $formTypes = [];
 
-    public ?string $formThemeUid = null;
+    public ?string $formTypeUid = null;
 
     public bool $enableSaveData = true;
 
@@ -78,9 +78,9 @@ class FormsSettings extends BaseConfig
         return $this;
     }
 
-    public function formThemeUid(string $value): self
+    public function formTypeUid(string $value): self
     {
-        $this->formThemeUid = $value;
+        $this->formTypeUid = $value;
 
         return $this;
     }

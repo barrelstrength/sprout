@@ -1,8 +1,8 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\formthemes;
+namespace BarrelStrength\Sprout\forms\formtypes;
 
-interface FormThemeInterface
+interface FormTypeInterface
 {
     public static function isEditable(): bool;
 

@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
@@ -352,7 +352,7 @@ class Forms extends Component
         $form->name = $this->getFieldAsNew('name', $name);
         $form->handle = $this->getFieldAsNew('handle', $handle);
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
-        $form->formThemeUid = FormThemeHelper::getDefaultFormTheme();
+        $form->formTypeUid = FormTypeHelper::getDefaultFormType();
         $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
 
         // Set default tab

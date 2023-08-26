@@ -1,22 +1,22 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\components\formthemes;
+namespace BarrelStrength\Sprout\forms\components\formtypes;
 
-use BarrelStrength\Sprout\forms\formthemes\FormTheme;
+use BarrelStrength\Sprout\forms\formtypes\FormType;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
 
 /**
- * The CustomFormTheme is used to dynamically create a FormTheme
+ * The CustomFormType is used to dynamically create a FormType
  * integration when a user selects the custom option and provides a path
  * to the custom templates they wish to use.
  *
- * The CustomFormTheme integration is not registered with Sprout Forms
- * and will not display in the Form Themes dropdown list.
+ * The CustomFormType integration is not registered with Sprout Forms
+ * and will not display in the Form Types dropdown list.
  *
  * @property string $path
  */
-class CustomTemplatesFormTheme extends FormTheme
+class CustomTemplatesFormType extends FormType
 {
     public static function displayName(): string
     {

@@ -23,7 +23,7 @@ class m211101_000001_update_forms_projectconfig extends Migration
             'enableEditSubmissionViaFrontEnd' => false,
             'enableSaveData' => true,
             'enableSaveDataDefaultValue' => true,
-            'formThemeUid' => self::OLD_ACCESSIBLE_FORM_TEMPLATES,
+            'formTypeUid' => self::OLD_ACCESSIBLE_FORM_TEMPLATES,
             'saveSpamToDatabase' => false,
             'spamLimit' => 500,
             'spamRedirectBehavior' => 'redirectAsNormal',

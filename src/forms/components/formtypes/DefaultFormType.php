@@ -1,10 +1,10 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\components\formthemes;
+namespace BarrelStrength\Sprout\forms\components\formtypes;
 
 use BarrelStrength\Sprout\core\fieldlayoutelements\LightswitchField;
 use BarrelStrength\Sprout\core\fieldlayoutelements\SelectField;
-use BarrelStrength\Sprout\forms\formthemes\FormTheme;
+use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\uris\links\fieldlayoutelements\EnhancedLinkField;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -15,7 +15,7 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
-class DefaultFormTheme extends FormTheme
+class DefaultFormType extends FormType
 {
     public ?string $formTemplate = '@Sprout/TemplateRoot/forms/default';
 

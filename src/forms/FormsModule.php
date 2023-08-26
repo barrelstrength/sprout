@@ -30,8 +30,8 @@ use BarrelStrength\Sprout\forms\forms\Forms;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
-use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
-use BarrelStrength\Sprout\forms\formthemes\FormThemes;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
+use BarrelStrength\Sprout\forms\formtypes\FormTypes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
@@ -59,7 +59,7 @@ use yii\base\Module;
  * @property SubmissionStatuses $submissionStatuses
  * @property FrontEndFields $frontEndFields
  * @property FormIntegrations $formIntegrations
- * @property FormThemes $formThemes
+ * @property FormTypes $formTypes
  * @property FormCaptchas $formCaptchas
  *
  * @property Addresses $addressField
@@ -115,7 +115,7 @@ class FormsModule extends Module
             'submissionStatuses' => SubmissionStatuses::class,
             'frontEndFields' => FrontEndFields::class,
             'formIntegrations' => FormIntegrations::class,
-            'formThemes' => FormThemes::class,
+            'formTypes' => FormTypes::class,
             'formCaptchas' => FormCaptchas::class,
 
             // Fields
@@ -231,7 +231,7 @@ class FormsModule extends Module
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            [FormThemeHelper::class, 'defineNativeFieldsPerTheme']);
+            [FormTypeHelper::class, 'defineNativeFieldsPerFormType']);
 
         $this->registerProjectConfigEventListeners();
     }
@@ -301,9 +301,9 @@ class FormsModule extends Module
                 'label' => Craft::t('sprout-module-forms', 'General'),
                 'url' => 'sprout/settings/general',
             ],
-            'form-themes' => [
-                'label' => Craft::t('sprout-module-forms', 'Form Themes'),
-                'url' => 'sprout/settings/forms/form-themes',
+            'form-types' => [
+                'label' => Craft::t('sprout-module-forms', 'Form Types'),
+                'url' => 'sprout/settings/forms/form-types',
             ],
             'spam-protection' => [
                 'label' => Craft::t('sprout-module-forms', 'Spam Protection'),
@@ -345,13 +345,13 @@ class FormsModule extends Module
                 'template' => 'sprout-module-forms/_admin/upgrade',
             ],
 
-            // Settings: Form Themes
-            'sprout/settings/forms/form-themes/new' =>
-                'sprout-module-forms/form-themes/edit',
-            'sprout/settings/forms/form-themes/edit/<formThemeUid:.*>' =>
-                'sprout-module-forms/form-themes/edit',
-            'sprout/settings/forms/form-themes' =>
-                'sprout-module-forms/form-themes/form-themes-index-template',
+            // Settings: Form Types
+            'sprout/settings/forms/form-types/new' =>
+                'sprout-module-forms/form-types/edit',
+            'sprout/settings/forms/form-types/edit/<formTypeUid:.*>' =>
+                'sprout-module-forms/form-types/edit',
+            'sprout/settings/forms/form-types' =>
+                'sprout-module-forms/form-types/form-types-index-template',
 
             // Settings
             'sprout/settings/general' => [

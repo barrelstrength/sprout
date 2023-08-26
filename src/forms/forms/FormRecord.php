@@ -24,7 +24,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $messageOnError
  * @property string $submitButtonText
  * @property bool $saveData
- * @property string $formThemeUid
+ * @property string $formTypeUid
  * @property bool $enableCaptchas
  * @property string $oldHandle
  */

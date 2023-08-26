@@ -11,14 +11,14 @@ use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\IntegrationsField;
-use BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme;
+use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formthemes\FormTheme;
-use BarrelStrength\Sprout\forms\formthemes\FormThemeHelper;
+use BarrelStrength\Sprout\forms\formtypes\FormType;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
@@ -89,13 +89,13 @@ class FormElement extends Element
 
     public bool $saveData = true;
 
-    public ?string $formThemeUid = null;
+    public ?string $formTypeUid = null;
 
     public bool $enableCaptchas = true;
 
     private ?FieldLayout $_fieldLayout = null;
 
-    private ?FormTheme $_formTheme = null;
+    private ?FormType $_formType = null;
 
     private ?FormRecord $_formRecord = null;
 
@@ -136,30 +136,30 @@ class FormElement extends Element
         return 'form';
     }
 
-    public function getFormTheme(): FormTheme
+    public function getFormType(): FormType
     {
-        if ($this->_formTheme) {
-            return $this->_formTheme;
+        if ($this->_formType) {
+            return $this->_formType;
         }
 
-        $formTheme = FormThemeHelper::getFormThemeByUid($this->formThemeUid);
+        $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
 
-        if (!$formTheme) {
-            $formTheme = FormThemeHelper::getDefaultFormTheme();
+        if (!$formType) {
+            $formType = FormTypeHelper::getDefaultFormType();
         }
 
-        if (!$formTheme) {
-            throw new MissingComponentException('No Form Theme found.');
+        if (!$formType) {
+            throw new MissingComponentException('No Form Type found.');
         }
 
-        $formTheme->form = $this;
+        $formType->form = $this;
 
-        return $this->_formTheme = $formTheme;
+        return $this->_formType = $formType;
     }
 
-    public function setFormTheme(?FormTheme $formTheme): void
+    public function setFormType(?FormType $formType): void
     {
-        $this->_formTheme = $formTheme;
+        $this->_formType = $formType;
     }
 
     public function getFieldLayout(): ?FieldLayout
@@ -182,8 +182,8 @@ class FormElement extends Element
         $contentTabs = $config->getFieldLayout()->getTabs();
         $contentTab = reset($contentTabs) ?: [];
 
-        $theme = FormThemeHelper::getFormThemeByUid($this->formThemeUid);
-        $themeTabs = $theme?->getFieldLayout()?->getTabs() ?? [];
+        $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
+        $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
 
         //$twigExpressionMessage2 = 'Message';
         //
@@ -284,7 +284,7 @@ class FormElement extends Element
 
         $tabs = array_merge(
             [$formBuilderTab],
-            $themeTabs,
+            $formTypeTabs,
             [$contentTab],
             [$notificationsTab],
             [$reportsTab],
@@ -513,7 +513,7 @@ class FormElement extends Element
         $record->messageOnSuccess = $this->messageOnSuccess;
         $record->messageOnError = $this->messageOnError;
         $record->submitButtonText = $this->submitButtonText;
-        $record->formThemeUid = $this->formThemeUid;
+        $record->formTypeUid = $this->formTypeUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
         $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
@@ -799,18 +799,18 @@ class FormElement extends Element
     /**
      * Get the global template used by Sprout Forms
      */
-    public function getFormTemplate(): FormTheme
+    public function getFormTemplate(): FormType
     {
-        $defaultFormTheme = new DefaultFormTheme();
+        $defaultFormType = new DefaultFormType();
 
-        if ($this->formThemeUid) {
-            $templatePath = FormThemeHelper::getFormThemeByUid($this->formThemeUid);
+        if ($this->formTypeUid) {
+            $templatePath = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
             if ($templatePath) {
                 return $templatePath;
             }
         }
 
-        return $defaultFormTheme;
+        return $defaultFormType;
     }
 
     public function getNotifications(): array
@@ -862,23 +862,23 @@ class FormElement extends Element
     /**
      * Enables form include tags to use Twig include overrides and appends name of target form template
      * [
-     *    'template-override/theme-id',
-     *    'sprout-forms-form/theme-id',
-     *    'sprout-forms-settings/theme-id', (default templates can be set per Theme/FormType)
+     *    'template-override/form-type-folder',
+     *    'sprout-forms-form/form-type-folder',
+     *    'sprout-forms-settings/form-type-folder', (default templates can be set per Theme/FormType)
      * ]
      */
     public function getIncludeTemplate($name): array
     {
         $settings = FormsModule::getInstance()->getSettings();
 
-        /** @var FormTheme $formTheme */
-        $formTheme = FormThemeHelper::getFormThemeByUid($settings->formThemeUid);
+        /** @var FormType $formType */
+        $formType = FormTypeHelper::getFormTypeByUid($settings->formTypeUid);
 
         // TODO: Just make this a static class
-        $defaultTemplates = new DefaultFormTheme();
+        $defaultTemplates = new DefaultFormType();
 
         $includePaths = array_merge($this->additionalTemplates, [
-            Craft::getAlias($formTheme->formTemplate ?? null),
+            Craft::getAlias($formType->formTemplate ?? null),
             Craft::getAlias($defaultTemplates->formTemplate),
         ]);
 
@@ -1016,7 +1016,7 @@ class FormElement extends Element
         $rules[] = [['messageOnError'], 'safe'];
         $rules[] = [['submitButtonText'], 'safe'];
         $rules[] = [['saveData'], 'safe'];
-        $rules[] = [['formThemeUid'], 'safe'];
+        $rules[] = [['formTypeUid'], 'safe'];
         $rules[] = [['enableCaptchas'], 'safe'];
 
         return $rules;

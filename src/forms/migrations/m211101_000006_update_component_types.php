@@ -29,16 +29,16 @@ class m211101_000006_update_component_types extends Migration
                     ],
                 ],
             ],
-            // @todo - create these Form Themes and insert UID
+            // @todo - create these Form Types and insert UID
             'sproutforms_forms' => [
                 'formTemplateId' => [
                     [
                         'oldType' => 'barrelstrength\sproutforms\formtemplates\AccessibleTemplates',
-                        'newType' => 'BarrelStrength\Sprout\forms\components\formthemes\DefaultFormTheme',
+                        'newType' => 'BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType',
                     ],
                     [
                         'oldType' => 'barrelstrength\sproutforms\formtemplates\CustomTemplates',
-                        'newType' => 'BarrelStrength\Sprout\forms\components\formthemes\CustomTemplateSet',
+                        'newType' => 'BarrelStrength\Sprout\forms\components\formtypes\CustomTemplateSet',
                     ],
                 ],
             ],

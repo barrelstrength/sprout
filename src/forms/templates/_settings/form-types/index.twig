@@ -1,23 +1,23 @@
 {% extends "sprout-module-core/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set currentSubNavKey = 'form-themes' %}
+{% set currentSubNavKey = 'form-types' %}
 
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
             <div class="btn menubtn submit add icon">
-                {{ "New Form Theme"|t('sprout-module-forms') }}
+                {{ "New Form Type"|t('sprout-module-forms') }}
             </div>
             <div class="menu">
                 <ul>
-                    {% for formTheme in formThemeTypes %}
+                    {% for formType in formTypeTypes %}
                         <li>
                             {{ tag('a', {
-                                href: cpUrl('sprout/settings/forms/form-themes/new', {
-                                    type: className(formTheme),
+                                href: cpUrl('sprout/settings/forms/form-types/new', {
+                                    type: className(formType),
                                 }),
-                                text: formTheme.displayName(),
+                                text: formType.displayName(),
                                 class: 'menu-option',
                             }) }}
                         </li>
@@ -30,19 +30,19 @@
 
 {% set tableData = [] %}
 
-{% if formThemes|length %}
-    {% for formTheme in formThemes %}
+{% if formTypes|length %}
+    {% for formType in formTypes %}
 
-        {% set cpEditUrl = cpUrl('sprout/settings/forms/form-themes/edit/' ~ formTheme.uid) %}
+        {% set cpEditUrl = cpUrl('sprout/settings/forms/form-types/edit/' ~ formType.uid) %}
 
         {% set tableData = tableData|merge([{
-            id: formTheme.uid,
+            id: formType.uid,
             labelHtml: {
                 url: cpEditUrl,
-                name: formTheme.name ?? formTheme.displayName()
+                name: formType.name ?? formType.displayName()
             },
-            formThemeType: formTheme.displayName,
-            title: formTheme.name|t('sprout-module-forms')|e,
+            formTypeType: formType.displayName,
+            title: formType.name|t('sprout-module-forms')|e,
             url: cpEditUrl,
             _showDelete: true,
         }]) %}
@@ -60,7 +60,7 @@
     <br>
     <div class="readable">
         <blockquote class="tip note">
-            {{ "When editing a form, themes will be displayed in the order they appear. The first theme in the list will be selected as the default."|t('sprout-module-forms') }}
+            {{ "When editing a form, form types will be displayed in the order they appear. The first type in the list will be selected as the default."|t('sprout-module-forms') }}
         </blockquote>
     </div>
 
@@ -68,10 +68,10 @@
 
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
 
-{% do sprout.modules.core.vite.register('forms/FormThemesSettings.js', false) %}
+{% do sprout.modules.core.vite.register('forms/FormTypesSettings.js', false) %}
 
  {% js on ready %}
 
-     new FormThemesSettings('#admin-table');
+     new FormTypesSettings('#admin-table');
 
  {% endjs %}
