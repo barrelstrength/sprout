@@ -42,6 +42,8 @@
         } %}
     </header>
 
+    {% set notEditableTipMessage = "This setting is defined by the selected email type and is not editable."|t('sprout-module-mailer') %}
+
     <div id="settings">
         {{ forms.textField({
             label: "Name"|t('sprout-module-mailer'),
@@ -55,9 +57,19 @@
             first: true,
         }) }}
 
+        {{ forms.selectField({
+            label: 'Mailer'|t('sprout-module-mailer') ~ sproutCp.infoIcon(
+                'The mailer you wish to use to send emails using this email variant.'|t('sprout-module-mailer')
+            ),
+            name: 'mailerUid',
+            options: mailerTypeOptions,
+            value: emailType.mailerUid,
+        }) }}
+
         {{ forms.autosuggestField({
             label: "Email Template (HTML)"|t('sprout-module-mailer'),
             instructions: "The template that will be used to render your HTML email."|t('sprout-module-mailer'),
+            tip: not emailType.isEditable() ? notEditableTipMessage : null,
             id: 'htmlEmailTemplate',
             name: 'htmlEmailTemplate',
             suggestEnvVars: false,
@@ -72,6 +84,7 @@
         {{ forms.autosuggestField({
             label: "Email Template (Text)"|t('sprout-module-mailer'),
             instructions: "Leave blank to render the text email by converting the HTML template to Markdown."|t('sprout-module-mailer'),
+            tip: not emailType.isEditable() ? notEditableTipMessage : null,
             id: 'textEmailTemplate',
             name: 'textEmailTemplate',
             suggestEnvVars: false,
@@ -94,18 +107,9 @@
         {#        disabled: not emailType.isEditable(), #}
         {#    }) }} #}
 
-
-        {{ forms.selectField({
-            label: 'Mailer'|t('sprout-module-mailer') ~ sproutCp.infoIcon(
-                'The mailer you wish to use to send emails using this email variant.'|t('sprout-module-mailer')
-            ),
-            name: 'mailerUid',
-            options: mailerTypeOptions,
-            value: emailType.mailerUid,
-        }) }}
-
         {{ forms.textField({
             label: "Email Type"|t('sprout-module-mailer'),
+            tip: 'This setting is not editable.'|t('sprout-module-mailer'),
             value: emailType.displayName(),
             disabled: true,
         }) }}
@@ -116,6 +120,7 @@
         {{ forms.lightswitchField({
             label: "Preheader Text Field",
             instructions: "Displays a field that can be used for a preview message of the email content in some email clients.",
+            tip: not emailType.isEditable() ? notEditableTipMessage : null,
             name: 'displayPreheaderText',
             on: emailType.displayPreheaderText,
             disabled: not emailType.isEditable(),
@@ -125,16 +130,28 @@
 
         {% set fieldLayoutInstructions = "The content fields that can be used in this email type."|t('sprout-module-mailer') %}
 
-{#        {% if emailType.isEditable() %} #}
-
         {{ forms.fieldLayoutDesignerField({
             instructions: fieldLayoutInstructions,
             fieldLayout: emailType.getFieldLayout(),
             required: true,
-            customizableTabs: false,
+            customizableTabs: emailType.isEditable(),
             customizableUi: true,
             errors: emailType.getErrors('fieldLayout'),
         }) }}
+
+        {% js %}
+            {% if not emailType.isEditable() %}
+                let fieldLayoutButtons = document.querySelector('.fld-sidebar .btngroup');
+                let fieldsButton = document.querySelector('.fld-sidebar [data-library="field"]');
+                let fieldLibrary = document.querySelector('.fld-field-library');
+                let uiLibrary = document.querySelector('.fld-ui-library');
+
+                fieldLayoutButtons.parentNode.removeChild(fieldLayoutButtons);
+                fieldsButton.parentNode.removeChild(fieldsButton);
+                fieldLibrary.parentNode.removeChild(fieldLibrary);
+                uiLibrary.classList.toggle('hidden');
+            {% endif %}
+        {% endjs %}
 
     </div>
 

@@ -133,6 +133,11 @@ class EmailTypesController extends Controller
         $emailType->name = Craft::$app->request->getRequiredBodyParam('name');
         $emailType->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
+        // Allow UI Elements to be added to the Field Layout
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        $fieldLayout->type = $type;
+        $emailType->setFieldLayout($fieldLayout);
+
         if (!$emailType::isEditable()) {
             return $emailType;
         }
@@ -141,10 +146,6 @@ class EmailTypesController extends Controller
         $emailType->htmlEmailTemplate = Craft::$app->request->getBodyParam('htmlEmailTemplate');
         $emailType->textEmailTemplate = Craft::$app->request->getBodyParam('textEmailTemplate');
         $emailType->copyPasteEmailTemplate = Craft::$app->request->getBodyParam('copyPasteEmailTemplate');
-
-        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
-        $fieldLayout->type = EmailElement::class;
-        $emailType->setFieldLayout($fieldLayout);
 
         return $emailType;
     }
