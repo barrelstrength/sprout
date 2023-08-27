@@ -7,7 +7,7 @@
 
 {% set selectedSubnavItem = craft.app.request.getSegment(2) %}
 {% set selectedSidebarItem = craft.app.request.getSegment(6) %}
-{% set baseUrl = 'sprout/forms/edit/'~form.id~'/settings/' %}
+{% set baseUrl = 'sprout/forms/forms/edit/'~form.id~'/settings/' %}
 
 {% set crumbs = [
     { label: "Forms"|t('sprout-forms'), url: cpUrl('sprout-forms/forms') },

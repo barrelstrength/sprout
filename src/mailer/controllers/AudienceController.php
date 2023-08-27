@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\audience\AudienceTypeInterface;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
@@ -10,6 +11,7 @@ use Craft;
 use craft\base\Element;
 use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
+use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use http\Exception\InvalidArgumentException;
@@ -29,6 +31,10 @@ class AudienceController extends Controller
 
     public function actionAudienceIndexTemplate(): Response
     {
+        if (!MailerModule::getInstance()->getSettings()->enableAudiences) {
+            throw new ForbiddenHttpException('User is not authorized to perform this action.');
+        }
+
         $this->requirePermission(MailerModule::p('editAudiences'));
 
         $audienceTypes = MailerModule::getInstance()->audiences->getAudienceTypes();

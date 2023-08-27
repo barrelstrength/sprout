@@ -29,7 +29,7 @@ class FormsSettings extends BaseConfig
         ],
     ];
 
-    public string $defaultSection = 'submissions';
+    public string $defaultSidebarTab = 'submissions';
 
     public string $defaultSubmissionMethod = 'sync';
 
@@ -64,9 +64,9 @@ class FormsSettings extends BaseConfig
      */
     public array $fieldLayouts = [];
 
-    public function defaultSection(string $value): self
+    public function defaultSidebarTab(string $value): self
     {
-        $this->defaultSection = $value;
+        $this->defaultSidebarTab = $value;
 
         return $this;
     }

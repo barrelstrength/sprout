@@ -30,7 +30,7 @@ use BarrelStrength\Sprout\forms\FormsSettings;
  * SPROUT_MODULE_FORMS_CAPTCHA_SETTINGS=[]
  */
 return [
-    'defaultSection' => 'entries',
+    'defaultSidebarTab' => 'entries',
     'formTemplateId' => DefaultFormType::class,
     'enableSaveData' => true,
     'saveSpamToDatabase' => false,

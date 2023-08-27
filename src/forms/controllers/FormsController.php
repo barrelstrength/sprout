@@ -2,11 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
-use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\formfields\CustomFormField;
-use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
@@ -14,13 +11,11 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\errors\WrongEditionException;
-use craft\fieldlayoutelements\CustomField;
 use craft\fields\MissingField;
 use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
-use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\records\FieldLayout as FieldLayoutRecord;
@@ -32,21 +27,6 @@ use yii\web\ServerErrorHttpException;
 
 class FormsController extends BaseController
 {
-    public function actionFormsDefaultSection(): \craft\web\Response|\yii\console\Response
-    {
-        $settings = FormsModule::getInstance()->getSettings();
-
-        $canViewSubmissions = Craft::$app->getUser()->checkPermission(FormsModule::p('viewSubmissions')) &&
-            $settings->enableSaveData;
-        $canEditForms = Craft::$app->getUser()->checkPermission(FormsModule::p('editForms'));
-
-        if ($canViewSubmissions && ($settings->defaultSection === 'submissions' || !$canEditForms)) {
-            return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('sprout/forms/submissions'));
-        }
-
-        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('sprout/forms'));
-    }
-
     public function actionFormsIndexTemplate(): Response
     {
         $this->requirePermission(FormsModule::p('editForms'));
@@ -57,6 +37,7 @@ class FormsController extends BaseController
             'title' => FormElement::pluralDisplayName(),
             'elementType' => FormElement::class,
             'formTypes' => $formTypes,
+            'selectedSubnavItem' => 'forms',
         ]);
     }
 

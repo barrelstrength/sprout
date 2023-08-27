@@ -37,7 +37,6 @@ use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\config\BaseConfig;
-use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -269,19 +268,29 @@ class FormsModule extends Module
             return [];
         }
 
+        $settings = $this->getSettings();
+
+        $navItems = [];
+
+        $navItems['forms'] = [
+            'label' => Craft::t('sprout-module-forms', 'Forms'),
+            'url' => 'sprout/forms/forms',
+        ];
+
+        $navItems['submissions'] = [
+            'label' => Craft::t('sprout-module-forms', 'Submissions'),
+            'url' => 'sprout/forms/submissions',
+        ];
+
+        if ($settings->defaultSidebarTab == 'submissions') {
+            $navItems = array_reverse($navItems);
+        }
+
         return [
             'group' => Craft::t('sprout-module-forms', 'Forms'),
             'icon' => self::svg('icons/icon-mask.svg'),
-            'navItems' => [
-                'forms' => [
-                    'label' => Craft::t('sprout-module-forms', 'Forms'),
-                    'url' => 'sprout/forms',
-                ],
-                'submissions' => [
-                    'label' => Craft::t('sprout-module-forms', 'Submissions'),
-                    'url' => 'sprout/forms/submissions',
-                ],
-            ],
+            'url' => 'sprout/forms',
+            'navItems' => $navItems,
         ];
     }
 
@@ -319,17 +328,17 @@ class FormsModule extends Module
     protected function getCpUrlRules(): array
     {
         return [
-            'test' => 'sprout-module-forms/forms/test',
-
             'sprout/forms' =>
-                'sprout-module-forms/forms/forms-index-template',
+                'sprout-module-core/settings/redirect-nav-item',
 
-            'sprout/forms/new' =>
+            'sprout/forms/forms' =>
+                'sprout-module-forms/forms/forms-index-template',
+            'sprout/forms/forms/new' =>
                 'sprout-module-forms/forms/create-form',
-            'sprout/forms/edit/<elementId:\d+>' =>
+            'sprout/forms/forms/edit/<elementId:\d+>' =>
                 'elements/edit',
 
-            'sprout/forms/edit/<formId:\d+>/settings/<subNavKey:[^\/]+>' =>
+            'sprout/forms/forms/edit/<formId:\d+>/settings/<subNavKey:[^\/]+>' =>
                 'sprout-module-forms/forms/edit-settings-template',
 
             'sprout/forms/submissions' =>

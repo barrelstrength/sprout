@@ -57,7 +57,7 @@ class m211101_000000_run_install_migration extends Migration
 
         // @todo - fix default settings to import
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-            'defaultSection' => 'submissions',
+            'defaultSidebarTab' => 'submissions',
             'formTypeUid' => self::FORM_TYPE,
             'enableSaveData' => true,
             'saveSpamToDatabase' => false,

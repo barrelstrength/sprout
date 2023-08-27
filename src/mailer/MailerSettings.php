@@ -10,6 +10,10 @@ class MailerSettings extends BaseConfig
 
     public array $mailers = [];
 
+    public ?string $defaultSidebarTab = null;
+
+    public ?bool $enableAudiences = false;
+
     public ?bool $enableSubscriberLists = false;
 
     public function mailers(array $value): self

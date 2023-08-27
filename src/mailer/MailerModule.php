@@ -239,8 +239,10 @@ class MailerModule extends Module
 
         $userService = Craft::$app->getUser();
 
+        $settings = $this->getSettings();
+
         // Make sure at least one Audience Types exists
-        if ($userService->checkPermission(self::p('accessModule')) && $this->audiences->getAudienceTypes()) {
+        if (TransactionalModule::isEnabled() && $settings->enableAudiences && $this->audiences->getAudienceTypes()) {
             $navItems['audiences'] = [
                 'label' => Craft::t('sprout-module-mailer', 'Audiences'),
                 'url' => 'sprout/email/audiences',
@@ -254,6 +256,12 @@ class MailerModule extends Module
                 'label' => Craft::t('sprout-module-mailer', 'Transactional'),
                 'url' => 'sprout/email/transactional-email',
             ];
+        }
+
+        // Order items based on settings
+        if ($settings->defaultSidebarTab === 'transactional-email') {
+            // This logic will need to be updated with more options
+            $navItems = array_reverse($navItems);
         }
 
         if (SentEmailModule::isEnabled() &&

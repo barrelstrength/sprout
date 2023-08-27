@@ -14,9 +14,9 @@
 {% block settings %}
 
     {{ forms.selectField({
-        label: "Default Section"|t('sprout-module-forms'),
+        label: "Default Sidebar Tab"|t('sprout-module-forms'),
         instructions: "The form section that will be selected by default in the sidebar navigation."|t('sprout-module-forms'),
-        name: 'defaultSection',
+        name: 'defaultSidebarTab',
         options: [
             {
                 label: 'Submissions'|t('sprout-module-forms'),
@@ -27,7 +27,7 @@
                 value: 'forms'
             }
         ],
-        value: not settings.enableSaveData ? 'forms' : settings.defaultSection,
+        value: not settings.enableSaveData ? 'forms' : settings.defaultSidebarTab,
         warning: sproutConfigWarning(module, 'enableSaveData'),
     }) }}
 

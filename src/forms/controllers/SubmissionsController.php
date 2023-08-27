@@ -56,6 +56,7 @@ class SubmissionsController extends BaseController
         return $this->renderTemplate('sprout-module-forms/submissions/index', [
             'title' => SubmissionElement::pluralDisplayName(),
             'elementType' => SubmissionElement::class,
+            'selectedSubnavItem' => 'submissions',
         ]);
     }
 

@@ -19,7 +19,7 @@ class m211101_000001_update_forms_projectconfig extends Migration
 
         $defaultSettings = [
             'cleanupProbability' => 1000,
-            'defaultSection' => 'submissions',
+            'defaultSidebarTab' => 'submissions',
             'enableEditSubmissionViaFrontEnd' => false,
             'enableSaveData' => true,
             'enableSaveDataDefaultValue' => true,

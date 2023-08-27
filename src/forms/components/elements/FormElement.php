@@ -422,7 +422,7 @@ class FormElement extends Element
 
     public function cpEditUrl(): ?string
     {
-        $path = UrlHelper::cpUrl('sprout/forms/edit/' . $this->id);
+        $path = UrlHelper::cpUrl('sprout/forms/forms/edit/' . $this->id);
 
         $params = [];
 
