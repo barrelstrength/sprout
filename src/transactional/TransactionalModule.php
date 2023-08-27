@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
@@ -183,15 +184,24 @@ class TransactionalModule extends Module
 
     public function getUserPermissions(): array
     {
-        return [
-            self::p('viewTransactionalEmail') => [
-                'label' => Craft::t('sprout-module-transactional', 'View Notification Emails'),
-                'nested' => [
-                    self::p('editTransactionalEmail') => [
-                        'label' => Craft::t('sprout-module-transactional', 'Edit Notification Emails'),
-                    ],
-                ],
-            ],
-        ];
+        $emailTypes = EmailTypeHelper::getEmailTypes();
+
+        $permissions = [];
+        foreach ($emailTypes as $emailType) {
+            $nestedPermissions = [];
+            $nestedPermissions[self::p('createTransactionalEmail:' . $emailType->uid)] = [
+                'label' => Craft::t('sprout-module-transactional', 'Create email types'),
+            ];
+            $nestedPermissions[self::p('deleteTransactionalEmail:' . $emailType->uid)] = [
+                'label' => Craft::t('sprout-module-transactional', 'Delete email types'),
+            ];
+
+            $permissions[self::p('editTransactionalEmail:' . $emailType->uid)] = [
+                'label' => Craft::t('sprout-module-transactional', 'Edit "' . $emailType->name .'" email type'),
+                'nested' => $nestedPermissions,
+            ];
+        }
+
+        return $permissions;
     }
 }

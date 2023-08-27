@@ -21,23 +21,6 @@
 
     <div id="sprout-audience-settings">
 
-        {{ forms.selectField({
-            label: "Default Sidebar Tab"|t('sprout-module-forms'),
-            instructions: "The form section that will be selected by default in the sidebar navigation."|t('sprout-module-forms'),
-            name: 'defaultSidebarTab',
-            options: [
-                {
-                    label: 'Audiences'|t('sprout-module-mailer'),
-                    value: 'audiences'
-                },
-                {
-                    label: 'Transactional Email'|t('sprout-module-mailer'),
-                    value: 'transactional-email'
-                }
-            ],
-            value: settings.defaultSidebarTab,
-        }) }}
-
         {{ forms.lightswitchField({
             label: "Enable Subscriber List Audience Type",
             instructions: "Subscriber Lists add layer on top of Craft Users which includes a Subscriber Lists field, Subscriber List Audience Type, and Subscriber List sources in the sources sidebar of the Users Element Index page.",

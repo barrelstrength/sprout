@@ -43,8 +43,8 @@ class EmailTypesController extends Controller
         $mailers = MailerHelper::getMailers();
 
         $mailerTypeOptions[] = [
-            'label' => Craft::t('sprout-module-mailer', 'Craft Default Mailer'),
-            'value' => MailerHelper::CRAFT_DEFAULT_MAILER,
+            'label' => Craft::t('sprout-module-mailer', 'Craft Mailer Settings'),
+            'value' => MailerHelper::CRAFT_MAILER_SETTINGS,
         ];
 
         foreach ($mailers as $mailer) {

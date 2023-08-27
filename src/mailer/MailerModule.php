@@ -241,14 +241,6 @@ class MailerModule extends Module
 
         $settings = $this->getSettings();
 
-        // Make sure at least one Audience Types exists
-        if (TransactionalModule::isEnabled() && $settings->enableAudiences && $this->audiences->getAudienceTypes()) {
-            $navItems['audiences'] = [
-                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
-                'url' => 'sprout/email/audiences',
-            ];
-        }
-
         if (TransactionalModule::isEnabled() &&
             $userService->checkPermission(TransactionalModule::p('accessModule'))
         ) {
@@ -256,12 +248,6 @@ class MailerModule extends Module
                 'label' => Craft::t('sprout-module-mailer', 'Transactional'),
                 'url' => 'sprout/email/transactional-email',
             ];
-        }
-
-        // Order items based on settings
-        if ($settings->defaultSidebarTab === 'transactional-email') {
-            // This logic will need to be updated with more options
-            $navItems = array_reverse($navItems);
         }
 
         if (SentEmailModule::isEnabled() &&
@@ -273,6 +259,14 @@ class MailerModule extends Module
             ];
         }
 
+        // Make sure at least one Audience Types exists
+        if (TransactionalModule::isEnabled() && $settings->enableAudiences && $this->audiences->getAudienceTypes()) {
+            $navItems['audiences'] = [
+                'label' => Craft::t('sprout-module-mailer', 'Audiences'),
+                'url' => 'sprout/email/audiences',
+            ];
+        }
+        
         return [
             'group' => Craft::t('sprout-module-mailer', 'Email'),
             'icon' => self::svg('icons/icon-mask.svg'),
@@ -298,7 +292,7 @@ class MailerModule extends Module
                 'url' => 'sprout/settings/audiences',
             ],
             'mailers' => [
-                'label' => Craft::t('sprout-module-mailer', 'Mailers'),
+                'label' => Craft::t('sprout-module-mailer', 'Mailer Settings'),
                 'url' => 'sprout/settings/mailers',
             ],
             'email-types' => [

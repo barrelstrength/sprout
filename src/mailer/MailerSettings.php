@@ -10,8 +10,6 @@ class MailerSettings extends BaseConfig
 
     public array $mailers = [];
 
-    public ?string $defaultSidebarTab = null;
-
     public ?bool $enableAudiences = false;
 
     public ?bool $enableSubscriberLists = false;
@@ -26,6 +24,13 @@ class MailerSettings extends BaseConfig
     public function emailTypes(array $value): self
     {
         $this->emailTypes = $value;
+
+        return $this;
+    }
+
+    public function enableAudiences(bool $value): self
+    {
+        $this->enableAudiences = $value;
 
         return $this;
     }

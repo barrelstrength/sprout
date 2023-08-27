@@ -104,7 +104,7 @@ class EmailTypeHelper
 
         $emailType = new $type([
             'name' => $emailTypeConfig['name'],
-            'mailerUid' => $emailTypeConfig['mailerUid'] ?? MailerHelper::CRAFT_DEFAULT_MAILER,
+            'mailerUid' => $emailTypeConfig['mailerUid'] ?? MailerHelper::CRAFT_MAILER_SETTINGS,
             'displayPreheaderText' => $emailTypeConfig['displayPreheaderText'] ?? false,
             'htmlEmailTemplate' => $emailTypeConfig['htmlEmailTemplate'] ?? null,
             'textEmailTemplate' => $emailTypeConfig['textEmailTemplate'] ?? null,

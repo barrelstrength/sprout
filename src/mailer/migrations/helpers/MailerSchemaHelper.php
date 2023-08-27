@@ -28,7 +28,7 @@ class MailerSchemaHelper
         }
 
         $emailType = new $type($config);
-        $emailType->mailerUid = MailerHelper::CRAFT_DEFAULT_MAILER;
+        $emailType->mailerUid = MailerHelper::CRAFT_MAILER_SETTINGS;
         $emailType->uid = StringHelper::UUID();
 
         if (!$emailType->name) {

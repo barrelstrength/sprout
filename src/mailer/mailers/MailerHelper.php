@@ -12,7 +12,7 @@ use craft\models\FieldLayout;
 
 class MailerHelper
 {
-    public const CRAFT_DEFAULT_MAILER = 'craft';
+    public const CRAFT_MAILER_SETTINGS = 'craft';
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
