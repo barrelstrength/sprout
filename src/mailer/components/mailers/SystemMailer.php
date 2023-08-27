@@ -105,7 +105,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/send-test-fields.twig', [
             'email' => $email,
-            'mailer' => $this,
             'warningMessage' => $warningMessage ?? '',
         ]);
     }

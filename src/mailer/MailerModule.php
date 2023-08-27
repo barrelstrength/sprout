@@ -266,7 +266,7 @@ class MailerModule extends Module
                 'url' => 'sprout/email/audiences',
             ];
         }
-        
+
         return [
             'group' => Craft::t('sprout-module-mailer', 'Email'),
             'icon' => self::svg('icons/icon-mask.svg'),
