@@ -58,6 +58,15 @@
         data-table-data="{{ tableData|json_encode }}">
     </div>
 
+    <br>
+    <div class="readable">
+        <blockquote class="tip note">
+            {{ 'Create custom mailer settings to refine email workflows. The Craft <a href="{url}">Email Settings</a> will be used by default.'|t('sprout-module-mailer', {
+                url: cpUrl('settings/email'),
+            })|raw }}
+        </blockquote>
+    </div>
+
 {% endblock %}
 
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}

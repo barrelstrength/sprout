@@ -41,6 +41,10 @@ class FormSummaryEmailType extends EmailType
 
     public function getFieldLayout(): FieldLayout
     {
+        if ($this->_fieldLayout) {
+            return $this->_fieldLayout;
+        }
+
         $fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);

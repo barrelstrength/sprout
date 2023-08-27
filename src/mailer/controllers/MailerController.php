@@ -96,9 +96,15 @@ class MailerController extends Controller
 
         $mailerUid = Craft::$app->request->getRequiredBodyParam('id');
 
-        $inUse = EmailElement::find()
-            ->mailerUid($mailerUid)
-            ->exists();
+        $mailers = MailerHelper::getMailers();
+
+        $inUse = false;
+        foreach ($mailers as $mailer) {
+            if ($mailer->uid === $mailerUid) {
+                $inUse = true;
+                break;
+            }
+        }
 
         if ($inUse || !MailerHelper::removeMailer($mailerUid)) {
             return $this->asFailure();
