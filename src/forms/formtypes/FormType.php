@@ -17,6 +17,9 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
     public ?string $formTemplateOverrideFolder = null;
 
     public ?string $submissionMethod = null;
+
+    public ?string $errorDisplayMethod = null;
+
     public bool $enableSaveData = true;
 
     public bool $trackRemoteIp = false;
@@ -96,27 +99,23 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         ];
     }
 
-    public function getFormFieldRows(): array
+    public function getFormFieldFeatures(): array
     {
         $formFieldGroups = FormsModule::getInstance()->formFields->getDefaultFormFieldTypesByGroup();
 
-        $rows = [];
+        $options = [];
 
         foreach ($formFieldGroups as $formFieldGroupKey => $formFields) {
             foreach ($formFields as $formFieldType) {
-                $rows[] = [
-                    'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                        'name' => 'formFields[' . $formFieldType . '][enabled]',
-                        'on' => true,
-                        'small' => true,
-                    ]),
-                    'heading' => $formFieldType::displayName(),
-                    'group' => $formFieldGroupKey,
+                // add label/value keys to options
+                $options[$formFieldGroupKey][] = [
+                    'label' => $formFieldType::displayName(),
+                    'value' => $formFieldType,
                 ];
             }
         }
 
-        return $rows;
+        return $options ?? [];
     }
 
     public function getConfig(): array

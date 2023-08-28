@@ -118,7 +118,7 @@
                 heading: {
                     type: 'heading',
                     heading: "Feature"|t('sprout-module-forms'),
-                    info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
+                    info: 'Customize the form features that are available and enabled.'|t('sprout-module-forms'),
                 },
             }|filter,
             rows: formType.getFeatureRows(),
@@ -129,31 +129,17 @@
 
         <hr>
 
-        {{ forms.editableTableField({
-            label: "Form Fields"|t('sprout-module-forms'),
-            instructions: "Select the form fields to display when authoring forms of this type."|t('sprout-module-forms'),
-            id: 'enabledFormFields',
-            name: 'enabledFormFields',
-            cols: {
-                enabled: {
-                    type: 'heading',
-                    thin: true
-                },
-                heading: {
-                    type: 'heading',
-                    heading: "Form Field"|t('sprout-module-forms'),
-                    info: 'Customize the Sprout modules that are available and enabled. Additional access and permissions can be managed with Craft User Groups and permissions. Disabled modules will only display here, and will no longer display in the control panel navigation and settings areas.',
-                },
-                group: {
-                    type: 'heading',
-                    heading: "Group"|t('sprout-module-forms'),
-                },
-            }|filter,
-            rows: formType.getFormFieldRows(),
-            fullWidth: true,
-            staticRows: true,
-            errors: settings.getErrors('modules'),
-        }) }}
+        {% for groupName, group in formType.getFormFieldFeatures() %}
+            {{ forms.checkboxSelectField({
+                label: '{groupName} Fields'|t('sprout-module-forms', { groupName: groupName }),
+                instructions: 'Select the {groupName} Fields that will be available to add to this form type.'|t('sprout-module-forms', { groupName: groupName }),
+                id: 'enabledFormFields',
+                name: 'enabledFormFields',
+                options: group,
+                values: '*',
+                showAllOption: true,
+            }) }}
+        {% endfor %}
 
     </div>
 
@@ -171,6 +157,24 @@
             },{
                 value: "async",
                 label: "AJAX (Asynchronous)"|t('sprout-module-forms'),
+            }],
+        }) }}
+
+        {{ forms.selectField({
+            label: 'Error Display Method'|t('sprout-module-forms'),
+            instructions: 'The method used to display errors after a form fails validation.'|t('sprout-module-forms'),
+            id: 'errorDisplayMethod',
+            name: 'errorDisplayMethod',
+            value: formType.errorDisplayMethod,
+            options: [{
+                label: 'Inline - Display errors alongside their respective fields',
+                value: 'inline',
+            },{
+                label: 'Globally - Display errors together in a list',
+                value: 'global',
+            },{
+                label: 'Inline & Globally - Display errors everywhere!',
+                value: 'both',
             }],
         }) }}
 

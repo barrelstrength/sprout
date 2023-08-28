@@ -179,27 +179,27 @@
             {# Sidebar #}
             <div id="form-source-fields">
                 <h6>{{ 'Common Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('standard')">
+                <template x-for="field in getFieldsByGroup('Common')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6>{{ 'User Data Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('special')">
+                <h6>{{ 'Reference Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Reference')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
                 <h6>{{ 'Relations Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('relations')">
+                <template x-for="field in getFieldsByGroup('Relations')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6 x-show="getFieldsByGroup('layoutElements').length">{{ 'Layout Elements'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('layoutElements')">
+                <h6 x-show="getFieldsByGroup('Layout').length">{{ 'Layout Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Layout')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6 x-show="getFieldsByGroup('custom').length">{{ 'Custom Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('custom')">
+                <h6 x-show="getFieldsByGroup('Custom').length">{{ 'Custom Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Custom')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
             </div>

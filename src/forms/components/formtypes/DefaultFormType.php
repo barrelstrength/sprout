@@ -61,25 +61,6 @@ class DefaultFormType extends FormType
             new HorizontalRule([
                 'uid' => 'SPROUT-UID-FORMS-HORIZONTAL-RULE-SUBJECT-CONTENT-1',
             ]),
-            new SelectField([
-                'label' => Craft::t('sprout-module-forms', 'Error Display Method'),
-                'instructions' => Craft::t('sprout-module-forms', 'The method used to display errors after a form fails validation.'),
-                'attribute' => 'errorDisplayMethod',
-                'options' => [
-                    [
-                        'label' => 'Inline - Display errors alongside their respective fields',
-                        'value' => 'inline',
-                    ],
-                    [
-                        'label' => 'Globally - Display errors together in a list',
-                        'value' => 'global',
-                    ],
-                    [
-                        'label' => 'Inline & Globally - Display errors everywhere!',
-                        'value' => 'both',
-                    ],
-                ],
-            ]),
             new TextareaField([
                 'label' => Craft::t('sprout-module-forms', 'Success Message'),
                 'instructions' => Craft::t('sprout-module-forms', 'The message displayed after a submission is successfully submitted. Leave blank for no message.'),
@@ -102,21 +83,6 @@ class DefaultFormType extends FormType
             ]),
             new HorizontalRule([
                 'uid' => 'SPROUT-UID-FORMS-HORIZONTAL-RULE-SUBJECT-CONTENT-2',
-            ]),
-            new SelectField([
-                'label' => Craft::t('sprout-module-forms', 'Submission Method'),
-                'instructions' => Craft::t('sprout-module-forms', 'The method used to submit your forms.'),
-                'attribute' => 'submissionMethod',
-                'options' => [
-                    [
-                        'label' => 'Reload Page (Synchronous)',
-                        'value' => 'sync',
-                    ],
-                    [
-                        'label' => 'AJAX (Asynchronous)',
-                        'value' => 'async',
-                    ],
-                ],
             ]),
             new LightswitchField([
                 'label' => Craft::t('sprout-module-forms', 'Page Titles'),

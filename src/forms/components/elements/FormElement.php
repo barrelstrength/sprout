@@ -926,14 +926,14 @@ class FormElement extends Element
                 $fieldData['groupName'] = $groupName; // Form Field Sidebar UI specific
                 $sourceFields[] = $fieldData;
             }
+        }
 
-            // if we have more fields add them to the group 'custom'
-            if (count($formFields) > 0) {
-                foreach ($formFields as $formField) {
-                    $fieldData = FormBuilderHelper::getFieldUiSettings($formField);
-                    $fieldData['groupName'] = Craft::t('sprout-module-forms', 'Custom');
-                    $sourceFields[] = $fieldData;
-                }
+        // if we have more fields add them to the group 'custom'
+        if (count($formFields) > 0) {
+            foreach ($formFields as $formField) {
+                $fieldData = FormBuilderHelper::getFieldUiSettings($formField);
+                $fieldData['groupName'] = Craft::t('sprout-module-forms', 'Custom');
+                $sourceFields[] = $fieldData;
             }
         }
 

@@ -183,10 +183,10 @@ class FormFields extends Component
     public function getDefaultFormFieldTypesByGroup(): array
     {
         $groupedFields = [];
-        $standardLabel = 'standard';
-        $specialLabel = 'special';
-        $relationsLabel = 'relations';
-        $layoutElements = 'layoutElements';
+        $standardLabel = 'Common';
+        $specialLabel = 'Reference';
+        $relationsLabel = 'Relations';
+        $layoutElements = 'Layout';
 
         // Standard
         $groupedFields[$standardLabel][] = SingleLineFormField::class;
