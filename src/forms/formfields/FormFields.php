@@ -30,6 +30,7 @@ use BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField;
 use BarrelStrength\Sprout\forms\components\formfields\TagsFormField;
 use BarrelStrength\Sprout\forms\components\formfields\UrlFormField;
 use BarrelStrength\Sprout\forms\components\formfields\UsersFormField;
+use BarrelStrength\Sprout\forms\forms\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\ElementInterface;
@@ -182,48 +183,42 @@ class FormFields extends Component
 
     public function getDefaultFormFieldTypesByGroup(): array
     {
-        $groupedFields = [];
-        $standardLabel = 'Common';
-        $specialLabel = 'Reference';
-        $relationsLabel = 'Relations';
-        $layoutElements = 'Layout';
+        $formFieldTypes = [
+            SingleLineFormField::class,
+            ParagraphFormField::class,
+            MultipleChoiceFormField::class,
+            DropdownFormField::class,
+            CheckboxesFormField::class,
+            MultiSelectFormField::class,
+            FileUploadFormField::class,
+            DateFormField::class,
+            NumberFormField::class,
+            RegularExpressionFormField::class,
+            HiddenFormField::class,
+            InvisibleFormField::class,
 
-        // Standard
-        $groupedFields[$standardLabel][] = SingleLineFormField::class;
-        $groupedFields[$standardLabel][] = ParagraphFormField::class;
-        $groupedFields[$standardLabel][] = MultipleChoiceFormField::class;
-        $groupedFields[$standardLabel][] = DropdownFormField::class;
-        $groupedFields[$standardLabel][] = CheckboxesFormField::class;
-        $groupedFields[$standardLabel][] = MultiSelectFormField::class;
-        $groupedFields[$standardLabel][] = FileUploadFormField::class;
-        $groupedFields[$standardLabel][] = DateFormField::class;
-        $groupedFields[$standardLabel][] = NumberFormField::class;
-        $groupedFields[$standardLabel][] = RegularExpressionFormField::class;
-        $groupedFields[$standardLabel][] = HiddenFormField::class;
-        $groupedFields[$standardLabel][] = InvisibleFormField::class;
+            NameFormField::class,
+            AddressFormField::class,
+            EmailFormField::class,
+            EmailDropdownFormField::class,
+            UrlFormField::class,
+            PhoneFormField::class,
+            OptInFormField::class,
+            GenderFormField::class,
 
-        // Special
-        $groupedFields[$specialLabel][] = NameFormField::class;
-        $groupedFields[$specialLabel][] = AddressFormField::class;
-        $groupedFields[$specialLabel][] = EmailFormField::class;
-        $groupedFields[$specialLabel][] = EmailDropdownFormField::class;
-        $groupedFields[$specialLabel][] = UrlFormField::class;
-        $groupedFields[$specialLabel][] = PhoneFormField::class;
-        $groupedFields[$specialLabel][] = OptInFormField::class;
-        $groupedFields[$specialLabel][] = GenderFormField::class;
+            CategoriesFormField::class,
+            EntriesFormField::class,
+            TagsFormField::class,
+            UsersFormField::class,
 
-        // Relations
-        $groupedFields[$relationsLabel][] = CategoriesFormField::class;
-        $groupedFields[$relationsLabel][] = EntriesFormField::class;
-        $groupedFields[$relationsLabel][] = TagsFormField::class;
-        $groupedFields[$relationsLabel][] = UsersFormField::class;
+            SectionHeadingFormField::class,
+            CustomHtmlFormField::class,
+            PrivateNotesFormField::class,
+        ];
 
-        // UI Fields
-        $groupedFields[$layoutElements][] = SectionHeadingFormField::class;
-        $groupedFields[$layoutElements][] = CustomHtmlFormField::class;
-        $groupedFields[$layoutElements][] = PrivateNotesFormField::class;
-
-        return $groupedFields;
+        return ArrayHelper::index($formFieldTypes, null, static function($type) {
+            return $type::getGroupLabel();
+        });
     }
 
     public function getCustomFields($registeredFields, $sproutFormsFields)

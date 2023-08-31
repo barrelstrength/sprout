@@ -184,17 +184,5 @@ class FormsSettings extends BaseConfig
             ],
         ];
     }
-
-    public function getFieldLayout(): FieldLayout
-    {
-        // If there is a field layout, it's saved with a UID key and we just need the first value
-        if ($fieldLayout = reset($this->fieldLayouts)) {
-            return FieldLayout::createFromConfig($fieldLayout);
-        }
-
-        return new FieldLayout([
-            'type' => self::class,
-        ]);
-    }
 }
 

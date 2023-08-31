@@ -123,16 +123,23 @@ class FormTypesController extends Controller
         $formType->name = Craft::$app->request->getBodyParam('name');
         $formType->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+
+        $fieldLayout->type = $type;
+        $formType->setFieldLayout($fieldLayout);
+
+        $formType->formTemplateOverrideFolder = Craft::$app->request->getBodyParam('formTemplateOverrideFolder');
+        $formType->enableNotificationsTab = Craft::$app->request->getBodyParam('enableNotificationsTab');
+        $formType->enableReportsTab = Craft::$app->request->getBodyParam('enableReportsTab');
+        $formType->enableIntegrationsTab = Craft::$app->request->getBodyParam('enableIntegrationsTab');
+        $formType->enabledFormFieldTypes = Craft::$app->request->getBodyParam('enabledFormFieldTypes');
+
         if (!$formType::isEditable()) {
             return $formType;
         }
 
         $formType->formTemplate = Craft::$app->request->getBodyParam('formTemplate');
-        $formType->formTemplateOverrideFolder = Craft::$app->request->getBodyParam('formTemplateOverrideFolder');
 
-        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
-        $fieldLayout->type = FormElement::class;
-        $formType->setFieldLayout($fieldLayout);
 
         return $formType;
     }

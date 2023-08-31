@@ -129,16 +129,26 @@
 
         <hr>
 
-        {% for groupName, group in formType.getFormFieldFeatures() %}
-            {{ forms.checkboxSelectField({
-                label: '{groupName} Fields'|t('sprout-module-forms', { groupName: groupName }),
-                instructions: 'Select the {groupName} Fields that will be available to add to this form type.'|t('sprout-module-forms', { groupName: groupName }),
-                id: 'enabledFormFields',
-                name: 'enabledFormFields',
-                options: group,
-                values: '*',
-                showAllOption: true,
-            }) }}
+        {% for groupLabel, formFieldTypes in formType.getFormFieldFeatures() %}
+
+            <div class="user-permissions">
+                <h3>{{ '{groupName}'|t('sprout-module-forms', { groupName: groupLabel }) }}</h3>
+                {{ tag('div', {
+                    text: 'Select All',
+                    class: 'select-all'
+                }) }}
+                <div class="checkbox-group">
+                    {% for formFieldType, label in formFieldTypes %}
+                        {{ forms.checkboxField({
+                            label: label,
+                            value: formFieldType,
+                            checked: formType.getFormFieldTypesByType[formFieldType] ?? false,
+                            name: 'enabledFormFieldTypes[]',
+                        }) }}
+                    {% endfor %}
+                </div>
+            </div>
+
         {% endfor %}
 
     </div>
@@ -245,8 +255,6 @@
     <div id="fields" class="hidden">
         {% set fieldLayoutInstructions = "The content fields that can be used in this form type."|t('sprout-module-forms') %}
 
-{#        {% if not formType.isEditable() %}#}
-
         {{ forms.fieldLayoutDesignerField({
             fieldLayout: formType.getFieldLayout(),
             errors: formType.getErrors('fieldLayout'),
@@ -261,5 +269,47 @@
     {{ hiddenInput('type', className(formType)) }}
 
 {% endblock %}
+
+{% css %}
+    .user-permissions h3 {
+    float: left;
+    padding-right: 0.5em;
+    margin: 14px 0.5em 0 !important;
+    margin-left: 0 !important;
+    border-right: 1px solid #eee;
+    }
+
+    .user-permissions ul {
+    clear: both;
+    }
+
+    .user-permissions .checkboxfield {
+    margin: 0;
+    }
+
+    .select-all {
+    color: var(--link-color);
+    cursor: pointer;
+    font-size: .9em;
+    margin: 13px 0;
+    display: inline-block;
+    }
+{% endcss %}
+
+{% js %}
+    let selectLinks = document.querySelectorAll('.select-all');
+
+    selectLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+    // toggle all checkboxes in .checkbox-group div
+    let checkboxes = this.nextElementSibling.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+    checkbox.checked = !checkbox.checked;
+    });
+    // toggle text of .select-all div
+    this.innerText = this.innerText === 'Select All' ? 'Deselect All' : 'Select All';
+    });
+    });
+{% endjs %}
 
 {# {% js "new Craft.HandleGenerator('#name', '#handle');" %} #}

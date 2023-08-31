@@ -6,6 +6,8 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 
 interface FormFieldInterface
 {
+    public static function getGroupLabel(): string;
+
     /**
      * The example HTML input field that displays in the UI when a field is dragged to the form layout editor
      */

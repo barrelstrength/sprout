@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms\components\formfields;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -18,6 +19,11 @@ class PrivateNotesFormField extends Field implements FormFieldInterface
     use FormFieldTrait;
 
     public string $cssClasses = '';
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_LAYOUT);
+    }
 
     public static function displayName(): string
     {

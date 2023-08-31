@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldHelper;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\db\Query;
@@ -30,6 +31,11 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
     public string $cssClasses = '';
 
     public ?string $placeholder = null;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_REFERENCE);
+    }
 
     public static function displayName(): string
     {

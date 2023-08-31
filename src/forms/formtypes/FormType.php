@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\SavableComponent;
+use craft\helpers\ArrayHelper;
 use craft\models\FieldLayout;
 
 abstract class FormType extends SavableComponent implements FormTypeInterface
@@ -16,12 +17,19 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
 
     public ?string $formTemplateOverrideFolder = null;
 
+    public bool $enableNotificationsTab = true;
+
+    public bool $enableReportsTab = true;
+
+    public bool $enableIntegrationsTab = true;
+
+    public array $enabledFormFieldTypes = [];
+
     public ?string $submissionMethod = null;
 
     public ?string $errorDisplayMethod = null;
 
     public bool $enableSaveData = true;
-
     public bool $trackRemoteIp = false;
     public array $allowedAssetVolumes = [];
 
@@ -51,17 +59,20 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         return [];
     }
 
-    public function getFieldLayout(): FieldLayout
+    public function createFieldLayout(): ?FieldLayout
+    {
+        return null;
+    }
+
+    public function getFieldLayout(): ?FieldLayout
     {
         if ($this->_fieldLayout) {
             return $this->_fieldLayout;
         }
 
-        $fieldLayout = new FieldLayout([
-            'type' => FormElement::class,
-        ]);
+        $this->_fieldLayout = $this->createFieldLayout();
 
-        return $this->_fieldLayout = $fieldLayout;
+        return $this->_fieldLayout;
     }
 
     public function setFieldLayout(?FieldLayout $fieldLayout): void
@@ -74,29 +85,34 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         return [
             [
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'features[notifications][enabled]',
-                    'on' => true,
+                    'name' => 'enableNotificationsTab',
+                    'on' => $this->enableNotificationsTab,
                     'small' => true,
                 ]),
                 'heading' => 'Notifications',
             ],
             [
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'features[reports][enabled]',
-                    'on' => true,
+                    'name' => 'enableReportsTab',
+                    'on' => $this->enableReportsTab,
                     'small' => true,
                 ]),
                 'heading' => 'Reports',
             ],
             [
                 'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'features[integrations][enabled]',
-                    'on' => false,
+                    'name' => 'enableIntegrationsTab',
+                    'on' => $this->enableIntegrationsTab,
                     'small' => true,
                 ]),
                 'heading' => 'Integrations',
             ],
         ];
+    }
+
+    public function getFormFieldTypesByType(): array
+    {
+        return array_combine($this->enabledFormFieldTypes, array_fill_keys($this->enabledFormFieldTypes, true));
     }
 
     public function getFormFieldFeatures(): array
@@ -108,10 +124,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         foreach ($formFieldGroups as $formFieldGroupKey => $formFields) {
             foreach ($formFields as $formFieldType) {
                 // add label/value keys to options
-                $options[$formFieldGroupKey][] = [
-                    'label' => $formFieldType::displayName(),
-                    'value' => $formFieldType,
-                ];
+                $options[$formFieldGroupKey][$formFieldType] = $formFieldType::displayName();
             }
         }
 
@@ -125,6 +138,10 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
             'name' => $this->name,
             'formTemplate' => $this->formTemplate,
             'formTemplateOverrideFolder' => $this->formTemplateOverrideFolder,
+            'enableNotificationsTab' => $this->enableNotificationsTab,
+            'enableReportsTab' => $this->enableReportsTab,
+            'enableIntegrationsTab' => $this->enableIntegrationsTab,
+            'enabledFormFieldTypes' => $this->enabledFormFieldTypes,
         ];
 
         $fieldLayout = $this->getFieldLayout();

@@ -298,7 +298,7 @@ class FormsModule extends Module
     {
         return [
             'label' => self::getDisplayName(),
-            'url' => 'sprout/settings/forms',
+            'url' => 'sprout/settings/forms/form-types',
             'icon' => self::svg('icons/icon.svg'),
         ];
     }

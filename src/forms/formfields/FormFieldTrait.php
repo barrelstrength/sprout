@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\forms\formfields;
 
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\forms\GroupLabel;
 use BarrelStrength\Sprout\forms\forms\RenderingOptionsHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
@@ -17,6 +18,11 @@ trait FormFieldTrait
     protected array $compatibleCraftFields = [];
 
     protected string $originalTemplatesPath;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_CUSTOM);
+    }
 
     public function allowRequired(): bool
     {

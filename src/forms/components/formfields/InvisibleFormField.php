@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\forms\Forms;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -27,6 +28,11 @@ class InvisibleFormField extends Field implements FormFieldInterface, Previewabl
     public bool $hideValue = false;
 
     public ?string $value = null;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_COMMON);
+    }
 
     public static function displayName(): string
     {

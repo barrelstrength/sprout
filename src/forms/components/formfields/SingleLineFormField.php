@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms\components\formfields;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fields\Dropdown as CraftDropdown;
@@ -25,6 +26,11 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
     public ?int $charLimit = null;
 
     public ?string $columnType = Schema::TYPE_TEXT;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_COMMON);
+    }
 
     public static function displayName(): string
     {

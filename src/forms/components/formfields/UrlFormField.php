@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldHelper;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\ElementInterface;
@@ -26,6 +27,11 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
     public ?string $customPattern = null;
 
     public ?string $placeholder = null;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_REFERENCE);
+    }
 
     public static function displayName(): string
     {

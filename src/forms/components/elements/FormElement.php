@@ -177,12 +177,9 @@ class FormElement extends Element
             return $fieldLayout;
         }
 
+        $formType = $this->getFormType();
         $config = FormsModule::getInstance()->getSettings();
 
-        $contentTabs = $config->getFieldLayout()->getTabs();
-        $contentTab = reset($contentTabs) ?: [];
-
-        $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
         $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
 
         //$twigExpressionMessage2 = 'Message';
@@ -285,10 +282,9 @@ class FormElement extends Element
         $tabs = array_merge(
             [$formBuilderTab],
             $formTypeTabs,
-            [$contentTab],
-            [$notificationsTab],
-            [$reportsTab],
-            [$integrationsTab],
+            $formType->enableNotificationsTab ? [$notificationsTab] : [],
+            $formType->enableReportsTab ? [$reportsTab] : [],
+            $formType->enableIntegrationsTab ? [$integrationsTab] : [],
             [$settingsTab],
         );
 
@@ -918,10 +914,20 @@ class FormElement extends Element
 
         $sourceFields = [];
 
+        $formType = $this->getFormType();
+
         foreach ($fieldTypesByGroup as $groupName => $typesInGroup) {
             foreach ($typesInGroup as $type) {
+
+                // if $type is in not array $formType->enabledFormFieldTypes, unset and continue
+                if (!in_array($type, $formType->enabledFormFieldTypes, true)) {
+                    unset($formFields[$type]);
+                    continue;
+                }
+
                 $field = $formFields[$type];
                 unset($formFields[$type]);
+
                 $fieldData = FormBuilderHelper::getFieldUiSettings($field);
                 $fieldData['groupName'] = $groupName; // Form Field Sidebar UI specific
                 $sourceFields[] = $fieldData;

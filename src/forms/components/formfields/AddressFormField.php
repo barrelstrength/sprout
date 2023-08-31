@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\forms\fields\address\AddressFieldTrait;
 use BarrelStrength\Sprout\forms\fields\address\CountryRepositoryHelper;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use CommerceGuys\Addressing\Address as CommerceGuysAddress;
 use CommerceGuys\Addressing\AddressFormat\AddressFormatRepository;
@@ -29,6 +30,11 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
     use AddressFieldTrait;
 
     public string $cssClasses = '';
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_REFERENCE);
+    }
 
     public static function displayName(): string
     {

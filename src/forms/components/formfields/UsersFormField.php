@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms\components\formfields;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\fields\Users as CraftUsers;
@@ -18,6 +19,11 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
     public string $usernameFormat = 'fullName';
 
     protected string $settingsTemplate = 'sprout-module-forms/_components/fields/Users/settings';
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_RELATIONS);
+    }
 
     public function getSvgIconPath(): string
     {

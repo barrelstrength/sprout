@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\forms\Forms;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -22,6 +23,11 @@ class HiddenFormField extends Field implements FormFieldInterface, PreviewableFi
     public bool $allowEdits = false;
 
     public ?string $value = '';
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_COMMON);
+    }
 
     public static function displayName(): string
     {

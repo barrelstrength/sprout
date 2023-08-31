@@ -178,28 +178,28 @@
 
             {# Sidebar #}
             <div id="form-source-fields">
-                <h6>{{ 'Common Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('Common')">
+                <h6 x-show="getFieldsByGroup('Common Fields').length">{{ 'Common Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Common Fields')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6>{{ 'Reference Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('Reference')">
+                <h6 x-show="getFieldsByGroup('Reference Fields').length">{{ 'Reference Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Reference Fields')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6>{{ 'Relations Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('Relations')">
+                <h6 x-show="getFieldsByGroup('Relations Fields').length">{{ 'Relations Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Relations Fields')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6 x-show="getFieldsByGroup('Layout').length">{{ 'Layout Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('Layout')">
+                <h6 x-show="getFieldsByGroup('Layout Fields').length">{{ 'Layout Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Layout Fields')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
 
-                <h6 x-show="getFieldsByGroup('Custom').length">{{ 'Custom Fields'|t('sprout-module-forms') }}</h6>
-                <template x-for="field in getFieldsByGroup('Custom')">
+                <h6 x-show="getFieldsByGroup('Custom Fields').length">{{ 'Custom Fields'|t('sprout-module-forms') }}</h6>
+                <template x-for="field in getFieldsByGroup('Custom Fields')">
                     <div x-data="FormField(field)" x-html="sourceHtml"></div>
                 </template>
             </div>

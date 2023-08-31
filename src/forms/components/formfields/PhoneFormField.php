@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
+use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -31,6 +32,11 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
     public ?string $country = 'US';
 
     public ?string $placeholder = null;
+
+    public static function getGroupLabel(): string
+    {
+        return GroupLabel::label(GroupLabel::GROUP_REFERENCE);
+    }
 
     public static function displayName(): string
     {
