@@ -79,17 +79,20 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
         }
     }
 
-    public function getFieldLayout(): FieldLayout
+    public function createFieldLayout(): ?FieldLayout
+    {
+        return null;
+    }
+
+    public function getFieldLayout(): ?FieldLayout
     {
         if ($this->_fieldLayout) {
             return $this->_fieldLayout;
         }
 
-        $fieldLayout = new FieldLayout([
-            'type' => static::class,
-        ]);
+        $this->_fieldLayout = $this->createFieldLayout();
 
-        return $this->_fieldLayout = $fieldLayout;
+        return $this->_fieldLayout;
     }
 
     public function setFieldLayout(?FieldLayout $fieldLayout): void

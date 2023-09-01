@@ -21,17 +21,11 @@ class CustomTemplatesEmailType extends EmailType
         return true;
     }
 
-    public function getFieldLayout(): FieldLayout
+    public function createFieldLayout(): ?FieldLayout
     {
-        if ($this->_fieldLayout) {
-            return $this->_fieldLayout;
-        }
-
-        $fieldLayout = new FieldLayout([
+        return new FieldLayout([
             'type' => self::class,
         ]);
-
-        return $this->_fieldLayout = $fieldLayout;
     }
 }
 

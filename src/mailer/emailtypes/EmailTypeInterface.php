@@ -8,5 +8,5 @@ interface EmailTypeInterface
 {
     public static function isEditable(): bool;
 
-    public function getFieldLayout(): FieldLayout;
+    public function getFieldLayout(): ?FieldLayout;
 }

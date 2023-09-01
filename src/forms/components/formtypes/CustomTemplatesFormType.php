@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms\components\formtypes;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\models\FieldLayout;
 
 /**
  * The CustomFormType is used to dynamically create a FormType
@@ -31,6 +32,13 @@ class CustomTemplatesFormType extends FormType
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
 
+    }
+
+    public function createFieldLayout(): ?FieldLayout
+    {
+        return new FieldLayout([
+            'type' => self::class,
+        ]);
     }
 }
 

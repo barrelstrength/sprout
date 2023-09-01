@@ -39,12 +39,8 @@ class FormSummaryEmailType extends EmailType
         $event->fields[] = DefaultMessageField::class;
     }
 
-    public function getFieldLayout(): FieldLayout
+    public function createFieldLayout(): ?FieldLayout
     {
-        if ($this->_fieldLayout) {
-            return $this->_fieldLayout;
-        }
-
         $fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);

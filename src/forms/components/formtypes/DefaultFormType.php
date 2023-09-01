@@ -29,14 +29,10 @@ class DefaultFormType extends FormType
 
     }
 
-    public function getFieldLayout(): FieldLayout
+    public function createFieldLayout(): ?FieldLayout
     {
-        if ($this->_fieldLayout) {
-            return $this->_fieldLayout;
-        }
-
         $fieldLayout = new FieldLayout([
-            'type' => static::class,
+            'type' => self::class,
         ]);
 
         $fieldLayoutTab = new FieldLayoutTab([
@@ -48,6 +44,7 @@ class DefaultFormType extends FormType
 
         $fieldLayoutTab->setElements([
             new TextField([
+                'mandatory' => true,
                 'label' => Craft::t('sprout-module-forms', 'Submit Button'),
                 'instructions' => Craft::t('sprout-module-forms', 'The text displayed for the submit button.'),
                 'attribute' => 'submitButtonText',
