@@ -2,12 +2,11 @@
 
 namespace BarrelStrength\Sprout\mailer\components\emailtypes;
 
+use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use Craft;
-use craft\fieldlayoutelements\Tip;
-use craft\helpers\StringHelper;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\models\FieldLayout;
-use craft\models\FieldLayoutTab;
 
 class CustomTemplatesEmailType extends EmailType
 {
@@ -21,11 +20,18 @@ class CustomTemplatesEmailType extends EmailType
         return true;
     }
 
+    public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
+    {
+        $event->fields[DefaultMessageField::class] = DefaultMessageField::class;
+    }
+
     public function createFieldLayout(): ?FieldLayout
     {
-        return new FieldLayout([
+        $fieldLayout = new FieldLayout([
             'type' => self::class,
         ]);
+
+        return $fieldLayout;
     }
 }
 

@@ -8,8 +8,6 @@ use craft\fieldlayoutelements\TextareaField;
 
 class DefaultMessageField extends TextareaField
 {
-    public bool $mandatory = true;
-
     public string $attribute = 'defaultMessage';
 
     public string|array|null $class = 'nicetext fullwidth';

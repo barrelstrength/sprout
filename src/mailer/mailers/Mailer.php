@@ -36,15 +36,18 @@ abstract class Mailer extends SavableComponent implements MailerInterface
         return [];
     }
 
+    public function createFieldLayout(): ?FieldLayout
+    {
+        return null;
+    }
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->_fieldLayout) {
             return $this->_fieldLayout;
         }
 
-        $fieldLayout = new FieldLayout([
-            'type' => static::class,
-        ]);
+        $fieldLayout = $this->createFieldLayout();
 
         return $this->_fieldLayout = $fieldLayout;
     }

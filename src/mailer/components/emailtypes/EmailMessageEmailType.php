@@ -37,6 +37,12 @@ class EmailMessageEmailType extends EmailType
             'uid' => StringHelper::UUID(),
         ]);
 
+        $fieldLayoutTab->setElements([
+            new DefaultMessageField([
+                'mandatory' => true,
+            ]),
+        ]);
+
         $fieldLayout->setTabs([
             $fieldLayoutTab,
         ]);

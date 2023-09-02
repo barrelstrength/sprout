@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\OptionalDefaultMessageField;
 use Craft;
 use craft\base\SavableComponent;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -73,10 +72,7 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-        // @todo - for some reason this registers twice, so we can probably fix this logic somewhere else
-        if (!in_array(OptionalDefaultMessageField::class, $event->fields, true)) {
-            $event->fields[] = OptionalDefaultMessageField::class;
-        }
+
     }
 
     public function createFieldLayout(): ?FieldLayout
