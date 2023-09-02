@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerCond
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
+use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
@@ -407,8 +408,8 @@ class EmailElement extends Element implements EmailPreviewInterface
         //    return $this->_fieldLayout;
         //}
 
-        $twigExpressionMessage1 = Craft::t('sprout-module-mailer', 'This can use a Twig Expression and reference Notification Event variables.');
-        $twigExpressionMessage2 = Craft::t('sprout-module-mailer', 'This can use a Twig Expression and reference Notification Event and Recipient variables.');
+        $twigExpressionMessage1 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event variables.');
+        $twigExpressionMessage2 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
 
         $fieldLayout = new FieldLayout([
             'type' => static::class,
@@ -418,26 +419,22 @@ class EmailElement extends Element implements EmailPreviewInterface
         /** @var Element|string $emailElementType */
         $emailElementType = $emailVariant::elementType();
 
-        $emailTypes = EmailTypeHelper::getEmailTypes();
+        //$emailTypes = EmailTypeHelper::getEmailTypes();
+        $emailType = $this->getEmailType();
+        $emailTypeTabs = $emailType->getFieldLayout()?->getTabs() ?? [];
 
-        $emailTypeTabs = array_map(static function(EmailType $emailType) use ($emailElementType, $fieldLayout, $twigExpressionMessage2) {
-            $elementCondition = $emailElementType::createCondition();
-            $rule = new EmailTypeConditionRule();
-            $rule->setValues([$emailType->uid]);
-            $elementCondition->addConditionRule($rule);
-
-            $tab = $emailType->getFieldLayout()->getTabs()[0] ?? null;
-            $tab->layout = $fieldLayout;
-            $tab->elementCondition = $elementCondition;
-
+        // Loop through the fields of each email type tab and add a tip to the default message field
+        $emailTypeTabsWithMessages = array_map(static function(FieldLayoutTab $tab) use ($twigExpressionMessage2) {
+            $newElements = [];
             foreach ($tab->elements as $element) {
-                if ($element instanceof TextareaField && $element->attribute === 'defaultMessage') {
+                if ($element instanceof TextareaField && $element->attribute === DefaultMessageField::FIELD_LAYOUT_ATTRIBUTE) {
                     $element->tip = $twigExpressionMessage2;
                 }
+                $newElements[] = $element;
             }
-
+            $tab->setElements($newElements);
             return $tab;
-        }, $emailTypes);
+        }, $emailTypeTabs);
 
         $mailers = MailerHelper::getMailers();
 
@@ -510,7 +507,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             [$subjectTab],
             $mailerTabs,
             [$emailVariant::getFieldLayoutTab($fieldLayout)],
-            $emailTypeTabs,
+            $emailTypeTabsWithMessages,
         );
 
         $fieldLayout->setTabs($newTabs);

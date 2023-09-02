@@ -182,20 +182,6 @@ class FormElement extends Element
 
         $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
 
-        //$twigExpressionMessage2 = 'Message';
-        //
-        //$themeTabs = array_map(static function($tab) use ($twigExpressionMessage2) {
-        //    foreach ($tab->elements as $element) {
-        //        if ($element instanceof TextareaField && $element->attribute === 'defaultMessage') {
-        //            $element->tip = $twigExpressionMessage2;
-        //        }
-        //    }
-        //
-        //    return $tab;
-        //}, $themeTabs);
-
-        //\Craft::dd(reset($themeTabs));
-
         $formBuilderTab = new FieldLayoutTab();
         $formBuilderTab->layout = $fieldLayout;
         $formBuilderTab->name = Craft::t('sprout-module-forms', 'Layout');

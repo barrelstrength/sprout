@@ -134,24 +134,18 @@
             instructions: fieldLayoutInstructions,
             fieldLayout: emailType.getFieldLayout(),
             required: true,
-            customizableTabs: emailType.isEditable(),
+            customizableTabs: true,
             customizableUi: true,
             errors: emailType.getErrors('fieldLayout'),
         }) }}
 
-        {% if not emailType.isEditable() %}
-            {{ sproutCp.fieldLayoutDesignerUiOnlyJs() }}
-        {% endif %}
-
     </div>
-
 
     {{ actionInput('sprout-module-mailer/email-types/save') }}
     {{ redirectInput('sprout/settings/email-types') }}
 
     {{ hiddenInput('uid', emailType.uid) }}
     {{ hiddenInput('type', className(emailType)) }}
-
 
 {% endblock %}
 
