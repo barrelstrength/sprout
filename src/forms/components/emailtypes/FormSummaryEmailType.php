@@ -15,7 +15,7 @@ use craft\models\FieldLayoutTab;
 
 class FormSummaryEmailType extends EmailType
 {
-    public bool $displayPreheaderText = true;
+    public bool $displayPreheaderText = false;
 
     public ?string $htmlEmailTemplate = '@Sprout/TemplateRoot/emails/submission/email.twig';
 
@@ -36,7 +36,7 @@ class FormSummaryEmailType extends EmailType
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-        $event->fields[] = DefaultMessageField::class;
+        $event->fields[DefaultMessageField::class] = DefaultMessageField::class;
     }
 
     public function createFieldLayout(): ?FieldLayout
@@ -53,6 +53,7 @@ class FormSummaryEmailType extends EmailType
         ]);
 
         $fieldLayoutTab->setElements([
+            new DefaultMessageField(),
             new Tip([
                 'style' => Tip::STYLE_TIP,
                 'tip' => Craft::t('sprout-module-mailer', 'The body of this email will include a summary of the form submission.'),

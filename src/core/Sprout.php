@@ -57,7 +57,6 @@ class Sprout extends Module
         'sprout-email' => 'BarrelStrength\SproutEmail\SproutEmail',
         'sprout-forms' => 'BarrelStrength\SproutForms\SproutForms',
         'sprout-redirects' => 'BarrelStrength\SproutRedirects\SproutRedirects',
-        'sprout-sent-email' => 'BarrelStrength\SproutSentEmail\SproutSentEmail',
         'sprout-seo' => 'BarrelStrength\SproutSeo\SproutSeo',
         'sprout-sitemaps' => 'BarrelStrength\SproutSitemaps\SproutSitemaps',
     ];

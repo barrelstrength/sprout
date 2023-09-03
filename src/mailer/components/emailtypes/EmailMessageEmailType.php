@@ -21,7 +21,7 @@ class EmailMessageEmailType extends EmailType
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-        $event->fields[] = DefaultMessageField::class;
+        $event->fields[DefaultMessageField::class] = DefaultMessageField::class;
     }
 
     public function createFieldLayout(): ?FieldLayout
