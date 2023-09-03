@@ -68,7 +68,16 @@ class RelationsHelper
         ]);
         Event::trigger(static::class, self::EVENT_ADD_SOURCE_ELEMENT_RELATIONS, $event);
 
-        return array_merge([], ...$relations, ...$event->sourceElements);
+        $elements = array_merge([], ...$relations, ...$event->sourceElements);
+
+        return array_map(static function($element) {
+            return [
+                'name' => $element->title,
+                'cpEditUrl' => $element->getCpEditUrl(),
+                'type' => $element::displayName(),
+                'actionUrl' => $element->getCpEditUrl(),
+            ];
+        }, $elements);
     }
 
     public static function getElementRelationsById($elementId, array $excludeSourceElementTypes = [], array $onlySourceElementTypes = []): array
