@@ -223,6 +223,13 @@ class DataSetElement extends Element
         return $this->name;
     }
 
+    protected static function defineFieldLayouts(string $source): array
+    {
+        $settings = DataStudioModule::getInstance()->getSettings();
+
+        return [$settings->getFieldLayout()];
+    }
+
     public function getFieldLayout(): ?FieldLayout
     {
         $settings = DataStudioModule::getInstance()->getSettings();

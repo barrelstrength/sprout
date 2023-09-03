@@ -6,6 +6,9 @@ use craft\elements\conditions\ElementCondition;
 
 class RedirectCondition extends ElementCondition
 {
+    // Redirects only have a single, global field layout
+    // This is necessary for RedirectElement::defineFieldLayouts() to display custom fields when using custom sources
+    public ?string $sourceKey = '*';
 
     protected function conditionRuleTypes(): array
     {

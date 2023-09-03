@@ -313,6 +313,13 @@ class RedirectElement extends Element
         return parent::__toString();
     }
 
+    protected static function defineFieldLayouts(string $source): array
+    {
+        $settings = RedirectsModule::getInstance()->getSettings();
+
+        return [$settings->getFieldLayout()];
+    }
+
     public function getFieldLayout(): ?FieldLayout
     {
         $settings = RedirectsModule::getInstance()->getSettings();
