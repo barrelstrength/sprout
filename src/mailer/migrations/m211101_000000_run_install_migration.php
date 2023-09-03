@@ -68,7 +68,7 @@ class m211101_000000_run_install_migration extends Migration
                 'subjectLine' => $this->string(),
                 'preheaderText' => $this->string(),
                 'defaultMessage' => $this->text(),
-                'type' => $this->string(),
+                'emailVariantType' => $this->string(),
                 'emailVariantSettings' => $this->text(),
                 'mailerUid' => $this->uid(),
                 'mailerInstructionsSettings' => $this->text(),
@@ -79,7 +79,7 @@ class m211101_000000_run_install_migration extends Migration
             ]);
 
             $this->createIndex(null, self::EMAILS_TABLE, ['subjectLine']);
-            $this->createIndex(null, self::EMAILS_TABLE, ['type']);
+            $this->createIndex(null, self::EMAILS_TABLE, ['emailVariantType']);
             $this->createIndex(null, self::EMAILS_TABLE, ['mailerUid']);
             $this->createIndex(null, self::EMAILS_TABLE, ['emailTypeUid']);
 
