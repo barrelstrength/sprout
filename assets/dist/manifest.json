@@ -130,15 +130,15 @@
     "isEntry": true,
     "src": "forms-frontend/SubmitHandler.js"
   },
-  "forms/FormThemesSettings.js": {
-    "file": "assets/formThemes-900f0352.js",
+  "forms/FormTypesSettings.js": {
+    "file": "assets/formTypes-d0b78584.js",
     "isEntry": true,
-    "src": "forms/FormThemesSettings.js"
+    "src": "forms/FormTypesSettings.js"
   },
-  "mailer/EmailThemesSettings.js": {
-    "file": "assets/emailThemes-4f0014f1.js",
+  "mailer/EmailTypesSettings.js": {
+    "file": "assets/emailTypes-8a448b2a.js",
     "isEntry": true,
-    "src": "mailer/EmailThemesSettings.js"
+    "src": "mailer/EmailTypesSettings.js"
   },
   "meta/Meta.css": {
     "file": "assets/Meta-0704b2ba.css",

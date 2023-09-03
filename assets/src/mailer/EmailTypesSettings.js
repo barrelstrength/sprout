@@ -19,7 +19,7 @@ class EmailTypesSettings {
                 },
             },
             {
-                name: 'emailType',
+                name: 'emailTypeType',
                 title: Craft.t('sprout-module-mailer', 'Email Type'),
             },
         ];
