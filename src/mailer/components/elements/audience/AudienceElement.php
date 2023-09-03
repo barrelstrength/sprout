@@ -257,7 +257,7 @@ class AudienceElement extends Element
 
     public function getTableAttributeHtml(string $attribute): string
     {
-        $audience = $this->getAudienceType();
+        $audienceType = $this->getAudienceType();
 
         switch ($attribute) {
             case 'handle':
@@ -265,7 +265,7 @@ class AudienceElement extends Element
 
             case 'manage':
 
-                return $audience->getColumnAttributeHtml();
+                return $audienceType->getColumnAttributeHtml();
         }
 
         return parent::getTableAttributeHtml($attribute);
