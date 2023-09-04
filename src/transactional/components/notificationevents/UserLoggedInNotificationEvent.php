@@ -19,12 +19,12 @@ class UserLoggedInNotificationEvent extends NotificationEvent implements Element
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-transactional', 'When a user is logged in');
+        return Craft::t('sprout-module-transactional', 'When a user logs in');
     }
 
     public function getDescription(): string
     {
-        return Craft::t('sprout-module-transactional', 'Triggered when a user is logged in.');
+        return Craft::t('sprout-module-transactional', 'Triggered when a user logs in.');
     }
 
     public static function conditionType(): string

@@ -1,6 +1,6 @@
 #### {{ "Notification Event Variables"|t('sprout-module-transactional') }}
 
-<pre><code>{% verbatim %}{user.title}
+<pre><code>{% verbatim %}{user.getFullName()}
 {user.getCpEditUrl()}
 {user.customFieldHandle}{% endverbatim %}</code></pre>
 

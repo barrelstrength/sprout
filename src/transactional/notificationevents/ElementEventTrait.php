@@ -52,7 +52,6 @@ trait ElementEventTrait
 
         $condition = Craft::$app->conditions->createCondition($this->conditionRules);
         $condition->elementType = $element::class;
-        $condition->matchElement($element);
 
         return $condition->matchElement($element);
     }

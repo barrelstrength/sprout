@@ -165,11 +165,13 @@ class NotificationEvents extends Component
             ->status(Element::STATUS_ENABLED)
             ->column();
 
-        return array_map(static function($emailVariantSettings) {
+        $eventTypes = array_map(static function($emailVariantSettings) {
             $settings = Json::decodeIfJson($emailVariantSettings);
 
             return $settings['eventId'] ?? null;
         }, $enabledNotificationEmails);
+
+        return array_unique($eventTypes);
     }
 
     public function getPossibleNotificationEventEmails($notificationEventType): array
