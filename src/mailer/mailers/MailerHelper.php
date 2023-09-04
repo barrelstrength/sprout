@@ -150,11 +150,4 @@ class MailerHelper
 
         return $mailer;
     }
-
-    public static function getDefaultMailer()
-    {
-        $mailers = self::getMailers();
-
-        return reset($mailers);
-    }
 }

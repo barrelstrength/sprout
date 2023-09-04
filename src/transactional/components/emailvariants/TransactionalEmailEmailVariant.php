@@ -65,13 +65,13 @@ class TransactionalEmailEmailVariant extends EmailVariant
         $emailType = $email->getEmailType();
 
         if ($emailType->mailerUid === MailerHelper::CRAFT_MAILER_SETTINGS) {
-            return self::getCraftDefaultMailer();
+            return self::getDefaultMailer();
         }
 
         return MailerHelper::getMailerByUid($emailType->mailerUid);
     }
 
-    public static function getCraftDefaultMailer(): Mailer
+    public static function getDefaultMailer(): Mailer
     {
         $mailSettings = App::mailSettings();
 

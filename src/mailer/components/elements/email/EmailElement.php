@@ -239,12 +239,12 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $this->_mailer;
         }
 
-        $emailVariantSettings = $this->getEmailVariant();
+        $emailVariant = $this->getEmailVariant();
 
-        $mailer = $emailVariantSettings->getMailer($this);
+        $mailer = $emailVariant->getMailer($this);
 
         if (!$mailer) {
-            return MailerHelper::getDefaultMailer();
+            return $emailVariant::getDefaultMailer();
         }
 
         return $mailer;

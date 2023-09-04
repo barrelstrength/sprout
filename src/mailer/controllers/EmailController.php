@@ -69,7 +69,7 @@ class EmailController extends Controller
             throw new NotFoundHttpException('No email variant found.');
         }
 
-        $defaultMailer = MailerHelper::getDefaultMailer();
+        $defaultMailer = $emailVariant::getDefaultMailer();
 
         $email->emailVariantType = $emailVariant::class;
         $email->mailerUid = $defaultMailer->uid ?? null;
