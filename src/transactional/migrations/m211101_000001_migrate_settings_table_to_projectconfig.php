@@ -111,34 +111,22 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         return $tab['id'];
                     }, $oldTabs);
 
-                    $mergedLayoutElements = [];
-
-                    // Merge all layout tabs into one
-                    foreach ($oldTabs as $fieldLayoutTab) {
-                        $layoutElements = Json::decode($fieldLayoutTab['elements']);
-                        if (!$layoutElements) {
-                            continue;
-                        }
-                        foreach ($layoutElements as $layoutElement) {
-                            $mergedLayoutElements[] = $layoutElement;
-                        }
-                    }
-
+                    $newTabs = [];
                     $newFieldLayout = new FieldLayout([
                         'type' => self::EMAIL_ELEMENT_TYPE,
                     ]);
-                    $newTab = new FieldLayoutTab([
-                        'layout' => $newFieldLayout,
-                        'name' => 'Content',
-                    ]);
-                    $newTab->setElements($mergedLayoutElements);
+                    foreach ($oldTabs as $fieldLayoutTab) {
+                        $newTab = new FieldLayoutTab([
+                            'layout' => $newFieldLayout,
+                            'name' => $fieldLayoutTab['name'],
+                        ]);
+                        $layoutElements = Json::decode($fieldLayoutTab['elements']);
+                        $newTab->setElements($layoutElements);
+                        $newTabs[] = $newTab;
+                    }
 
-                    $newFieldLayout->setTabs([$newTab]);
-
+                    $newFieldLayout->setTabs($newTabs);
                     $fieldLayout = $newFieldLayout;
-                    //$fieldLayouts = [
-                    //    $newFieldLayout->uid => $newFieldLayout->getConfig(),
-                    //];
 
                     Craft::$app->getDb()->createCommand()
                         ->delete(Table::FIELDLAYOUTFIELDS, ['id' => $oldFieldLayoutTabIds])
