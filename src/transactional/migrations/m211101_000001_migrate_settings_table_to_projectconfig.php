@@ -30,6 +30,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
+    public const CRAFT_MAILER_SETTINGS_UID = 'craft';
+
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
@@ -136,6 +138,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
                 $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
                     'name' => 'Custom Templates',
+                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
                     'htmlEmailTemplate' => $email['emailTemplateId'],
                     'fieldLayout' => $fieldLayout,
                 ]);

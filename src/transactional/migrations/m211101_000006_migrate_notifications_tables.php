@@ -16,7 +16,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
-    public const CRAFT_MAILER_SETTINGS = 'craft';
+    public const CRAFT_MAILER_SETTINGS_UID = 'craft';
 
     public const EMAIL_MESSAGE_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType';
     public const FORM_SUMMARY_EMAIL_TYPE = 'BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType';
@@ -118,7 +118,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $listSettings = Json::decode($rows[$key]['listSettings'] ?? '[]');
                 $audienceIds = $listSettings['listIds'] ?? [];
 
-                $rows[$key]['mailerUid'] = self::CRAFT_MAILER_SETTINGS;
+                $rows[$key]['mailerUid'] = self::CRAFT_MAILER_SETTINGS_UID;
                 $rows[$key]['mailerInstructionsSettings'] = Json::encode([
                     'sender' => $sender,
                     'replyToEmail' => $rows[$key]['replyToEmail'],
@@ -358,7 +358,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 // case 'BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent':
                 // No Settings or Manual migration. Return no settings.
                 return [];
-                break;
         }
 
         if (!empty($sendRule) && $sendRule !== '*') {
