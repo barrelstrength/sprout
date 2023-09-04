@@ -45,10 +45,6 @@ class Uninstall extends Migration
         $this->delete(Table::FIELDS, ['type' => FormsRelationField::class]);
         $this->delete(Table::FIELDS, ['type' => SubmissionsRelationField::class]);
 
-        $this->delete(SproutTableCore::SOURCE_GROUPS, [
-            'type' => FormElement::class,
-        ]);
-
         // Order matters
         $this->dropTableIfExists(SproutTable::FORM_INTEGRATIONS_LOG);
         $this->dropTableIfExists(SproutTable::FORM_INTEGRATIONS);

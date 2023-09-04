@@ -21,10 +21,6 @@ class Uninstall extends Migration
 
         $this->delete(Table::ELEMENTS, ['type' => DataSetElement::class]);
 
-        $this->delete(SproutTableCore::SOURCE_GROUPS, [
-            'type' => DataSetElement::class,
-        ]);
-
         // Order matters
         $this->dropTableIfExists(SproutTable::DATASETS);
 

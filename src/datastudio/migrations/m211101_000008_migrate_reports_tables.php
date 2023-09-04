@@ -14,55 +14,15 @@ class m211101_000008_migrate_reports_tables extends Migration
 {
     public const DATASETS_TABLE = '{{%sprout_datasets}}';
 
-    public const SOURCE_GROUPS_TABLE = '{{%sprout_source_groups}}';
-
     public const OLD_DATASOURCES_TABLE = '{{%sproutreports_datasources}}';
     public const OLD_REPORTS_TABLE = '{{%sproutreports_reports}}';
-    public const OLD_REPORTS_GROUPS_TABLE = '{{%sproutreports_reportgroups}}';
 
     public const DATA_SET_ELEMENT_CLASS = 'BarrelStrength\Sprout\datastudio\components\elements\DataSetElement';
 
     public function safeUp(): void
     {
-        $newSourceGroupIds = [];
-
-        $cols = [
-            'id',
-            'name',
-            'dateCreated',
-            'dateUpdated',
-            'uid',
-        ];
-
-        if ($this->getDb()->tableExists(self::OLD_REPORTS_GROUPS_TABLE)) {
-            $rows = (new Query())
-                ->select($cols)
-                ->from([self::OLD_REPORTS_GROUPS_TABLE])
-                ->all();
-
-            foreach ($rows as $row) {
-                $row['type'] = self::DATA_SET_ELEMENT_CLASS;
-
-                // Don't insert old ID since we're merging multiple things into Source Groups
-                $oldId = $row['id'];
-                unset($row['id']);
-
-                $this->insert(self::SOURCE_GROUPS_TABLE, $row);
-                $newSourceGroupId = $this->db->getLastInsertID(self::SOURCE_GROUPS_TABLE);
-
-                $this->update(self::OLD_REPORTS_TABLE, [
-                    'groupId' => $newSourceGroupId,
-                ], [
-                    'groupId' => $oldId,
-                ], [], false);
-
-                $newSourceGroupIds[] = $newSourceGroupId;
-            }
-        }
-
         $oldTableCols = [
             '[[sproutreports_reports.id]] AS id',
-            '[[sproutreports_reports.groupId]] AS groupId',
             '[[sproutreports_reports.name]] AS name',
             '[[sproutreports_reports.nameFormat]] AS nameFormat',
             '[[sproutreports_reports.handle]] AS handle',
@@ -82,7 +42,6 @@ class m211101_000008_migrate_reports_tables extends Migration
 
         $newTableCols = [
             'id',
-            'groupId',
             'name',
             'nameFormat',
             'handle',
@@ -116,9 +75,6 @@ class m211101_000008_migrate_reports_tables extends Migration
                 ->all();
 
             foreach ($rows as $key => $row) {
-                if (!in_array($row['groupId'], $newSourceGroupIds, true)) {
-                    $rows[$key]['groupId'] = null;
-                }
                 $rows[$key]['allowHtml'] = (bool)($row['allowHtml'] ?? false);
 
                 if (isset($dataSourcesTypes[$row['dataSourceId']])) {

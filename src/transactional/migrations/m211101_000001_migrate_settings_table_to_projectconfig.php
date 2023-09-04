@@ -116,11 +116,14 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         'type' => self::EMAIL_ELEMENT_TYPE,
                     ]);
                     foreach ($oldTabs as $fieldLayoutTab) {
+                        $layoutElements = Json::decode($fieldLayoutTab['elements']);
+                        if (!$layoutElements) {
+                            continue;
+                        }
                         $newTab = new FieldLayoutTab([
                             'layout' => $newFieldLayout,
                             'name' => $fieldLayoutTab['name'],
                         ]);
-                        $layoutElements = Json::decode($fieldLayoutTab['elements']);
                         $newTab->setElements($layoutElements);
                         $newTabs[] = $newTab;
                     }
