@@ -69,4 +69,5 @@ return [
     'Module Name' => 'Module Name',
     'Type' => 'Type',
     'Title' => 'Title',
+    'Field Layout' => 'Field Layout'
 ];

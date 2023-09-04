@@ -51,4 +51,9 @@ return [
     'Notification Event' => 'Notification Event',
     'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.' => 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.',
     'Large file attachments may cause Email Notifications to end up in spam filters or not be sent at all. Alternatively, consider sending Notification Emails with a link to the assets you wish to share.' => 'Large file attachments may cause Email Notifications to end up in spam filters or not be sent at all. Alternatively, consider sending Notification Emails with a link to the assets you wish to share.',
+    'Triggered when a user logs in.' => 'Triggered when a user logs in.',
+    'When a user logs in' => 'When a user logs in',
+    'Delete email types' => 'Delete email types',
+    'Create email types' => 'Create email types',
+    'Craft Default Mailer' => 'Craft Default Mailer'
 ];

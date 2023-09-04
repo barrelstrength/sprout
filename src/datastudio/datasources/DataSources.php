@@ -75,11 +75,8 @@ class DataSources extends Component
 
         $types = array_filter($types, static function($type) use ($currentUser) {
             $dataSourcePermission = DataStudioModule::p('editDataSet:' . $type);
-            if (!$currentUser->can($dataSourcePermission) || !class_exists($type)) {
-                return false;
-            }
 
-            return true;
+            return class_exists($type) && $currentUser->can($dataSourcePermission);
         });
 
         uasort($types, static function($a, $b): int {

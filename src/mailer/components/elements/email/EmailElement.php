@@ -436,26 +436,7 @@ class EmailElement extends Element implements EmailPreviewInterface
             return $tab;
         }, $emailTypeTabs);
 
-        $mailers = MailerHelper::getMailers();
-
-        $mailerTabs = array_map(static function($mailer) use ($emailElementType, $fieldLayout, $twigExpressionMessage1) {
-            $elementCondition = $emailElementType::createCondition();
-            $rule = new MailerConditionRule();
-            $rule->setValues([$mailer->uid]);
-            $elementCondition->addConditionRule($rule);
-
-            $tab = $mailer->getFieldLayout()->getTabs()[0] ?? [];
-            $tab->layout = $fieldLayout;
-            $tab->elementCondition = $elementCondition;
-
-            foreach ($tab->elements as $element) {
-                if ($element instanceof ToField) {
-                    $element->tip = $twigExpressionMessage1;
-                }
-            }
-
-            return $tab;
-        }, $mailers);
+        $mailerTab = $this->getMailer()->getFieldLayout()?->getTabs()[0] ?? [];
 
         $elementCondition = $emailElementType::createCondition();
         $rule = new PreheaderTextConditionRule();
@@ -505,7 +486,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $newTabs = array_merge(
             [$subjectTab],
-            $mailerTabs,
+            [$mailerTab],
             [$emailVariant::getFieldLayoutTab($fieldLayout)],
             $emailTypeTabsWithMessages,
         );

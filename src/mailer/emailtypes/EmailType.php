@@ -202,7 +202,7 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
 
     public function hasAtLeastOneField(): void
     {
-        $tabs = $this->getFieldLayout()->getTabs();
+        $tabs = $this->getFieldLayout()?->getTabs() ?? [];
 
         if (!count($tabs) || !count($tabs[0]->getElements())) {
             $this->addError('fieldLayout', Craft::t('sprout-module-mailer', 'Field layout must have at least one field.'));
@@ -221,7 +221,9 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
             'copyPasteEmailTemplate' => $this->copyPasteEmailTemplate,
         ];
 
-        $fieldLayout = $this->getFieldLayout();
+        if (!$fieldLayout = $this->getFieldLayout()) {
+            return $config;
+        }
 
         if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
             $config['fieldLayouts'] = [

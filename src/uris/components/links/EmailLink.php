@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\uris\components\links;
 
 use BarrelStrength\Sprout\uris\links\AbstractLink;
-use BarrelStrength\Sprout\uris\links\DataLinkTrait;
 use Craft;
 use craft\helpers\Cp;
 
