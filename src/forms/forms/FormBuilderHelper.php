@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\forms\forms;
 
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use Craft;
-use craft\fieldlayoutelements\CustomField;
 use craft\helpers\Component;
 use craft\helpers\StringHelper;
 

@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\forms\migrations;
 
-use BarrelStrength\Sprout\core\db\SproutTable as SproutTableCore;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;

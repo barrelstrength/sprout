@@ -197,7 +197,7 @@ class TransactionalModule extends Module
             ];
 
             $permissions[self::p('editTransactionalEmail:' . $emailType->uid)] = [
-                'label' => Craft::t('sprout-module-transactional', 'Edit "' . $emailType->name .'" email type'),
+                'label' => Craft::t('sprout-module-transactional', 'Edit "' . $emailType->name . '" email type'),
                 'nested' => $nestedPermissions,
             ];
         }

@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\datastudio\migrations;
 
-use BarrelStrength\Sprout\core\db\SproutTable as SproutTableCore;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;

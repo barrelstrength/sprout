@@ -2,12 +2,10 @@
 
 namespace BarrelStrength\Sprout\forms\components\emailtypes;
 
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
-use craft\fieldlayoutelements\TextareaField;
 use craft\fieldlayoutelements\Tip;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;

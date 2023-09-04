@@ -5,9 +5,7 @@ namespace BarrelStrength\Sprout\forms;
 use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\HoneypotCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\JavascriptCaptcha;
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use craft\config\BaseConfig;
-use craft\models\FieldLayout;
 
 class FormsSettings extends BaseConfig
 {

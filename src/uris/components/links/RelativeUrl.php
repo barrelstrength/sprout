@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkTrait;
 use Craft;
 use craft\helpers\Cp;
-use craft\helpers\UrlHelper;
 
 class RelativeUrl extends AbstractLink
 {

@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\helpers\ConditionHelper;
 use BarrelStrength\Sprout\core\helpers\PhoneHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
-use BarrelStrength\Sprout\core\modules\Modules;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
 use BarrelStrength\Sprout\core\modules\Settings as SettingsService;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;

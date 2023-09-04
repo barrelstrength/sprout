@@ -7,8 +7,6 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
-use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -139,7 +137,6 @@ class FormTypesController extends Controller
         }
 
         $formType->formTemplate = Craft::$app->request->getBodyParam('formTemplate');
-
 
         return $formType;
     }

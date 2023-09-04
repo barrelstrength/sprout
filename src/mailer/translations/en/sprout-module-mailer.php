@@ -172,5 +172,5 @@ return [
     'Email Type saved.' => 'Email Type saved.',
     'The body of this email will include a summary of the form submission.' => 'The body of this email will include a summary of the form submission.',
     'The mailer you wish to use to send emails using this email variant.' => 'The mailer you wish to use to send emails using this email variant.',
-    'Transactional' => 'Transactional'
+    'Transactional' => 'Transactional',
 ];

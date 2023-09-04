@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\SavableComponent;
-use craft\helpers\ArrayHelper;
 use craft\models\FieldLayout;
 
 abstract class FormType extends SavableComponent implements FormTypeInterface

@@ -15,7 +15,6 @@ use craft\fields\MissingField;
 use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
-use craft\helpers\UrlHelper;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\records\FieldLayout as FieldLayoutRecord;

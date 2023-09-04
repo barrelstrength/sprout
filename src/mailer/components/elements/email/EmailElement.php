@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\EmailTypeConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
@@ -433,6 +432,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                 $newElements[] = $element;
             }
             $tab->setElements($newElements);
+
             return $tab;
         }, $emailTypeTabs);
 

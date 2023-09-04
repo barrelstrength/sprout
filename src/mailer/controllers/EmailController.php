@@ -5,8 +5,6 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
-use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
