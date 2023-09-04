@@ -2,9 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
-use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
-use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
@@ -20,6 +17,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
     public const CRAFT_MAILER_SETTINGS = 'craft';
+
+    public const EMAIL_MESSAGE_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType';
+    public const FORM_SUMMARY_EMAIL_TYPE = 'BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType';
 
     public function safeUp(): void
     {
@@ -92,8 +92,8 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 ]);
 
                 $emailTypeMapping = [
-                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageEmailType::class,
-                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailType::class,
+                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
+                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
                 ];
 
                 if ($matchingType = $emailTypeMapping[$rows[$key]['emailTypeUid']] ?? null) {

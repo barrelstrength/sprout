@@ -22,7 +22,11 @@ class MailerSchemaHelper
                 $emailType instanceof CustomTemplatesEmailType
                 && $emailType->htmlEmailTemplate === $config['htmlEmailTemplate'];
 
-            if ($emailType instanceof $type || $matchingCustomTemplates) {
+            if ($matchingCustomTemplates) {
+                return $emailType;
+            }
+
+            if ($emailType instanceof $type && !$emailType instanceof CustomTemplatesEmailType) {
                 return $emailType;
             }
         }

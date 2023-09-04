@@ -23,6 +23,11 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     public const MODULE_ID = 'sprout-module-transactional';
     public const MODULE_CLASS = 'BarrelStrength\Sprout\transactional\TransactionalModule';
     public const EMAIL_ELEMENT_TYPE = 'BarrelStrength\Sprout\mailer\components\elements\email\EmailElement';
+
+    public const EMAIL_MESSAGE_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType';
+    public const FORM_SUMMARY_EMAIL_TYPE = 'BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType';
+    public const CUSTOM_TEMPLATES_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes\CustomTemplatesEmailType';
+
     public const OLD_SETTINGS_MODEL = 'barrelstrength\sproutbaseemail\models\Settings';
     public const OLD_SETTINGS_TABLE = '{{%sprout_settings_craft3}}';
 
@@ -47,32 +52,28 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             ])
             ->one();
 
-        if (empty($oldSettings)) {
-            Craft::warning('No shared settings found to migrate: ' . self::MODULE_ID);
-
-            return;
-        }
+        $emailTypeMapping = [
+            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
+            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
+        ];
 
         // Prepare old settings for new settings format
         $newSettings = Json::decode($oldSettings['settings']);
 
-        $oldEmailTemplateId = !empty($newSettings['emailTemplateId'])
-            ? $newSettings['emailTemplateId']
-            : null;
+        if (!empty($oldSettings)) {
+            $oldEmailTemplateId = !empty($newSettings['emailTemplateId'])
+                ? $newSettings['emailTemplateId']
+                : null;
 
-        $emailTypeMapping = [
-            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => EmailMessageEmailType::class,
-            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => FormSummaryEmailType::class,
-        ];
-
-        // Create Email Message Email Type from global settings
-        if ($matchingType = $emailTypeMapping[$oldEmailTemplateId] ?? null) {
-            MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
-        } else {
-            MailerSchemaHelper::createEmailTypeIfNoTypeExists(CustomTemplatesEmailType::class, [
-                'name' => 'Custom Templates',
-                'htmlEmailTemplate' => $oldEmailTemplateId,
-            ]);
+            // Create Email Message Email Type from global settings
+            if ($matchingType = $emailTypeMapping[$oldEmailTemplateId] ?? null) {
+                MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
+            } else {
+                MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
+                    'name' => 'Custom Templates',
+                    'htmlEmailTemplate' => $oldEmailTemplateId,
+                ]);
+            }
         }
 
         // Create Email Message Email Type from email-specific override settings
@@ -91,7 +92,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 }
 
                 $fieldLayoutId = !empty($email['fieldLayoutId'])
-                    ? $email['fieldLayoutId']
+                    ? (int)$email['fieldLayoutId']
                     : null;
 
                 $fieldLayout = [];
@@ -136,7 +137,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         ->execute();
                 }
 
-                $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(CustomTemplatesEmailType::class, [
+                $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
                     'name' => 'Custom Templates',
                     'htmlEmailTemplate' => $email['emailTemplateId'],
                     'fieldLayout' => $fieldLayout,
