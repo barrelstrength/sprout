@@ -19,6 +19,8 @@ class m211101_000006_migrate_notifications_tables extends Migration
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
+    public const CRAFT_MAILER_SETTINGS = 'craft';
+
     public function safeUp(): void
     {
         $oldEmailCols = [
@@ -69,8 +71,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
 
-            $defaultMailer = MailerHelper::getDefaultMailer();
-
             $rows = (new Query())
                 ->select($oldEmailCols)
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
@@ -118,7 +118,7 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $listSettings = Json::decode($rows[$key]['listSettings'] ?? '[]');
                 $audienceIds = $listSettings['listIds'] ?? [];
 
-                $rows[$key]['mailerUid'] = $defaultMailer->uid;
+                $rows[$key]['mailerUid'] = self::CRAFT_MAILER_SETTINGS;
                 $rows[$key]['mailerInstructionsSettings'] = Json::encode([
                     'sender' => $sender,
                     'replyToEmail' => $rows[$key]['replyToEmail'],
