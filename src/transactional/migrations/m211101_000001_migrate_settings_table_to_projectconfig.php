@@ -4,9 +4,6 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
-use BarrelStrength\Sprout\mailer\components\emailtypes\CustomTemplatesEmailType;
-use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
