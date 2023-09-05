@@ -153,9 +153,10 @@ class DataStudioModule extends Module
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event): void {
-                foreach ($this->getUserPermissions() as $permissionGroup) {
-                    $event->permissions[] = $permissionGroup;
-                }
+                $event->permissions[] = [
+                    'heading' => Craft::t('sprout-module-data-studio', 'Sprout Module | Data Studio'),
+                    'permissions' => $this->getUserPermissions(),
+                ];
             });
 
         Event::on(
@@ -269,28 +270,25 @@ class DataStudioModule extends Module
     {
         $dataSources = self::getInstance()->dataSources->getDataSourceTypes();
 
-        $dataSourceAccessPermissions = [];
+        $permissions = [];
 
         /** @var DataSource $class */
         foreach ($dataSources as $class) {
-            $dataSourceAccessPermissions[] = [
-                'heading' => Craft::t('sprout-module-data-studio', 'Sprout Module | Data Studio | {name}', [
-                    'name' => $class::displayName(),
+            $permissions[self::p('viewReports:' . $class)] = [
+                'label' => Craft::t('sprout-module-data-studio', 'View "{dataSet}" reports', [
+                    'dataSet' => $class::displayName()
                 ]),
-                'permissions' => [
-                    self::p('viewReports:' . $class) => [
-                        'label' => Craft::t('sprout-module-data-studio', 'View reports'),
-                        'info' => Craft::t('sprout-module-data-studio', 'Includes viewing some settings, running reports, and CSV exports.'),
-                        'nested' => [
-                            self::p('editDataSet:' . $class) => [
-                                'label' => Craft::t('sprout-module-data-studio', 'Edit data sets'),
-                            ],
-                        ],
+                'info' => Craft::t('sprout-module-data-studio', 'Includes viewing some settings, running reports, and CSV exports.'),
+                'nested' => [
+                    self::p('editDataSet:' . $class) => [
+                        'label' => Craft::t('sprout-module-data-studio', 'Edit "{dataSet}" data sets', [
+                            'dataSet' => $class::displayName()
+                        ]),
                     ],
                 ],
             ];
         }
 
-        return $dataSourceAccessPermissions;
+        return $permissions;
     }
 }
