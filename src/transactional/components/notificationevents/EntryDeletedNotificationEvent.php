@@ -8,7 +8,10 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
+use craft\events\ModelEvent;
+use craft\helpers\ElementHelper;
 use craft\helpers\Json;
+use yii\base\Event;
 
 class EntryDeletedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
@@ -72,6 +75,30 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
 
         return [
             'entry' => $entry,
+        ];
+    }
+
+    public function matchNotificationEvent(Event $event): bool
+    {
+        if ($event->name !== Entry::EVENT_AFTER_DELETE) {
+            return false;
+        }
+
+        /** @var Entry $element */
+        $element = $event->sender;
+
+        if (ElementHelper::isDraftOrRevision($element)) {
+            return false;
+        }
+
+        return $this->matchElement($element);
+    }
+
+    public function getExclusiveQueryParams(): array
+    {
+        return [
+            'draftId',
+            'revisionId',
         ];
     }
 }
