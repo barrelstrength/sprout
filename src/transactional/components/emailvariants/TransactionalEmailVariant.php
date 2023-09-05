@@ -21,7 +21,7 @@ use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use yii\base\Event;
 
-class TransactionalEmailEmailVariant extends EmailVariant
+class TransactionalEmailVariant extends EmailVariant
 {
     /**
      * The qualified namespace of the Email Notification Event

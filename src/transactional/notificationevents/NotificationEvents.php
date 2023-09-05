@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryCreatedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryUpdatedNotificationEvent;
@@ -142,7 +142,7 @@ class NotificationEvents extends Component
         /** @var EmailElement[]|TransactionalEmailElement[] $emails */
         foreach ($emails as $email) {
 
-            /** @var TransactionalEmailEmailVariant $emailVariantSettings */
+            /** @var TransactionalEmailVariant $emailVariantSettings */
             $emailVariantSettings = $email->getEmailVariant();
             $notificationEvent = $emailVariantSettings->getNotificationEvent($email, $event);
 

@@ -21,7 +21,7 @@ use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
 use BarrelStrength\Sprout\uris\links\Links;
@@ -199,7 +199,7 @@ class FormElement extends Element
                 'attribute' => 'notifications',
                 'rows' => $this->getNotifications(),
                 'newButtonLabel' => Craft::t('sprout-module-forms', 'New Notification'),
-                'cpEditUrl' => UrlHelper::cpUrl('sprout/email/' . TransactionalEmailEmailVariant::refHandle() . '/new', [
+                'cpEditUrl' => UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
                     'emailVariantSettings' => [
                         'eventId' => SaveSubmissionNotificationEvent::class,
                     ],

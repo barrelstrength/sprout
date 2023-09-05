@@ -3,14 +3,14 @@
 namespace BarrelStrength\Sprout\transactional\components\elements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElementQuery;
-use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use Craft;
 use craft\helpers\Json;
 use yii\db\Expression;
 
 class TransactionalEmailElementQuery extends EmailElementQuery
 {
-    public ?string $emailVariantType = TransactionalEmailEmailVariant::class;
+    public ?string $emailVariantType = TransactionalEmailVariant::class;
 
     public ?array $notificationEventFilterRule = null;
 
@@ -24,7 +24,7 @@ class TransactionalEmailElementQuery extends EmailElementQuery
     protected function beforePrepare(): bool
     {
         $this->subQuery->andWhere([
-            'sprout_emails.emailVariantType' => TransactionalEmailEmailVariant::class,
+            'sprout_emails.emailVariantType' => TransactionalEmailVariant::class,
         ]);
 
         if ($this->notificationEventFilterRule) {

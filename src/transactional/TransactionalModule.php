@@ -13,7 +13,7 @@ use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
@@ -147,13 +147,13 @@ class TransactionalModule extends Module
             'sprout/email/transactional-email/new' => [
                 'route' => 'sprout-module-mailer/email/create-email',
                 'params' => [
-                    'emailVariant' => TransactionalEmailEmailVariant::class,
+                    'emailVariant' => TransactionalEmailVariant::class,
                 ],
             ],
             'sprout/email/transactional-email' => [
                 'route' => 'sprout-module-mailer/email/email-index-template',
                 'params' => [
-                    'emailVariant' => TransactionalEmailEmailVariant::class,
+                    'emailVariant' => TransactionalEmailVariant::class,
                 ],
             ],
 
