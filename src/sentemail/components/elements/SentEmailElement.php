@@ -148,6 +148,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
                 'attribute' => 'dateCreated',
                 'defaultDir' => 'desc',
             ],
+            'id' => Craft::t('sprout-module-sent-email', 'ID'),
         ];
     }
 
@@ -158,6 +159,8 @@ class SentEmailElement extends Element implements EmailPreviewInterface
             'toEmail' => ['label' => Craft::t('sprout-module-sent-email', 'Recipient')],
             'subjectLine' => ['label' => Craft::t('sprout-module-sent-email', 'Subject')],
             'info' => ['label' => Craft::t('sprout-module-sent-email', 'Info')],
+            'id' => ['label' => Craft::t('app', 'ID')],
+            'uid' => ['label' => Craft::t('app', 'UID')],
         ];
 
         if (SentEmailModule::isPro() && SentEmailModule::p('resendSentEmail')) {

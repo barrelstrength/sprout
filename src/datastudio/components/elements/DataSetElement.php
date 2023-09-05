@@ -117,14 +117,18 @@ class DataSetElement extends Element
         // index or modal
         $context = Craft::$app->request->getParam('context');
 
-        $tableAttributes['name'] = Craft::t('sprout-module-data-studio', 'Name');
+        $tableAttributes['name'] = ['label' => Craft::t('sprout-module-data-studio', 'Name')];
 
         if ($context !== 'modal') {
-            $tableAttributes['results'] = Craft::t('sprout-module-data-studio', 'View');
-            $tableAttributes['download'] = Craft::t('sprout-module-data-studio', 'Export');
+            $tableAttributes['results'] = ['label' => Craft::t('sprout-module-data-studio', 'View')];
+            $tableAttributes['download'] = ['label' => Craft::t('sprout-module-data-studio', 'Export')];
         }
 
-        $tableAttributes['type'] = Craft::t('sprout-module-data-studio', 'Data Source');
+        $tableAttributes['type'] = ['label' => Craft::t('sprout-module-data-studio', 'Data Source')];
+        $tableAttributes['id'] = ['label' => Craft::t('sprout-module-data-studio', 'ID')];
+        $tableAttributes['uid'] = ['label' => Craft::t('sprout-module-data-studio', 'UID')];
+        $tableAttributes['dateCreated'] = ['label' => Craft::t('sprout-module-data-studio', 'Date Created')];
+        $tableAttributes['dateUpdated'] = ['label' => Craft::t('sprout-module-data-studio', 'Date Updated')];
 
         return $tableAttributes;
     }
@@ -157,6 +161,19 @@ class DataSetElement extends Element
         return [
             'name' => Craft::t('sprout-module-data-studio', 'Name'),
             'type' => Craft::t('sprout-module-data-studio', 'Data Source'),
+            [
+                'label' => Craft::t('sprout-module-data-studio', 'Date Created'),
+                'orderBy' => 'elements.dateCreated',
+                'attribute' => 'dateCreated',
+                'defaultDir' => 'desc',
+            ],
+            [
+                'label' => Craft::t('sprout-module-data-studio', 'Date Updated'),
+                'orderBy' => 'elements.dateUpdated',
+                'attribute' => 'dateUpdated',
+                'defaultDir' => 'desc',
+            ],
+            'id' => Craft::t('sprout-module-data-studio', 'ID'),
         ];
     }
 

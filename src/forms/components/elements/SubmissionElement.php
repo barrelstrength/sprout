@@ -210,6 +210,7 @@ class SubmissionElement extends Element
                 'attribute' => 'dateUpdated',
                 'defaultDir' => 'desc',
             ],
+            'id' => Craft::t('sprout-module-forms', 'ID'),
         ];
     }
 
@@ -220,6 +221,8 @@ class SubmissionElement extends Element
         $attributes['formName'] = ['label' => Craft::t('sprout-module-forms', 'Form Name')];
         $attributes['dateCreated'] = ['label' => Craft::t('sprout-module-forms', 'Date Created')];
         $attributes['dateUpdated'] = ['label' => Craft::t('sprout-module-forms', 'Date Updated')];
+        $attributes['id'] = ['label' => Craft::t('sprout-module-forms', 'ID')];
+        $attributes['uid'] = ['label' => Craft::t('sprout-module-forms', 'UID')];
 
         foreach (Craft::$app->getElementSources()->getAvailableTableAttributes(FormElement::class) as $key => $field) {
             $customFields = explode(':', $key);

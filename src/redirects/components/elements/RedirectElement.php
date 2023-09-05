@@ -139,6 +139,10 @@ class RedirectElement extends Element
             'lastRemoteIpAddress' => Craft::t('sprout-module-redirects', 'Last Remote IP'),
             'lastReferrer' => Craft::t('sprout-module-redirects', 'Last Referrer'),
             'lastUserAgent' => Craft::t('sprout-module-redirects', 'Last User Agent'),
+            'id' => ['label' => Craft::t('sprout-module-redirects', 'ID')],
+            'uid' => ['label' => Craft::t('sprout-module-redirects', 'UID')],
+            'dateCreated' => ['label' => Craft::t('sprout-module-redirects', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-module-redirects', 'Date Updated')],
         ];
     }
 
@@ -193,6 +197,7 @@ class RedirectElement extends Element
                 'attribute' => 'dateUpdated',
                 'defaultDir' => 'desc',
             ],
+            'id' => Craft::t('sprout-module-redirects', 'ID'),
         ];
     }
 

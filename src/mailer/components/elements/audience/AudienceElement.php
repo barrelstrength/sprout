@@ -143,6 +143,13 @@ class AudienceElement extends Element
                 'attribute' => 'dateUpdated',
                 'defaultDir' => 'desc',
             ],
+            [
+                'label' => Craft::t('app', 'Date Created'),
+                'orderBy' => 'elements.dateCreated',
+                'attribute' => 'dateCreated',
+                'defaultDir' => 'desc',
+            ],
+            'id' => Craft::t('sprout-module-mailer', 'ID'),
         ];
     }
 
@@ -150,10 +157,12 @@ class AudienceElement extends Element
     {
         return [
             'handle' => ['label' => Craft::t('sprout-module-mailer', 'Audience Handle')],
-            'id' => ['label' => Craft::t('sprout-module-mailer', 'Audience ID')],
             'view' => ['label' => Craft::t('sprout-module-mailer', 'View Subscribers')],
-            'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
             'manage' => ['label' => Craft::t('sprout-module-mailer', 'Manage')],
+            'id' => ['label' => Craft::t('sprout-module-mailer', 'ID')],
+            'uid' => ['label' => Craft::t('sprout-module-mailer', 'UID')],
+            'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-module-mailer', 'Date Updated')],
         ];
     }
 

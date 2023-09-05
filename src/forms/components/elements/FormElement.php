@@ -357,6 +357,7 @@ class FormElement extends Element
                 'attribute' => 'dateUpdated',
                 'defaultDir' => 'desc',
             ],
+            'id' => Craft::t('sprout-module-forms', 'ID'),
         ];
     }
 
@@ -368,6 +369,10 @@ class FormElement extends Element
             'numberOfFields' => ['label' => Craft::t('sprout-module-forms', 'Number of Fields')],
             'totalSubmissions' => ['label' => Craft::t('sprout-module-forms', 'Total Submissions')],
             'formSettings' => ['label' => Craft::t('sprout-module-forms', 'Settings'), 'icon' => 'settings'],
+            'id' => ['label' => Craft::t('sprout-module-forms', 'ID')],
+            'uid' => ['label' => Craft::t('sprout-module-forms', 'UID')],
+            'dateCreated' => ['label' => Craft::t('sprout-module-forms', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-module-forms', 'Date Updated')],
         ];
     }
 

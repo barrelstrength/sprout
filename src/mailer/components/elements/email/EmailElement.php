@@ -156,9 +156,12 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         return [
             'subjectLine' => ['label' => Craft::t('sprout-module-mailer', 'Subject Line')],
-            'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
             'sendTest' => ['label' => Craft::t('sprout-module-mailer', 'Send Test')],
             'preview' => ['label' => Craft::t('sprout-module-mailer', 'Preview'), 'icon' => 'view'],
+            'id' => ['label' => Craft::t('sprout-module-mailer', 'ID')],
+            'uid' => ['label' => Craft::t('sprout-module-mailer', 'UID')],
+            'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-module-mailer', 'Date Updated')],
         ];
     }
 
@@ -181,6 +184,7 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'attribute' => 'dateUpdated',
                 'defaultDir' => 'desc',
             ],
+            'id' => Craft::t('sprout-module-mailer', 'ID'),
         ];
     }
 
