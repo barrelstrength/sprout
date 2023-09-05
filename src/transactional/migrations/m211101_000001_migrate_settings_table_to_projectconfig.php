@@ -69,7 +69,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
             } else {
                 MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
-                    'name' => 'Custom Templates',
+                    'name' => 'Custom Templates - Global',
                     'htmlEmailTemplate' => $oldEmailTemplateId,
                 ]);
             }
@@ -137,7 +137,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 }
 
                 $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
-                    'name' => 'Custom Templates',
+                    'name' => 'Custom Templates - ' . $email['emailTemplateId'],
                     'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
                     'htmlEmailTemplate' => $email['emailTemplateId'],
                     'fieldLayout' => $fieldLayout,
