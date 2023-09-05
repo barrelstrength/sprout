@@ -38,6 +38,9 @@ class UserGroupForNewUserConditionRule extends BaseMultiSelectConditionRule impl
         // No changes
     }
 
+    /**
+     * @todo - this should probably be deleted in favor of an improved event
+     */
     public function matchElement(ElementInterface $element): bool
     {
         $usersGroupIds = $element->getGroups();

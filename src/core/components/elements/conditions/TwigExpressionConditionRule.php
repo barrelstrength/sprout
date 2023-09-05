@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\transactional\components\conditions;
+namespace BarrelStrength\Sprout\core\components\elements\conditions;
 
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
@@ -11,7 +11,8 @@ use craft\helpers\Cp;
 use craft\helpers\Html;
 use yii\base\Exception;
 
-class TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
+class
+TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
     use ElementEventConditionRuleTrait;
 

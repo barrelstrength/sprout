@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\transactional\components\conditions;
+namespace BarrelStrength\Sprout\core\components\elements\conditions;
 
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
@@ -8,7 +8,8 @@ use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 
-class FieldChangedConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
+class
+FieldChangedConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
     use ElementEventConditionRuleTrait;
 

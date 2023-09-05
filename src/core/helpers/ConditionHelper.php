@@ -2,9 +2,9 @@
 
 namespace BarrelStrength\Sprout\core\helpers;
 
-use BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule;
+use BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule;
+use BarrelStrength\Sprout\core\components\elements\conditions\RevisionConditionRule;
+use BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule;
 use craft\elements\Entry;
 use craft\events\RegisterConditionRuleTypesEvent;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\transactional\components\conditions;
+namespace BarrelStrength\Sprout\core\components\elements\conditions;
 
 use Craft;
 use craft\base\conditions\BaseLightswitchConditionRule;
@@ -9,27 +9,28 @@ use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;
 use yii\db\QueryInterface;
 
-class RevisionConditionRule extends BaseLightswitchConditionRule implements ElementConditionRuleInterface
+class
+DraftConditionRule extends BaseLightswitchConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Is Revision');
+        return Craft::t('sprout-module-transactional', 'Is Draft');
     }
 
     public function getExclusiveQueryParams(): array
     {
-        return ['revisionId'];
+        return ['draftId'];
     }
 
     public function modifyQuery(QueryInterface $query): void
     {
         /** @var ElementQueryInterface $query */
-        $query->revisionId($this->value);
+        $query->draftId($this->value);
     }
 
     public function matchElement(ElementInterface $element): bool
     {
         /** @var ElementInterface $element */
-        return $this->matchValue($element->getIsRevision());
+        return $this->matchValue($element->getIsDraft());
     }
 }
