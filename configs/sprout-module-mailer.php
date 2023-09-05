@@ -13,13 +13,12 @@
  * setup as a multi-environment config just as Craft's config/general.php
  * and all settings here can be overridden by environment variables.
  *
- * SPROUT_MODULE_MAILER_APPROVED_SENDERS=[]
- * SPROUT_MODULE_MAILER_APPROVED_REPLY_TO_EMAILS=[]
+ * SPROUT_MODULE_MAILER_ENABLE_AUDIENCES=1
+ * SPROUT_MODULE_MAILER_ENABLE_SUBSCRIBER_LISTS=1
  *
  */
 return [
-    'approvedSenders' => [],
-    'approvedReplyToEmails' => [],
-    'emailThemes' => [],
+    'enableAudiences' => [],
+    'enableSubscriberLists' => [],
 ];
 
