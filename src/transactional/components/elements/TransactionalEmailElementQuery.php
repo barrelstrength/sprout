@@ -54,7 +54,7 @@ class TransactionalEmailElementQuery extends EmailElementQuery
          * AND (
          *   JSON_EXTRACT(sprout_emails.emailVariantSettings, "$.eventId") IN (
          *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntryDeletedNotificationEvent\"',
-         *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntrySavedNotificationEvent\"'
+         *     '\"BarrelStrength\\\\Sprout\\\\transactional\\\\components\\\\notificationevents\\\\EntryCreatedNotificationEvent\"'
          *   )
          * )
          *

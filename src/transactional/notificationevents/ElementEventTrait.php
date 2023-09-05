@@ -12,6 +12,11 @@ trait ElementEventTrait
 {
     public ?array $conditionRules = null;
 
+    public function getExclusiveQueryParams(): array
+    {
+        return [];
+    }
+
     public function getSettingsHtml(): ?string
     {
         /** @var ElementCondition $condition */
@@ -23,6 +28,10 @@ trait ElementEventTrait
         $condition->mainTag = 'div';
         $condition->name = 'conditionRules';
         $condition->id = 'conditionRules';
+
+        foreach ($this->getExclusiveQueryParams() as $param) {
+            $condition->queryParams[] = $param;
+        }
 
         return Cp::fieldHtml($condition->getBuilderHtml(), [
             'label' => Craft::t('sprout-module-transactional', 'Send Rules'),

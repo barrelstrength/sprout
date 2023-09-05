@@ -17,7 +17,6 @@ use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEm
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
-use craft\base\conditions\BaseCondition;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -121,25 +120,11 @@ class TransactionalModule extends Module
         );
 
         Event::on(
-            BaseCondition::class,
-            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
-            [$this->notificationEvents, 'registerConditionRuleTypes']
-        );
-
-        Event::on(
             Mailers::class,
             Mailers::EVENT_REGISTER_MAILERS,
             static function(RegisterComponentTypesEvent $e): void {
                 $e->types[] = TransactionalMailer::class;
             });
-
-        //Event::on(
-        //    EmailVariants::class,
-        //    EmailVariants::EVENT_REGISTER_EMAIL_TYPES,
-        //    static function(RegisterComponentTypesEvent $event) {
-        //        $event->types[] = TransactionalEmailEmailVariant::class;
-        //    }
-        //);
 
         Event::on(
             RelationsHelper::class,

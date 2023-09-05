@@ -3,12 +3,11 @@
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\transactional\components\conditions\IsNewEntryConditionRule;
-use BarrelStrength\Sprout\transactional\components\conditions\IsUpdatedEntryConditionRule;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant;
+use BarrelStrength\Sprout\transactional\components\notificationevents\EntryCreatedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent;
-use BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent;
+use BarrelStrength\Sprout\transactional\components\notificationevents\EntryUpdatedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\UserActivatedNotificationEvent;
 use BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent;
@@ -21,7 +20,6 @@ use craft\base\Component;
 use craft\base\Element;
 use craft\elements\Entry;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterConditionRuleTypesEvent;
 use craft\helpers\Json;
 use yii\base\Event;
 
@@ -51,7 +49,8 @@ class NotificationEvents extends Component
         }
 
         $internalNotificationEventsTypes = [
-            EntrySavedNotificationEvent::class,
+            EntryCreatedNotificationEvent::class,
+            EntryUpdatedNotificationEvent::class,
         ];
 
         if (TransactionalModule::isPro()) {
@@ -194,25 +193,6 @@ class NotificationEvents extends Component
             });
 
         return $matchedNotificationEmails;
-    }
-
-    public function registerConditionRuleTypes(RegisterConditionRuleTypesEvent $event): void
-    {
-        if (!$elementType = $event->sender->elementType) {
-            return;
-        }
-
-        if ($elementType === Entry::class) {
-            // Condition that modify 'status' and 'site' won't display in Element Index by default
-            $event->conditionRuleTypes[] = IsNewEntryConditionRule::class;
-            $event->conditionRuleTypes[] = IsUpdatedEntryConditionRule::class;
-        }
-
-        //if ($elementType === User::class) {
-        //$event->conditionRuleTypes[] = UserGroupForNewUserConditionRule::class;
-        //}
-
-        //$event->conditionRuleTypes[] = FieldChangedConditionRule::class;
     }
 
     private function isNotificationEventContext(): bool

@@ -9,22 +9,23 @@ use Craft;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
+use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
 
-class EntrySavedNotificationEvent extends NotificationEvent implements ElementEventInterface
+class EntryUpdatedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
     use ElementEventTrait;
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-transactional', 'When an entry is saved');
+        return Craft::t('sprout-module-transactional', 'When an entry is updated');
     }
 
     public function getDescription(): string
     {
-        return Craft::t('sprout-module-transactional', 'Triggered when an entry is saved.');
+        return Craft::t('sprout-module-transactional', 'Triggered when an entry is updated.');
     }
 
     public static function conditionType(): string
@@ -88,6 +89,33 @@ class EntrySavedNotificationEvent extends NotificationEvent implements ElementEv
             return false;
         }
 
-        return $this->matchElement($event->sender);
+        $element = $event->sender;
+
+        $isUpdatedEntry =
+            !$element->firstSave &&
+            $element->getIsCanonical() &&
+            $element->getStatus() === Entry::STATUS_LIVE &&
+            !ElementHelper::isDraftOrRevision($element) &&
+            !$element->resaving &&
+            !$element->propagating;
+
+        if (!$isUpdatedEntry) {
+            return false;
+        }
+
+        return $this->matchElement($element);
+    }
+
+    public function getExclusiveQueryParams(): array
+    {
+        return [
+            '_canonicalId',
+            'firstSave',
+            'status',
+            'draftId',
+            'revisionId',
+            'resaving',
+            'propagating',
+        ];
     }
 }
