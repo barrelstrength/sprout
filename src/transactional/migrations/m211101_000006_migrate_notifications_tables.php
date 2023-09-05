@@ -205,32 +205,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     'fieldContext' => 'global',
                 ];
 
-                $ruleUid = StringHelper::UUID();
-                $conditionRules[] = [
-                    'uid' => $ruleUid,
-                    'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
-                    'type' => Json::encode([
-                        'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
-                        'uid' => $ruleUid,
-                        'value' => false,
-                    ]),
-                    'operator' => '',
-                    'value' => '',
-                ];
-
-                $ruleUid = StringHelper::UUID();
-                $conditionRules[] = [
-                    'uid' => $ruleUid,
-                    'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\RevisionConditionRule',
-                    'type' => Json::encode([
-                        'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
-                        'uid' => $ruleUid,
-                        'value' => false,
-                    ]),
-                    'operator' => '',
-                    'value' => '',
-                ];
-
                 break;
             case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent':
             case 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent':
