@@ -95,7 +95,8 @@ class m211101_000003_update_subscribers_to_users extends Migration
                 ->execute();
         }
 
-        $key = self::SPROUT_KEY . '.' . self::MODULE_ID . '.enableSubscriberLists';
+        $enableAudiencesKey = self::SPROUT_KEY . '.' . self::MODULE_ID . '.enableAudiences';
+        $enableSubscriberListsKey = self::SPROUT_KEY . '.' . self::MODULE_ID . '.enableSubscriberLists';
 
         // If we have any audiences at this point we can assume they are type SubscriberListAudienceType
         $audiencesExist = (new Query())
@@ -103,7 +104,8 @@ class m211101_000003_update_subscribers_to_users extends Migration
             ->from([self::AUDIENCES_TABLE])
             ->exists();
 
-        Craft::$app->getProjectConfig()->set($key, $audiencesExist);
+        Craft::$app->getProjectConfig()->set($enableAudiencesKey, $audiencesExist);
+        Craft::$app->getProjectConfig()->set($enableSubscriberListsKey, $audiencesExist);
     }
 
     public function migrateSubscribersToUsers(): void
