@@ -208,9 +208,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $ruleUid = StringHelper::UUID();
                 $conditionRules[] = [
                     'uid' => $ruleUid,
-                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                    'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
                     'type' => Json::encode([
-                        'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                        'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
                         'uid' => $ruleUid,
                         'value' => false,
                     ]),
@@ -221,9 +221,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $ruleUid = StringHelper::UUID();
                 $conditionRules[] = [
                     'uid' => $ruleUid,
-                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\RevisionConditionRule',
+                    'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\RevisionConditionRule',
                     'type' => Json::encode([
-                        'class' => 'BarrelStrength\Sprout\transactional\components\conditions\DraftConditionRule',
+                        'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule',
                         'uid' => $ruleUid,
                         'value' => false,
                     ]),
@@ -332,9 +332,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
             $ruleUid = StringHelper::UUID();
             $conditionRules[] = [
                 'uid' => $ruleUid,
-                'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
+                'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule',
                 'type' => Json::encode([
-                    'class' => 'BarrelStrength\Sprout\transactional\components\conditions\TwigExpressionConditionRule',
+                    'class' => 'BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule',
                     'uid' => $ruleUid,
                     'twigExpression' => $sendRule,
                 ]),
