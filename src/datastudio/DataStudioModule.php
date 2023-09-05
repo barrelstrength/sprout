@@ -275,13 +275,13 @@ class DataStudioModule extends Module
         /** @var DataSource $class */
         foreach ($dataSources as $class) {
             $permissions[self::p('viewReports:' . $class)] = [
-                'label' => Craft::t('sprout-module-data-studio', 'View "{dataSet}" reports', [
+                'label' => Craft::t('sprout-module-data-studio', 'View reports: "{dataSet}"', [
                     'dataSet' => $class::displayName()
                 ]),
                 'info' => Craft::t('sprout-module-data-studio', 'Includes viewing some settings, running reports, and CSV exports.'),
                 'nested' => [
                     self::p('editDataSet:' . $class) => [
-                        'label' => Craft::t('sprout-module-data-studio', 'Edit "{dataSet}" data sets', [
+                        'label' => Craft::t('sprout-module-data-studio', 'Edit data sets', [
                             'dataSet' => $class::displayName()
                         ]),
                     ],
