@@ -12,7 +12,7 @@ use craft\helpers\StringHelper;
 
 class m211101_000006_migrate_notifications_tables extends Migration
 {
-    public const TRANSACTIONAL_EMAIL_TYPE = 'BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailEmailVariant';
+    public const TRANSACTIONAL_EMAIL_TYPE = 'BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant';
     public const NEW_EMAIL_TABLE = '{{%sprout_emails}}';
     public const OLD_NOTIFICATIONS_TABLE = '{{%sproutemail_notificationemails}}';
 
