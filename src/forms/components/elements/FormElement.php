@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
-use BarrelStrength\Sprout\core\fieldlayoutelements\RelationsTableField;
+use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;

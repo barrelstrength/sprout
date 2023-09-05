@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\formtypes;
 
-use BarrelStrength\Sprout\core\fieldlayoutelements\LightswitchField;
+use BarrelStrength\Sprout\core\components\fieldlayoutelements\LightswitchField;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\uris\links\fieldlayoutelements\EnhancedLinkField;
 use Craft;

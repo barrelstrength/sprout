@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\core\fieldlayoutelements;
+namespace BarrelStrength\Sprout\core\components\fieldlayoutelements;
 
 use Craft;
 use craft\base\ElementInterface;
