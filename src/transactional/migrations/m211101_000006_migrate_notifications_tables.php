@@ -161,48 +161,15 @@ class m211101_000006_migrate_notifications_tables extends Migration
         $conditionRules = [];
 
         switch ($eventId) {
-            case 'BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryCreatedNotificationEvent':
+            case 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryUpdatedNotificationEvent':
                 $conditionClass = 'craft\elements\conditions\entries\EntryCondition';
                 $conditionConfig = [
                     'elementType' => 'craft\elements\Entry',
                     'fieldContext' => 'global',
                 ];
 
-                // {"whenNew":"1","whenUpdated":"","sectionIds":["1"]}
-                // {"whenNew":"1","whenUpdated":"","sectionIds":"*"}
-                $whenNew = !empty($oldEventSettings['whenNew']) ? true : false;
-                $whenUpdated = !empty($oldEventSettings['whenUpdated']) ? true : false;
                 $sectionIds = $oldEventSettings['sectionIds'] ?? [];
-
-                if ($whenNew) {
-                    $ruleUid = StringHelper::UUID();
-                    $conditionRules[] = [
-                        'uid' => $ruleUid,
-                        'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
-                        'type' => Json::encode([
-                            'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsNewEntryConditionRule',
-                            'uid' => $ruleUid,
-                            'value' => true,
-                        ]),
-                        'operator' => '',
-                        'value' => '1',
-                    ];
-                }
-
-                if ($whenUpdated) {
-                    $ruleUid = StringHelper::UUID();
-                    $conditionRules[] = [
-                        'uid' => $ruleUid,
-                        'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
-                        'type' => Json::encode([
-                            'class' => 'BarrelStrength\\Sprout\\transactional\\components\\conditions\\IsUpdatedEntryConditionRule',
-                            'uid' => $ruleUid,
-                            'value' => true,
-                        ]),
-                        'operator' => '',
-                        'value' => '1',
-                    ];
-                }
 
                 // Do nothing. No condition rule will send to ALL sections.
                 //if ($sectionIds === '*') { }

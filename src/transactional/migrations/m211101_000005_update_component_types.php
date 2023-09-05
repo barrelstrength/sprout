@@ -23,10 +23,6 @@ class m211101_000005_update_component_types extends Migration
                 'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryDeletedNotificationEvent',
             ],
             [
-                'oldType' => 'barrelstrength\sproutemail\events\notificationevents\EntriesSave',
-                'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\EntrySavedNotificationEvent',
-            ],
-            [
                 'oldType' => 'barrelstrength\sproutemail\events\notificationevents\Manual',
                 'newType' => 'BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent',
             ],
@@ -59,29 +55,55 @@ class m211101_000005_update_component_types extends Migration
             ], [], false);
         }
 
-        $oldType = 'barrelstrength\sproutemail\events\notificationevents\UsersSave';
+        $oldUserType = 'barrelstrength\sproutemail\events\notificationevents\UsersSave';
 
         $userNotificationEvents = (new Query())
             ->select(['id', 'eventId', 'settings'])
             ->from([self::OLD_NOTIFICATIONS_TABLE])
-            ->where(['eventId' => $oldType])
+            ->where(['eventId' => $oldUserType])
             ->all();
 
         foreach ($userNotificationEvents as $userNotificationEvent) {
             $settings = Json::decode($userNotificationEvent['settings'] ?? []);
 
-            $whenNew = !empty($settings['whenNew']) ? true : false;
+            $whenNewUser = !empty($settings['whenNew']) ? true : false;
 
-            $newType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent';
+            $newUserType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserUpdatedNotificationEvent';
 
-            if ($whenNew) {
-                $newType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent';
+            if ($whenNewUser) {
+                $newUserType = 'BarrelStrength\Sprout\transactional\components\notificationevents\UserCreatedNotificationEvent';
             }
 
             $this->update(self::OLD_NOTIFICATIONS_TABLE, [
-                'eventId' => $newType,
+                'eventId' => $newUserType,
             ], [
                 'id' => $userNotificationEvent['id'],
+            ], [], false);
+        }
+
+        $oldEntryType = 'barrelstrength\sproutemail\events\notificationevents\EntriesSave';
+
+        $entryNotificationEvents = (new Query())
+            ->select(['id', 'eventId', 'settings'])
+            ->from([self::OLD_NOTIFICATIONS_TABLE])
+            ->where(['eventId' => $oldEntryType])
+            ->all();
+
+        foreach ($entryNotificationEvents as $entryNotificationEvent) {
+            $settings = Json::decode($entryNotificationEvent['settings'] ?? []);
+
+            $whenNewEntry = !empty($settings['whenNew']) ? true : false;
+
+            $newEntryType = 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryUpdatedNotificationEvent';
+
+            if ($whenNewEntry) {
+                $newEntryType = 'BarrelStrength\Sprout\transactional\components\notificationevents\EntryCreatedNotificationEvent';
+            }
+
+            $this->update(self::OLD_NOTIFICATIONS_TABLE, [
+                'eventId' => $newEntryType,
+            ], [
+                'id' => $entryNotificationEvent['id'],
             ], [], false);
         }
     }
