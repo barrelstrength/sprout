@@ -14,7 +14,7 @@
         "@rollup/plugin-node-resolve": "^15.1.0",
         "autoprefixer": "^10.4.14",
         "postcss": "^8.4.21",
-        "sass": "^1.60.0",
+        "sass": "^1.66.1",
         "vite": "^4.3.9",
         "vite-plugin-restart": "^0.3"
     },
