@@ -187,8 +187,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $approvedSenders = [];
 
         array_walk($this->approvedSenders,
-            static function($sender) use (&$approvedSenders) {
-                $approvedSenders[App::parseEnv($sender['fromEmail'])] = App::parseEnv($sender['fromName']);
+            static function($approvedSender) use (&$approvedSenders) {
+                $approvedSenders[App::parseEnv($approvedSender['fromEmail'])] = App::parseEnv($approvedSender['fromName']);
             });
 
         foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
@@ -289,6 +289,54 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         foreach ($externalFilePaths as $path) {
             if (file_exists($path)) {
                 unlink($path);
+            }
+        }
+    }
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['approvedSenders'], 'approvedSenderEmailsAreUnique'];
+        $rules[] = [['approvedReplyToEmails'], 'replyToEmailsAreUnique'];
+
+        return $rules;
+    }
+
+    public function approvedSenderEmailsAreUnique(): void
+    {
+        $emailWithCount = [];
+
+        foreach ($this->approvedSenders as $approvedSender) {
+            if (isset($emailWithCount[$approvedSender['fromEmail']])) {
+                $emailWithCount[$approvedSender['fromEmail']]++;
+            } else {
+                $emailWithCount[$approvedSender['fromEmail']] = 1;
+            }
+        }
+
+        foreach ($emailWithCount as $email => $count) {
+            if ($count > 1) {
+                $this->addError('approvedSenders', 'Sender email addresses must be unique.');
+            }
+        }
+    }
+
+    public function replyToEmailsAreUnique(): void
+    {
+        $emailWithCount = [];
+
+        foreach ($this->approvedReplyToEmails as $replyToEmail) {
+            if (isset($emailWithCount[$replyToEmail['replyToEmail']])) {
+                $emailWithCount[$replyToEmail['replyToEmail']]++;
+            } else {
+                $emailWithCount[$replyToEmail['replyToEmail']] = 1;
+            }
+        }
+
+        foreach ($emailWithCount as $email => $count) {
+            if ($count > 1) {
+                $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }
         }
     }

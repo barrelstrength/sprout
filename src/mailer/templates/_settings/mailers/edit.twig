@@ -36,6 +36,7 @@
         id: 'name',
         name: 'name',
         value: mailer.name ?? null,
+        errors: mailer.getErrors('name'),
         warning: sproutConfigWarning(module, 'name'),
         first: true,
         required: true,

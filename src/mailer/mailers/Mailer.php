@@ -90,6 +90,15 @@ abstract class Mailer extends SavableComponent implements MailerInterface
 
     abstract public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void;
 
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['name'], 'required'];
+
+        return $rules;
+    }
+
     public function getConfig(): array
     {
         $config = [

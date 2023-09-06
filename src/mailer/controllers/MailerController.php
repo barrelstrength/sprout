@@ -31,7 +31,7 @@ class MailerController extends Controller
     {
         $this->requireAdmin();
 
-        if ($mailerUid) {
+        if (!$mailer && $mailerUid) {
             $mailer = MailerHelper::getMailerByUid($mailerUid);
         }
 
