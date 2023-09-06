@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
@@ -98,7 +99,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
 
                 if ($matchingType = $emailTypeMapping[$rows[$key]['emailTypeUid']] ?? null) {
                     // Any mapped email types should already be migrated
-                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
+                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType, [
+                        'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
+                    ]);
                     $rows[$key]['emailTypeUid'] = $emailType->uid;
                 }
 

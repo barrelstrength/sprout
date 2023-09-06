@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\transactional\migrations;
 
 use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
 use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
@@ -16,6 +17,8 @@ class m211101_000000_run_install_migration extends Migration
     public const MODULE_CLASS = 'BarrelStrength\Sprout\transactional\TransactionalModule';
     public const DEFAULT_EMAIL_TYPE = 'BarrelStrength\Sprout\mailer\components\emailtypes';
 
+    public const CRAFT_MAILER_SETTINGS_UID = 'craft';
+
     public function safeUp(): void
     {
         $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
@@ -23,6 +26,7 @@ class m211101_000000_run_install_migration extends Migration
         MailerSchemaHelper::createEmailTypeIfNoTypeExists(
             EmailMessageEmailType::class, [
             'name' => 'Email Message',
+            'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
         ]);
 
         // Check if plugin is installed:
@@ -32,6 +36,7 @@ class m211101_000000_run_install_migration extends Migration
             MailerSchemaHelper::createEmailTypeIfNoTypeExists(
                 FormSummaryEmailType::class, [
                 'name' => 'Form Summary',
+                'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
             ]);
         }
 

@@ -4,12 +4,16 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
+use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Json;
+use craft\helpers\ProjectConfig;
+use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 
@@ -51,6 +55,63 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             ])
             ->one();
 
+        $mailer = null;
+
+        // Loop through all Notification Emails and create a Mailer using the From Name and From Email and Reply To values found
+        if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
+
+            $mailer = new TransactionalMailer();
+            $mailer->name = 'Custom Mailer';
+            $mailer->uid = StringHelper::UUID();
+
+            $emails = (new Query())
+                ->select(['id', 'fromName', 'fromEmail', 'replyToEmail'])
+                ->from([self::OLD_NOTIFICATIONS_TABLE])
+                ->all();
+
+            $approvedSenders = [];
+            $approvedReplyToEmails = [];
+
+            $uniqueApprovedSenders = [];
+            $uniqueApprovedReplyToEmails = [];
+
+            foreach ($emails as $email) {
+                $approvedSenderEmailString = $email['fromEmail'];
+
+                // Only add an email to the list once. This means multiple emails with different from names may not get migrated
+                // and would need to be manually resolved after the migration
+                if (!in_array($approvedSenderEmailString, $approvedSenders, true)) {
+                    $approvedSenders[] = $approvedSenderEmailString;
+
+                    $uniqueApprovedSenders[] = [
+                        'fromName' => $email['fromName'],
+                        'fromEmail' => $email['fromEmail'],
+                    ];
+                }
+
+                $approvedReplyToString = $email['replyToEmail'];
+
+                if (!in_array($approvedReplyToString, $approvedReplyToEmails, true)) {
+                    $approvedReplyToEmails[] = $email['replyToEmail'];
+
+                    $uniqueApprovedReplyToEmails[] = [
+                        'replyToEmail' => $email['replyToEmail'],
+                    ];
+                }
+            }
+
+            $mailer->mailerSettings = [
+                'approvedSenders' => $uniqueApprovedSenders,
+                'approvedReplyToEmails' => $uniqueApprovedReplyToEmails,
+            ];
+
+            $mailers = MailerHelper::getMailers();
+            $mailers[$mailer->uid] = $mailer;
+            MailerHelper::saveMailers($mailers);
+        }
+
+        $mailerUid = $mailer ? $mailer->uid : self::CRAFT_MAILER_SETTINGS_UID;
+
         $emailTypeMapping = [
             'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
             'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
@@ -66,10 +127,13 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
             // Create Email Message Email Type from global settings
             if ($matchingType = $emailTypeMapping[$oldEmailTemplateId] ?? null) {
-                MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType);
+                MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType, [
+                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
+                ]);
             } else {
                 MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
                     'name' => 'Custom Templates - Global',
+                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
                     'htmlEmailTemplate' => $oldEmailTemplateId,
                 ]);
             }
@@ -138,7 +202,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
                 $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
                     'name' => 'Custom Templates - ' . $email['emailTemplateId'],
-                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
+                    'mailerUid' => $mailerUid,
                     'htmlEmailTemplate' => $email['emailTemplateId'],
                     'fieldLayout' => $fieldLayout,
                 ]);
