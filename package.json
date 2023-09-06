@@ -2,7 +2,7 @@
     "name": "sprout",
     "description": "",
     "dependencies": {
-        "alpinejs": "^3.12.2",
+        "alpinejs": "^3.13.0",
         "apexcharts": "^3.37.2",
         "craftcms-sass": "^3.5.7",
         "datatables.net": "^1.13.2",
