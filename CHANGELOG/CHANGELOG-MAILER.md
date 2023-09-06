@@ -1,28 +1,33 @@
 # Changelog
 
-## 4.0.0 - UNRELEASED
+## 4.1.0 - 2023-09-05
 
 ### Added
 
 - Added support for Craft 4
-- Added shared components and helpers to support Campaigns, Notifications, and
-  Sent Email modules
-- Subscribers can now be managed with custom field Element Filters
+- Added Audience Element
+- Added Email Types to configure email templates, custom fields, mailer settings, and permissions
+- Added Subscribers as an overlay to Craft Users 
+- Added Subscriber List Data Source
 - Added Subscriber List Audience Type
+- Added User Group Audience Type
+- Added support for additional element index table and sort attributes
+- Added `twig/cssinliner-extra` dependency `v3.5`
 
 ### Changed
 
-- Sprout Lists is now the Audiences module
-- Subscribers are now inactive Craft Users
-- Updated `league/html-to-markdown` dependency v5.0.2
-- Added `twig/cssinliner-extra` dependency v3.3
+- Updated Simple Message Email Templates to Email Message Email Type
+- Updated Custom Email Templates to Custom Templates Email Type
+- Merged and refactored Sent Email features into Sent Email module
+- Merged and refactored Sprout Lists features into Audience Element
+- Subscribers now default to non-credentialed Craft Users
+- Updated variable `craft.sproutLists` => `sprout.mailer.audiences`
+- Updated Project Config settings from `sprout-lists` => `sprout-module-mailer`
+- Updated `league/html-to-markdown` dependency `v5.1`
 
-### Breaking Changes
+### Removed
 
-- Updates instances `craft.sproutLists` variable to `sprout.audiences`
-- Need migration/docs for removed 'Enable User Sync' setting form Sprout Lists.
-    - `updateUserIdOnDelete` should now be handled via the LIST Element saving
-      the Inactive/Active User ID as a Foreign Key with delete cascade.
-- Removed 'Create Subscriber Lists Automatically' enableAutoList setting.
-    - Migration path for 'Create Subscriber Lists Automatically' - Maybe get rid
-      of this for Tags or Categories?
+- Removed Subscriber Element in favor of inactive Craft Users
+- Removed List Element in favor of Audience Element
+- Removed Setting 'Enable custom Email Templates on a per-email basis' in favor of Email Types
+- Removed Send Method, CC, and BCC fields

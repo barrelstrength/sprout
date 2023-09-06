@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.0 - 2023-09-05
+
+### Changed
+
+- Improved support for custom field criteria custom sources 
+
 ## 4.0.8 - 2023-07-20
 
 ### Fixed

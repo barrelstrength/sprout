@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.1.0 - 2023-09-05
+
+### Added
+
+- Added support for additional element index table and sort attributes
+- Added Data Set Audience Type integration
+
+### Changed
+
+- Improved support for custom field criteria custom sources
+
+### Removed
+
+- Removed Data Set Source Groups
+- Removed `BarrelStrength\Sprout\datastudio\datasources\DataSourceInterface::getHandle()`
+
 ## 4.0.7 - 2023-06-29
 
 ### Fixed

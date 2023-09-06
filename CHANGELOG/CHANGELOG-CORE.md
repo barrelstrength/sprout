@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.1.0 - 2023-09-05
+
+### Added
+
+- Added `BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule`
+- Added `BarrelStrength\Sprout\core\components\elements\conditions\RevisionConditionRule`
+- Added `BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule` (for matchElement context)
+
+### Removed
+
+- Removed source groups
+
 ## 4.0.0 - 2023-04-20
 
 ### Added
