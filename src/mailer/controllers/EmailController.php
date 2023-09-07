@@ -67,10 +67,7 @@ class EmailController extends Controller
             throw new NotFoundHttpException('No email variant found.');
         }
 
-        $defaultMailer = $emailVariant::getDefaultMailer();
-
         $email->emailVariantType = $emailVariant::class;
-        $email->mailerUid = $defaultMailer->uid ?? null;
 
         if ($emailVariantSettings = Craft::$app->request->getParam('emailVariantSettings')) {
             $email->emailVariantSettings = $emailVariantSettings;

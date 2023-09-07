@@ -3,12 +3,10 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;

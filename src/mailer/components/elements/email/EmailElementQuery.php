@@ -14,8 +14,6 @@ class EmailElementQuery extends ElementQuery
 
     public ?string $emailTypeUid = null;
 
-    public ?string $mailerUid = null;
-
     public function subjectLine(string $value): static
     {
         $this->subjectLine = $value;
@@ -37,13 +35,6 @@ class EmailElementQuery extends ElementQuery
         return $this;
     }
 
-    public function mailerUid(string $value): static
-    {
-        $this->mailerUid = $value;
-
-        return $this;
-    }
-
     protected function beforePrepare(): bool
     {
         $this->joinElementTable('sprout_emails');
@@ -54,7 +45,6 @@ class EmailElementQuery extends ElementQuery
             'sprout_emails.defaultMessage',
             'sprout_emails.emailVariantType',
             'sprout_emails.emailVariantSettings',
-            'sprout_emails.mailerUid',
             'sprout_emails.mailerInstructionsSettings',
             'sprout_emails.emailTypeUid',
             'sprout_emails.dateCreated',
@@ -71,10 +61,6 @@ class EmailElementQuery extends ElementQuery
 
         if ($this->emailTypeUid) {
             $this->subQuery->andWhere(Db::parseParam('sprout_emails.emailTypeUid', $this->emailTypeUid));
-        }
-
-        if ($this->mailerUid) {
-            $this->subQuery->andWhere(Db::parseParam('sprout_emails.mailerUid', $this->mailerUid));
         }
 
         return parent::beforePrepare();

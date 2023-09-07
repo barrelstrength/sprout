@@ -10,7 +10,6 @@ abstract class EmailCondition extends ElementCondition
     {
         return array_merge(parent::conditionRuleTypes(), [
             EmailTypeConditionRule::class,
-            MailerConditionRule::class,
             PreheaderTextConditionRule::class,
             SubjectLineConditionRule::class,
         ]);
