@@ -100,10 +100,8 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 }
             }
 
-            $mailer->mailerSettings = [
-                'approvedSenders' => $uniqueApprovedSenders,
-                'approvedReplyToEmails' => $uniqueApprovedReplyToEmails,
-            ];
+            $mailer->approvedSenders = $uniqueApprovedSenders;
+            $mailer->approvedReplyToEmails = $uniqueApprovedReplyToEmails;
 
             $mailers = MailerHelper::getMailers();
             $mailers[$mailer->uid] = $mailer;

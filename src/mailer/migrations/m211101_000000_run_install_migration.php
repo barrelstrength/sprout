@@ -70,7 +70,6 @@ class m211101_000000_run_install_migration extends Migration
                 'defaultMessage' => $this->text(),
                 'emailVariantType' => $this->string(),
                 'emailVariantSettings' => $this->text(),
-                'mailerUid' => $this->uid(),
                 'mailerInstructionsSettings' => $this->text(),
                 'emailTypeUid' => $this->uid(),
                 'dateCreated' => $this->dateTime()->notNull(),
@@ -80,7 +79,6 @@ class m211101_000000_run_install_migration extends Migration
 
             $this->createIndex(null, self::EMAILS_TABLE, ['subjectLine']);
             $this->createIndex(null, self::EMAILS_TABLE, ['emailVariantType']);
-            $this->createIndex(null, self::EMAILS_TABLE, ['mailerUid']);
             $this->createIndex(null, self::EMAILS_TABLE, ['emailTypeUid']);
 
             $this->addForeignKey(null, self::EMAILS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
