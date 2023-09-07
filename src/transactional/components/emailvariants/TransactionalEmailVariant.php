@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\components\emailvariants;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
@@ -16,7 +17,6 @@ use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\helpers\App;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use yii\base\Event;
@@ -77,6 +77,7 @@ class TransactionalEmailVariant extends EmailVariant
 
         $mailer = new TransactionalMailer([
             'name' => Craft::t('sprout-module-transactional', 'Craft Default Mailer'),
+            'senderBehavior' => SystemMailer::SENDER_BEHAVIOR_CUSTOM,
             'approvedSenders' => [
                 [
                     'fromName' => $mailSettings->fromName,
@@ -88,7 +89,7 @@ class TransactionalEmailVariant extends EmailVariant
                     'replyToEmail' => $mailSettings->replyToEmail,
                 ],
             ],
-            'uid' => StringHelper::UUID(),
+            'uid' => 'SPROUT-UID-EMAIL-DEFAULT-MAILER',
         ]);
 
         return $mailer;

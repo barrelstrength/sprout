@@ -1,53 +1,70 @@
 {% import "_includes/forms" as forms %}
 
-{{ forms.editableTableField({
-    label: "Approved Senders"|t('sprout-module-mailer'),
-    instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),
-    id: 'approvedSenders',
-    name: 'approvedSenders',
-    cols: {
-        fromName: {
-            type: 'autosuggest',
-            heading: "From Name"|t('sprout-module-mailer'),
-            info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
-            code: true,
-            suggestEnvVars: true,
-        },
-        fromEmail: {
-            type: 'autosuggest',
-            heading: "From Email"|t('sprout-module-mailer'),
-            info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
-            required: true,
-            code: true,
-            suggestEnvVars: true,
-        },
-    }|filter,
-    rows: settings.approvedSenders ?? [''],
-    errors: settings.getErrors('approvedSenders')|unique,
-    allowAdd: true,
-    allowReorder: true,
-    allowDelete: true,
+{{ forms.selectField({
+    label: "Sender Behavior"|t('sprout-module-mailer'),
+    instructions: "Select how Sender and Reply To fields display when editing an email."|t('sprout-module-mailer'),
+    id: 'senderBehavior',
+    name: 'senderBehavior',
+    options: [
+        { value: 'custom', label: "Plain Text Field"|t('sprout-module-mailer') },
+        { value: 'approved', label: "Approved Senders Dropdown"|t('sprout-module-mailer') }
+    ],
+    default: 'custom',
+    value: mailer.senderBehavior ?? 'custom',
+    toggle: true,
+    targetPrefix: 'sender-behavior-',
 }) }}
 
-{{ forms.editableTableField({
-    label: "Approved Reply-to Addresses"|t('sprout-module-mailer'),
-    instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-mailer'),
-    id: 'approvedReplyToEmails',
-    name: 'approvedReplyToEmails',
-    cols: {
-        replyToEmail: {
-            type: 'autosuggest',
-            heading: "Reply To Email"|t('sprout-module-mailer'),
-            info: "From Email will be used if no Reply To Email is provided. This can be set to an environment variable. Warning: if the selected environment variable changes, it will change
+<div id="sender-behavior-approved" class="hidden">
+    {{ forms.editableTableField({
+        label: "Approved Senders"|t('sprout-module-mailer'),
+        instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),
+        id: 'approvedSenders',
+        name: 'approvedSenders',
+        cols: {
+            fromName: {
+                type: 'autosuggest',
+                heading: "From Name"|t('sprout-module-mailer'),
+                info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
+                code: true,
+                suggestEnvVars: true,
+            },
+            fromEmail: {
+                type: 'autosuggest',
+                heading: "From Email"|t('sprout-module-mailer'),
+                info: "This can be set to an environment variable. Warning: if the selected environment variable changes, it will change the settings of existing emails."|t('sprout-module-mailer'),
+                required: true,
+                code: true,
+                suggestEnvVars: true,
+            },
+        }|filter,
+        rows: mailer.approvedSenders ?? [''],
+        errors: mailer.getErrors('approvedSenders')|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+
+    {{ forms.editableTableField({
+        label: "Approved Reply-to Addresses"|t('sprout-module-mailer'),
+        instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-mailer'),
+        id: 'approvedReplyToEmails',
+        name: 'approvedReplyToEmails',
+        cols: {
+            replyToEmail: {
+                type: 'autosuggest',
+                heading: "Reply To Email"|t('sprout-module-mailer'),
+                info: "From Email will be used if no Reply To Email is provided. This can be set to an environment variable. Warning: if the selected environment variable changes, it will change
                 the settings of existing emails."|t('sprout-module-mailer'),
-            code: true,
-            suggestEnvVars: true,
-        },
-    }|filter,
-    rows: settings.approvedReplyToEmails ?? [''],
-    errors: settings.getErrors('approvedReplyToEmails')|unique,
-    allowAdd: true,
-    allowReorder: true,
-    allowDelete: true,
-}) }}
+                code: true,
+                suggestEnvVars: true,
+            },
+        }|filter,
+        rows: mailer.approvedReplyToEmails ?? [''],
+        errors: mailer.getErrors('approvedReplyToEmails')|unique,
+        allowAdd: true,
+        allowReorder: true,
+        allowDelete: true,
+    }) }}
+</div>
 

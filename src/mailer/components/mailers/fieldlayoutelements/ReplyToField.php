@@ -16,7 +16,7 @@ class ReplyToField extends BaseNativeField
 
     protected function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::t('sprout-module-mailer', 'Reply-to');
+        return Craft::t('sprout-module-mailer', 'Reply-to Email');
     }
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string

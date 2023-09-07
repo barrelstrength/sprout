@@ -530,8 +530,6 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->defaultMessage = $this->defaultMessage;
 
         $emailElementRecord->emailTypeUid = $this->emailTypeUid;
-
-        $emailElementRecord->mailerUid = $this->mailerUid;
         $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
 
         $emailVariant = $this->getEmailVariant();
