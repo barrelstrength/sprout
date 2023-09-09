@@ -76,8 +76,8 @@ class TransactionalEmailVariant extends EmailVariant
         $mailSettings = App::mailSettings();
 
         $mailer = new TransactionalMailer([
-            'name' => Craft::t('sprout-module-transactional', 'Craft Default Mailer'),
-            'senderBehavior' => SystemMailer::SENDER_BEHAVIOR_CUSTOM,
+            'name' => Craft::t('sprout-module-transactional', 'Craft Email Settings'),
+            'senderEditBehavior' => SystemMailer::SENDER_BEHAVIOR_CRAFT,
             'approvedSenders' => [
                 [
                     'fromName' => $mailSettings->fromName,

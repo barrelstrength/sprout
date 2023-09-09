@@ -18,15 +18,19 @@ trait SystemMailerInstructionsTrait
     /**
      * The submitted sender before we break it into $fromName and $fromEmail
      *
-     * e.g. Name <email>
+     * e.g. ['fromName' => Name, 'fromEmail' => email]
      */
-    public ?string $sender = null;
+    public array $sender = [];
+
+    public ?string $fromName = null;
+
+    public ?string $fromEmail = null;
 
     /**
      * The sender replyTo email, if different than the sender email
      */
     public ?string $replyToEmail = null;
-
+    
     /**
      * A comma, delimited list of recipients (To email)
      */
@@ -37,28 +41,28 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
-    public function getSenderAsString(): mixed
+    public function getSenderAsString(): ?string
     {
-        $sender = $this->getSender();
+        if (!$this->fromName || !$this->fromEmail) {
+            return null;
+        }
 
-        return current($sender) . ' <' . key($sender) . '>' ?? null;
+        return App::parseEnv($this->fromName) . ' <' . App::parseEnv($this->fromEmail) . '>';
     }
 
     public function getSender(): mixed
     {
-        $senderAddress = Address::create($this->sender);
+        $senderAddress = Address::create($this->getSenderAsString());
 
         return [
-            App::parseEnv($senderAddress->getAddress()) => App::parseEnv($senderAddress->getName()),
+            $senderAddress->getAddress() => $senderAddress->getName(),
         ];
     }
 
     public function getReplyToEmail(): string|array
     {
         if (!$this->replyToEmail) {
-            $sender = $this->getSender();
-
-            return key($sender);
+            return App::parseEnv($this->fromEmail);
         }
 
         return App::parseEnv($this->replyToEmail);
@@ -175,22 +179,15 @@ trait SystemMailerInstructionsTrait
     {
         $rules = parent::defineRules();
 
-        $rules[] = [['sender', 'replyToEmail', 'recipients'], 'required'];
-        $rules[] = ['sender', 'validateSender'];
-        $rules[] = ['replyToEmail', 'validateReplyToEmail'];
+        $rules[] = ['fromName', 'required', 'when' => fn() => $this->fromName !== null];
+        $rules[] = ['fromEmail', 'required', 'when' => fn() => $this->fromEmail !== null];
+        $rules[] = ['fromEmail', 'email', 'when' => fn() => $this->fromEmail !== null];
+        $rules[] = ['replyToEmail', 'email', 'when' => fn() => $this->replyToEmail !== null];
+
+        $rules[] = [['recipients'], 'required', 'message' => Craft::t('sprout-module-mailer', '{attribute} in "To Field" cannot be blank.')];
         $rules[] = ['recipients', 'validateRecipients'];
 
         return $rules;
-    }
-
-    public function validateSender(): void
-    {
-        // Confirm approved value in mailer?
-    }
-
-    public function validateReplyToEmail(): void
-    {
-        // Confirm approved value in mailer?
     }
 
     public function validateRecipients(): void

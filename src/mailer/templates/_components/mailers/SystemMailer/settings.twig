@@ -1,21 +1,49 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
-    label: "Sender Behavior"|t('sprout-module-mailer'),
-    instructions: "Select how Sender and Reply To fields display when editing an email."|t('sprout-module-mailer'),
-    id: 'senderBehavior',
-    name: 'senderBehavior',
+    label: "Sender Edit Behavior"|t('sprout-module-mailer'),
+    instructions: "How to populate Sender and Reply To fields when editing an email."|t('sprout-module-mailer'),
+    id: 'senderEditBehavior',
+    name: 'senderEditBehavior',
     options: [
-        { value: 'custom', label: "Plain Text Field"|t('sprout-module-mailer') },
-        { value: 'approved', label: "Approved Senders Dropdown"|t('sprout-module-mailer') }
+        { value: 'custom', label: "Editable Defaults"|t('sprout-module-mailer') },
+        { value: 'curated', label: "Approved Sender List"|t('sprout-module-mailer') }
     ],
     default: 'custom',
-    value: mailer.senderBehavior ?? 'custom',
+    value: mailer.senderEditBehavior ?? 'custom',
     toggle: true,
     targetPrefix: 'sender-behavior-',
 }) }}
 
-<div id="sender-behavior-approved" class="hidden">
+<div id="sender-behavior-custom" class="hidden">
+
+    {{ forms.autosuggestField({
+        label: "Default From Name"|t('sprout-module-mailer'),
+        name: 'defaultFromName',
+        placeholder: mailSettings.fromName,
+        value: mailer.defaultFromName,
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Default From Email"|t('sprout-module-mailer'),
+        name: 'defaultFromEmail',
+        placeholder: mailSettings.fromEmail,
+        value: mailer.defaultFromEmail,
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Default Reply-to Email"|t('sprout-module-mailer'),
+        name: 'defaultReplyToEmail',
+        placeholder: mailSettings.replyToEmail,
+        value: mailer.defaultReplyToEmail,
+        suggestEnvVars: true,
+    }) }}
+
+</div>
+
+<div id="sender-behavior-curated" class="hidden">
     {{ forms.editableTableField({
         label: "Approved Senders"|t('sprout-module-mailer'),
         instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),

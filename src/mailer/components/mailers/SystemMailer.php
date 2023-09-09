@@ -6,8 +6,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\AudienceField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ReplyToField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderField;
-use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderFromEmail;
-use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderTextField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\TestToEmailUiElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
@@ -31,11 +29,18 @@ use yii\mail\MessageInterface;
 
 abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 {
+    public const SENDER_BEHAVIOR_CRAFT = 'craft';
+
     public const SENDER_BEHAVIOR_CUSTOM = 'custom';
 
-    public const SENDER_BEHAVIOR_APPROVED = 'approved';
+    public const SENDER_BEHAVIOR_CURATED = 'curated';
 
-    public string $senderBehavior = self::SENDER_BEHAVIOR_CUSTOM;
+    public string $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;
+
+    public ?string $defaultFromName = null;
+    public ?string $defaultFromEmail = null;
+
+    public ?string $defaultReplyToEmail = null;
 
     public ?array $approvedSenders = null;
 
@@ -91,6 +96,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     {
         $html = Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/settings.twig', [
             'mailer' => $this,
+            'mailSettings' => App::mailSettings(),
         ]);
 
         return $html;
@@ -303,7 +309,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public function getConfig(): array
     {
         return array_merge(parent::getConfig(), [
-            'senderBehavior' => $this->senderBehavior,
+            'senderEditBehavior' => $this->senderEditBehavior,
             'approvedSenders' => $this->approvedSenders,
             'approvedReplyToEmails' => $this->approvedReplyToEmails,
         ]);
@@ -355,5 +361,19 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
                 $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }
         }
+    }
+
+    public function prepareMailerInstructionSettingsForDb(array $settings): array
+    {
+        if (isset($settings['sender'])) {
+            $sender = explode('<', $settings['sender']);
+
+            $settings['fromName'] = trim($sender[0]);
+            $settings['fromEmail'] = trim(str_replace('>', '', $sender[1]));
+
+            unset($settings['sender']);
+        }
+
+        return $settings;
     }
 }

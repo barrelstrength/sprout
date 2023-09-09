@@ -1,0 +1,52 @@
+{% import "_includes/forms" as forms %}
+
+{% if senderEditBehavior == 'curated' %}
+
+    {{ forms.selectField({
+        label: "From"|t('sprout-module-mailer'),
+        name: name,
+        options: senderOptions,
+        value: null,
+        errors: '',
+        first: true,
+        required: true,
+    }) }}
+
+{% elseif senderEditBehavior == 'custom'  %}
+
+    {{ forms.textField({
+        label: "From Name"|t('sprout-module-mailer'),
+        name: name ~ '[fromName]',
+        value: value.fromName ?? mailSettings.fromName,
+        placeholder: mailSettings.fromName,
+        errors: element.getErrors('mailerInstructionsSettings.sender') ?? null,
+        required: true,
+        first: true,
+    }) }}
+
+    {{ forms.textField({
+        label: "From Email"|t('sprout-module-mailer'),
+        name: name ~ '[fromEmail]',
+        value: value.fromEmail ?? mailSettings.fromEmail,
+        placeholder: mailSettings.fromEmail,
+        errors: element.getErrors('mailerInstructionsSettings.sender') ?? null,
+        required: true,
+    }) }}
+
+{% else %}
+
+    {{ forms.textField({
+        label: "Sender"|t('sprout-module-mailer'),
+        tip: "Sender is set in the Craft Email Settings."|t('sprout-module-mailer'),
+        name: name ~ '[fromName]',
+        value: mailSettings.fromName ~ ' <' ~ mailSettings.fromEmail ~ '>',
+        first: true,
+        disabled: true,
+    }) }}
+
+{% endif %}
+
+
+
+
+

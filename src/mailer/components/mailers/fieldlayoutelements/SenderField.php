@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
@@ -11,18 +12,11 @@ use craft\helpers\App;
 
 class SenderField extends BaseNativeField
 {
-    public string $type = 'select';
-
     public bool $mandatory = true;
-
-    public string $attribute = 'sender';
 
     public bool $required = true;
 
-    protected function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
-    {
-        return Craft::t('sprout-module-mailer', 'From');
-    }
+    public string $attribute = 'sender';
 
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
@@ -40,27 +34,22 @@ class SenderField extends BaseNativeField
                 continue;
             }
 
-            $labelSender = App::parseEnv($approvedSender['fromName']) . ' <' . App::parseEnv($approvedSender['fromEmail']) . '>';
-            $valueSender = $approvedSender['fromName'] . ' <' . $approvedSender['fromEmail'] . '>';
+            $sender = App::parseEnv($approvedSender['fromName']) . ' <' . App::parseEnv($approvedSender['fromEmail']) . '>';
 
             $senderOptions[] = [
-                'label' => $labelSender,
-                'value' => $valueSender,
+                'label' => $sender,
+                'value' => $sender,
             ];
         }
 
-        if (!$senderOptions) {
-            $this->warning = Craft::t('sprout-module-mailer', 'Approved Senders must be added in email settings');
-        }
-
-        $selectField = Craft::$app->getView()->renderTemplate('_includes/forms/select.twig', [
-            'type' => $this->type,
-            'describedBy' => $this->describedBy($element, $static),
-            'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',
-            'value' => $mailerInstructionsSettings->sender,
-            'options' => $senderOptions,
+        return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/sender.twig', [
+            'element' => $element,
+            'field' => $this,
+            'selectedSenderOption' => $mailerInstructionsSettings->getSenderAsString(),
+            'mailerInstructionsSettings' => $mailerInstructionsSettings,
+            'senderOptions' => $senderOptions,
+            'senderEditBehavior' => $mailer->senderEditBehavior,
+            'mailSettings' => App::mailSettings(),
         ]);
-
-        return $selectField;
     }
 }

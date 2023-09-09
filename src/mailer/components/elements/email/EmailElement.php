@@ -150,12 +150,22 @@ class EmailElement extends Element implements EmailPreviewInterface
         return true;
     }
 
+    public static function defaultTableAttributes(string $source): array
+    {
+        return [
+            'subjectLine',
+            'sendTest',
+            'preview',
+        ];
+    }
+
     protected static function defineTableAttributes(): array
     {
         return [
             'subjectLine' => ['label' => Craft::t('sprout-module-mailer', 'Subject Line')],
             'sendTest' => ['label' => Craft::t('sprout-module-mailer', 'Send Test')],
             'preview' => ['label' => Craft::t('sprout-module-mailer', 'Preview'), 'icon' => 'view'],
+            'emailType' => ['label' => Craft::t('sprout-module-mailer', 'Email Type')],
             'id' => ['label' => Craft::t('sprout-module-mailer', 'ID')],
             'uid' => ['label' => Craft::t('sprout-module-mailer', 'UID')],
             'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
@@ -379,6 +389,10 @@ class EmailElement extends Element implements EmailPreviewInterface
                     'data-icon' => 'view',
                     'data-element-type' => self::class,
                 ]);
+
+            case 'emailType':
+
+                return $this->getEmailType()->name;
         }
 
         return parent::getTableAttributeHtml($attribute);
@@ -530,7 +544,9 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailElementRecord->defaultMessage = $this->defaultMessage;
 
         $emailElementRecord->emailTypeUid = $this->emailTypeUid;
-        $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
+
+        $mailer = $this->getMailer();
+        $emailElementRecord->mailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForDb($this->mailerInstructionsSettings);
 
         $emailVariant = $this->getEmailVariant();
         $emailVariantSettings = $emailVariant->prepareEmailVariantSettingsForDb($this->emailVariantSettings);
