@@ -40,4 +40,17 @@ class ToField extends TextField
 
         return $mailerInstructionsSettings->{$this->attribute()} ?? null;
     }
+
+    protected function errors(?ElementInterface $element = null): array
+    {
+        if (!$element) {
+            return [];
+        }
+
+        if (!$element->hasErrors('mailerInstructionsSettings.recipients')) {
+            return [];
+        }
+
+        return $element->getErrors('mailerInstructionsSettings.recipients');
+    }
 }

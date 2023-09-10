@@ -691,8 +691,21 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $rules[] = [['emailVariant'], 'safe'];
         $rules[] = [['emailVariantSettings'], 'safe'];
-        $rules[] = [['mailerInstructionsSettings'], 'safe'];
+        $rules[] = [['mailerInstructionsSettings'], 'validateMailerInstructionsSettings', 'on' => self::SCENARIO_LIVE];
 
         return $rules;
+    }
+
+    public function validateMailerInstructionsSettings(): void
+    {
+        $mailer = $this->getMailer();
+
+        /** @var Model $mailerInstructionsSettings */
+        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
+
+        if (!$mailerInstructionsSettings->validate()) {
+            $this->addModelErrors($mailerInstructionsSettings, 'mailerInstructionsSettings');
+        }
     }
 }
