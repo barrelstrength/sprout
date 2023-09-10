@@ -77,12 +77,24 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $mailerTab->sortOrder = 0;
         $mailerTab->uid = 'SPROUT-UID-EMAIL-MAILER-TAB';
         $mailerTab->setElements([
-            new SenderField(),
-            new ReplyToField(),
-            new HorizontalRule(),
-            new ToField(),
-            new AudienceField(),
-            new TestToEmailUiElement(),
+            new SenderField([
+                'uid' => 'SPROUT-UID-EMAIL-SENDER-FIELD',
+            ]),
+            new ReplyToField([
+                'uid' => 'SPROUT-UID-EMAIL-REPLY-TO-FIELD',
+            ]),
+            new HorizontalRule([
+                'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-1',
+            ]),
+            new ToField([
+                'uid' => 'SPROUT-UID-EMAIL-TO-FIELD',
+            ]),
+            new AudienceField([
+                'uid' => 'SPROUT-UID-EMAIL-AUDIENCE-FIELD',
+            ]),
+            new TestToEmailUiElement([
+                'uid' => 'SPROUT-UID-EMAIL-TEST-TO-UI-ELEMENT',
+            ]),
         ]);
 
         $fieldLayout->setTabs([

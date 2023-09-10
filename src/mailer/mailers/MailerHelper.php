@@ -132,19 +132,12 @@ class MailerHelper
     public static function getMailerModel(array $config): ?Mailer
     {
         $type = $config['type'];
-        $fieldLayoutConfig = reset($config['fieldLayouts']);
         $fieldLayoutConfig['type'] = $type;
 
         unset(
             $config['type'],
-            $config['fieldLayouts'],
         );
 
-        $fieldLayout = FieldLayout::createFromConfig($fieldLayoutConfig);
-
-        $mailer = new $type($config);
-        $mailer->setFieldLayout($fieldLayout);
-
-        return $mailer;
+        return new $type($config);
     }
 }
