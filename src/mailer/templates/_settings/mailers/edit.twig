@@ -58,8 +58,6 @@
         errors: mailer.getErrors('fieldLayout'),
     }) }}
 
-    {{ sproutCp.fieldLayoutDesignerUiOnlyJs() }}
-
     {{ forms.textField({
         label: "Mailer Type"|t('sprout-module-mailer'),
         value: mailer.displayName(),

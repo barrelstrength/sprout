@@ -134,17 +134,3 @@
     </table>
 {% endmacro %}
 
-{% macro fieldLayoutDesignerUiOnlyJs(params) %}
-    {% js %}
-        let fieldLayoutButtons = document.querySelector('.fld-sidebar .btngroup');
-        let fieldsButton = document.querySelector('.fld-sidebar [data-library="field"]');
-        let fieldLibrary = document.querySelector('.fld-field-library');
-        let uiLibrary = document.querySelector('.fld-ui-library');
-
-        fieldLayoutButtons.parentNode.removeChild(fieldLayoutButtons);
-        fieldsButton.parentNode.removeChild(fieldsButton);
-        fieldLibrary.parentNode.removeChild(fieldLibrary);
-        uiLibrary.classList.toggle('hidden');
-    {% endjs %}
-{% endmacro %}
-
