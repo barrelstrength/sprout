@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderT
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
@@ -35,6 +36,7 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use http\Exception\InvalidArgumentException;
+use yii\base\Model;
 use yii\web\Response;
 
 /**
@@ -241,24 +243,21 @@ class EmailElement extends Element implements EmailPreviewInterface
         $response->crumbs($crumbs);
     }
 
-    /**
-     * The Email Service provide can be update via Craft's Email Settings
-     */
     public function getMailer(): Mailer
     {
         if ($this->_mailer) {
             return $this->_mailer;
         }
 
+        $emailType = $this->getEmailType();
+
         $emailVariant = $this->getEmailVariant();
 
-        $mailer = $emailVariant->getMailer($this);
-
-        if (!$mailer) {
+        if ($emailType->mailerUid === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
             return $emailVariant::getDefaultMailer();
         }
 
-        return $mailer;
+        return MailerHelper::getMailerByUid($emailType->mailerUid);
     }
 
     public function setMailer(Mailer $mailer): void

@@ -321,6 +321,9 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public function getConfig(): array
     {
         return array_merge(parent::getConfig(), [
+            'defaultFromName' => $this->defaultFromName,
+            'defaultFromEmail' => $this->defaultFromEmail,
+            'defaultReplyToEmail' => $this->defaultReplyToEmail,
             'senderEditBehavior' => $this->senderEditBehavior,
             'approvedSenders' => $this->approvedSenders,
             'approvedReplyToEmails' => $this->approvedReplyToEmails,

@@ -97,14 +97,6 @@ abstract class Mailer extends SavableComponent implements MailerInterface
             'uid' => $this->uid,
         ];
 
-        $fieldLayout = $this->getFieldLayout();
-
-        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
-            $config['fieldLayouts'] = [
-                $fieldLayout->uid => $fieldLayoutConfig,
-            ];
-        }
-
         return $config;
     }
 
