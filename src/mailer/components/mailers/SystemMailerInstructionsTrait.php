@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use BarrelStrength\Sprout\mailer\audience\AudienceHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\AssetQuery;
@@ -20,7 +21,7 @@ trait SystemMailerInstructionsTrait
      *
      * e.g. ['fromName' => Name, 'fromEmail' => email]
      */
-    public array $sender = [];
+    public ?string $sender = null;
 
     public ?string $fromName = null;
 
@@ -41,22 +42,54 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
+    protected ?SystemMailer $mailer = null;
+
+    public function setMailer(?SystemMailer $mailer): void
+    {
+        $this->mailer = $mailer;
+    }
+
+    public function getMailer(): ?SystemMailer
+    {
+        return $this->mailer;
+    }
+
     public function getSenderAsString(): ?string
     {
         if (!$this->fromName || !$this->fromEmail) {
             return null;
         }
 
-        return App::parseEnv($this->fromName) . ' <' . App::parseEnv($this->fromEmail) . '>';
+        return $this->getFromName() . ' <' . $this->getFromEmail() . '>';
     }
 
     public function getSender(): mixed
     {
-        $senderAddress = Address::create($this->getSenderAsString());
+        $sender = $this->sender ?? $this->getSenderAsString();
+
+        $senderAddress = Address::create($sender);
 
         return [
             $senderAddress->getAddress() => $senderAddress->getName(),
         ];
+    }
+
+    public function getFromName(): ?string
+    {
+        if (!$this->fromName) {
+            return $this->fromName;
+        }
+
+        return App::parseEnv($this->fromName);
+    }
+
+    public function getFromEmail(): ?string
+    {
+        if (!$this->fromEmail) {
+            return null;
+        }
+
+        return App::parseEnv($this->fromEmail);
     }
 
     public function getReplyToEmail(): string|array
@@ -182,12 +215,47 @@ trait SystemMailerInstructionsTrait
         $rules[] = ['fromName', 'required', 'when' => fn() => $this->fromName !== null];
         $rules[] = ['fromEmail', 'required', 'when' => fn() => $this->fromEmail !== null];
         $rules[] = ['fromEmail', 'email', 'when' => fn() => $this->fromEmail !== null];
+        $rules[] = [['sender'], 'validateApprovedSender', 'when' => fn() => $this->sender !== null];
+
         $rules[] = ['replyToEmail', 'email', 'when' => fn() => $this->replyToEmail !== null];
+        $rules[] = ['replyToEmail', 'validateApprovedReplyTo', 'when' => fn() => $this->replyToEmail !== null];
 
         $rules[] = [['recipients'], 'required', 'message' => Craft::t('sprout-module-mailer', '{attribute} in "To Field" cannot be blank.')];
         $rules[] = ['recipients', 'validateRecipients'];
 
         return $rules;
+    }
+
+    public function validateApprovedSender(): void
+    {
+        $mailer = $this->getMailer();
+
+        if (!$mailer) {
+            return;
+        }
+
+        $sender = $this->getSender();
+
+        // Make sure the current sender is in the list of approved senders
+        if (!$mailer->isApprovedSender(reset($sender), key($sender))) {
+            $this->addError('sender', 'Sender is not in list of approved senders.');
+        }
+    }
+    public function validateApprovedReplyTo(): void
+    {
+        $mailer = $this->getMailer();
+
+        if (!$mailer) {
+            return;
+        }
+
+        $fromEmail = $this->getFromEmail();
+        $replyTo = $this->getReplyToEmail();
+
+        // Make sure the current replyTo address is in the list of approved replyTos
+        if (!$mailer->isApprovedReplyTo($replyTo, $fromEmail)) {
+            $this->addError('replyToEmail', 'Reply To address is not in list of approved addresses.');
+        }
     }
 
     public function validateRecipients(): void

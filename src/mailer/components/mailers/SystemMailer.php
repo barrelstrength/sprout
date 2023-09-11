@@ -147,18 +147,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $this->attachFilesToMessage($message, $assets);
 
         $sender = $mailerInstructionsSettings->getSender();
-
-        // Make sure the current sender is in the list of approved senders
-        if (!$this->isApprovedSender($sender)) {
-            $email->addError('mailerInstructionsSettings', 'Sender is not in list of approved senders.');
-        }
-
         $replyTo = $mailerInstructionsSettings->getReplyToEmail();
-
-        // Make sure the current replyTo address is in the list of approved replyTos
-        if (!$this->isApprovedReplyTo($replyTo, key($sender))) {
-            $email->addError('mailerInstructionsSettings', 'Reply To address is not in list of approved addresses.');
-        }
 
         $message->setFrom($sender);
         $message->setReplyTo($replyTo);
@@ -207,34 +196,53 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $this->deleteExternalFilePaths($this->_attachmentExternalFilePaths);
     }
 
-    protected function isApprovedSender(array $sender): bool
+    public function isApprovedSender(string $fromName, string $fromEmail): bool
     {
-        $approvedSenders = [];
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT ||
+            $this->senderEditBehavior === self::SENDER_BEHAVIOR_CUSTOM) {
+            return true;
+        }
 
-        array_walk($this->approvedSenders,
-            static function($approvedSender) use (&$approvedSenders) {
-                $approvedSenders[App::parseEnv($approvedSender['fromEmail'])] = App::parseEnv($approvedSender['fromName']);
-            });
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CURATED) {
+            $approvedSenders = [];
 
-        foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
-            if (isset($sender[$approvedSenderEmail]) && $sender[$approvedSenderEmail] === $approvedSenderName) {
-                return true;
+            array_walk($this->approvedSenders,
+                static function($approvedSender) use (&$approvedSenders) {
+                    $approvedSenders[App::parseEnv($approvedSender['fromEmail'])] = App::parseEnv($approvedSender['fromName']);
+                });
+
+            foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
+
+                if ($approvedSenderEmail === $fromEmail &&
+                    $approvedSenderName === $fromName
+                ) {
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    protected function isApprovedReplyTo(mixed $replyTo, string $sender = null): bool
+    public function isApprovedReplyTo(mixed $replyTo, string $fromEmail = null): bool
     {
-        if (is_array($replyTo)) {
-            $replyTo = key($replyTo);
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT ||
+            $this->senderEditBehavior === self::SENDER_BEHAVIOR_CUSTOM) {
+            return true;
         }
 
-        $approvedReplyToEmails = array_map(static fn($email) => $email['replyToEmail'], $this->approvedReplyToEmails);
-        $approvedReplyToEmails = array_filter(array_merge($approvedReplyToEmails, [$sender]));
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CURATED) {
+            if (is_array($replyTo)) {
+                $replyTo = key($replyTo);
+            }
 
-        return in_array($replyTo, $approvedReplyToEmails, true);
+            $approvedReplyToEmails = array_map(static fn($email) => $email['replyToEmail'], $this->approvedReplyToEmails);
+            $approvedReplyToEmails = array_filter(array_merge($approvedReplyToEmails, [$fromEmail]));
+
+            return in_array($replyTo, $approvedReplyToEmails, true);
+        }
+
+        return false;
     }
 
     protected function _buildMessage(
@@ -383,8 +391,10 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         if (isset($settings['sender'])) {
             $sender = explode('<', $settings['sender']);
 
-            $settings['fromName'] = trim($sender[0]);
-            $settings['fromEmail'] = trim(str_replace('>', '', $sender[1]));
+            $settings = array_merge([
+                'fromName' => trim($sender[0]),
+                'fromEmail' => trim(str_replace('>', '', $sender[1])),
+            ], $settings);
 
             unset($settings['sender']);
         }
