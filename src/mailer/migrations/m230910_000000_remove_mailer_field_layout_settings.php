@@ -15,6 +15,10 @@ class m230910_000000_remove_mailer_field_layout_settings extends Migration
         $projectConfig = Craft::$app->getProjectConfig();
         $mailers = $projectConfig->get(self::MAILERS_SETTINGS_KEY);
 
+        if ($mailers === null) {
+            return;
+        }
+
         $mailerConfigs = ProjectConfig::unpackAssociativeArray($mailers);
         foreach ($mailerConfigs as $key => $mailerConfig) {
             unset($mailerConfigs[$key]['fieldLayouts']);
