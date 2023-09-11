@@ -40,6 +40,7 @@
                 name: emailType.name ?? emailType.displayName()
             },
             emailTypeType: emailType.displayName,
+            mailer: emailType.getMailer().name ?? 'Default Settings'|t('sprout-module-mailer'),
             title: emailType.name|t('sprout-module-mailer')|e,
             url: emailType.getCpEditUrl(),
             _showDelete: true,

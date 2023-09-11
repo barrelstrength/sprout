@@ -22,6 +22,10 @@ class EmailTypesSettings {
                 name: 'emailTypeType',
                 title: Craft.t('sprout-module-mailer', 'Email Type'),
             },
+            {
+                name: 'mailer',
+                title: Craft.t('sprout-module-mailer', 'Mailer Settings'),
+            },
         ];
 
         new Craft.VueAdminTable({
