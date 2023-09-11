@@ -102,13 +102,12 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $recipients .= ',' . $bcc;
                 }
 
-                $sender = $rows[$key]['fromName'] . ' <' . $rows[$key]['fromEmail'] . '>';
-
                 $listSettings = Json::decode($rows[$key]['listSettings'] ?? '[]');
                 $audienceIds = $listSettings['listIds'] ?? [];
 
                 $rows[$key]['mailerInstructionsSettings'] = Json::encode([
-                    'sender' => $sender,
+                    'fromName' => $rows[$key]['fromName'],
+                    'fromEmail' => $rows[$key]['fromEmail'],
                     'replyToEmail' => $rows[$key]['replyToEmail'],
                     'recipients' => trim($recipients),
                     'audienceIds' => $audienceIds,
