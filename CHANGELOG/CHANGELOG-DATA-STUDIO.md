@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.1 - UNRELEASED
+
+### Fixed
+
+- Fixed user permission logic for view report permissions ([#271])
+
+- [#271]: https://github.com/barrelstrength/sprout/issues/271
+
 ## 4.1.0 - 2023-09-05
 
 ### Added
