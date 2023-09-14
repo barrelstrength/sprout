@@ -19,7 +19,6 @@ use craft\fieldlayoutelements\HorizontalRule;
 use craft\fs\Local;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
-use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use craft\models\FieldLayout;
@@ -30,6 +29,19 @@ use yii\mail\MessageInterface;
 
 abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 {
+    public const SENDER_BEHAVIOR_CRAFT = 'craft';
+
+    public const SENDER_BEHAVIOR_CUSTOM = 'custom';
+
+    public const SENDER_BEHAVIOR_CURATED = 'curated';
+
+    public string $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;
+
+    public ?string $defaultFromName = null;
+    public ?string $defaultFromEmail = null;
+
+    public ?string $defaultReplyToEmail = null;
+
     public ?array $approvedSenders = null;
 
     public ?array $approvedReplyToEmails = null;
@@ -63,14 +75,26 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $mailerTab->layout = $fieldLayout;
         $mailerTab->name = Craft::t('sprout-module-mailer', 'Mailer');
         $mailerTab->sortOrder = 0;
-        $mailerTab->uid = StringHelper::UUID();
+        $mailerTab->uid = 'SPROUT-UID-EMAIL-MAILER-TAB';
         $mailerTab->setElements([
-            new SenderField(),
-            new ReplyToField(),
-            new HorizontalRule(),
-            new ToField(),
-            new AudienceField(),
-            new TestToEmailUiElement(),
+            new SenderField([
+                'uid' => 'SPROUT-UID-EMAIL-SENDER-FIELD',
+            ]),
+            new ReplyToField([
+                'uid' => 'SPROUT-UID-EMAIL-REPLY-TO-FIELD',
+            ]),
+            new HorizontalRule([
+                'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-1',
+            ]),
+            new ToField([
+                'uid' => 'SPROUT-UID-EMAIL-TO-FIELD',
+            ]),
+            new AudienceField([
+                'uid' => 'SPROUT-UID-EMAIL-AUDIENCE-FIELD',
+            ]),
+            new TestToEmailUiElement([
+                'uid' => 'SPROUT-UID-EMAIL-TEST-TO-UI-ELEMENT',
+            ]),
         ]);
 
         $fieldLayout->setTabs([
@@ -83,7 +107,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public function getSettingsHtml(): ?string
     {
         $html = Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/settings.twig', [
-            'settings' => $this,
+            'mailer' => $this,
+            'mailSettings' => App::mailSettings(),
         ]);
 
         return $html;
@@ -122,18 +147,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $this->attachFilesToMessage($message, $assets);
 
         $sender = $mailerInstructionsSettings->getSender();
-
-        // Make sure the current sender is in the list of approved senders
-        if (!$this->isApprovedSender($sender)) {
-            $email->addError('mailerInstructionsSettings', 'Sender is not in list of approved senders.');
-        }
-
         $replyTo = $mailerInstructionsSettings->getReplyToEmail();
-
-        // Make sure the current replyTo address is in the list of approved replyTos
-        if (!$this->isApprovedReplyTo($replyTo, key($sender))) {
-            $email->addError('mailerInstructionsSettings', 'Reply To address is not in list of approved addresses.');
-        }
 
         $message->setFrom($sender);
         $message->setReplyTo($replyTo);
@@ -182,34 +196,53 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         $this->deleteExternalFilePaths($this->_attachmentExternalFilePaths);
     }
 
-    protected function isApprovedSender(array $sender): bool
+    public function isApprovedSender(string $fromName, string $fromEmail): bool
     {
-        $approvedSenders = [];
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT ||
+            $this->senderEditBehavior === self::SENDER_BEHAVIOR_CUSTOM) {
+            return true;
+        }
 
-        array_walk($this->approvedSenders,
-            static function($approvedSender) use (&$approvedSenders) {
-                $approvedSenders[App::parseEnv($approvedSender['fromEmail'])] = App::parseEnv($approvedSender['fromName']);
-            });
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CURATED) {
+            $approvedSenders = [];
 
-        foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
-            if (isset($sender[$approvedSenderEmail]) && $sender[$approvedSenderEmail] === $approvedSenderName) {
-                return true;
+            array_walk($this->approvedSenders,
+                static function($approvedSender) use (&$approvedSenders) {
+                    $approvedSenders[App::parseEnv($approvedSender['fromEmail'])] = App::parseEnv($approvedSender['fromName']);
+                });
+
+            foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
+
+                if ($approvedSenderEmail === $fromEmail &&
+                    $approvedSenderName === $fromName
+                ) {
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    protected function isApprovedReplyTo(mixed $replyTo, string $sender = null): bool
+    public function isApprovedReplyTo(mixed $replyTo, string $fromEmail = null): bool
     {
-        if (is_array($replyTo)) {
-            $replyTo = key($replyTo);
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT ||
+            $this->senderEditBehavior === self::SENDER_BEHAVIOR_CUSTOM) {
+            return true;
         }
 
-        $approvedReplyToEmails = array_map(static fn($email) => $email['replyToEmail'], $this->approvedReplyToEmails);
-        $approvedReplyToEmails = array_filter(array_merge($approvedReplyToEmails, [$sender]));
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CURATED) {
+            if (is_array($replyTo)) {
+                $replyTo = key($replyTo);
+            }
 
-        return in_array($replyTo, $approvedReplyToEmails, true);
+            $approvedReplyToEmails = array_map(static fn($email) => $email['replyToEmail'], $this->approvedReplyToEmails);
+            $approvedReplyToEmails = array_filter(array_merge($approvedReplyToEmails, [$fromEmail]));
+
+            return in_array($replyTo, $approvedReplyToEmails, true);
+        }
+
+        return false;
     }
 
     protected function _buildMessage(
@@ -293,6 +326,18 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         }
     }
 
+    public function getConfig(): array
+    {
+        return array_merge(parent::getConfig(), [
+            'defaultFromName' => $this->defaultFromName,
+            'defaultFromEmail' => $this->defaultFromEmail,
+            'defaultReplyToEmail' => $this->defaultReplyToEmail,
+            'senderEditBehavior' => $this->senderEditBehavior,
+            'approvedSenders' => $this->approvedSenders,
+            'approvedReplyToEmails' => $this->approvedReplyToEmails,
+        ]);
+    }
+
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
@@ -339,5 +384,21 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
                 $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }
         }
+    }
+
+    public function prepareMailerInstructionSettingsForDb(array $settings): array
+    {
+        if (isset($settings['sender'])) {
+            $sender = explode('<', $settings['sender']);
+
+            $settings = array_merge([
+                'fromName' => trim($sender[0]),
+                'fromEmail' => trim(str_replace('>', '', $sender[1])),
+            ], $settings);
+
+            unset($settings['sender']);
+        }
+
+        return $settings;
     }
 }

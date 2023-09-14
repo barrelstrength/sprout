@@ -74,7 +74,7 @@ class DataSources extends Component
         $currentUser = Craft::$app->getUser()->getIdentity();
 
         $types = array_filter($types, static function($type) use ($currentUser) {
-            $dataSourcePermission = DataStudioModule::p('editDataSet:' . $type);
+            $dataSourcePermission = DataStudioModule::p('viewReports:' . $type);
 
             return class_exists($type) && $currentUser->can($dataSourcePermission);
         });

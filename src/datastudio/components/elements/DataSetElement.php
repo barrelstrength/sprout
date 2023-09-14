@@ -426,7 +426,7 @@ class DataSetElement extends Element
 
     public function canView(User $user): bool
     {
-        if ($user->can(DataStudioModule::p('editDataSet'))) {
+        if ($user->can(DataStudioModule::p('editDataSet:' . $this->type))) {
             return true;
         }
 

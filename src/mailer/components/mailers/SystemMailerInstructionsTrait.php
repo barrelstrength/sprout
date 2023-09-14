@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use BarrelStrength\Sprout\mailer\audience\AudienceHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\AssetQuery;
@@ -18,15 +19,19 @@ trait SystemMailerInstructionsTrait
     /**
      * The submitted sender before we break it into $fromName and $fromEmail
      *
-     * e.g. Name <email>
+     * e.g. ['fromName' => Name, 'fromEmail' => email]
      */
     public ?string $sender = null;
+
+    public ?string $fromName = null;
+
+    public ?string $fromEmail = null;
 
     /**
      * The sender replyTo email, if different than the sender email
      */
     public ?string $replyToEmail = null;
-
+    
     /**
      * A comma, delimited list of recipients (To email)
      */
@@ -37,28 +42,60 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
-    public function getSenderAsString(): mixed
-    {
-        $sender = $this->getSender();
+    protected ?SystemMailer $mailer = null;
 
-        return current($sender) . ' <' . key($sender) . '>' ?? null;
+    public function setMailer(?SystemMailer $mailer): void
+    {
+        $this->mailer = $mailer;
+    }
+
+    public function getMailer(): ?SystemMailer
+    {
+        return $this->mailer;
+    }
+
+    public function getSenderAsString(): ?string
+    {
+        if (!$this->fromName || !$this->fromEmail) {
+            return null;
+        }
+
+        return $this->getFromName() . ' <' . $this->getFromEmail() . '>';
     }
 
     public function getSender(): mixed
     {
-        $senderAddress = Address::create($this->sender);
+        $sender = $this->sender ?? $this->getSenderAsString();
+
+        $senderAddress = Address::create($sender);
 
         return [
-            App::parseEnv($senderAddress->getAddress()) => App::parseEnv($senderAddress->getName()),
+            $senderAddress->getAddress() => $senderAddress->getName(),
         ];
+    }
+
+    public function getFromName(): ?string
+    {
+        if (!$this->fromName) {
+            return $this->fromName;
+        }
+
+        return App::parseEnv($this->fromName);
+    }
+
+    public function getFromEmail(): ?string
+    {
+        if (!$this->fromEmail) {
+            return null;
+        }
+
+        return App::parseEnv($this->fromEmail);
     }
 
     public function getReplyToEmail(): string|array
     {
         if (!$this->replyToEmail) {
-            $sender = $this->getSender();
-
-            return key($sender);
+            return App::parseEnv($this->fromEmail);
         }
 
         return App::parseEnv($this->replyToEmail);
@@ -175,22 +212,50 @@ trait SystemMailerInstructionsTrait
     {
         $rules = parent::defineRules();
 
-        $rules[] = [['sender', 'replyToEmail', 'recipients'], 'required'];
-        $rules[] = ['sender', 'validateSender'];
-        $rules[] = ['replyToEmail', 'validateReplyToEmail'];
+        $rules[] = ['fromName', 'required', 'when' => fn() => $this->fromName !== null];
+        $rules[] = ['fromEmail', 'required', 'when' => fn() => $this->fromEmail !== null];
+        $rules[] = ['fromEmail', 'email', 'when' => fn() => $this->fromEmail !== null];
+        $rules[] = [['sender'], 'validateApprovedSender', 'when' => fn() => $this->sender !== null];
+
+        $rules[] = ['replyToEmail', 'email', 'when' => fn() => $this->replyToEmail !== null];
+        $rules[] = ['replyToEmail', 'validateApprovedReplyTo', 'when' => fn() => $this->replyToEmail !== null];
+
+        $rules[] = [['recipients'], 'required', 'message' => Craft::t('sprout-module-mailer', '{attribute} in "To Field" cannot be blank.')];
         $rules[] = ['recipients', 'validateRecipients'];
 
         return $rules;
     }
 
-    public function validateSender(): void
+    public function validateApprovedSender(): void
     {
-        // Confirm approved value in mailer?
-    }
+        $mailer = $this->getMailer();
 
-    public function validateReplyToEmail(): void
+        if (!$mailer) {
+            return;
+        }
+
+        $sender = $this->getSender();
+
+        // Make sure the current sender is in the list of approved senders
+        if (!$mailer->isApprovedSender(reset($sender), key($sender))) {
+            $this->addError('sender', 'Sender is not in list of approved senders.');
+        }
+    }
+    public function validateApprovedReplyTo(): void
     {
-        // Confirm approved value in mailer?
+        $mailer = $this->getMailer();
+
+        if (!$mailer) {
+            return;
+        }
+
+        $fromEmail = $this->getFromEmail();
+        $replyTo = $this->getReplyToEmail();
+
+        // Make sure the current replyTo address is in the list of approved replyTos
+        if (!$mailer->isApprovedReplyTo($replyTo, $fromEmail)) {
+            $this->addError('replyToEmail', 'Reply To address is not in list of approved addresses.');
+        }
     }
 
     public function validateRecipients(): void

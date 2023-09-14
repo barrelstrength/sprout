@@ -14,7 +14,6 @@ use yii\db\ActiveQueryInterface;
  * @property string $preheaderText
  * @property string $defaultMessage
  * @property string $emailTypeUid
- * @property string $mailerUid
  * @property string $mailerInstructionsSettings
  * @property string $emailVariantType
  * @property string $emailVariantSettings

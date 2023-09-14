@@ -4,6 +4,7 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
+use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
@@ -11,8 +12,8 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\App;
 use craft\helpers\Json;
-use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -36,6 +37,9 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
     public const CRAFT_MAILER_SETTINGS_UID = 'craft';
 
+    public const SENDER_BEHAVIOR_CRAFT = 'craft';
+    public const SENDER_BEHAVIOR_CUSTOM = 'custom';
+
     public function safeUp(): void
     {
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
@@ -46,114 +50,106 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             return;
         }
 
-        // Get shared sprout settings from old schema
-        $oldSettings = (new Query())
-            ->select(['model', 'settings'])
-            ->from([self::OLD_SETTINGS_TABLE])
-            ->where([
-                'model' => self::OLD_SETTINGS_MODEL,
-            ])
-            ->one();
-
-        $mailer = null;
+        $mailerUids = [];
 
         // Loop through all Notification Emails and create a Mailer using the From Name and From Email and Reply To values found
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
 
-            $mailer = new TransactionalMailer();
-            $mailer->name = 'Custom Mailer';
-            $mailer->uid = StringHelper::UUID();
-
             $emails = (new Query())
-                ->select(['id', 'fromName', 'fromEmail', 'replyToEmail'])
+                ->select(['id', 'fromName', 'fromEmail', 'replyToEmail', 'emailTemplateId', 'fieldLayoutId'])
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
 
-            $approvedSenders = [];
-            $approvedReplyToEmails = [];
-
-            $uniqueApprovedSenders = [];
-            $uniqueApprovedReplyToEmails = [];
+            $customSenders = [];
 
             foreach ($emails as $email) {
-                $approvedSenderEmailString = $email['fromEmail'];
+                $fromName = $email['fromName'];
+                $fromEmail = $email['fromEmail'];
+                $replyToEmail = $email['replyToEmail'];
 
-                // Only add an email to the list once. This means multiple emails with different from names may not get migrated
-                // and would need to be manually resolved after the migration
-                if (!in_array($approvedSenderEmailString, $approvedSenders, true)) {
-                    $approvedSenders[] = $approvedSenderEmailString;
+                $uniqueSenderHash = md5($fromName . $fromEmail . $replyToEmail);
 
-                    $uniqueApprovedSenders[] = [
-                        'fromName' => $email['fromName'],
-                        'fromEmail' => $email['fromEmail'],
-                    ];
-                }
-
-                $approvedReplyToString = $email['replyToEmail'];
-
-                if (!in_array($approvedReplyToString, $approvedReplyToEmails, true)) {
-                    $approvedReplyToEmails[] = $email['replyToEmail'];
-
-                    $uniqueApprovedReplyToEmails[] = [
-                        'replyToEmail' => $email['replyToEmail'],
-                    ];
-                }
+                $customSenders[$uniqueSenderHash] = [
+                    'elementId' => $email['id'],
+                    'fromName' => $fromName,
+                    'fromEmail' => $fromEmail,
+                    'replyToEmail' => $replyToEmail,
+                ];
             }
-
-            $mailer->mailerSettings = [
-                'approvedSenders' => $uniqueApprovedSenders,
-                'approvedReplyToEmails' => $uniqueApprovedReplyToEmails,
-            ];
 
             $mailers = MailerHelper::getMailers();
-            $mailers[$mailer->uid] = $mailer;
-            MailerHelper::saveMailers($mailers);
-        }
 
-        $mailerUid = $mailer ? $mailer->uid : self::CRAFT_MAILER_SETTINGS_UID;
+            // create a single mailer for each combination of fromName, fromEmail, and replyToEmail
+            foreach ($customSenders as $hash => $customSender) {
 
-        $emailTypeMapping = [
-            'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
-            'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
-        ];
+                $mailSettings = App::mailSettings();
 
-        // Prepare old settings for new settings format
-        $newSettings = Json::decode($oldSettings['settings']);
+                $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;
 
-        if (!empty($oldSettings)) {
-            $oldEmailTemplateId = !empty($newSettings['emailTemplateId'])
-                ? $newSettings['emailTemplateId']
-                : null;
+                if (App::parseEnv($mailSettings->fromName) === $customSender['fromName'] &&
+                    App::parseEnv($mailSettings->fromEmail) === $customSender['fromEmail'] &&
+                    App::parseEnv($mailSettings->replyToEmail) === $customSender['replyToEmail']) {
+                    $senderEditBehavior = self::SENDER_BEHAVIOR_CRAFT;
+                }
 
-            // Create Email Message Email Type from global settings
-            if ($matchingType = $emailTypeMapping[$oldEmailTemplateId] ?? null) {
-                MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType, [
-                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
-                ]);
-            } else {
-                MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
-                    'name' => 'Custom Templates - Global',
-                    'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
-                    'htmlEmailTemplate' => $oldEmailTemplateId,
-                ]);
+                $mailer = new TransactionalMailer();
+                $mailer->uid = StringHelper::UUID();
+                $mailer->name = 'Custom Mailer: ' . substr($hash, 0, 5);
+                $mailer->senderEditBehavior = $senderEditBehavior;
+
+                if ($senderEditBehavior === self::SENDER_BEHAVIOR_CUSTOM) {
+                    $mailer->defaultFromName = $customSender['fromName'];
+                    $mailer->defaultFromEmail = $customSender['fromEmail'];
+                    $mailer->defaultReplyToEmail = $customSender['replyToEmail'];
+                }
+
+                $mailers[$mailer->uid] = $mailer;
+
+                // Create a mapping of the Element IDs to their respective mailer and OLD template settings
+                $mailerUids[$customSender['elementId']] = $mailer->uid;
             }
-        }
 
-        // Create Email Message Email Type from email-specific override settings
-        // Ignore 'enablePerEmailEmailTemplateIdOverride' and just migrate everything we find
-        // as it seems there was a bug where Templates may have displayed as an option irregardless of this setting
-        if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
-            $emails = (new Query())
-                ->select(['id', 'fieldLayoutId', 'emailTemplateId'])
-                ->from([self::OLD_NOTIFICATIONS_TABLE])
-                ->all();
+            MailerHelper::saveMailers($mailers);
 
+            $emailTypeMapping = [
+                'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
+                'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
+            ];
+
+            // Loop through the emails again, after we've prepared the Mailer UIDs
+
+            // Create Email Message Email Type from email-specific override settings
+            // Ignore 'enablePerEmailEmailTemplateIdOverride' and just migrate everything we find
+            // as it seems there was a bug where Templates may have displayed as an option irregardless of this setting
             foreach ($emails as $email) {
-                // Skip pre-defined email types
-                if ($emailTypeMapping[$email['emailTemplateId']] ?? null) {
+
+                // emailTemplateId
+                // emailId => mailerUid
+                // fieldLayout ?
+
+                // Unique sender configurations override default configurations
+                $mailerUid = $mailerUids[$email['id']] ?? self::CRAFT_MAILER_SETTINGS_UID;
+
+                // Assume no known email type, yet
+                $emailType = null;
+
+                // Updated pre-defined email types
+                if ($matchingType = $emailTypeMapping[$email['emailTemplateId']] ?? null) {
+                    // This should just retrieve the Email Type as it should already exists from the install migration
+                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType, [
+                        'mailerUid' => $mailerUid,
+                    ]);
+
+                    // No need to go further. Pre-defined Email Types define their own layouts
+                    $this->update(self::OLD_NOTIFICATIONS_TABLE, [
+                        'emailTemplateId' => $emailType->uid,
+                    ], [
+                        'id' => $email['id'],
+                    ]);
                     continue;
                 }
 
+                // Then see if we have a custom layout and need to create a new Email Type
                 $fieldLayoutId = !empty($email['fieldLayoutId'])
                     ? (int)$email['fieldLayoutId']
                     : null;
@@ -200,12 +196,19 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         ->execute();
                 }
 
-                $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
-                    'name' => 'Custom Templates - ' . $email['emailTemplateId'],
-                    'mailerUid' => $mailerUid,
-                    'htmlEmailTemplate' => $email['emailTemplateId'],
-                    'fieldLayout' => $fieldLayout,
-                ]);
+                if (!$emailType) {
+                    // create or match existing email type
+                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists(self::CUSTOM_TEMPLATES_EMAIL_TYPE, [
+                        'name' => 'Email Type - ' . $email['emailTemplateId'],
+                        'mailerUid' => $mailerUid,
+                        'htmlEmailTemplate' => $email['emailTemplateId'],
+                        'fieldLayout' => $fieldLayout,
+                    ], [
+                        'mailerUid' => $mailerUid,
+                        'htmlEmailTemplate' => $email['emailTemplateId'],
+                    ]);
+                }
+
 
                 // Set all emailTemplateId to the new Email Type UID.
                 // This will be migrated in another migration and correct after the migration is complete.
@@ -216,6 +219,20 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                 ]);
             }
         }
+
+        // Get shared sprout settings from old schema
+        // No need to migrate Global template settings because we're looping through
+        // all email settings to determine what email types to create
+        $oldSettings = (new Query())
+            ->select(['model', 'settings'])
+            ->from([self::OLD_SETTINGS_TABLE])
+            ->where([
+                'model' => self::OLD_SETTINGS_MODEL,
+            ])
+            ->one();
+
+        // Prepare old settings for new settings format
+        $newSettings = Json::decode($oldSettings['settings']);
 
         $newCoreSettings = [
             'enabled' => $newSettings['enableNotificationEmails'],

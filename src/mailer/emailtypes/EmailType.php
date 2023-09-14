@@ -3,6 +3,8 @@
 namespace BarrelStrength\Sprout\mailer\emailtypes;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\mailers\Mailer;
+use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use Craft;
 use craft\base\SavableComponent;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -51,6 +53,15 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
     final public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('sprout/settings/email-types/edit/' . $this->uid);
+    }
+
+    final public function getMailer(): ?Mailer
+    {
+        if ($this->mailerUid) {
+            return MailerHelper::getMailerByUid($this->mailerUid);
+        }
+
+        return null;
     }
 
     public function getTemplateVariables(): array

@@ -66,7 +66,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
             'emailVariantSettings',
 
             // Mailer: Transactional Mailer
-            'mailerUid',
             'mailerInstructionsSettings',
         ];
 
@@ -92,19 +91,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     'enableFileAttachments' => $rows[$key]['enableFileAttachments'] ?? '',
                 ]);
 
-                $emailTypeMapping = [
-                    'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates' => self::EMAIL_MESSAGE_EMAIL_TYPE,
-                    'barrelstrength\sproutforms\integrations\sproutemail\emailtemplates\basic\BasicSproutFormsNotification' => self::FORM_SUMMARY_EMAIL_TYPE,
-                ];
-
-                if ($matchingType = $emailTypeMapping[$rows[$key]['emailTypeUid']] ?? null) {
-                    // Any mapped email types should already be migrated
-                    $emailType = MailerSchemaHelper::createEmailTypeIfNoTypeExists($matchingType, [
-                        'mailerUid' => self::CRAFT_MAILER_SETTINGS_UID,
-                    ]);
-                    $rows[$key]['emailTypeUid'] = $emailType->uid;
-                }
-
                 // merge bcc into recipients if cc not empty
                 $recipients = $rows[$key]['recipients'] ?? '';
                 $cc = $rows[$key]['cc'] ?? '';
@@ -116,18 +102,18 @@ class m211101_000006_migrate_notifications_tables extends Migration
                     $recipients .= ',' . $bcc;
                 }
 
-                $sender = $rows[$key]['fromName'] . ' <' . $rows[$key]['fromEmail'] . '>';
-
                 $listSettings = Json::decode($rows[$key]['listSettings'] ?? '[]');
                 $audienceIds = $listSettings['listIds'] ?? [];
 
-                $rows[$key]['mailerUid'] = self::CRAFT_MAILER_SETTINGS_UID;
                 $rows[$key]['mailerInstructionsSettings'] = Json::encode([
-                    'sender' => $sender,
+                    'fromName' => $rows[$key]['fromName'],
+                    'fromEmail' => $rows[$key]['fromEmail'],
                     'replyToEmail' => $rows[$key]['replyToEmail'],
                     'recipients' => trim($recipients),
                     'audienceIds' => $audienceIds,
                 ]);
+
+                // emailTypeUid is already migrated in the project config migration
 
                 unset(
                     $rows[$key]['preheaderText'], // No need to migrate, new setting

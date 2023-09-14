@@ -7,7 +7,6 @@ use Craft;
 use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\ProjectConfig;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 
 class MailerHelper
@@ -70,7 +69,10 @@ class MailerHelper
         $mailerConfigs = ProjectConfig::unpackAssociativeArray($settings->mailers);
 
         foreach ($mailerConfigs as $uid => $config) {
-            $mailers[$uid] = self::getMailerModel($config, $uid);
+            $type = $config['type'];
+            unset($config['type']);
+
+            $mailers[$uid] = new $type($config);
         }
 
         return $mailers ?? [];
@@ -127,27 +129,5 @@ class MailerHelper
         }
 
         return true;
-    }
-
-    public static function getMailerModel(array $mailerSettings, string $uid = null): ?Mailer
-    {
-        $type = $mailerSettings['type'];
-
-        $config = reset($mailerSettings['fieldLayouts']);
-        $config['type'] = $type;
-
-        $fieldLayout = FieldLayout::createFromConfig($config);
-
-        $settings = $mailerSettings['settings'] ?? [];
-
-        $mailer = new $type(array_merge([
-            'name' => $mailerSettings['name'],
-            'mailerSettings' => $mailerSettings['settings'] ?? [],
-            'uid' => $uid ?? StringHelper::UUID(),
-        ], $settings));
-
-        $mailer->setFieldLayout($fieldLayout);
-
-        return $mailer;
     }
 }

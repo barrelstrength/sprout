@@ -28,13 +28,14 @@
         {% set tabs = {
             general: {
                 label: 'Settings'|t('sprout-module-mailer'),
-                url: '#settings'
+                url: '#settings',
             },
             emailFieldLayout: {
                 label: 'Email Fields'|t('sprout-module-mailer'),
                 url: '#fields'
             }
         } %}
+
         {% include "_includes/tabs" with {
             containerAttributes: {
                 id: 'tabs',

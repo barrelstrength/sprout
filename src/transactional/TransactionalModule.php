@@ -121,7 +121,7 @@ class TransactionalModule extends Module
 
         Event::on(
             Mailers::class,
-            Mailers::EVENT_REGISTER_MAILERS,
+            Mailers::INTERNAL_SPROUT_EVENT_REGISTER_MAILERS,
             static function(RegisterComponentTypesEvent $e): void {
                 $e->types[] = TransactionalMailer::class;
             });

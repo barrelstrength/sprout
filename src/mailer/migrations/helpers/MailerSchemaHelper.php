@@ -11,20 +11,26 @@ use ReflectionClass;
 
 class MailerSchemaHelper
 {
-    public static function createEmailTypeIfNoTypeExists(string $type, array $config = []): EmailType
+    public static function createEmailTypeIfNoTypeExists(string $type, array $config = [], array $matchConfig = []): EmailType
     {
         $emailTypes = EmailTypeHelper::getEmailTypes();
 
-        foreach ($emailTypes as $emailType) {
-            $matchingCustomTemplates =
-                $emailType instanceof CustomTemplatesEmailType
-                && $emailType->htmlEmailTemplate === $config['htmlEmailTemplate'];
+        // Give preference to the matchConfig if it exists
+        $matchParams = !empty($matchConfig) ? $matchConfig : $config;
 
-            if ($matchingCustomTemplates) {
-                return $emailType;
+        foreach ($emailTypes as $emailType) {
+            if (!$emailType instanceof $type) {
+                continue;
             }
 
-            if ($emailType instanceof $type && !$emailType instanceof CustomTemplatesEmailType) {
+            $matches = 0;
+            foreach ($matchParams as $attribute => $param) {
+                if ($emailType->{$attribute} === $param) {
+                    $matches++;
+                }
+            }
+
+            if ($matches === count($matchParams)) {
                 return $emailType;
             }
         }

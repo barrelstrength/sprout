@@ -13,8 +13,6 @@ abstract class Mailer extends SavableComponent implements MailerInterface
 {
     public ?string $name = null;
 
-    public array $mailerSettings = [];
-
     public ?string $uid = null;
 
     protected ?FieldLayout $_fieldLayout = null;
@@ -66,14 +64,6 @@ abstract class Mailer extends SavableComponent implements MailerInterface
     }
 
     /**
-     * Returns the settings for this mailer
-     */
-    public function getSettings(): array
-    {
-        return [];
-    }
-
-    /**
      * Returns a rendered html string to use for capturing settings input
      */
     public function getSettingsHtml(): ?string
@@ -104,17 +94,14 @@ abstract class Mailer extends SavableComponent implements MailerInterface
         $config = [
             'name' => $this->name,
             'type' => static::class,
-            'settings' => $this->mailerSettings,
+            'uid' => $this->uid,
         ];
 
-        $fieldLayout = $this->getFieldLayout();
-
-        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
-            $config['fieldLayouts'] = [
-                $fieldLayout->uid => $fieldLayoutConfig,
-            ];
-        }
-
         return $config;
+    }
+
+    public function prepareMailerInstructionSettingsForDb(array $settings): array
+    {
+        return $settings;
     }
 }

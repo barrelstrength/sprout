@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.1.1 - 2023-09-14
+
+### Added
+
+- Added Mailer to Email Type settings index
+
+### Changed
+
+- Improves Mailer Settings and Email Type migrations
+- Improves sender validation when saving Transactional Email Element
+- Updates Mailer Settings to support ENV variables when populating defaults
+- Removed editable Mailer Field Layout
+
 ## 4.1.0 - 2023-09-05
 
 ### Added

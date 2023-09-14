@@ -3,12 +3,11 @@
 namespace BarrelStrength\Sprout\mailer\components\elements\email;
 
 use BarrelStrength\Sprout\core\Sprout;
-use BarrelStrength\Sprout\mailer\components\elements\email\conditions\MailerConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderTextConditionRule;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
@@ -37,6 +36,7 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use http\Exception\InvalidArgumentException;
+use yii\base\Model;
 use yii\web\Response;
 
 /**
@@ -152,12 +152,22 @@ class EmailElement extends Element implements EmailPreviewInterface
         return true;
     }
 
+    public static function defaultTableAttributes(string $source): array
+    {
+        return [
+            'subjectLine',
+            'sendTest',
+            'preview',
+        ];
+    }
+
     protected static function defineTableAttributes(): array
     {
         return [
             'subjectLine' => ['label' => Craft::t('sprout-module-mailer', 'Subject Line')],
             'sendTest' => ['label' => Craft::t('sprout-module-mailer', 'Send Test')],
             'preview' => ['label' => Craft::t('sprout-module-mailer', 'Preview'), 'icon' => 'view'],
+            'emailType' => ['label' => Craft::t('sprout-module-mailer', 'Email Type')],
             'id' => ['label' => Craft::t('sprout-module-mailer', 'ID')],
             'uid' => ['label' => Craft::t('sprout-module-mailer', 'UID')],
             'dateCreated' => ['label' => Craft::t('sprout-module-mailer', 'Date Created')],
@@ -233,24 +243,21 @@ class EmailElement extends Element implements EmailPreviewInterface
         $response->crumbs($crumbs);
     }
 
-    /**
-     * The Email Service provide can be update via Craft's Email Settings
-     */
     public function getMailer(): Mailer
     {
         if ($this->_mailer) {
             return $this->_mailer;
         }
 
+        $emailType = $this->getEmailType();
+
         $emailVariant = $this->getEmailVariant();
 
-        $mailer = $emailVariant->getMailer($this);
-
-        if (!$mailer) {
+        if ($emailType->mailerUid === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
             return $emailVariant::getDefaultMailer();
         }
 
-        return $mailer;
+        return MailerHelper::getMailerByUid($emailType->mailerUid);
     }
 
     public function setMailer(Mailer $mailer): void
@@ -381,6 +388,10 @@ class EmailElement extends Element implements EmailPreviewInterface
                     'data-icon' => 'view',
                     'data-element-type' => self::class,
                 ]);
+
+            case 'emailType':
+
+                return $this->getEmailType()->name;
         }
 
         return parent::getTableAttributeHtml($attribute);
@@ -533,8 +544,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailElementRecord->emailTypeUid = $this->emailTypeUid;
 
-        $emailElementRecord->mailerUid = $this->mailerUid;
-        $emailElementRecord->mailerInstructionsSettings = $this->mailerInstructionsSettings;
+        $mailer = $this->getMailer();
+        $emailElementRecord->mailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForDb($this->mailerInstructionsSettings);
 
         $emailVariant = $this->getEmailVariant();
         $emailVariantSettings = $emailVariant->prepareEmailVariantSettingsForDb($this->emailVariantSettings);
@@ -679,8 +690,22 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $rules[] = [['emailVariant'], 'safe'];
         $rules[] = [['emailVariantSettings'], 'safe'];
-        $rules[] = [['mailerInstructionsSettings'], 'safe'];
+        $rules[] = [['mailerInstructionsSettings'], 'validateMailerInstructionsSettings', 'on' => self::SCENARIO_LIVE];
 
         return $rules;
+    }
+
+    public function validateMailerInstructionsSettings(): void
+    {
+        $mailer = $this->getMailer();
+
+        /** @var Model $mailerInstructionsSettings */
+        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
+        $mailerInstructionsSettings->mailer = $mailer;
+
+        if (!$mailerInstructionsSettings->validate()) {
+            $this->addModelErrors($mailerInstructionsSettings, 'mailerInstructionsSettings');
+        }
     }
 }
