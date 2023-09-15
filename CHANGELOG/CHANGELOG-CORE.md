@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.2 - 2023-09-15
+
+### Fixed
+
+- Fixed incorrect translation categories
+- Removed retired source group references from uninstall
+
 ## 4.1.0 - 2023-09-05
 
 ### Added

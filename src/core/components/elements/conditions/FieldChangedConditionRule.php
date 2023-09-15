@@ -15,7 +15,7 @@ FieldChangedConditionRule extends BaseMultiSelectConditionRule implements Elemen
 
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Field Changed');
+        return Craft::t('sprout-module-core', 'Field Changed');
     }
 
     public function getExclusiveQueryParams(): array

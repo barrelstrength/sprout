@@ -14,7 +14,7 @@ DraftConditionRule extends BaseLightswitchConditionRule implements ElementCondit
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Is Draft');
+        return Craft::t('sprout-module-core', 'Is Draft');
     }
 
     public function getExclusiveQueryParams(): array

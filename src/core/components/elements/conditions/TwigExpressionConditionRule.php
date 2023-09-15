@@ -20,7 +20,7 @@ TwigExpressionConditionRule extends BaseConditionRule implements ElementConditio
 
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Twig Expression');
+        return Craft::t('sprout-module-core', 'Twig Expression');
     }
 
     public function getExclusiveQueryParams(): array
@@ -42,14 +42,14 @@ TwigExpressionConditionRule extends BaseConditionRule implements ElementConditio
                 'type' => 'text',
                 'id' => 'twigExpression',
                 'name' => 'twigExpression',
-                'placeholder' => Craft::t('sprout-module-transactional', "{% if object.field == 'send' %}true{% endif %}"),
+                'placeholder' => Craft::t('sprout-module-core', "{% if object.field == 'send' %}true{% endif %}"),
                 'value' => $this->twigExpression,
                 'autocomplete' => false,
                 'class' => 'flex-grow flex-shrink code',
             ]);
 
-        $instruction = Craft::t('sprout-module-transactional', "Twig expression matches if evaluates to 'true', '1', 'on', or 'yes'.");
-        $complicatedMessage = Craft::t('sprout-module-transactional', 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.');
+        $instruction = Craft::t('sprout-module-core', "Twig expression matches if evaluates to 'true', '1', 'on', or 'yes'.");
+        $complicatedMessage = Craft::t('sprout-module-core', 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.');
 
         return
             Html::tag('div', $ruleHtml, [
