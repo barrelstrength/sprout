@@ -14,7 +14,6 @@ class Uninstall extends Migration
     public function safeDown(): void
     {
         $this->dropTableIfExists(SproutTable::SETTINGS);
-        $this->dropTableIfExists(SproutTable::SOURCE_GROUPS);
 
         // Just in case it wasn't cleaned up in an upgrade with multiple plugins
         $this->dropTableIfExists(self::OLD_SETTINGS_TABLE);
