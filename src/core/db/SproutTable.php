@@ -9,6 +9,4 @@ abstract class SproutTable
      * The controller actions and permissions management will be provided by the module.
      */
     public const SETTINGS = '{{%sprout_settings}}';
-
-    public const SOURCE_GROUPS = '{{%sprout_source_groups}}';
 }

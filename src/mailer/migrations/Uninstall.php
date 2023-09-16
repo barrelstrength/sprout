@@ -19,9 +19,6 @@ class Uninstall extends Migration
         $coreModuleSettingsKey = MailerModule::projectConfigPath('modules.' . MailerModule::class);
 
         $this->delete(Table::ELEMENTS, ['type' => EmailElement::class]);
-        $this->delete(SproutTableCore::SOURCE_GROUPS, [
-            'type' => AudienceElement::class,
-        ]);
 
         // Order matters
         $this->dropTableIfExists(SproutTable::SUBSCRIPTIONS);

@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\core\components\elements\conditions;
 
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
 use craft\base\conditions\BaseConditionRule;
 use craft\base\ElementInterface;
@@ -10,17 +9,15 @@ use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use yii\base\Exception;
+use yii\db\QueryInterface;
 
-class
-TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
+class TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
-    use ElementEventConditionRuleTrait;
-
     public string $twigExpression = '';
 
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Twig Expression');
+        return Craft::t('sprout-module-core', 'Twig Expression');
     }
 
     public function getExclusiveQueryParams(): array
@@ -42,14 +39,14 @@ TwigExpressionConditionRule extends BaseConditionRule implements ElementConditio
                 'type' => 'text',
                 'id' => 'twigExpression',
                 'name' => 'twigExpression',
-                'placeholder' => Craft::t('sprout-module-transactional', "{% if object.field == 'send' %}true{% endif %}"),
+                'placeholder' => Craft::t('sprout-module-core', "{% if object.field == 'send' %}true{% endif %}"),
                 'value' => $this->twigExpression,
                 'autocomplete' => false,
                 'class' => 'flex-grow flex-shrink code',
             ]);
 
-        $instruction = Craft::t('sprout-module-transactional', "Twig expression matches if evaluates to 'true', '1', 'on', or 'yes'.");
-        $complicatedMessage = Craft::t('sprout-module-transactional', 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.');
+        $instruction = Craft::t('sprout-module-core', "Twig expression matches if evaluates to 'true', '1', 'on', or 'yes'.");
+        $complicatedMessage = Craft::t('sprout-module-core', 'This rule is intended for use in Notification Events and conditional layouts. The twig expression is evaluated after the element query is complete and does not change query results.');
 
         return
             Html::tag('div', $ruleHtml, [
@@ -68,6 +65,11 @@ TwigExpressionConditionRule extends BaseConditionRule implements ElementConditio
         return array_merge(parent::defineRules(), [
             [['twigExpression'], 'safe'],
         ]);
+    }
+
+    public function modifyQuery(QueryInterface $query): void
+    {
+        // No changes
     }
 
     public function matchElement(ElementInterface $element): bool

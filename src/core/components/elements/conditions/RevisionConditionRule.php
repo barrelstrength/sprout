@@ -14,7 +14,7 @@ RevisionConditionRule extends BaseLightswitchConditionRule implements ElementCon
 {
     public function getLabel(): string
     {
-        return Craft::t('sprout-module-transactional', 'Is Revision');
+        return Craft::t('sprout-module-core', 'Is Revision');
     }
 
     public function getExclusiveQueryParams(): array

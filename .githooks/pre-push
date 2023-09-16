@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Script to be run as part of the github pre-push hook.
+
+# create a of the git tags being pushed
+TAGS_PREFIXED_WITH_V=$(git tag -l | grep -E ^v)
+
+if [ -n "$TAGS_PREFIXED_WITH_V" ]; then
+    echo "A tag incorrectly starts with 'v'."
+    echo $TAGS_PREFIXED_WITH_V;
+    exit 1
+fi
