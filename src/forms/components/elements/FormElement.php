@@ -201,6 +201,7 @@ class FormElement extends Element
                 'newButtonLabel' => Craft::t('sprout-module-forms', 'New Notification'),
                 'cpEditUrl' => UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
                     'emailVariantSettings' => [
+                        'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
                         'eventId' => SaveSubmissionNotificationEvent::class,
                     ],
                     'site' => Cp::requestedSite()->handle,
