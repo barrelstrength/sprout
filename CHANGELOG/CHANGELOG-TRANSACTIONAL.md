@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.2 - 2023-09-15
+
+### Removed
+
+- Removed `BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait`
+
 ## 4.1.0 - 2023-09-05
 
 ### Added
