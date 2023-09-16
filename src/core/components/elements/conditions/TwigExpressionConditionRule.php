@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\core\components\elements\conditions;
 
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventConditionRuleTrait;
 use Craft;
 use craft\base\conditions\BaseConditionRule;
 use craft\base\ElementInterface;
@@ -10,12 +9,10 @@ use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use yii\base\Exception;
+use yii\db\QueryInterface;
 
-class
-TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
+class TwigExpressionConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
-    use ElementEventConditionRuleTrait;
-
     public string $twigExpression = '';
 
     public function getLabel(): string
@@ -68,6 +65,11 @@ TwigExpressionConditionRule extends BaseConditionRule implements ElementConditio
         return array_merge(parent::defineRules(), [
             [['twigExpression'], 'safe'],
         ]);
+    }
+
+    public function modifyQuery(QueryInterface $query): void
+    {
+        // No changes
     }
 
     public function matchElement(ElementInterface $element): bool
