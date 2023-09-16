@@ -1,5 +1,7 @@
 #!/bin/bash
 
+COMMIT_SOURCE=$2
+
 #################################################################
 # Force a commit that is modifying an existing migration to
 # make the committer explicitly acknowledge the change. This check
@@ -27,36 +29,14 @@ if [ -n "$MIGRATION_MODIFIED" ] && [[ "$COMMIT_MESSAGE" != "Updates existing mig
     exit 1
 fi
 
-## -----------------------------------------------------------------
-## Attempt to block incorrect translation categories from being committed
-## This should check in both the assets/src/[module] folder and src/[module] folder
-## Does not check folders named something different than a translation category, like forms-frontend
-## -----------------------------------------------------------------
+#################################################################
+# Attempt to block incorrect translation categories from being committed
+# This should check in both the assets/src/[module] folder and src/[module] folder
+# Does not check folders named something different than a translation category, like forms-frontend
+#
 
-COMMIT_0=$0
-COMMIT_MSG_FILE=$1
-COMMIT_SOURCE=$2
-
-echo "COMMIT_0: $COMMIT_0"
-echo "COMMIT_MSG_FILE: $COMMIT_MSG_FILE"
-echo "COMMIT_SOURCE: $COMMIT_SOURCE"
-
-# if not $COMMIT_SOURCE == 'merge' exit
+## get only non-deleted files: MRT in non-merge-commits
 if [[ "$COMMIT_SOURCE" != "merge" ]]; then
-    ## get only non-deleted files: MRT
-    ## diff-filter types [D]eleted, [M]odified, [R]enamed, [T]ype changed
-    if git diff --cached --name-only --diff-filter=MRT | grep -E --quiet "(src\/core)";
-    then
-        NON_CORE_TRANSLATION_CATEGORY_MATCH='data-studio|forms|mailer|meta|redirects|sent-email|sitemaps|transactional|uris'
-
-        ## test if any files changed contain content that includes the string 'sprout-module-transactional'
-        if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "(Craft(::|\.)t\('sprout-module-($NON_CORE_TRANSLATION_CATEGORY_MATCH))|(\|( *)t\('sprout-module-($NON_CORE_TRANSLATION_CATEGORY_MATCH))";
-        then
-            ## echo grep result
-            echo "You have changed a file that contains the string 'sprout-module-($NON_CORE_TRANSLATION_CATEGORY_MATCH)'"
-            exit 1;
-        fi
-    fi
 
     TRANSLATION_CATEGORIES[0]='data-studio'
     TRANSLATION_CATEGORIES[1]='forms'
@@ -68,6 +48,26 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
     TRANSLATION_CATEGORIES[7]='transactional'
     TRANSLATION_CATEGORIES[8]='uris'
 
+    ## create a new variable that removes the matched category from the TRANSLATION_CATEGORIES array and makes the array a string
+    TRANSLATION_CATEGORIES_STRING=$(printf "|%s" "${TRANSLATION_CATEGORIES[@]}" | tr -d '[:space:]')
+    ## remove pipe from beginning of string
+    TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING:1}
+
+
+    ## diff-filter types [D]eleted, [M]odified, [R]enamed, [T]ype changed
+    if git diff --cached --name-only --diff-filter=MRT | grep -E --quiet "(src\/core)";
+    then
+        MATCH_STRINGS_REGEX="Craft(::|\.)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING)|\|( *)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING)"
+
+        ## test if any files changed contain content that includes the string 'sprout-module-[moduleName]'
+        if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "$MATCH_STRINGS_REGEX";
+        then
+            ## echo grep result
+            echo "You have changed a file that contains the string 'sprout-module-($TRANSLATION_CATEGORIES_STRING)'"
+            exit 1;
+        fi
+    fi
+
     ## loop through TRANSLATION_CATEGORIES
     for CATEGORY in "${TRANSLATION_CATEGORIES[@]}"
     do
@@ -75,16 +75,18 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
         CATEGORY_FOLDER="${CATEGORY//-/}"
 
         ## test if any files changed contain content that includes the string 'sprout-module-transactional'
-        if git diff --cached --name-only --diff-filter=MRT | grep -E --quiet "src\/($CATEGORY_FOLDER)";
+        if git diff --cached --name-only --diff-filter=MRT | grep -E --quiet "src\/$CATEGORY_FOLDER";
         then
-            ## create a new variable that removes the matched category from the TRANSLATION_CATEGORIES array and makes the array a string
-            TRANSLATION_CATEGORIES_STRING=$(printf "|%s" "${TRANSLATION_CATEGORIES[@]/$CATEGORY/}" | tr -d '[:space:]')
-            ## remove pipe from beginning of string
-            TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING:1}
+            # remove the matched category from the TRANSLATION_CATEGORIES_STRING string
+            TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING//$CATEGORY/}
             ## replace any double pipes with single pipe
             TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING//||/|}
+            ## remove pipe from beginning of string
+            TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING:1}
 
-            if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "(Craft(::|\.)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING))|(\|( *)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING))";
+            MATCH_STRINGS_REGEX="Craft(::|\.)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING)|\|( *)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING)"
+
+            if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "$MATCH_STRINGS_REGEX";
             then
                 ## echo grep result
                 echo "Incorrect translation category in src/$CATEGORY_FOLDER"
@@ -93,8 +95,3 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
         fi
     done
 fi
-
-
-
-
-
