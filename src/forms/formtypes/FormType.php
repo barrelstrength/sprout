@@ -111,6 +111,11 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
 
     public function getFormFieldTypesByType(): array
     {
+        if (empty($this->enabledFormFieldTypes)) {
+            // Default to all
+            return FormsModule::getInstance()->formFields->getFormFieldTypes();
+        }
+
         return array_combine($this->enabledFormFieldTypes, array_fill_keys($this->enabledFormFieldTypes, true));
     }
 

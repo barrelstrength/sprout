@@ -9,24 +9,36 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <div class="btn menubtn submit add icon">
-                {{ "New Form"|t('sprout-module-forms') }}
-            </div>
-            <div class="menu">
-                <ul>
-                    {% for formTypeUid, formType in formTypes %}
-                        <li>
-                            {{ tag('a', {
-                                href: cpUrl('sprout/forms/forms/new', {
-                                    formTypeUid: formTypeUid,
-                                }),
-                                text: formType.name,
-                                class: 'menu-option',
-                            }) }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+            {% if formTypes|length %}
+                <div class="btn menubtn submit add icon">
+                    {{ "New Form"|t('sprout-module-forms') }}
+                </div>
+                <div class="menu">
+                    <ul>
+                        {% for formTypeUid, formType in formTypes %}
+                            <li>
+                                {{ tag('a', {
+                                    href: cpUrl('sprout/forms/forms/new', {
+                                        formTypeUid: formTypeUid,
+                                    }),
+                                    text: formType.name,
+                                    class: 'menu-option',
+                                }) }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                {% if currentUser.admin %}
+                    <a href="{{ cpUrl('sprout/settings/forms/form-types') }}" class="btn submit">
+                        {{ "Create a Form Type"|t('sprout-module-forms') }}
+                    </a>
+                {% else %}
+                    <div class="btn">
+                        {{ "Admin must create a Form Type"|t('sprout-module-forms') }}
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
 
         {{ sproutCp.upgradeToProButton(module) }}

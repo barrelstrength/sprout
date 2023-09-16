@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0 - UNRELEASED
+## 4.2.0 - UNRELEASED
 
 ### Added
 
