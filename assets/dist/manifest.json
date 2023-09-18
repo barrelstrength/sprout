@@ -135,6 +135,21 @@
     "isEntry": true,
     "src": "forms/FormTypesSettings.js"
   },
+  "forms/Forms.css": {
+    "file": "assets/Forms-abd4cdb5.css",
+    "src": "forms/Forms.css"
+  },
+  "forms/Forms.js": {
+    "css": [
+      "assets/Forms-abd4cdb5.css"
+    ],
+    "file": "assets/forms-26c50608.js",
+    "imports": [
+      "_module.esm-9a996e1c.js"
+    ],
+    "isEntry": true,
+    "src": "forms/Forms.js"
+  },
   "mailer/EmailTypesSettings.js": {
     "file": "assets/emailTypes-25710d85.js",
     "isEntry": true,

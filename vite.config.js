@@ -22,7 +22,6 @@ export default ({command}) => ({
                 sentEmailDetailsModal: '/sent-email/SentEmailDetailsModal.js',
                 transactionalEmail: '/transactional/NotificationEvents.js',
                 // copyPaste: '/campaigns/CopyPaste.js',
-                // forms: '/forms/Forms.js',
                 // notifications: '/notifications/Notifications.js',
                 redirects: '/redirects/Redirects.js',
                 dataStudio: '/data-studio/DataStudio.js',
@@ -35,6 +34,7 @@ export default ({command}) => ({
                 regularExpressionField: '/fields/RegularExpressionField.js',
                 urlField: '/fields/UrlField.js',
 
+                forms: '/forms/Forms.js',
                 formTypes: '/forms/FormTypesSettings.js',
 
                 // Front End

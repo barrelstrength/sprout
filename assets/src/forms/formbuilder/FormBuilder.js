@@ -2,10 +2,7 @@ export const FormBuilder = (formId) => ({
 
     formId: formId,
 
-    newFormTabIncrement: 0,
-    newFormFieldIncrement: 0,
-
-    lastUpdatedFormFieldId: null,
+    lastUpdatedFormFieldUid: null,
 
     /**
      * Array of field data
@@ -37,11 +34,14 @@ export const FormBuilder = (formId) => ({
      * ]
      */
     tabs: [],
+    fields: [],
+    uiSettings: [],
+
     fieldLayoutUid: null,
 
-    selectedTabId: null,
-    editTabId: null,
-    editFieldId: null,
+    selectedTabUid: null,
+    editTabUid: null,
+    editFieldUid: null,
 
     dragOrigin: null,
 
@@ -51,11 +51,11 @@ export const FormBuilder = (formId) => ({
         layoutTabNav: 'layout-tab-nav',
     },
 
-    isDraggingTabId: null,
-    isDragOverTabId: null,
+    isDraggingTabUid: null,
+    isDragOverTabUid: null,
 
-    isDraggingFormFieldId: null,
-    isDragOverFormFieldId: null,
+    isDraggingFormFieldUid: null,
+    isDragOverFormFieldUid: null,
 
     init() {
 
@@ -66,6 +66,7 @@ export const FormBuilder = (formId) => ({
                 formId: this.formId,
             },
         }).then((response) => {
+            console.log('get-submission-field-layout', response);
             // self.tabs = [
             //   {
             //     id: 123,
@@ -73,11 +74,15 @@ export const FormBuilder = (formId) => ({
             //     fields: [],
             //   },
             // ];
-            self.tabs = response.data.tabs;
-            self.fieldLayoutUid = response.data.fieldLayoutUid;
-            self.selectedTabId = response.data.selectedTabId;
+            self.tabs = response.data.layout.tabs;
+            // self.fields = response.data.layout.fields;
+            // self.uiSettings = response.data.layout.uiSettings;
+            self.fieldLayoutUid = response.data.layout.uid;
 
-            self.ensureTabIds();
+            // get uid of first tab in tabs array
+            self.selectedTabUid = self.tabs[0].uid ?? null;
+
+            self.ensureTabUids();
         }).catch(() => {
             console.log('No form data found.');
         });
@@ -104,14 +109,14 @@ export const FormBuilder = (formId) => ({
         }
     },
 
-    ensureTabIds() {
+    ensureTabUids() {
         for (const tab of this.tabs) {
-            if (tab.id === null) {
-                tab.id = this.getNewFormTabId();
+            if (tab.uid === null) {
+                tab.uid = Craft.uuid();
 
                 // Saved tabs will already have an ID
-                if (this.selectedTabId === null) {
-                    this.selectedTabId = tab.id;
+                if (this.selectedTabUid === null) {
+                    this.selectedTabUid = tab.uid;
                 }
             }
         }
@@ -133,15 +138,13 @@ export const FormBuilder = (formId) => ({
 
             for (const element of tab.elements) {
 
-                // let field = this.defaultFieldAttributes[layoutField.type] ?? null;
-
-                let field = this.getFormFieldAttributes(element.field);
+                let field = this.getFormFieldAttributes(element);
 
                 fieldLayoutFields.push(field);
             }
 
             fieldLayoutTabs.push({
-                id: tab.id,
+                id: tab.uid, // remove
                 uid: tab.uid,
                 name: tab.name,
                 sortOrder: null,
@@ -156,6 +159,7 @@ export const FormBuilder = (formId) => ({
         return JSON.stringify(fieldLayout);
     },
 
+    // Removes uiSettings from element/field data
     getFormFieldAttributes(fieldData) {
 
         const {
@@ -171,9 +175,9 @@ export const FormBuilder = (formId) => ({
     dragStartLayoutTabNav(e) {
         console.log('dragStartLayoutTabNav');
 
-        e.dataTransfer.setData('sprout/origin-page-tab-id', e.target.dataset.tabId);
+        e.dataTransfer.setData('sprout/origin-page-tab-uid', e.target.dataset.tabUid);
         this.dragOrigin = this.DragOrigins.layoutTabNav;
-        this.isDraggingTabId = this.normalizeTypes(e.target.dataset.tabId);
+        this.isDraggingTabUid = this.normalizeTypes(e.target.dataset.tabUid);
 
         // e.dataTransfer.dropEffect = 'link';
         // e.dataTransfer.effectAllowed = 'copyLink';
@@ -183,8 +187,8 @@ export const FormBuilder = (formId) => ({
         console.log('dragEndLayoutTabNav');
 
         this.dragOrigin = null;
-        this.isDraggingTabId = null;
-        this.isDragOverTabId = null;
+        this.isDraggingTabUid = null;
+        this.isDragOverTabUid = null;
     },
 
     dragEnterLayoutTabNav(e) {
@@ -206,7 +210,7 @@ export const FormBuilder = (formId) => ({
 
         if (this.dragOrigin === this.DragOrigins.sourceField || this.dragOrigin === this.DragOrigins.layoutField) {
             setTimeout(function() {
-                self.selectedTabId = self.normalizeTypes(e.target.dataset.tabId);
+                self.selectedTabUid = self.normalizeTypes(e.target.dataset.tabUid);
             }, 1000);
         }
     },
@@ -216,12 +220,12 @@ export const FormBuilder = (formId) => ({
 
         let self = this;
 
-        let originTabId = self.normalizeTypes(e.dataTransfer.getData('sprout/origin-page-tab-id'));
-        let targetTabId = self.normalizeTypes(e.target.dataset.tabId);
+        let originTabUid = self.normalizeTypes(e.dataTransfer.getData('sprout/origin-page-tab-uid'));
+        let targetTabUid = self.normalizeTypes(e.target.dataset.tabUid);
 
         if (this.dragOrigin === this.DragOrigins.layoutTabNav) {
-            this.updateTabPosition(originTabId, targetTabId);
-            this.selectedTabId = originTabId;
+            this.updateTabPosition(originTabUid, targetTabUid);
+            this.selectedTabUid = originTabUid;
         }
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
@@ -231,7 +235,7 @@ export const FormBuilder = (formId) => ({
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
 
-            this.updateFieldPositionOnNewTab(self.isDraggingFormFieldId, originTabId, targetTabId);
+            this.updateFieldPositionOnNewTab(self.isDraggingFormFieldUid, originTabUid, targetTabUid);
         }
     },
 
@@ -249,8 +253,8 @@ export const FormBuilder = (formId) => ({
     dragEndSourceField(e) {
         console.log('dragEndSourceField');
 
-        this.isDraggingFormFieldId = null;
-        this.isDragOverFormFieldId = null;
+        this.isDraggingFormFieldUid = null;
+        this.isDragOverFormFieldUid = null;
     },
 
     dragStartLayoutField(e) {
@@ -259,16 +263,16 @@ export const FormBuilder = (formId) => ({
         let self = this;
 
         // Store selected tab in drag object as it might change before the drop event
-        e.dataTransfer.setData('sprout/origin-page-tab-id', this.selectedTabId);
+        e.dataTransfer.setData('sprout/origin-page-tab-uid', this.selectedTabUid);
         e.dataTransfer.setData('sprout/field-type', e.target.dataset.type);
         this.dragOrigin = this.DragOrigins.layoutField;
-        this.isDraggingTabId = this.normalizeTypes(e.target.dataset.tabId);
-        this.isDraggingFormFieldId = this.normalizeTypes(e.target.dataset.fieldId);
+        this.isDraggingTabUid = this.normalizeTypes(e.target.dataset.tabUid);
+        this.isDraggingFormFieldUid = this.normalizeTypes(e.target.dataset.fieldUid);
 
         // Need setTimeout before manipulating dom:
         // https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
         // setTimeout(function() {
-        //   self.isDraggingFormFieldId = isDraggingFormFieldId;
+        //   self.isDraggingFormFieldUid = isDraggingFormFieldUid;
         // }, 10);
 
         // e.dataTransfer.dropEffect = 'move';
@@ -297,20 +301,20 @@ export const FormBuilder = (formId) => ({
         // Reset scrolling
         // this.scrollActive = false;
 
-        this.isDraggingFormFieldId = null;
-        this.isDragOverFormFieldId = null;
+        this.isDraggingFormFieldUid = null;
+        this.isDragOverFormFieldUid = null;
     },
 
     dragEnterLayoutTabBody(e) {
         console.log('dragEnterLayoutTabBody');
 
-        this.isDragOverTabId = this.selectedTabId;
+        this.isDragOverTabUid = this.selectedTabUid;
     },
 
     dragLeaveLayoutTabBody(e) {
         console.log('dragLeaveLayoutTabBody');
 
-        this.isDragOverTabId = null;
+        this.isDragOverTabUid = null;
     },
 
     dropOnLayoutTabBody(e) {
@@ -325,9 +329,9 @@ export const FormBuilder = (formId) => ({
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
 
-            let dropBeforeTargetFieldId = this.normalizeTypes(e.target.dataset.fieldId);
+            let dropBeforeTargetFieldUid = this.normalizeTypes(e.target.dataset.fieldUid);
 
-            this.updateFieldPosition(self.isDraggingFormFieldId, dropBeforeTargetFieldId);
+            this.updateFieldPosition(self.isDraggingFormFieldUid, dropBeforeTargetFieldUid);
         }
     },
 
@@ -346,15 +350,15 @@ export const FormBuilder = (formId) => ({
         console.log('dropOnExistingLayoutField');
         let self = this;
 
-        // let fieldId = e.dataTransfer.getData('sprout/field-id');
+        // let fieldUid = e.dataTransfer.getData('sprout/field-id');
         let type = e.dataTransfer.getData('sprout/field-type');
 
-        let dropBeforeTargetFieldId = e.target.dataset.fieldId;
+        let dropBeforeTargetFieldUid = e.target.dataset.fieldUid;
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
-            this.updateFieldPosition(self.isDraggingFormFieldId, dropBeforeTargetFieldId);
+            this.updateFieldPosition(self.isDraggingFormFieldUid, dropBeforeTargetFieldUid);
         } else {
-            this.addFieldToLayoutTab(type, dropBeforeTargetFieldId);
+            this.addFieldToLayoutTab(type, dropBeforeTargetFieldUid);
         }
     },
 
@@ -375,14 +379,14 @@ export const FormBuilder = (formId) => ({
         let self = this;
 
         let type = e.dataTransfer.getData('sprout/field-type');
-        // let fieldId = e.dataTransfer.getData('sprout/field-id');
+        // let fieldUid = e.dataTransfer.getData('sprout/field-id');
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
             console.log('addFieldToLayoutTab');
             this.addFieldToLayoutTab(type);
         } else {
             console.log('updateFieldPosition');
-            this.updateFieldPosition(self.isDraggingFormFieldId);
+            this.updateFieldPosition(self.isDraggingFormFieldUid);
         }
     },
 
@@ -409,8 +413,8 @@ export const FormBuilder = (formId) => ({
     isOverFieldLayoutEndZone(e) {
         const sproutFormField = e.dataTransfer.types.includes('sprout/field-type');
 
-        // this.isDragOverTabId = this.selectedTabId;
-        // this.isDragOverFormFieldId = e.target.parentNode.dataset.fieldId;
+        // this.isDragOverTabUid = this.selectedTabUid;
+        // this.isDragOverFormFieldUid = e.target.parentNode.dataset.fieldUid;
 
 
         if (sproutFormField) {
@@ -435,39 +439,29 @@ export const FormBuilder = (formId) => ({
         return this.sourceFields.filter(item => item.field.type === type)[0] ?? null;
     },
 
-    getCurrentTabIdFromFieldId(fieldId) {
-        // loop through this.tabs and find the this.tabs.elements.id that matches
-        // return the field.tabId
-        let self = this;
-        this.tabs.forEach(tab => {
-            let fieldIndex = self.getFieldIndexByFieldId(tab, fieldId);
-            if (fieldIndex > -1) {
-                return tab.elements[fieldIndex].tabId;
-            }
-        });
+    // getCurrentTabUidFromFieldUid(fieldUid) {
+    //     // loop through this.tabs and find the this.tabs.elements.id that matches
+    //     // return the field.tabUid
+    //     let self = this;
+    //     this.tabs.forEach(tab => {
+    //         let fieldIndex = self.getFieldIndexByFieldUid(tab, fieldUid);
+    //         if (fieldIndex > -1) {
+    //             return tab.elements[fieldIndex].tabUid;
+    //         }
+    //     });
+    // },
+
+    getTabIndexByTabUid(id) {
+        return this.tabs.findIndex(item => item.uid === id);
     },
 
-    getTabIndexByTabId(id) {
-        return this.tabs.findIndex(item => item.id === id);
-    },
-
-    getFieldIndexByFieldId(tab, fieldId) {
+    getFieldIndexByFieldUid(tab, fieldUid) {
         // @todo - testing for == because we might have strings or numbers, fix at origin.
-        return tab.elements.findIndex(item => item.id == fieldId);
+        return tab.elements.findIndex(item => item.fieldUid == fieldUid);
     },
 
-    getNewFormTabId() {
-        let nextId = ++this.newFormTabIncrement;
-        return 'new' + nextId;
-    },
-
-    getNewFormFieldId() {
-        let nextId = ++this.newFormFieldIncrement;
-        return 'new' + nextId;
-    },
-
-    updateTabSettings(tabId, data) {
-        let tabIndex = this.getTabIndexByTabId(tabId);
+    updateTabSettings(tabUid, data) {
+        let tabIndex = this.getTabIndexByTabUid(tabUid);
 
         // loop through js object
         Object.entries(data).forEach(([index, value]) => {
@@ -479,12 +473,12 @@ export const FormBuilder = (formId) => ({
         }
     },
 
-    updateFieldSettings(fieldId, fieldSettings) {
+    updateFieldSettings(fieldUid, fieldSettings) {
 
-        let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
+        let tabIndex = this.getTabIndexByTabUid(this.selectedTabUid);
         let tab = this.tabs[tabIndex];
 
-        let fieldIndex = this.getFieldIndexByFieldId(tab, fieldId);
+        let fieldIndex = this.getFieldIndexByFieldUid(tab, fieldUid);
         let targetField = tab.elements[fieldIndex];
         //
         // console.log(targetField);
@@ -507,17 +501,17 @@ export const FormBuilder = (formId) => ({
         tab.elements[fieldIndex] = targetField;
     },
 
-    updateTabPosition(tabId, beforeTabId = null) {
+    updateTabPosition(tabUid, beforeTabUid = null) {
 
-        let beforeTabIndex = this.getTabIndexByTabId(beforeTabId);
-        let tabIndex = this.getTabIndexByTabId(tabId);
+        let beforeTabIndex = this.getTabIndexByTabUid(beforeTabUid);
+        let tabIndex = this.getTabIndexByTabUid(tabUid);
         let targetTab = this.tabs[tabIndex];
 
         // console.log(this.tabs);
         // Remove the updated tab
         this.tabs.splice(tabIndex, 1);
 
-        if (beforeTabId) {
+        if (beforeTabUid) {
 
             // console.log('target' + targetTab);
             // Insert the updated tab before the target tab
@@ -526,20 +520,20 @@ export const FormBuilder = (formId) => ({
             this.tabs.push(targetTab);
         }
 
-        this.lastUpdatedTabId = targetTab.id;
+        this.lastUpdatedTabUid = targetTab.uid;
     },
 
-    updateFieldPositionOnNewTab(fieldId, originTabId, targetTabId) {
+    updateFieldPositionOnNewTab(fieldUid, originTabUid, targetTabUid) {
 
         let self = this;
 
-        let targetTabIndex = this.getTabIndexByTabId(targetTabId);
+        let targetTabIndex = this.getTabIndexByTabUid(targetTabUid);
         let targetTab = this.tabs[targetTabIndex];
 
-        let originTabIndex = this.getTabIndexByTabId(originTabId);
+        let originTabIndex = this.getTabIndexByTabUid(originTabUid);
         let originTab = this.tabs[originTabIndex];
 
-        let fieldIndex = this.getFieldIndexByFieldId(originTab, fieldId);
+        let fieldIndex = this.getFieldIndexByFieldUid(originTab, fieldUid);
         let targetField = originTab.elements[fieldIndex];
 
         // Remove the updated field from origin tab
@@ -551,30 +545,30 @@ export const FormBuilder = (formId) => ({
         // Update tab
         this.tabs[targetTabIndex] = targetTab;
 
-        this.lastUpdatedFormFieldId = targetField.id;
+        this.lastUpdatedFormFieldUid = targetField.id;
 
         // The timeout here needs to match the time of the 'drop-highlight' css transition effect
         setTimeout(function() {
-            self.lastUpdatedFormFieldId = null;
+            self.lastUpdatedFormFieldUid = null;
         }, 300);
     },
 
-    updateFieldPosition(fieldId, beforeFieldId = null) {
+    updateFieldPosition(fieldUid, beforeFieldUid = null) {
 
         let self = this;
 
-        let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
+        let tabIndex = this.getTabIndexByTabUid(this.selectedTabUid);
         let tab = this.tabs[tabIndex];
 
-        let fieldIndex = this.getFieldIndexByFieldId(tab, fieldId);
+        let fieldIndex = this.getFieldIndexByFieldUid(tab, fieldUid);
         let targetField = tab.elements[fieldIndex];
 
         // Remove the updated field
         tab.elements.splice(fieldIndex, 1);
 
-        if (beforeFieldId) {
+        if (beforeFieldUid) {
             // let beforeFieldIndex = tab.elements.length + 1;
-            let beforeFieldIndex = this.getFieldIndexByFieldId(tab, beforeFieldId);
+            let beforeFieldIndex = this.getFieldIndexByFieldUid(tab, beforeFieldUid);
 
             // Insert the updated field before the target field
             tab.elements.splice(beforeFieldIndex, 0, targetField);
@@ -585,20 +579,17 @@ export const FormBuilder = (formId) => ({
         // Update tab
         this.tabs[tabIndex] = tab;
 
-        this.lastUpdatedFormFieldId = targetField.id;
+        this.lastUpdatedFormFieldUid = targetField.id;
 
         // The timeout here needs to match the time of the 'drop-highlight' css transition effect
         setTimeout(function() {
-            self.lastUpdatedFormFieldId = null;
+            self.lastUpdatedFormFieldUid = null;
         }, 300);
     },
 
     addFormPageButton() {
-        let newId = this.getNewFormTabId();
-
         let tab = {
-            id: newId,
-            uid: null,
+            uid: Craft.uuid(),
             name: 'Page 2',
             elementCondition: null,
             tabCondition: null,
@@ -606,29 +597,52 @@ export const FormBuilder = (formId) => ({
         };
 
         this.tabs.push(tab);
-        this.selectedTabId = newId;
+        this.selectedTabUid = newId;
     },
 
-    addFieldToLayoutTab(type, beforeFieldId) {
+    addFieldToLayoutTab(type, beforeFieldUid) {
+
+        console.log('addFieldToLayoutTab', type, beforeFieldUid);
 
         let fieldData = this.getFieldByType(type);
         fieldData.field.type = type;
 
-
         if (this.dragOrigin === this.DragOrigins.sourceField) {
-            fieldData.field.id = this.getNewFormFieldId();
+            fieldData.field.uid = Craft.uuid()
         }
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
-            // fieldData.id = this.getNewFormFieldId();
+
         }
 
-        let tabIndex = this.getTabIndexByTabId(this.selectedTabId);
-        this.tabs[tabIndex].elements.push(fieldData);
+        let fieldUid = fieldData.field.uid;
 
-        if (beforeFieldId) {
-            this.updateFieldPosition(fieldData.id, beforeFieldId);
+        // console.log(fieldData);
+
+        // this.fields.push(fieldData.field);
+        // this.uiSettings.push(fieldData.uiSettings);
+
+        let tabIndex = this.getTabIndexByTabUid(this.selectedTabUid);
+        let layoutElement = this.addLayoutElementToTab(fieldUid, fieldData.field, fieldData.uiSettings);
+        this.tabs[tabIndex].elements.push(layoutElement);
+
+        if (beforeFieldUid) {
+            this.updateFieldPosition(fieldUid, beforeFieldUid);
         }
+    },
+
+    addLayoutElementToTab(fieldUid, field, uiSettings) {
+        return {
+            type: 'craft\\fieldlayoutelements\\CustomField',
+            required: false,
+            width: 100,
+            uid: Craft.uuid(),
+            userCondition: null,
+            elementCondition: null,
+            fieldUid: fieldUid,
+            field: field,
+            uiSettings: uiSettings,
+        };
     },
 
     // scrollFieldLayout(stepY) {
@@ -659,7 +673,7 @@ export const FormBuilder = (formId) => ({
 
         let self = this;
 
-        this.editTabId = tab.id;
+        this.editTabUid = tab.uid;
 
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-tab-settings-html', {
             data: {
@@ -703,12 +717,13 @@ export const FormBuilder = (formId) => ({
             $cancelBtn.appendTo($footer);
             $applyButton.appendTo($footer);
 
-            let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.tabId);
+            let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.tabUid);
 
             $(settingsHtml).appendTo($fields);
 
             const $contents = $body.add($footer);
 
+            // Make sure condition builder js is only added once
             $('#sprout-tab-modal').remove();
 
             const slideout = new Craft.Slideout($contents, {
@@ -723,7 +738,7 @@ export const FormBuilder = (formId) => ({
 
             const $form = slideout.$container;
 
-            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.tabId);
+            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.tabUid);
             Craft.appendBodyHtml(conditionBuilderJs);
 
             $form.on('submit', function(event) {
@@ -734,7 +749,7 @@ export const FormBuilder = (formId) => ({
                 Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-tab-object', {
                     data: formData,
                 }).then((response) => {
-                    self.updateTabSettings(self.editTabId, {
+                    self.updateTabSettings(self.editTabUid, {
                         name: response.data.name,
                         userCondition: response.data.userCondition,
                         elementCondition: response.data.elementCondition,
@@ -745,14 +760,14 @@ export const FormBuilder = (formId) => ({
             });
 
             $removeBtn.on('click', () => {
-                // console.log(self.editTabId);
+                // console.log(self.editTabUid);
                 slideout.close();
-                self.editFieldId = null;
+                self.editFieldUid = null;
             });
 
             $cancelBtn.on('click', () => {
                 slideout.close();
-                self.editFieldId = null;
+                self.editFieldUid = null;
             });
 
         }).catch(() => {
@@ -785,30 +800,20 @@ export const FormBuilder = (formId) => ({
             .replace(/__SOURCE_KEY__/g, sourceKey);
     },
 
-    editFormField(field) {
-        // let bodyHtmlz = document.getElementById('field-settings-slideout-' + field.id);
-        // new Craft.Slideout(bodyHtmlz);
-        //
-        // return;
+    editFormField(layoutElement) {
 
         let self = this;
 
-        this.editFieldId = field.id;
-
-        let tabIndex = self.getTabIndexByTabId(this.selectedTabId);
-        let tab = self.tabs[tabIndex];
-        let fieldIndex = self.getFieldIndexByFieldId(tab, self.editFieldId);
-        let currentFieldData = self.tabs[tabIndex].elements[fieldIndex];
-
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-settings-html', {
             data: {
-                field: currentFieldData,
+                formId: this.formId,
+                layoutElement: layoutElement,
             },
         }).then((response) => {
 
-            const $form = $('<form/>', {method: 'post', style: 'flex-grow: 1;display: flex;flex-direction: column;', data: 'form-field-' + this.editFieldId});
-            const $body = $('<div/>', {class: 'fld-element-settings-body fields'}).appendTo($form);
-            const $footer = $('<div/>', {class: 'fld-element-settings-footer'}).appendTo($form);
+            const $body = $('<div/>', {class: 'fld-element-settings-body'});
+            const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
+            const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
 
             const $removeBtn = Craft.ui.createButton({
                 class: 'icon',
@@ -823,6 +828,9 @@ export const FormBuilder = (formId) => ({
 
             // Copied from Craft's FieldLayoutDesigner.js
             const $cancelBtn = Craft.ui.createButton({
+                data: {
+                    trashed: true,
+                },
                 label: Craft.t('app', 'Close'),
                 spinner: true,
             });
@@ -838,13 +846,29 @@ export const FormBuilder = (formId) => ({
             $cancelBtn.appendTo($footer);
             $applyButton.appendTo($footer);
 
-            $(response.data.settingsHtml).appendTo($body);
+            let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
 
-            const slideout = new Craft.Slideout($form);
+            $(response.data.additionalSettingsHtml).appendTo($fields);
+            $(settingsHtml).appendTo($fields);
+
+            const $contents = $body.add($footer);
+
+            // Make sure condition builder js is only added once
+            $('#sprout-field-modal').remove();
+
+            const slideout = new Craft.Slideout($contents, {
+                containerElement: 'form',
+                containerAttributes: {
+                    method: 'post',
+                    action: '',
+                    class: 'fld-element-settings slideout',
+                    id: 'sprout-field-modal',
+                },
+            });
 
             Craft.initUiElements($body);
 
-            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.fieldId);
+            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.fieldUid);
             Craft.appendBodyHtml(conditionBuilderJs);
 
             $form.on('submit', function(event) {
@@ -858,13 +882,13 @@ export const FormBuilder = (formId) => ({
                     data: formData,
                 }).then((response) => {
 
-                    // self.updateTabSettings(self.editTabId, {
+                    // self.updateTabSettings(self.editTabUid, {
                     //     name: response.data.name,
                     //     userCondition: response.data.userCondition,
                     //     elementCondition: response.data.elementCondition,
                     // });
                     //
-                    self.updateFieldSettings(self.editFieldId, JSON.parse(response.data.fieldSettings));
+                    self.updateFieldSettings(self.editFieldUid, JSON.parse(response.data.fieldSettings));
                 });
 
                 slideout.close();
@@ -872,14 +896,14 @@ export const FormBuilder = (formId) => ({
 
 
             $removeBtn.on('click', () => {
-                // console.log(self.editFieldId);
+                // console.log(self.editFieldUid);
                 slideout.close();
-                self.editFieldId = null;
+                self.editFieldUid = null;
             });
 
             $cancelBtn.on('click', () => {
                 slideout.close();
-                self.editFieldId = null;
+                self.editFieldUid = null;
             });
 
         }).catch(() => {
