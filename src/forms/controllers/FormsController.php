@@ -3,21 +3,18 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
+use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\errors\WrongEditionException;
-use craft\fields\MissingField;
+use craft\fieldlayoutelements\CustomField;
 use craft\helpers\Cp;
-use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
-use craft\records\FieldLayout as FieldLayoutRecord;
 use craft\web\Controller as BaseController;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -132,44 +129,28 @@ class FormsController extends BaseController
             throw new WrongEditionException('Please upgrade to Sprout Forms Pro Edition to create unlimited forms.');
         }
 
-        $form = Craft::createObject(FormElement::class);
-        $name ??= 'Form';
-        $handle ??= 'form';
-
-        $settings = FormsModule::getInstance()->getSettings();
-
-        // @todo - duplicate methods getFieldAsNew in service and field classes...
-        $formsService = FormsModule::getInstance()->forms;
-
-        $form->title = $name;
-        $form->name = $formsService->getFieldAsNew('name', $name);
-        $form->handle = $formsService->getFieldAsNew('handle', $handle);
-        $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
-
-        $form->formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
-        $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
-        $form->submissionMethod = $settings->defaultSubmissionMethod ?: 'sync';
-
         $user = Craft::$app->getUser()->getIdentity();
+        $form = Craft::createObject(FormElement::class);
 
         if (!$form->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this report.');
         }
 
-        // Create a Layout so we can build conditions and other stuff before we have fields in a layout
-        $submissionLayoutRecord = new FieldLayoutRecord();
-        $submissionLayoutRecord->type = SubmissionElement::class;
-        $submissionLayoutRecord->uid = StringHelper::UUID();
-        $submissionLayoutRecord->save();
-
-        $form->submissionFieldLayoutId = $submissionLayoutRecord->id;
+        $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
+        $form->formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
 
         $form->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($form, Craft::$app->getUser()->getId(), null, null, false)) {
             throw new ServerErrorHttpException(sprintf('Unable to save report as a draft: %s', implode(', ', $form->getErrorSummary(true))));
         }
 
-        return $this->redirect($form->getCpEditUrl());
+        $contentTableName = FormContentTableHelper::getContentTable($form->id);
+        FormContentTableHelper::createContentTable($contentTableName);
+
+        $totalTabs = count($form->getFieldLayout()?->getTabs());
+        $settingsTabAnchor = '#tab0' . $totalTabs . '--settings';
+
+        return $this->redirect($form->getCpEditUrl() . $settingsTabAnchor);
     }
 
     public function actionGetSubmissionFieldLayout(): Response
@@ -179,68 +160,14 @@ class FormsController extends BaseController
 
         $formId = Craft::$app->getRequest()->getRequiredBodyParam('formId');
 
+        /** @var FormElement $form */
         $form = Craft::$app->getElements()->getElementById($formId, FormElement::class);
-
-        if (!$form) {
-            return $this->asJson([
-                'success' => false,
-                'errors' => 'Form not found.',
-            ]);
-        }
-
-        $submissionFieldLayout = $form->getSubmissionFieldLayout();
-
-        $uiTabs = [];
-        $selectedTabId = null;
-
-        if ($submissionFieldLayout) {
-            $tabs = $submissionFieldLayout->getTabs();
-
-            if (!$tabs) {
-                $tabs = $form->getDefaultSubmissionTabs();
-            }
-
-            $firstTab = $tabs[0];
-            $selectedTabId = $firstTab->id;
-
-            foreach ($tabs as $tab) {
-
-                $elements = [];
-
-                $tabConfig = $tab->getConfig();
-                $elements = $tabConfig['elements'] ?? [];
-                foreach ($elements as $element) {
-
-                    $field = Craft::$app->getFields()->getFieldByUid($element['fieldUid']);
-                    if (!$field) {
-                        $field = new MissingField();
-                    }
-
-                    $fieldData = FormBuilderHelper::getFieldUiSettings($field);
-
-                    $elements[] = array_merge($element, [
-                        'field' => $fieldData['field'],
-                        'uiSettings' => $fieldData['uiSettings'],
-                    ]);
-                }
-
-                $uiTabs[] = [
-                    'id' => $tab->id,
-                    'uid' => $tab->uid,
-                    'name' => $tab->name,
-                    'userCondition' => $tab->getUserCondition(),
-                    'elementCondition' => $tab->getElementCondition(),
-                    'elements' => $elements,
-                ];
-            }
-        }
+        $layout = $form->getFormBuilderSubmissionFieldLayout();
 
         return $this->asJson([
             'success' => true,
             'formId' => $formId,
-            'fieldLayoutUid' => $submissionFieldLayout->uid,
-            'tabs' => $uiTabs,
-            'selectedTabId' => $selectedTabId,
+            'layout' => $layout,
         ]);
     }
 
@@ -268,6 +195,13 @@ class FormsController extends BaseController
         $formId = Craft::$app->getRequest()->getRequiredBodyParam('formId');
         $form = Craft::$app->getElements()->getElementById($formId, FormElement::class);
 
+        if (!$form) {
+            return $this->asJson([
+                'success' => false,
+                'errors' => 'Form not found.',
+            ]);
+        }
+
         $tabSettings = Craft::$app->getRequest()->getRequiredBodyParam('tab');
 
         $fieldLayout = $form->getSubmissionFieldLayout();
@@ -275,21 +209,22 @@ class FormsController extends BaseController
         $tab = new FieldLayoutTab();
         $tab->setLayout($fieldLayout);
 
-        $fieldLayout->setTabs([$tab]);
-
         $tab->name = $tabSettings['name'] ?? null;
         $tab->setUserCondition($tabSettings['userCondition']);
         $tab->setElementCondition($tabSettings['elementCondition']);
+        $tab->uid = $tabSettings['uid'];
+
+        $fieldLayout->setTabs([$tab]);
 
         $view = Craft::$app->getView();
         $view->startJsBuffer();
-        $conditionBuilderHtml = $tab->getSettingsHtml();
+        $settingsHtml = $tab->getSettingsHtml();
         $conditionBuilderJs = $view->clearJsBuffer();
 
         return $this->asJson([
             'success' => true,
-            'tabId' => $tabSettings['id'],
-            'settingsHtml' => $conditionBuilderHtml,
+            'tabUid' => $tabSettings['uid'],
+            'settingsHtml' => $settingsHtml,
             'conditionBuilderJs' => $conditionBuilderJs,
         ]);
     }
@@ -299,51 +234,73 @@ class FormsController extends BaseController
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $view = Craft::$app->getView();
-
         $currentUser = Craft::$app->getUser()->getIdentity();
 
         if (!$currentUser->can(FormsModule::p('editForms'))) {
             throw new ForbiddenHttpException('User is not authorized to perform this action.');
         }
 
-        $fieldConfig = Craft::$app->getRequest()->getRequiredBodyParam('field');
+        $formId = Craft::$app->getRequest()->getRequiredBodyParam('formId');
+        $form = Craft::$app->getElements()->getElementById($formId, FormElement::class);
+
+        if (!$form) {
+            return $this->asJson([
+                'success' => false,
+                'errors' => 'Form not found.',
+            ]);
+        }
+
+        $layoutElementConfig = Craft::$app->getRequest()->getRequiredBodyParam('layoutElement');
+        $fieldConfig = $layoutElementConfig['field'];
 
         $class = $fieldConfig['type'] ?? null;
         $fieldSettings = $fieldConfig['settings'] ?? [];
 
-        $field = new $class([
-            'name' => $fieldConfig['name'],
-            'handle' => $fieldConfig['handle'],
-            'instructions' => $fieldConfig['instructions'],
-            'required' => $fieldConfig['required'],
-            //'elements' => $tab->getElementConfigs();
-        ]);
+        if ($fieldConfig['handle'] === null) {
+            $fieldConfig['handle'] = StringHelper::toHandle($fieldConfig['name']);
+        }
 
-        ///** @var FieldInterface $field */
-        //$field = Craft::createObject($class, [
-        //    'name' => $fieldConfig['name'],
-        //    'handle' => $fieldConfig['handle'],
-        //    'instructions' => $fieldConfig['instructions'],
-        //    'required' => $fieldConfig['required'],
-        //    'userCondition' => $fieldConfig['userCondition'],
-        //    'elementCondition' => $fieldConfig['elementCondition'],
-        //]);
+        unset(
+            $fieldConfig['type'],
+            $fieldConfig['tabUid'],
+            $fieldConfig['settings'],
+        );
+
+        $field = new $class($fieldConfig);
         $field->setAttributes($fieldSettings, false);
 
-        //$html = $field->getSlideoutSettingsHtml();
+        $fieldLayoutElement = new CustomField($field);
+        $fieldLayoutElement->layout = $form->getSubmissionFieldLayout();
 
+        $fieldLayoutElement->required = $layoutElementConfig['required'];
+        $fieldLayoutElement->width = $layoutElementConfig['width'];
+        $fieldLayoutElement->uid = $layoutElementConfig['uid'];
+
+        $fieldLayoutElement->setUserCondition($layoutElementConfig['userCondition']);
+        $fieldLayoutElement->setElementCondition($layoutElementConfig['elementCondition']);
+
+        $view = Craft::$app->getView();
+        $view->startJsBuffer();
+        $settingsHtml = $fieldLayoutElement->getSettingsHtml();
+        $conditionBuilderJs = $view->clearJsBuffer();
+
+        // Setting fieldUid throws an if the field isn't created in the DB yet, so we work around that
+        //$fieldLayoutElement->fieldUid = $layoutElementConfig['fieldUid'];
+        //\Craft::dd($settingsHtml);
         $html = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
+            'fieldLayoutElement' => $fieldLayoutElement,
             'field' => $field,
-            'settings' => [
-                'userCondition' => Json::decodeIfJson($fieldConfig['userCondition']),
-                'elementCondition' => Json::decodeIfJson($fieldConfig['elementCondition']),
-            ],
+            //'settingsHtml' => $settingsHtml,
+            //'conditionBuilderJs' => $conditionBuilderJs,
         ]);
 
         return $this->asJson([
             'success' => true,
-            'settingsHtml' => StringHelper::collapseWhitespace($html),
+            'fieldUid' => $layoutElementConfig['fieldUid'],
+            //'settingsHtml' => StringHelper::collapseWhitespace($html),
+            'additionalSettingsHtml' => $html,
+            'settingsHtml' => $settingsHtml,
+            'conditionBuilderJs' => $conditionBuilderJs,
         ]);
     }
 
@@ -399,15 +356,10 @@ class FormsController extends BaseController
 
         // Get the Form these fields are related to
         $formId = $request->getRequiredBodyParam('formId');
-        $form = FormsModule::getInstance()->forms->getFormById($formId);
 
-        if (!$form instanceof ElementInterface) {
-            throw new NotFoundHttpException('Form not found');
-        }
+        Craft::$app->getElements()->deleteElementById($formId, FormElement::class);
 
-        FormsModule::getInstance()->forms->deleteForm($form);
-
-        return $this->redirectToPostedUrl($form);
+        return $this->redirectToPostedUrl();
     }
 
     public function prepareFieldLayout(FormElement $form, bool $duplicate = false, $duplicatedForm = null): void
@@ -462,137 +414,6 @@ class FormsController extends BaseController
             Craft::$app->content->contentTable = $oldContentTable;
         }
     }
-
-    /**
-     * This action allows create a new Tab to current layout
-     */
-    //public function actionAddFormTab(): Response
-    //{
-    //    $this->requireAcceptsJson();
-    //    $this->requirePermission(FormsModule::p('editForms'));
-    //
-    //    $request = Craft::$app->getRequest();
-    //    $formId = $request->getBodyParam('formId');
-    //
-    //    // @todo - should we rename this to Title as it is stored in the DB?
-    //    $name = $request->getBodyParam('name');
-    //
-    //    $tab = null;
-    //
-    //    if ($formId && $name) {
-    //        $tab = FormsModule::getInstance()->formFields->createNewTab($formId, $name);
-    //
-    //        if ($tab->id) {
-    //            return $this->asJson([
-    //                'success' => true,
-    //                'tab' => [
-    //                    'id' => $tab->id,
-    //                    'name' => $tab->name,
-    //                ],
-    //            ]);
-    //        }
-    //    }
-    //
-    //    return $this->asJson([
-    //        'success' => false,
-    //        'errors' => $tab->getErrors(),
-    //    ]);
-    //}
-
-    //public function actionDeleteFormTab(): Response
-    //{
-    //    $this->requireAcceptsJson();
-    //    $this->requirePermission(FormsModule::p('editForms'));
-    //
-    //    $request = Craft::$app->getRequest();
-    //    $tabId = $request->getBodyParam('id');
-    //    $tabId = str_replace('tab-', '', $tabId);
-    //
-    //    // @todo - requests the deleteAction method grabs all data attributes not just the ID
-    //    $tabRecord = FieldLayoutTabRecord::findOne($tabId);
-    //
-    //    if ($tabRecord !== null) {
-    //        /** @var FormElement $form */
-    //        $form = FormElement::find()
-    //            ->submissionFieldLayoutId($tabRecord->layoutId)
-    //            ->one();
-    //
-    //        if (FormsModule::getInstance()->formFields->deleteTab($form, $tabRecord)) {
-    //            return $this->asJson([
-    //                'success' => true,
-    //            ]);
-    //        }
-    //    }
-    //
-    //    return $this->asJson([
-    //        'success' => false,
-    //        'errors' => $tabRecord->getErrors(),
-    //    ]);
-    //}
-
-    /**
-     * This action allows rename a current Tab
-     */
-    //public function actionRenameFormTab(): Response
-    //{
-    //    $this->requireAcceptsJson();
-    //    $this->requirePermission(FormsModule::p('editForms'));
-    //
-    //    $request = Craft::$app->getRequest();
-    //    $tabId = $request->getBodyParam('tabId');
-    //    $newName = $request->getBodyParam('newName');
-    //
-    //    if ($tabId && $newName) {
-    //        $result = FormsModule::getInstance()->formFields->renameTab($tabId, $newName);
-    //
-    //        if ($result) {
-    //            return $this->asJson([
-    //                'success' => true,
-    //            ]);
-    //        }
-    //    }
-    //
-    //    return $this->asJson([
-    //        'success' => false,
-    //        'errors' => Craft::t('sprout-module-forms', 'Unable to rename tab'),
-    //    ]);
-    //}
-
-    //public function actionReorderFormTabs(): Response
-    //{
-    //    $this->requirePostRequest();
-    //    $this->requireAcceptsJson();
-    //    $this->requirePermission(FormsModule::p('editForms'));
-    //
-    //    $formTabIds = Json::decode(Craft::$app->getRequest()->getRequiredBodyParam('ids'));
-    //
-    //    $db = Craft::$app->getDb();
-    //    /** @var Transaction $transaction */
-    //    $transaction = $db->beginTransaction();
-    //
-    //    try {
-    //        // Loop through our reordered IDs and update the DB with their new order
-    //        // increment $index by one to avoid using '0' in the sort order
-    //        foreach ($formTabIds as $index => $tabId) {
-    //            $db->createCommand()->update(Table::FIELDLAYOUTTABS, [
-    //                'sortOrder' => $index + 1,
-    //            ], ['id' => $tabId], [], false)->execute();
-    //        }
-    //
-    //        $transaction->commit();
-    //
-    //        return $this->asJson([
-    //            'success' => true,
-    //        ]);
-    //    } catch (\yii\db\Exception) {
-    //        $transaction->rollBack();
-    //    }
-    //
-    //    return $this->asJson([
-    //        'success' => false,
-    //        'errors' => Craft::t('sprout-module-forms', 'Unable to rename tab'),
-    //    ]);
-    //}
 
     //public function actionGetUpdatedLayoutHtml(): Response
     //{

@@ -237,44 +237,7 @@ class FormFields extends Component
         return new $conditionClass(['formField' => $formField]);
     }
 
-    public function getFieldValue(string $field, string $value): ?FieldRecord
-    {
-        return FieldRecord::findOne([
-            $field => $value,
-        ]);
-    }
 
-    /**
-     * Create a sequential string for the "name" and "handle" fields if they are already taken
-     *
-     * @return null|string|string[]
-     */
-    public function getFieldAsNew($field, $value)
-    {
-        $i = 1;
-        $band = true;
-
-        do {
-            if ($field == 'handle') {
-                // Append a number to our handle to ensure it is unique
-                $newField = $value . $i;
-
-                $form = $this->getFieldValue($field, $newField);
-
-                if (!$form instanceof FieldRecord) {
-                    $band = false;
-                }
-            } else {
-                // Add spaces before any capital letters in our name
-                $newField = preg_replace('#([a-z])([A-Z])#', '$1 $2', $value);
-                $band = false;
-            }
-
-            $i++;
-        } while ($band);
-
-        return $newField;
-    }
 
     /**
      * This service allows create a default tab given a form
@@ -334,13 +297,13 @@ class FormFields extends Component
     /**
      * This service allows add a field to a current FieldLayoutFieldRecord
      */
-    public function addFieldToLayout(Field $field, FormElement $form, int $tabId, $nextId = null, bool $required = false): bool
+    public function addFieldToLayout(Field $field, FormElement $form, int $tabUid, $nextId = null, bool $required = false): bool
     {
         $layout = $form->getFieldLayout();
-        $tab = ArrayHelper::firstWhere($layout->getTabs(), 'id', $tabId);
+        $tab = ArrayHelper::firstWhere($layout->getTabs(), 'id', $tabUid);
 
         if (!$tab instanceof FieldLayoutTab) {
-            Craft::warning("Invalid field layout tab ID: {$tabId}", __METHOD__);
+            Craft::warning("Invalid field layout tab ID: {$tabUid}", __METHOD__);
 
             return false;
         }
@@ -372,7 +335,7 @@ class FormFields extends Component
     /**
      * This service allows update a field to a current FieldLayoutFieldRecord
      */
-    public function updateFieldToLayout(Field $field, FormElement $form, int $tabId, bool $required = false): bool
+    public function updateFieldToLayout(Field $field, FormElement $form, int $tabUid, bool $required = false): bool
     {
         $layout = $form->getFieldLayout();
 
@@ -380,7 +343,7 @@ class FormFields extends Component
         foreach ($layout->getTabs() as $tab) {
             foreach ($tab->getElements() as $i => $element) {
                 if ($element instanceof CustomField && $element->getField()->id == $field->id) {
-                    if ($tab->id == $tabId) {
+                    if ($tab->id == $tabUid) {
                         // The field is already where it needs to be.
                         // Just update its `required` setting and save.
                         $element->required = $required;
@@ -396,7 +359,7 @@ class FormFields extends Component
         }
 
         // Append the field to the expected tab
-        return $this->addFieldToLayout($field, $form, $tabId, null, $required);
+        return $this->addFieldToLayout($field, $form, $tabUid, null, $required);
     }
 
     public function getDefaultTabName(): string
@@ -407,24 +370,24 @@ class FormFields extends Component
     /**
      * Loads the sprout modal field via ajax.
      */
-    public function getModalFieldTemplate(FormElement $form, $field = null, $tabId = null): array
+    public function getModalFieldTemplate(FormElement $form, $field = null, $tabUid = null): array
     {
         $fieldsService = Craft::$app->getFields();
         $request = Craft::$app->getRequest();
 
         $data = [];
-        $data['tabId'] = null;
+        $data['tabUid'] = null;
         $data['field'] = $fieldsService->createField(SingleLineFormField::class);
 
         if ($field !== null) {
             $data['field'] = $field;
-            $tabIdByPost = $request->getBodyParam('tabId');
+            $tabUidByPost = $request->getBodyParam('tabUid');
 
-            if ($tabIdByPost !== null) {
-                $data['tabId'] = $tabIdByPost;
-            } elseif ($tabId !== null) {
+            if ($tabUidByPost !== null) {
+                $data['tabUid'] = $tabUidByPost;
+            } elseif ($tabUid !== null) {
                 //edit field
-                $data['tabId'] = $tabId;
+                $data['tabUid'] = $tabUid;
             }
 
             if ($field->id != null) {
@@ -515,11 +478,11 @@ class FormFields extends Component
     /**
      * Renames tab of form layout
      */
-    public function renameTab($tabId, $newName): bool
+    public function renameTab($tabUid, $newName): bool
     {
         $response = false;
 
-        $tabRecord = FieldLayoutTabRecord::findOne($tabId);
+        $tabRecord = FieldLayoutTabRecord::findOne($tabUid);
 
         if ($tabRecord !== null) {
             $tabRecord->name = $newName;
@@ -531,17 +494,20 @@ class FormFields extends Component
 
     public function deleteTab(FormElement $form, FieldLayoutTabRecord $tabRecord): bool
     {
-        $fieldLayout = $form->getFieldLayout();
+        // @todo - delete tab should remove fields from layout config
 
-        if (count($fieldLayout->getTabs()) <= 1) {
-            $tabRecord->addError('submissionFieldLayoutId', Craft::t('sprout-module-forms', 'Unable to delete page. One page required.'));
-
-            return false;
-        }
-
-        $tabRecord->delete();
-
-        return !$tabRecord->hasErrors();
+        return false;
+        //$fieldLayout = $form->getFieldLayout();
+        //
+        //if (count($fieldLayout->getTabs()) <= 1) {
+        //    $tabRecord->addError('submissionFieldLayoutId', Craft::t('sprout-module-forms', 'Unable to delete page. One page required.'));
+        //
+        //    return false;
+        //}
+        //
+        //$tabRecord->delete();
+        //
+        //return !$tabRecord->hasErrors();
     }
 
     public function getFieldLayoutTabs($layoutId): array

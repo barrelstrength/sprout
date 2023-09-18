@@ -274,7 +274,7 @@ class SubmissionElement extends Element
      */
     public function getContentTable(): string
     {
-        return FormContentTableHelper::getContentTable($this->getForm()->handle);
+        return FormContentTableHelper::getContentTable($this->getForm()->id);
     }
 
     public function cpEditUrl(): ?string

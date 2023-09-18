@@ -13,6 +13,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
+use craft\db\Table;
+use craft\helpers\Db;
 use craft\models\FieldLayoutTab;
 use craft\records\FieldLayoutField;
 use Exception;
@@ -122,66 +124,6 @@ class Forms extends Component
     //}
 
     /**
-     * Removes a form and related records from the database
-     */
-    public function deleteForm(FormElement $form): bool
-    {
-        /** @var Transaction $transaction */
-        $transaction = Craft::$app->db->beginTransaction();
-
-        try {
-            $submissionIds = (new Query())
-                ->select(['submissions.id'])
-                ->from(['submissions' => SproutTable::FORM_SUBMISSIONS])
-                ->where([
-                    '[[submissions.formId]]' => $form->id,
-                ])
-                ->column();
-
-            foreach ($submissionIds as $submissionId) {
-                Craft::$app->getElements()->deleteElementById($submissionId, SubmissionElement::class);
-            }
-
-            $fieldIds = FieldLayoutField::find()
-                ->select(['fieldId'])
-                ->where(['layoutId' => $form->submissionFieldLayoutId])
-                ->column();
-
-            // Delete form fields
-            foreach ($fieldIds as $fieldId) {
-                Craft::$app->getFields()->deleteFieldById($fieldId);
-            }
-
-            // Delete the Field Layout
-            Craft::$app->getFields()->deleteLayoutById($form->submissionFieldLayoutId);
-
-            $contentTable = FormContentTableHelper::getContentTable($form);
-
-            // Drop the content table
-            Craft::$app->getDb()->createCommand()
-                ->dropTableIfExists($contentTable)
-                ->execute();
-
-            $success = Craft::$app->getElements()->deleteElementById($form->id, FormElement::class);
-
-            if (!$success) {
-                $transaction->rollBack();
-                Craft::error('Couldn’t delete Form', __METHOD__);
-
-                return false;
-            }
-
-            $transaction->commit();
-        } catch (Exception $exception) {
-            $transaction->rollBack();
-
-            throw $exception;
-        }
-
-        return true;
-    }
-
-    /**
      * Returns an array of models for forms found in the database
      *
      * @return FormElement[]
@@ -217,16 +159,6 @@ class Forms extends Component
         $query->siteId($siteId);
 
         return $query->one();
-    }
-
-    /**
-     * Returns the value of a given field
-     */
-    public function getFieldValue($field, $value): ?FormRecord
-    {
-        return FormRecord::findOne([
-            $field => $value,
-        ]);
     }
 
     /**
@@ -297,45 +229,6 @@ class Forms extends Component
     public function updateTitleFormat(string $oldHandle, string $newHandle, string $titleFormat): string
     {
         return str_replace($oldHandle, $newHandle, $titleFormat);
-    }
-
-    /**
-     * Create a secuencial string for the "name" and "handle" fields if they are already taken
-     */
-    public function getFieldAsNew($field, $value): string
-    {
-        $i = 1;
-        $band = true;
-
-        do {
-            $newField = $field == 'handle' ? $value . $i : $value . ' ' . $i;
-            $form = $this->getFieldValue($field, $newField);
-            if (!$form instanceof FormRecord) {
-                $band = false;
-            }
-
-            $i++;
-        } while ($band);
-
-        return $newField;
-    }
-
-    /**
-     * Removes forms and related records from the database given the ids
-     */
-    public function deleteForms($formElements): bool
-    {
-        foreach ($formElements as $formElement) {
-            $form = FormsModule::getInstance()->forms->getFormById($formElement->id);
-
-            if ($form !== null) {
-                FormsModule::getInstance()->forms->deleteForm($form);
-            } else {
-                Craft::error("Can't delete the form with id: {$formElement->id}", __METHOD__);
-            }
-        }
-
-        return true;
     }
 
     /**

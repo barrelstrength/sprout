@@ -9,14 +9,13 @@ use yii\db\ActiveQueryInterface;
 
 /**
  * @property int $id
- * @property int $submissionFieldLayoutId
+ * @property string $submissionFieldLayout
  * @property string $fieldLayoutSettings
  * @property string $name
  * @property string $handle
  * @property string $titleFormat
  * @property bool $displaySectionTitles
  * @property Element $element
- * @property FormGroupRecord $group
  * @property string $redirectUri
  * @property string $submissionMethod
  * @property string $errorDisplayMethod
@@ -40,21 +39,5 @@ class FormRecord extends ActiveRecord
     public function getElement(): ActiveQueryInterface
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
-    }
-
-    /**
-     * Store the old handle.
-     */
-    public function afterFind(): void
-    {
-        $this->_oldHandle = $this->handle;
-    }
-
-    /**
-     * Returns the old handle.
-     */
-    public function getOldHandle(): string
-    {
-        return $this->_oldHandle;
     }
 }

@@ -27,6 +27,7 @@ use BarrelStrength\Sprout\uris\links\LinkInterface;
 use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
+use craft\base\Field;
 use craft\base\FieldInterface;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\db\Query;
@@ -35,6 +36,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\GlobalSet;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\CustomField;
@@ -64,10 +66,6 @@ class FormElement extends Element
     public ?string $name = null;
 
     public ?string $handle = null;
-
-    public ?string $oldHandle = null;
-
-    public ?int $submissionFieldLayoutId = null;
 
     public ?string $submissionFieldLayout = null;
 
@@ -266,6 +264,8 @@ class FormElement extends Element
             ]),
         ]);
 
+        Craft::$app->getView()->registerJs("new Craft.HandleGenerator('#name', '#handle');");
+
         $tabs = array_merge(
             [$formBuilderTab],
             $formTypeTabs,
@@ -280,13 +280,85 @@ class FormElement extends Element
         return $this->_fieldLayout = $fieldLayout;
     }
 
-    public function getSubmissionFieldLayout(): ?FieldLayout
+    public function getSubmissionLayoutUid(): string
     {
-        if (!$this->submissionFieldLayoutId) {
-            return null;
+        return 'SPROUT-UID-SUBMISSION-LAYOUT-'.$this->id;
+    }
+
+    public function getSubmissionFieldLayout(): FieldLayout
+    {
+        if ($this->submissionFieldLayout) {
+            $config = Json::decodeIfJson($this->submissionFieldLayout) ?? [];
+            $layout = FieldLayout::createFromConfig($config);
+        } else {
+            $layout = new FieldLayout();
         }
 
-        return Craft::$app->getFields()->getLayoutById($this->submissionFieldLayoutId);
+        $layout->id = $this->id; // Use the Form Element ID as Submission Layout ID
+        $layout->type = SubmissionElement::class;
+        $layout->uid = $this->getSubmissionLayoutUid();
+
+        return $layout;
+    }
+
+    public function getFormBuilderSubmissionFieldLayout(): array
+    {
+        if ($this->submissionFieldLayout) {
+            $config = Json::decodeIfJson($this->submissionFieldLayout) ?? [];
+        } else {
+            $layout = new FieldLayout();
+            $layout->type = SubmissionElement::class;
+
+            $layoutTab = new FieldLayoutTab();
+            $layoutTab->name = Craft::t('sprout-module-forms', 'Page');
+            $layoutTab->uid = StringHelper::UUID();
+            $layout->setTabs([$layoutTab]);
+
+            $config = $layout->getConfig();
+        }
+
+        $tabs = reset($config);
+        $fields = [];
+        $uiSettings = [];
+
+        array_walk($tabs, static function(&$tab) use (&$fields, &$uiSettings) {
+            if (empty($tab['elements'])) {
+                return;
+            }
+
+            array_walk($tab['elements'], static function(&$layoutElement) use (&$fields, &$uiSettings) {
+                $fieldUid = $layoutElement['fieldUid'] ?? null;
+
+                if (!$fieldUid) {
+                    return;
+                }
+
+                $field = FormBuilderHelper::getFieldData($fieldUid);
+                $fieldData = FormBuilderHelper::getFieldUiSettings($field);
+
+                $fields[$fieldUid] = $fieldData['field'] ?? [];
+                $uiSettings[$fieldUid] = $fieldData['uiSettings'] ?? [];
+
+                // merge field and uiSettings into layoutElement
+                $layoutElement = array_merge($layoutElement, [
+                    'field' => $fieldData['field'] ?? [],
+                    'uiSettings' => $fieldData['uiSettings'] ?? [],
+                ]);
+
+                //$layoutElement['field'] = $fieldData['field'] ?? [];
+                //$layoutElement['uiSettings'] = $fieldData['uiSettings'] ?? [];
+            });
+        });
+
+        //$config['id'] = $this->id; // Use the Form Element ID as Submission Layout ID
+        //$config['type'] = SubmissionElement::class;
+
+        $config['uid'] = $this->getSubmissionLayoutUid();
+        $config['tabs'] = $tabs ?? [];
+        $config['fields'] = $fields;
+        $config['uiSettings'] = $uiSettings;
+
+        return $config;
     }
 
     public function getDefaultSubmissionTabs(): array
@@ -367,7 +439,7 @@ class FormElement extends Element
         return [
             'name' => ['label' => Craft::t('sprout-module-forms', 'Name')],
             'handle' => ['label' => Craft::t('sprout-module-forms', 'Handle')],
-            'numberOfFields' => ['label' => Craft::t('sprout-module-forms', 'Number of Fields')],
+            //'numberOfFields' => ['label' => Craft::t('sprout-module-forms', 'Number of Fields')],
             'totalSubmissions' => ['label' => Craft::t('sprout-module-forms', 'Total Submissions')],
             'formSettings' => ['label' => Craft::t('sprout-module-forms', 'Settings'), 'icon' => 'settings'],
             'id' => ['label' => Craft::t('sprout-module-forms', 'ID')],
@@ -382,7 +454,7 @@ class FormElement extends Element
         return [
             'name',
             'handle',
-            'numberOfFields',
+            //'numberOfFields',
             'totalSubmissions',
             'formSettings',
         ];
@@ -405,7 +477,7 @@ class FormElement extends Element
 
     public function getSubmissionContentTable(): string
     {
-        return FormContentTableHelper::getContentTable($this->handle);
+        return FormContentTableHelper::getContentTable($this->id);
     }
 
     public function cpEditUrl(): ?string
@@ -504,7 +576,7 @@ class FormElement extends Element
         $record->formTypeUid = $this->formTypeUid;
         $record->enableCaptchas = $this->enableCaptchas;
 
-        $record->submissionFieldLayoutId = $this->submissionFieldLayoutId;
+        $record->submissionFieldLayout = $this->submissionFieldLayout;
 
         $record->save(false);
 
@@ -523,39 +595,122 @@ class FormElement extends Element
 
     public function afterPropagate(bool $isNew): void
     {
-        if (!$this->_formRecord) {
-            return;
-        }
+        //if (!$this->_formRecord) {
+        //    return;
+        //}
 
-        $oldFieldContext = Craft::$app->content->fieldContext;
-        $oldContentTable = Craft::$app->content->contentTable;
-
-        //Set our field content and content table to work with our form output
-        Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
-        Craft::$app->content->contentTable = $this->getSubmissionContentTable();
-
-        $oldHandle = $this->_formRecord->getOldAttribute('handle');
-        $oldContentDbTable = FormContentTableHelper::getContentTable($oldHandle);
-        $newContentDbTable = FormContentTableHelper::getContentTable($this->_formRecord->handle);
+        //$oldFieldContext = Craft::$app->content->fieldContext;
+        //$oldContentTable = Craft::$app->content->contentTable;
+        //
+        ////Set our field content and content table to work with our form output
+        //Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
+        //Craft::$app->content->contentTable = $this->getSubmissionContentTable();
 
         // Do we need to create/rename the content table?
-        if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
-            if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
-                Db::renameTable($oldContentDbTable, $newContentDbTable);
-            } else {
-                FormContentTableHelper::createContentTable($newContentDbTable);
-            }
-        }
+        //if (!Craft::$app->db->tableExists($newContentDbTable) && !$this->duplicateOf) {
+        //    if ($oldContentDbTable && Craft::$app->db->tableExists($oldContentDbTable)) {
+        //        Db::renameTable($oldContentDbTable, $newContentDbTable);
+        //    } else {
+        //        FormContentTableHelper::createContentTable($newContentDbTable);
+        //    }
+        //}
 
         $this->updateSubmissionLayout();
 
         // Reset field context and content table to original values
-        Craft::$app->content->fieldContext = $oldFieldContext;
-        Craft::$app->content->contentTable = $oldContentTable;
+        //Craft::$app->content->fieldContext = $oldFieldContext;
+        //Craft::$app->content->contentTable = $oldContentTable;
 
         parent::afterPropagate($isNew); // TODO: Change the autogenerated stub
     }
 
+    public function beforeDelete(): bool
+    {
+        $submissionIds = (new Query())
+            ->select(['submissions.id'])
+            ->from(['submissions' => SproutTable::FORM_SUBMISSIONS])
+            ->where([
+                '[[submissions.formId]]' => $this->id,
+            ])
+            ->column();
+
+        foreach ($submissionIds as $submissionId) {
+            Craft::$app->getElements()->deleteElementById($submissionId, SubmissionElement::class);
+        }
+
+        Db::delete(Table::FIELDS, [
+            'context' => 'sproutForms:' . $this->id,
+        ]);
+
+        $contentTable = FormContentTableHelper::getContentTable($this->id);
+
+        // Drop the content table
+        Craft::$app->getDb()->createCommand()
+            ->dropTableIfExists($contentTable)
+            ->execute();
+
+        return parent::beforeDelete();
+    }
+
+    public function saveFormField($fieldConfig): void
+    {
+        // @todo how/where do we determine handles for these fields? Do we need to?
+        $fieldsService = Craft::$app->getFields();
+
+        /** @var Field $field */
+        $field = $fieldsService->createField([
+            //'id' => $fieldConfig['id'],
+            'type' => $fieldConfig['type'],
+            'uid' => $fieldConfig['uid'],
+            'name' => $fieldConfig['name'],
+            // @todo - handle needs to be dynamic
+            'handle' => $fieldConfig['handle'] ?? StringHelper::toHandle($fieldConfig['name']),
+            'instructions' => $fieldConfig['instructions'],
+            // @todo - confirm locales/Sites work as expected
+            'translationMethod' => Field::TRANSLATION_METHOD_NONE,
+            'settings' => $fieldConfig['settings'] ?? [],
+        ]);
+
+        // Set our field context
+        Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
+        Craft::$app->content->contentTable = $this->getSubmissionContentTable();
+
+        /** @var Field $oldField */
+        if ($oldField = $fieldsService->getFieldByUid($field->uid)) {
+            // existing field
+            $field->id = $oldField->id;
+            $field->handle = $oldField->handle;
+
+            $isNewField = false;
+            $oldHandle = $oldField->handle;
+        } else {
+            // new field
+            $isNewField = true;
+            $oldHandle = null;
+        }
+
+        if (!$fieldsService->saveField($field)) {
+            Craft::error('Field does not validate.', __METHOD__);
+            \Craft::dd($field->getErrors());
+            //$this->addError('submissionFieldLayout', 'Field does not validate.');
+        }
+
+        $configData = $fieldsService->createFieldConfig($field);
+
+        // Update content table columns for non-global fields:
+        $fieldsService->applyFieldSave($field->uid, $configData, $this->getSubmissionFieldContext());
+
+        // Check if the handle is updated to also update the titleFormat, rules and integrations
+        if (!$isNewField && $oldHandle !== $field->handle) {
+            if (str_contains($this->titleFormat, $oldHandle)) {
+                $newTitleFormat = FormsModule::getInstance()->forms->updateTitleFormat($oldHandle, $field->handle, $this->titleFormat);
+                $this->titleFormat = $newTitleFormat;
+            }
+
+            //FormsModule::getInstance()->forms->updateFieldOnFieldRules($oldHandle, $field->handle, $this);
+            //FormsModule::getInstance()->forms->updateFieldOnIntegrations($oldHandle, $field->handle, $this);
+        }
+    }
     public function updateSubmissionLayout(): void
     {
         // Save Field Layout
@@ -563,15 +718,15 @@ class FormElement extends Element
             return;
         }
 
-        // This should exist in $this->submissionFieldLayout as a list of IDs I can just act on
-        // If they are deleted, just delete them!
-        $deletedFieldIds = [];
+        $layout = Json::decodeIfJson($this->submissionFieldLayout);
 
-        $fieldsService = Craft::$app->getFields();
+        if (!$layout) {
+            return;
+        }
 
         if ($this->duplicateOf) {
+            // duplicate fields and remap submissionFieldLayout uids
 
-            // remap submissionFieldLayout and duplicate fields, etc.
             // Does craft have a method for this?
             // id, uid
             // do userCondition and elementCondition need to be updated?
@@ -584,91 +739,136 @@ class FormElement extends Element
             // and do a find/replace
         }
 
-        $layoutConfig = Json::decode($this->submissionFieldLayout);
-        $layoutConfig = reset($layoutConfig);
-        $layoutTabs = [];
 
-        // Loop through Form Tabs
-        foreach ($layoutConfig as $layoutTab) {
+        $newFieldUids = [];
 
-            $layoutFieldData = $layoutTab['fields'] ?? [];
-            $layoutUserCondition = $layoutTab['userCondition'];
-            $layoutElementCondition = $layoutTab['elementCondition'];
+        foreach ($layout['tabs'] as $index => $tab) {
+            foreach ($tab['elements'] as $elementIndex => $element) {
+                $fieldUid = $element['fieldUid'] ?? null;
 
-            unset(
-                $layoutTab['fields'],
-                $layoutTab['userCondition'],
-                $layoutTab['elementCondition']
-            );
-
-            if ($this->getIsNew($layoutTab['id'])) {
-                $tabUUID = StringHelper::UUID();
-                $layoutTab['uid'] = $tabUUID;
-            }
-
-            $layoutFieldElements = [];
-
-            foreach ($layoutFieldData as $layoutField) {
-
-                $layoutFieldUserCondition = $layoutField['userCondition'];
-                $layoutFieldElementCondition = $layoutField['elementCondition'];
-
-                unset(
-                    $layoutField['userCondition'],
-                    $layoutField['elementCondition']
-                );
-
-                if ($this->getIsNew($layoutField['id'])) {
-                    $fieldUUID = StringHelper::UUID();
-                    $layoutField['uid'] = $fieldUUID;
-
-                    if ($layoutField['handle'] === null) {
-                        $layoutField['handle'] = StringHelper::toCamelCase($layoutField['name']);
-                    }
+                if (!$fieldUid || empty($element['field'])) {
+                    continue;
                 }
 
-                $layoutField['context'] = 'sproutForms:' . Db::uidById(SproutTable::FORMS, $this->id);
-                $layoutField['layoutId'] = $this->submissionFieldLayoutId;
-                $layoutField['tabId'] = $layoutTab['id'];
+                $newFieldUids[] = $fieldUid;
 
-                // Unset values only needed for front-end UI
-                // @todo - can I just remove this from the data submission?
-                unset($layoutField['groupName']);
+                $this->saveFormField($element['field']);
 
-                //                $layoutField['id'] = (int)$layoutField['id'];
-                $field = $fieldsService->createField($layoutField);
-
-                // 1. Create actual Field craft_fields
-                if (!$fieldsService->saveField($field)) {
-                    throw new Exception('Couldn’t save form field: ' . Json::encode($field->getErrors()));
-                }
-
-                // 2. Create Field Layout Field craft_fieldlayoutfields
-                // 3. craft_fieldlayouttabs.elements
-                // 4. If HANDLE changed, update column in formcontent_table?
-
-                $layoutFieldElement = new CustomField($field, [
-                    'required' => $layoutField['required'] ?? false,
-                    'label' => $layoutField['name'],
-                    'uid' => $field->uid,
-                ]);
-
-                $layoutFieldElements[] = $layoutFieldElement;
+                // Remove field details. We have the fieldUid and will add back when needed.
+                unset($layout['tabs'][$index]['elements'][$elementIndex]['field']);
             }
-
-            $tabModel = new FieldLayoutTab([
-                'layoutId' => $this->submissionFieldLayoutId,
-                'uid' => $layoutTab['uid'],
-                'name' => $layoutTab['name'],
-                'elements' => $layoutFieldElements,
-            ]);
-
-            $layoutTabs[] = $tabModel;
         }
 
-        $submissionFieldLayout = $this->getSubmissionFieldLayout();
-        $submissionFieldLayout->setTabs($layoutTabs);
-        $fieldsService->saveLayout($submissionFieldLayout, false);
+        $oldFieldUids = (new Query())
+            ->select(['uid'])
+            ->from([Table::FIELDS])
+            ->where(['context' => $this->getSubmissionFieldContext()])
+            ->column();
+
+        // Delete fields that are no longer in the layout
+        $deletedFieldUids = array_diff($oldFieldUids, $newFieldUids);
+        array_walk($deletedFieldUids, static function($fieldUid) {
+            if ($field = Craft::$app->getFields()->getFieldByUid($fieldUid)) {
+                Craft::$app->getFields()->deleteField($field);
+            }
+        });
+
+        $this->submissionFieldLayout = Json::encode($layout);
+
+        return;
+
+
+        //$layoutConfig = Json::decode($this->submissionFieldLayout);
+
+        //$layoutConfig = reset($layoutConfig);
+        //$layoutTabs = [];
+        //
+        //$submissionLayoutUid = 'SPROUT-UID-SUBMISSION-LAYOUT-'.strtoupper($this->handle);
+
+        // Loop through Form Tabs
+        //foreach ($layoutConfig as $layoutTab) {
+
+            //$layoutElements = $layoutTab['elements'] ?? [];
+            //$layoutUserCondition = $layoutTab['userCondition'];
+            //$layoutElementCondition = $layoutTab['elementCondition'];
+            //
+            //unset(
+            //    $layoutTab['elements'],
+            //    $layoutTab['userCondition'],
+            //    $layoutTab['elementCondition']
+            //);
+
+            //$tabUid = $layoutTab['uid'] ?? null;
+
+            // @todo - figure out new Tabs/Fields
+            //if ($this->getIsNew($tabUid)) {
+            //    $tabUUID = StringHelper::UUID();
+            //    $layoutTab['uid'] = $tabUUID;
+            //}
+
+        //    $layoutFieldElements = [];
+        //
+        //    foreach ($layoutElements as $layoutField) {
+        //
+        //        $layoutFieldUserCondition = $layoutField['userCondition'];
+        //        $layoutFieldElementCondition = $layoutField['elementCondition'];
+        //
+        //        unset(
+        //            $layoutField['userCondition'],
+        //            $layoutField['elementCondition']
+        //        );
+        //
+        //        if ($this->getIsNew($layoutField['id'])) {
+        //            $fieldUUID = StringHelper::UUID();
+        //            $layoutField['uid'] = $fieldUUID;
+        //
+        //            if ($layoutField['handle'] === null) {
+        //                $layoutField['handle'] = StringHelper::toCamelCase($layoutField['name']);
+        //            }
+        //        }
+        //
+        //        $layoutField['context'] = 'sproutForms:' . Db::uidById(SproutTable::FORMS, $this->id);
+        //        //$layoutField['layoutId'] = $this->submissionFieldLayoutId;
+        //        $layoutField['tabUid'] = $layoutTab['uid'];
+        //
+        //        // Unset values only needed for front-end UI
+        //        // @todo - can I just remove this from the data submission?
+        //        unset($layoutField['groupName']);
+        //
+        //        //                $layoutField['id'] = (int)$layoutField['id'];
+        //        $field = $fieldsService->createField($layoutField);
+        //
+        //        // 1. Create actual Field craft_fields
+        //        if (!$fieldsService->saveField($field)) {
+        //            throw new Exception('Couldn’t save form field: ' . Json::encode($field->getErrors()));
+        //        }
+        //
+        //        // 2. Create Field Layout Field craft_fieldlayoutfields
+        //        // 3. craft_fieldlayouttabs.elements
+        //        // 4. If HANDLE changed, update column in formcontent_table?
+        //
+        //        $layoutFieldElement = new CustomField($field, [
+        //            'required' => $layoutField['required'] ?? false,
+        //            'label' => $layoutField['name'],
+        //            'uid' => $field->uid,
+        //        ]);
+        //
+        //        $layoutFieldElements[] = $layoutFieldElement;
+        //    }
+        //
+        //    $tabModel = new FieldLayoutTab([
+        //        'layoutId' => $this->submissionFieldLayoutId,
+        //        'uid' => $layoutTab['uid'],
+        //        'name' => $layoutTab['name'],
+        //        'elements' => $layoutFieldElements,
+        //    ]);
+        //
+        //    $layoutTabs[] = $tabModel;
+        //}
+        //
+        //$submissionFieldLayout = $this->getSubmissionFieldLayout();
+        //$submissionFieldLayout->setTabs($layoutTabs);
+        //$fieldsService->saveLayout($submissionFieldLayout, false);
 
         // FIRST, need to:
         // 1. create fields so we can relate to them
@@ -958,11 +1158,11 @@ class FormElement extends Element
     {
         return match ($attribute) {
             'handle' => '<code>' . $this->handle . '</code>',
-            'numberOfFields' => (new Query())
-                ->select('COUNT(*)')
-                ->from([Table::FIELDLAYOUTFIELDS])
-                ->where(['layoutId' => $this->submissionFieldLayoutId])
-                ->scalar(),
+            //'numberOfFields' => (new Query())
+            //    ->select('COUNT(*)')
+            //    ->from([Table::FIELDLAYOUTFIELDS])
+            //    ->where(['layoutId' => $this->submissionFieldLayoutId])
+            //    ->scalar(),
             'totalSubmissions' => (new Query())
                 ->select('COUNT(*)')
                 ->from([SproutTable::FORM_SUBMISSIONS])
@@ -995,7 +1195,6 @@ class FormElement extends Element
             'except' => self::SCENARIO_ESSENTIALS,
         ];
 
-        $rules[] = [['submissionFieldLayoutId'], 'safe'];
         $rules[] = [['submissionFieldLayout'], 'safe'];
         $rules[] = [['titleFormat'], 'required'];
         $rules[] = [['displaySectionTitles'], 'safe'];

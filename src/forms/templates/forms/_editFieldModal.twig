@@ -88,10 +88,10 @@
             code: true,
             suggestions: [
                 {
-                    label: 'Common Classes'|t('sprout-module-meta'),
+                    label: 'Common Classes'|t('sprout-module-forms'),
                     data: [
-                    { name: 'left', hint: 'left'|t('sprout-module-meta') },
-                    { name: 'right', hint: 'right'|t('sprout-module-meta') },
+                    { name: 'left', hint: 'left'|t('sprout-module-forms') },
+                    { name: 'right', hint: 'right'|t('sprout-module-forms') },
                 ]
                 }
             ]
@@ -114,10 +114,10 @@
             label: 'Section'|t('sprout-module-forms') ~ sproutCp.infoIcon(
                 'The section where this field should be displayed.'|t('sprout-module-forms')
             ),
-            id: 'tabId',
-            name: 'tabId',
+            id: 'tabUid',
+            name: 'tabUid',
             options: sectionOptions,
-            value: tabId
+            value: tabUid
         }) }}
 
     {% endif %}

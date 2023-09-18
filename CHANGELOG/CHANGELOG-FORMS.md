@@ -15,6 +15,8 @@
 - Updated `giggsey/libphonenumber-for-php` requirement v8.12.11
 - Removed Form Rules in favor of Craft Element/Field Rules API
 - Removed Craft Fields Email, URL, and others, Template Select …
+- Updated form content tables to be named using ID instead of handle
+- Updates submission layout to be stored as JSON settings column instead of separate tables
 
 ### Removed
 

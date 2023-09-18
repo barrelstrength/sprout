@@ -31,8 +31,10 @@
     {% endnamespace %}
 
     {{ forms.selectField({
-        label: 'Send Rule'|t('sprout-module-mailer'),
-        instructions: "Defines how to check a form submission to determine if a user has opted in to have data sent to this Integration. The Integration will be sent if the setting is set to 'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Integration will not be sent."|t('sprout-module-mailer'),
+        label: 'Send Rule'|t('sprout-module-forms'),
+        instructions: "Defines how to check a form submission to determine if a user has opted in to have data sent to this Integration. The Integration will be sent if the setting is set to
+        'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are
+         met, the Integration will not be sent."|t('sprout-module-forms'),
         required: true,
         id: 'sendRuleToggle',
         name: 'sendRuleToggle',
@@ -45,26 +47,27 @@
     }) }}
     {#        options: [ #}
     {#            { #}
-    {#                label: 'Always'|t('sprout-module-mailer'), #}
+    {#                label: 'Always'|t('sprout-module-forms'), #}
     {#                value: '*', #}
     {#            }, #}
     {#            { #}
-    {#                label: 'Custom Rule'|t('sprout-module-mailer'), #}
+    {#                label: 'Custom Rule'|t('sprout-module-forms'), #}
     {#                value: 'custom', #}
     {#            } #}
     {#        ], #}
 
 
     {{ forms.textField({
-        label: "Custom Rule"|t('sprout-module-mailer'),
-        instructions: "Notification Email will be sent if the Custom Rule evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Event will not trigger a Notification."|t('sprout-module-mailer'),
+        label: "Custom Rule"|t('sprout-module-forms'),
+        instructions: "Notification Email will be sent if the Custom Rule evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Event will not trigger a Notification
+        ."|t('sprout-module-forms'),
         id: 'send-rule-custom',
         fieldId: 'send-rule-custom',
         fieldClass: [
             integration.sendRule != 'custom' ? 'hidden',
         ]|filter,
         name: 'sendRule',
-        placeholder: "{% if object.customFieldHandle == 'send' %}true{% else %}false{% endif %}"|t('sprout-module-mailer'),
+        placeholder: "{% if object.customFieldHandle == 'send' %}true{% else %}false{% endif %}"|t('sprout-module-forms'),
         value: integration.sendRule ?? null
     }) }}
 

@@ -48,7 +48,7 @@ class FormFieldsController extends BaseController
 
         $request = Craft::$app->getRequest();
         $type = $request->getBodyParam('type');
-        $tabId = $request->getBodyParam('tabId');
+        $tabUid = $request->getBodyParam('tabUid');
 
         $formId = $request->getBodyParam('formId');
         $nextId = $request->getBodyParam('nextId');
@@ -56,7 +56,7 @@ class FormFieldsController extends BaseController
         $form = FormsModule::getInstance()->forms->getFormById($formId);
         $field = null;
 
-        $tab = $form ? ArrayHelper::firstWhere($form->getFieldLayout()->getTabs(), 'id', $tabId) : null;
+        $tab = $form ? ArrayHelper::firstWhere($form->getFieldLayout()->getTabs(), 'id', $tabUid) : null;
 
         if ($type && $form && $tab) {
             /** @var Field $field */
@@ -69,14 +69,14 @@ class FormFieldsController extends BaseController
 
                 if ($oldTabs) {
                     // it's a new field
-                    $response = FormsModule::getInstance()->formFields->addFieldToLayout($field, $form, $tabId, $nextId);
+                    $response = FormsModule::getInstance()->formFields->addFieldToLayout($field, $form, $tabUid, $nextId);
 
-                    return $this->returnJson($response, $field, $form, $tab->name, $tabId);
+                    return $this->returnJson($response, $field, $form, $tab->name, $tabUid);
                 }
             }
         }
 
-        return $this->returnJson(false, $field, $form, null, $tabId);
+        return $this->returnJson(false, $field, $form, null, $tabUid);
     }
 
     public function actionSaveField(): Response
@@ -88,7 +88,7 @@ class FormFieldsController extends BaseController
         $request = Craft::$app->getRequest();
         $fieldsService = Craft::$app->getFields();
 
-        $tabId = $request->getBodyParam('tabId');
+        $tabUid = $request->getBodyParam('tabUid');
         $formId = $request->getRequiredBodyParam('formId');
         $form = FormsModule::getInstance()->forms->getFormById($formId);
 
@@ -98,7 +98,7 @@ class FormFieldsController extends BaseController
 
         $type = $request->getRequiredBodyParam('type');
         $fieldId = $request->getBodyParam('fieldId');
-
+        $fieldsService = Craft::$app->getFields();
         /** @var Field $field */
         $field = $fieldsService->createField([
             'type' => $type,
@@ -131,10 +131,10 @@ class FormFieldsController extends BaseController
             // Does not validate
             Craft::error('Field does not validate.', __METHOD__);
 
-            $variables['tabId'] = $tabId;
+            $variables['tabUid'] = $tabUid;
             $variables['field'] = $field;
 
-            return $this->returnJson(false, $field, $form, null, $tabId);
+            return $this->returnJson(false, $field, $form, null, $tabUid);
         }
 
         // Check if the handle is updated to also update the titleFormat, rules and integrations
@@ -159,14 +159,14 @@ class FormFieldsController extends BaseController
 
         if ($oldTabs) {
             /** @var FieldLayoutTab $tab */
-            $tab = ArrayHelper::firstWhere($form->getFieldLayout()->getTabs(), 'id', $tabId);
+            $tab = ArrayHelper::firstWhere($form->getFieldLayout()->getTabs(), 'id', $tabUid);
             $tabName = $tab->name;
             $required = $request->getBodyParam('required');
 
             if ($isNewField) {
-                $response = FormsModule::getInstance()->formFields->addFieldToLayout($field, $form, $tabId, null, $required);
+                $response = FormsModule::getInstance()->formFields->addFieldToLayout($field, $form, $tabUid, null, $required);
             } else {
-                $response = FormsModule::getInstance()->formFields->updateFieldToLayout($field, $form, $tabId, $required);
+                $response = FormsModule::getInstance()->formFields->updateFieldToLayout($field, $form, $tabUid, $required);
             }
         }
 
@@ -175,10 +175,10 @@ class FormFieldsController extends BaseController
         if ($response) {
             Craft::info('Field Saved', __METHOD__);
 
-            return $this->returnJson(true, $field, $form, $tabName, $tabId);
+            return $this->returnJson(true, $field, $form, $tabName, $tabUid);
         }
 
-        $variables['tabId'] = $tabId;
+        $variables['tabUid'] = $tabUid;
         $variables['field'] = $field;
         Craft::error("Couldn't save field.", __METHOD__);
         Craft::$app->getSession()->setError(Craft::t('sprout-module-forms', 'Couldn’t save field.'));
@@ -298,7 +298,7 @@ class FormFieldsController extends BaseController
         ]);
     }
 
-    private function returnJson(bool $success, $field, FormElement $form, $tabName = null, $tabId = null): Response
+    private function returnJson(bool $success, $field, FormElement $form, $tabName = null, $tabUid = null): Response
     {
         /** @var FormField $field */
         return $this->asJson([
@@ -314,7 +314,7 @@ class FormFieldsController extends BaseController
                 'instructions' => $field->instructions,
                 'group' => [
                     'name' => $tabName,
-                    'id' => $tabId,
+                    'id' => $tabUid,
                 ],
                 'uid' => $field->uid,
             ],
