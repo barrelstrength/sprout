@@ -104,7 +104,7 @@ class m211101_000000_run_install_migration extends Migration
         if (!$this->getDb()->tableExists(self::FORMS_TABLE)) {
             $this->createTable(self::FORMS_TABLE, [
                 'id' => $this->primaryKey(),
-                'submissionFieldLayoutId' => $this->integer(),
+                'submissionFieldLayout' => $this->mediumText(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'titleFormat' => $this->string()->notNull(),
@@ -123,12 +123,10 @@ class m211101_000000_run_install_migration extends Migration
                 'uid' => $this->uid(),
             ]);
 
-            $this->createIndex(null, self::FORMS_TABLE, ['submissionFieldLayoutId']);
             $this->createIndex(null, self::FORMS_TABLE, ['name']);
             $this->createIndex(null, self::FORMS_TABLE, ['handle']);
 
             $this->addForeignKey(null, self::FORMS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
-            $this->addForeignKey(null, self::FORMS_TABLE, ['submissionFieldLayoutId'], Table::FIELDLAYOUTS, ['id'], 'SET NULL');
         }
 
         if (!$this->getDb()->tableExists(self::FORM_SUBMISSIONS_STATUSES_TABLE)) {
