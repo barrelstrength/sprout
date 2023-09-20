@@ -633,7 +633,7 @@ export const FormBuilder = (formId) => ({
 
     addLayoutElementToTab(fieldUid, field, uiSettings) {
         return {
-            type: 'craft\\fieldlayoutelements\\CustomField',
+            type: 'BarrelStrength\\Sprout\\forms\\submissions\\CustomFormField',
             required: false,
             width: 100,
             uid: Craft.uuid(),
@@ -894,8 +894,7 @@ export const FormBuilder = (formId) => ({
 
                 slideout.close();
             });
-
-
+            
             $removeBtn.on('click', () => {
                 // console.log(self.editFieldUid);
                 slideout.close();
@@ -907,8 +906,8 @@ export const FormBuilder = (formId) => ({
                 self.editFieldUid = null;
             });
 
-        }).catch(() => {
-            console.log('No form data found.');
+        }).catch((error) => {
+            console.log('No form field data found.');
         });
     },
 });

@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
+use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
@@ -266,7 +267,7 @@ class FormsController extends BaseController
         $field = new $class($fieldConfig);
         $field->setAttributes($fieldSettings, false);
 
-        $fieldLayoutElement = new CustomField($field);
+        $fieldLayoutElement = new CustomFormField($field);
         $fieldLayoutElement->layout = $form->getSubmissionFieldLayout();
 
         $fieldLayoutElement->required = $layoutElementConfig['required'];
