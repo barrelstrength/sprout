@@ -848,8 +848,9 @@ export const FormBuilder = (formId) => ({
 
             let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
 
-            $(response.data.additionalSettingsHtml).appendTo($fields);
+            $(response.data.requiredSettingsHtml).appendTo($fields);
             $(settingsHtml).appendTo($fields);
+            $(response.data.additionalSettingsHtml).appendTo($fields);
 
             const $contents = $body.add($footer);
 
