@@ -42,6 +42,7 @@ use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\TextField;
 use craft\helpers\Cp;
 use craft\helpers\Db;
+use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -89,6 +90,11 @@ class FormElement extends Element
     public ?string $formTypeUid = null;
 
     public bool $enableCaptchas = true;
+
+    // To soft delete, we need Garbage Collection to add support for removing schema
+    // currently there is no way to remove the content table when a soft deleted
+    // element is removed. So, hard delete all around!
+    public bool $hardDelete = true;
 
     private ?FieldLayout $_fieldLayout = null;
 
@@ -281,7 +287,7 @@ class FormElement extends Element
 
     public function getSubmissionLayoutUid(): string
     {
-        return 'SPROUT-UID-SUBMISSION-LAYOUT-' . $this->id;
+        return 'SPROUT-UID-SUBMISSION-LAYOUT';
     }
 
     public function getSubmissionFieldLayout(): FieldLayout
@@ -614,6 +620,10 @@ class FormElement extends Element
         //    }
         //}
 
+        if (ElementHelper::isDraftOrRevision($this)) {
+            return;
+        }
+
         $this->updateSubmissionLayout();
 
         // Reset field context and content table to original values
@@ -658,6 +668,11 @@ class FormElement extends Element
 
         $type = $fieldConfig['type'];
 
+        // @todo - what to do with missing fields?
+        if ($type === MissingFormField::class) {
+            return;
+        }
+
         /** @var Field $field */
         $field = $fieldsService->createField([
             //'id' => $fieldConfig['id'],
@@ -693,8 +708,9 @@ class FormElement extends Element
 
         if (!$fieldsService->saveField($field)) {
             Craft::error('Field does not validate.', __METHOD__);
-            \Craft::dd($field->getErrors());
+            // @todo - handle errors on layout
             //$this->addError('submissionFieldLayout', 'Field does not validate.');
+            \Craft::dd($field->getErrors());
         }
 
         // Check if the handle is updated to also update the titleFormat, rules and integrations
@@ -748,9 +764,24 @@ class FormElement extends Element
 
                 // Remove field details. We have the fieldUid and will add back when needed.
                 //unset($layout['tabs'][$index]['elements'][$elementIndex]['field']);
+
+                // AFTER PROPAGATE SAVES THINGS TWICE (<sigh>... calling applyDraft after the initial save
+                // since we remove our field data from the submissionLayout after the first save, we need to
+                // exit here so we don't delete fields below
+                // BUT if we remove this, then after we save a field once, somehow field data gets added
+                // to the submisssionLayout field in the db
+                //if (empty($element['field'])) {
+                //    return;
+                //}
+
+                //if (!$fieldUid || empty($element['field']) {
                 if (!$fieldUid || empty($fieldData)) {
                     continue;
                 }
+
+                // @TODO - extract fields and validate them before saving ANY
+
+
 
                 $this->saveFormField($fieldData);
             }
@@ -777,11 +808,9 @@ class FormElement extends Element
             });
         });
 
-        $this->submissionFieldLayout = Json::encode($layout);
-
         Craft::$app->getDb()->createCommand()->update(
             SproutTable::FORMS,
-            ['submissionFieldLayout' => $this->submissionFieldLayout],
+            ['submissionFieldLayout' => Json::encode($layout)],
             ['id' => $this->id]
         )->execute();
     }
