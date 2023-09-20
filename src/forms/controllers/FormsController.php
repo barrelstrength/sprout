@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
+use craft\base\FieldInterface;
 use craft\errors\WrongEditionException;
 use craft\fieldlayoutelements\CustomField;
 use craft\helpers\Cp;
@@ -256,10 +257,6 @@ class FormsController extends BaseController
         $class = $fieldConfig['type'] ?? null;
         $fieldSettings = $fieldConfig['settings'] ?? [];
 
-        if ($fieldConfig['handle'] === null) {
-            $fieldConfig['handle'] = StringHelper::toHandle($fieldConfig['name']);
-        }
-
         unset(
             $fieldConfig['type'],
             $fieldConfig['tabUid'],
@@ -287,18 +284,23 @@ class FormsController extends BaseController
         // Setting fieldUid throws an if the field isn't created in the DB yet, so we work around that
         //$fieldLayoutElement->fieldUid = $layoutElementConfig['fieldUid'];
         //\Craft::dd($settingsHtml);
-        $html = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
+        $requiredSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
             'fieldLayoutElement' => $fieldLayoutElement,
             'field' => $field,
             //'settingsHtml' => $settingsHtml,
             //'conditionBuilderJs' => $conditionBuilderJs,
         ]);
 
+        $fieldSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSettings', [
+            'field' => $field,
+        ]);
+
         return $this->asJson([
             'success' => true,
             'fieldUid' => $layoutElementConfig['fieldUid'],
             //'settingsHtml' => StringHelper::collapseWhitespace($html),
-            'additionalSettingsHtml' => $html,
+            'requiredSettingsHtml' => $requiredSettingsHtml,
+            'additionalSettingsHtml' => $fieldSettingsHtml,
             'settingsHtml' => $settingsHtml,
             'conditionBuilderJs' => $conditionBuilderJs,
         ]);

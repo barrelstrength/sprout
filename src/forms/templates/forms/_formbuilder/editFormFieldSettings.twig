@@ -1,0 +1,8 @@
+{% import "_includes/forms" as forms %}
+
+<hr>
+
+{% namespace 'settings' %}
+    {{ field.getSettingsHtml()|raw }}
+{% endnamespace %}
+

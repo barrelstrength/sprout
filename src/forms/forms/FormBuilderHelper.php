@@ -2,10 +2,10 @@
 
 namespace BarrelStrength\Sprout\forms\forms;
 
+use BarrelStrength\Sprout\forms\components\formfields\MissingFormField;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use Craft;
 use craft\base\FieldInterface;
-use craft\fields\MissingField;
 use craft\helpers\Component;
 use craft\helpers\StringHelper;
 use craft\records\Field as FieldRecord;
@@ -18,7 +18,7 @@ class FormBuilderHelper
             $field = Craft::$app->getFields()->getFieldByUid($fieldUid);
         }
 
-        return $field ?? new MissingField();
+        return $field ?? new MissingFormField();
     }
 
     public static function getFieldUiSettings($field): array
@@ -28,26 +28,25 @@ class FormBuilderHelper
         if ($field instanceof FormFieldInterface) {
             $exampleInputHtml = $field->getExampleInputHtml();
         } else {
-            $exampleInputHtml = '<div class="missing-component pane"><p class="error">Unable to find component class: ' . $type . '</p></div>';
+            $exampleInputHtml = '<div class="missing-component pane"><p class="error">Unable to find component class: ' . $field::class . '</p></div>';
         }
 
         $currentUser = Craft::$app->getUser()->getIdentity();
-        $showFieldHandles = $currentUser->getPreference('showFieldHandles');
-
-        $fieldHandle = $field->handle ?? StringHelper::toCamelCase($field::displayName());
+        //$showFieldHandles = $currentUser->getPreference('showFieldHandles');
 
         $uiSettings = [
             'displayName' => $field::displayName(),
             'icon' => Component::iconSvg($svg, $field::displayName()),
             'exampleInputHtml' => $exampleInputHtml,
-            'fieldHandleHtml' => $showFieldHandles ? $fieldHandle . $field->id : '',
+            // @todo - can we remove this after handle updates?
+            //'fieldHandleHtml' => $showFieldHandles ? $field->handle . $field->id : '',
             'fieldUid' => $field->uid,
         ];
 
         $fieldSettings = [
             //'id' => $field->id,
-            'handle' => $field->handle,
             'name' => $field->name ?? $field::displayName(),
+            //'handle' => $field::displayName() . '_' . StringHelper::randomString(6),
             'instructions' => $field->instructions,
             'type' => $field::class,
             'tabUid' => $field->tabUid ?? 1,
@@ -61,7 +60,6 @@ class FormBuilderHelper
             'uiSettings' => $uiSettings,
         ];
     }
-
 
     /**
      * Create a sequential string for the "name" and "handle" fields if they are already taken

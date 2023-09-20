@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\forms\formfields;
 
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\forms\GroupLabel;
 use BarrelStrength\Sprout\forms\forms\RenderingOptionsHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;

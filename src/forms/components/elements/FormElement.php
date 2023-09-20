@@ -11,6 +11,7 @@ use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\IntegrationsField;
+use BarrelStrength\Sprout\forms\components\formfields\MissingFormField;
 use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\db\SproutTable;
@@ -36,10 +37,8 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\GlobalSet;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
-use craft\fieldlayoutelements\CustomField;
 use craft\fieldlayoutelements\TextField;
 use craft\helpers\Cp;
 use craft\helpers\Db;
@@ -282,7 +281,7 @@ class FormElement extends Element
 
     public function getSubmissionLayoutUid(): string
     {
-        return 'SPROUT-UID-SUBMISSION-LAYOUT-'.$this->id;
+        return 'SPROUT-UID-SUBMISSION-LAYOUT-' . $this->id;
     }
 
     public function getSubmissionFieldLayout(): FieldLayout
@@ -543,10 +542,10 @@ class FormElement extends Element
         Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
     }
 
-    public function getIsNew($id): bool
-    {
-        return (!$id || str_starts_with($id, 'new'));
-    }
+    //public function getIsNew($id): bool
+    //{
+    //    return (!$id || str_starts_with($id, 'new'));
+    //}
 
     public function afterSave(bool $isNew): void
     {
@@ -680,6 +679,7 @@ class FormElement extends Element
             // existing field
             $field->id = $oldField->id;
             $field->handle = $oldField->handle;
+            $field->columnSuffix = $oldField->columnSuffix;
 
             $isNewField = false;
             $oldHandle = $oldField->handle;
@@ -711,6 +711,7 @@ class FormElement extends Element
             //FormsModule::getInstance()->forms->updateFieldOnIntegrations($oldHandle, $field->handle, $this);
         }
     }
+
     public function updateSubmissionLayout(): void
     {
         // Save Field Layout
@@ -745,17 +746,17 @@ class FormElement extends Element
         foreach ($layout['tabs'] as $index => $tab) {
             foreach ($tab['elements'] as $elementIndex => $element) {
                 $fieldUid = $element['fieldUid'] ?? null;
+                $newFieldUids[] = $fieldUid; // do this here because we might exit
 
-                if (!$fieldUid || empty($element['field'])) {
+                $fieldData = $element['field'] ?? null;
+
+                // Remove field details. We have the fieldUid and will add back when needed.
+                //unset($layout['tabs'][$index]['elements'][$elementIndex]['field']);
+                if (!$fieldUid || empty($fieldData)) {
                     continue;
                 }
 
-                $newFieldUids[] = $fieldUid;
-
-                $this->saveFormField($element['field']);
-
-                // Remove field details. We have the fieldUid and will add back when needed.
-                unset($layout['tabs'][$index]['elements'][$elementIndex]['field']);
+                $this->saveFormField($fieldData);
             }
         }
 
@@ -766,17 +767,29 @@ class FormElement extends Element
             ->column();
 
         // Delete fields that are no longer in the layout
-        $deletedFieldUids = array_diff($oldFieldUids, $newFieldUids);
+        $deletedFieldUids = array_diff($oldFieldUids, array_filter($newFieldUids));
         array_walk($deletedFieldUids, static function($fieldUid) {
             if ($field = Craft::$app->getFields()->getFieldByUid($fieldUid)) {
                 Craft::$app->getFields()->deleteField($field);
             }
         });
 
+        // remove 'field' attribute from layout.tabs.elements
+        array_walk($layout['tabs'], static function(&$tab) {
+            array_walk($tab['elements'], static function(&$element) {
+                unset($element['field']);
+            });
+        });
+
         $this->submissionFieldLayout = Json::encode($layout);
 
-        return;
+        Craft::$app->getDb()->createCommand()->update(
+            SproutTable::FORMS,
+            ['submissionFieldLayout' => $this->submissionFieldLayout],
+            ['id' => $this->id]
+        )->execute();
 
+        return;
 
         //$layoutConfig = Json::decode($this->submissionFieldLayout);
 
