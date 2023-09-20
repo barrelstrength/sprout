@@ -232,41 +232,6 @@ class Forms extends Component
     }
 
     /**
-     * Creates a form with a empty default tab
-     */
-    public function createNewForm($name = null, $handle = null): ?FormElement
-    {
-        $form = new FormElement();
-        $name ??= 'Form';
-        $handle ??= 'form';
-
-        $settings = FormsModule::getInstance()->getSettings();
-
-        $form->name = $this->getFieldAsNew('name', $name);
-        $form->handle = $this->getFieldAsNew('handle', $handle);
-        $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
-        $form->formTypeUid = FormTypeHelper::getDefaultFormType();
-        $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
-
-        // Set default tab
-
-        /** @var Field $field */
-        //        $field = null;
-        //        $form = FormsModule::getInstance()->formFields->addDefaultTab($form, $field);
-        //
-        //        if ($this->saveForm($form)) {
-        //            // Let's delete the default field
-        //            if ($field !== null && $field->id) {
-        //                Craft::$app->getFields()->deleteFieldById($field->id);
-        //            }
-        //
-        //            return $form;
-        //        }
-        //
-        //        return null;
-    }
-
-    /**
      * Checks if the current plugin edition allows a user to create a Form
      */
     public function canCreateForm(): bool
