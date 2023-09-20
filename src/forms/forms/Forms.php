@@ -27,8 +27,6 @@ class Forms extends Component
 
     public array $activeSubmissions = [];
 
-    public ?SubmissionElement $activeCpSubmission = null;
-
     /**
      *
      * Allows a user to add variables to an object that can be parsed by fields

@@ -8,6 +8,8 @@
 
 ### Changed
 
+- Updated Form Element to use unified element editor
+- Updated Submission Element to use unified element editor
 - Updated `craft.sproutForms` variable to `sprout.forms`
 - Updated Project Config settings from `sprout-forms` => `sprout-module-forms`
 - Updated translation category from `sprout-forms` => `sprout-module-forms`
@@ -30,6 +32,8 @@
 - ** Removed Sprout Url Field. Data has been migrated to native Craft URL field.
 - ** Removed Sprout Notes Field. See upgrade notes to manually update Notes to
   new Craft Field UI Elements.
+- Removed template hook `cp.sproutForms.submissions.edit.details`
+- Removed template hook `cp.sproutForms.submissions.edit.content`
 
 ### Breaking Changes
 

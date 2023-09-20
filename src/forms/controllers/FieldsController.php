@@ -10,7 +10,6 @@ use yii\web\Response;
 
 class FieldsController extends BaseController
 {
-
     public function actionValidateEmail(): Response
     {
         $this->requirePostRequest();

@@ -1,0 +1,16 @@
+{% if submission.getSavedCaptchaErrors()|length %}
+    <div class="meta read-only">
+        <h6 class="title">{{ "Failed Captchas"|t('sprout-module-forms') }}</h6>
+        <hr>
+        {% for captchaError in submission.getSavedCaptchaErrors() %}
+            <div class="data">
+                {% set captcha = create(captchaError.type) %}
+                <div style="padding-top:8px;"><span class="status error"></span>
+                    {{ captcha.name }}
+                    <span class="info">{{ captchaError.errors }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+

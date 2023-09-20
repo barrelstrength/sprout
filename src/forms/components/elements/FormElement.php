@@ -295,11 +295,12 @@ class FormElement extends Element
         if ($this->submissionFieldLayout) {
             $config = Json::decodeIfJson($this->submissionFieldLayout) ?? [];
             $layout = FieldLayout::createFromConfig($config);
+            $layout->setTabs(reset($config));
         } else {
             $layout = new FieldLayout();
         }
 
-        $layout->id = $this->id; // Use the Form Element ID as Submission Layout ID
+        // layout is never saved, it has no id and we don't want to store one on the element
         $layout->type = SubmissionElement::class;
         $layout->uid = $this->getSubmissionLayoutUid();
 

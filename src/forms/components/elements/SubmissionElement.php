@@ -24,7 +24,10 @@ use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\web\assets\conditionbuilder\ConditionBuilderAsset;
+use craft\web\CpScreenResponseBehavior;
 use yii\base\Exception;
+use yii\web\Response;
 
 /**
  *
@@ -297,6 +300,12 @@ class SubmissionElement extends Element
 
     public function canView(User $user): bool
     {
+        $settings = FormsModule::getInstance()->getSettings();
+
+        if (!$settings->enableSaveData) {
+            return false;
+        }
+
         return Craft::$app->getUser()->getIdentity()->can(FormsModule::p('viewSubmissions'));
     }
 
@@ -323,6 +332,21 @@ class SubmissionElement extends Element
         return (string)$this->title;
     }
 
+    public function prepareEditScreen(Response $response, string $containerId): void
+    {
+        $crumbs = [
+            [
+                'label' => Craft::t('sprout-module-forms', 'Submissions'),
+                'url' => UrlHelper::url('sprout/forms/submissions'),
+            ],
+        ];
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->crumbs($crumbs);
+
+        //Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
+    }
+
     public function getFieldLayout(): ?FieldLayout
     {
         return $this->getForm()->getSubmissionFieldLayout();
@@ -333,6 +357,28 @@ class SubmissionElement extends Element
         $statusId = $this->statusId;
 
         return FormsModule::getInstance()->submissionStatuses->getSubmissionStatusById($statusId)->handle;
+    }
+
+    public function getSidebarHtml(bool $static): string
+    {
+        $html = parent::getSidebarHtml($static);
+
+        $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarIntegrations', [
+            'submission' => $this
+        ]);
+
+        $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarSpam', [
+            'submission' => $this
+        ]);
+
+        return $html;
+    }
+
+    public function metadata(): array
+    {
+        return [
+            Craft::t('sprout-module-forms', 'Form Name') => $this->getForm()->name,
+        ];
     }
 
     public function afterSave(bool $isNew): void

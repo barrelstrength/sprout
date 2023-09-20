@@ -1,0 +1,38 @@
+{% set integrationLogs = submission.integrationLog() %}
+{% if integrationLogs %}
+    <div class="meta read-only">
+        <h6 class="title">{{ "Integrations"|t('sprout-module-forms') }}</h6>
+        <hr>
+        {% for integrationLog in integrationLogs %}
+            <div class="data">
+                {% set integration = sprout.modules.forms.formIntegrations.getIntegrationById(integrationLog.integrationId) %}
+                <h5 class="heading">{{ integration.name }}</h5>
+                {% if integrationLog.success %}
+                    {% if integrationLog.status == 'notsent' %}
+                        <div class="value"><span class="status pending"></span>
+                            {{ "Not Sent"|t('sprout-module-forms') }}
+                            <span class="info">{{ integrationLog.message }}</span>
+                        </div>
+                    {% else %}
+                        <div class="value"><span class="status live"></span>
+                            {{ "Success"|t('sprout-module-forms') }}
+                            <span class="info">{{ integrationLog.message }}</span>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if integrationLog.status == 'pending' %}
+                        <div class="value"><span class="status pending"></span>
+                            {{ "Pending"|t('sprout-module-forms') }}
+                            <span class="info">{{ integrationLog.message }}</span>
+                        </div>
+                    {% else %}
+                        <div class="value"><span class="status disabled"></span>
+                            {{ "Error"|t('sprout-module-forms') }}
+                            <span class="info">{{ integrationLog.message }}</span>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
