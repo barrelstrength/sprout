@@ -470,8 +470,6 @@ export const FormBuilder = (formId) => ({
 
     updateFieldPosition(originTabUid, targetTabUid, fieldUid, beforeFieldUid = null) {
 
-        let self = this;
-
         let originTabIndex = this.getTabIndexByTabUid(originTabUid);
         let originTab = this.tabs[originTabIndex];
 
