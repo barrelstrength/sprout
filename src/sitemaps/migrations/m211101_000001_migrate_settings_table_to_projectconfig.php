@@ -1,5 +1,6 @@
 <?php
-/** @noinspection DuplicatedCode */
+
+/** @noinspection DuplicatedCode DuplicatedCode */
 
 namespace BarrelStrength\Sprout\sitemaps\migrations;
 

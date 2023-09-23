@@ -26,7 +26,7 @@ class m211101_000003_update_sitemap_metadata_types extends Migration
             [
                 'oldType' => 'barrelstrength\sproutbaseuris\sectiontypes\NoSection',
                 'newType' => null,
-            ]
+            ],
         ];
 
         foreach ($types as $type) {
