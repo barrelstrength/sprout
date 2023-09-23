@@ -31,11 +31,11 @@ class XmlSitemap extends Component
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
 
-        $sitemapMetadataByKey = $sitemapsService->getContentSitemapMetadata($site);
+        $contentSitemapMetadata = $sitemapsService->getContentSitemapMetadata($site);
 
         foreach ($elementsWithUris as $elementWithUri) {
 
-            foreach ($sitemapMetadataByKey as $sitemapMetadata) {
+            foreach ($contentSitemapMetadata as $sitemapMetadata) {
                 if (!$sitemapMetadata->enabled) {
                     continue;
                 }

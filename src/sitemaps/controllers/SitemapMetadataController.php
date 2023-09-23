@@ -94,11 +94,11 @@ class SitemapMetadataController extends Controller
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
-        $sitemapMetadataByKey = $sitemapsService->getContentSitemapMetadata($site);
+        $contentSitemapMetadata = $sitemapsService->getContentSitemapMetadata($site);
         $contentQueries = $sitemapsService->getContentQuerySitemapMetadata($site->id);
         $customPages = $sitemapsService->getCustomPagesSitemapMetadata($site->id);
 
-        $elementsToDisplayForSitemaps = array_column($sitemapMetadataByKey, 'type');
+        $elementsToDisplayForSitemaps = array_column($contentSitemapMetadata, 'type');
         $elementsWithUris = array_filter($elementsWithUris,
             static function($element) use ($elementsToDisplayForSitemaps) {
                 return in_array($element::class, $elementsToDisplayForSitemaps, true);
@@ -110,7 +110,7 @@ class SitemapMetadataController extends Controller
             'firstSiteInGroup' => $firstSiteInGroup,
             'editableSiteIds' => $editableSiteIds,
             'elementsWithUris' => $elementsWithUris,
-            'sitemapMetadataByKey' => $sitemapMetadataByKey,
+            'contentSitemapMetadata' => $contentSitemapMetadata,
             'contentQueries' => $contentQueries,
             'customPages' => $customPages,
             'settings' => $settings,
