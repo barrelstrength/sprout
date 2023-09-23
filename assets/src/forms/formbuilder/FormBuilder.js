@@ -193,6 +193,8 @@ export const FormBuilder = (formId) => ({
 
         let self = this;
 
+        e.target.classList.remove('no-pointer-events');
+
         let originTabUid = e.dataTransfer.getData('sprout/origin-page-tab-uid');
         let targetTabUid = e.target.dataset.tabUid;
 
@@ -327,10 +329,12 @@ export const FormBuilder = (formId) => ({
         let targetTabUid = e.target.dataset.tabUid;
         let beforeFieldUid = e.target.dataset.fieldUid;
 
+        if (this.dragOrigin === this.DragOrigins.sourceField) {
+            this.addFieldToLayoutTab(type, beforeFieldUid);
+        }
+
         if (this.dragOrigin === this.DragOrigins.layoutField) {
             this.updateFieldPosition(originTabUid, targetTabUid, self.isDraggingFormFieldUid, beforeFieldUid);
-        } else {
-            this.addFieldToLayoutTab(type, beforeFieldUid);
         }
     },
 
@@ -356,10 +360,10 @@ export const FormBuilder = (formId) => ({
         let beforeFieldUid = e.target.dataset.fieldUid;
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
-            console.log('addFieldToLayoutTab');
             this.addFieldToLayoutTab(type);
-        } else {
-            console.log('updateFieldPosition');
+        }
+
+        if (this.dragOrigin === this.DragOrigins.layoutField) {
             this.updateFieldPosition(originTabUid, targetTabUid, self.isDraggingFormFieldUid, beforeFieldUid)
         }
     },
@@ -470,17 +474,20 @@ export const FormBuilder = (formId) => ({
 
     updateFieldPosition(originTabUid, targetTabUid, fieldUid, beforeFieldUid = null) {
 
+        console.log('updateFieldPosition');
+
         let originTabIndex = this.getTabIndexByTabUid(originTabUid);
         let originTab = this.tabs[originTabIndex];
 
         let targetTabIndex = this.getTabIndexByTabUid(targetTabUid);
         let targetTab = this.tabs[targetTabIndex];
 
-        let fieldIndex = this.getFieldIndexByFieldUid(originTab, fieldUid);
-        let targetField = originTab.elements[fieldIndex];
+        let originFieldIndex = this.getFieldIndexByFieldUid(originTab, fieldUid);
+        let targetField = originTab.elements[originFieldIndex];
 
-        // Remove the updated field from origin tab
-        originTab.elements.splice(fieldIndex, 1);
+        // Remove the updated field from the layout
+        // this might change the indexes of the elements on the tab
+        originTab.elements.splice(originFieldIndex, 1);
 
         if (beforeFieldUid) {
             let beforeFieldIndex = this.getFieldIndexByFieldUid(targetTab, beforeFieldUid);
@@ -521,7 +528,9 @@ export const FormBuilder = (formId) => ({
         fieldData.field.type = type;
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
-            fieldData.field.uid = Craft.uuid()
+            fieldData.field.name = fieldData.uiSettings.displayName;
+            fieldData.field.handle = fieldData.uiSettings.defaultHandle + '_' + Craft.randomString(4);
+            fieldData.field.uid = Craft.uuid();
         }
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {

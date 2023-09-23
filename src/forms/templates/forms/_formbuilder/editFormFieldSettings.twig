@@ -6,3 +6,10 @@
     {{ field.getSettingsHtml()|raw }}
 {% endnamespace %}
 
+{{ forms.textField({
+    label: 'Handle'|t('sprout-module-forms'),
+    name: 'handle',
+    value: field.handle,
+    errors: field.getErrors('handle'),
+    required: true,
+}) }}

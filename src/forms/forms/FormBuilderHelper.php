@@ -36,6 +36,7 @@ class FormBuilderHelper
 
         $uiSettings = [
             'displayName' => $field::displayName(),
+            'defaultHandle' => StringHelper::toHandle($field::displayName()),
             'icon' => Component::iconSvg($svg, $field::displayName()),
             'exampleInputHtml' => $exampleInputHtml,
             // @todo - can we remove this after handle updates?
@@ -46,7 +47,7 @@ class FormBuilderHelper
         $fieldSettings = [
             //'id' => $field->id,
             'name' => $field->name ?? $field::displayName(),
-            //'handle' => $field::displayName() . '_' . StringHelper::randomString(6),
+            'handle' => $field->handle, // Default created in JS
             'instructions' => $field->instructions,
             'type' => $field::class,
             'tabUid' => $field->tabUid ?? 1,
