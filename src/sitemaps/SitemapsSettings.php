@@ -39,38 +39,6 @@ class SitemapsSettings extends BaseConfig
         parent::init();
     }
 
-    public function getEnabledSiteIds(): array
-    {
-        if (!$enabledSiteUids = array_keys(array_filter($this->siteSettings))) {
-            return [];
-        }
-
-        $ids = (new Query())
-            ->select(['id'])
-            ->from(Table::SITES)
-            ->where(['in', 'uid', $enabledSiteUids])
-            ->indexBy('uid')
-            ->column();
-
-        return array_map('intval', $ids);
-    }
-
-    public function getEnabledGroupIds(): array
-    {
-        if (!$enabledGroupUids = array_keys(array_filter($this->groupSettings))) {
-            return [];
-        }
-
-        $ids = (new Query())
-            ->select(['id'])
-            ->from(Table::SITEGROUPS)
-            ->where(['in', 'uid', $enabledGroupUids])
-            ->indexBy('uid')
-            ->column();
-
-        return array_map('intval', $ids);
-    }
-
     public function enableContentQuerySitemaps(bool $value): self
     {
         $this->enableContentQuerySitemaps = $value;
@@ -120,6 +88,38 @@ class SitemapsSettings extends BaseConfig
         }
 
         return $this->sitemapAggregationMethod === self::AGGREGATION_METHOD_MULTI_LINGUAL;
+    }
+
+    public function getEnabledSiteIds(): array
+    {
+        if (!$enabledSiteUids = array_keys(array_filter($this->siteSettings))) {
+            return [];
+        }
+
+        $ids = (new Query())
+            ->select(['id'])
+            ->from(Table::SITES)
+            ->where(['in', 'uid', $enabledSiteUids])
+            ->indexBy('uid')
+            ->column();
+
+        return array_map('intval', $ids);
+    }
+
+    public function getEnabledGroupIds(): array
+    {
+        if (!$enabledGroupUids = array_keys(array_filter($this->groupSettings))) {
+            return [];
+        }
+
+        $ids = (new Query())
+            ->select(['id'])
+            ->from(Table::SITEGROUPS)
+            ->where(['in', 'uid', $enabledGroupUids])
+            ->indexBy('uid')
+            ->column();
+
+        return array_map('intval', $ids);
     }
 }
 

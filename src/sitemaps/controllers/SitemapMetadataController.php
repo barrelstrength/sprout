@@ -2,7 +2,12 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentSitemapMetadataHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomQuerySitemapMetadataHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementUriHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
@@ -14,9 +19,7 @@ use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
-use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SitemapMetadataController extends Controller
@@ -31,23 +34,15 @@ class SitemapMetadataController extends Controller
 
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
-        $sitemapsService = SitemapsModule::getInstance()->sitemaps;
+        $editableSiteIds = SitemapsMetadataHelper::getEditableSiteIds();
+        $firstSiteInGroup = SitemapsMetadataHelper::getFirstSiteInGroup($site);
 
-        $settings = SitemapsModule::getInstance()->getSettings();
-        $isMultiSite = Craft::$app->getIsMultiSite();
-        $editableSiteIds = $this->getEditableSiteIds($settings, $isMultiSite);
-        $firstSiteInGroup = $this->getFirstSiteInGroup($site, $isMultiSite);
+        $contentSitemapMetadata = ContentSitemapMetadataHelper::getContentSitemapMetadata($site);
+        $contentQueries = CustomQuerySitemapMetadataHelper::getContentQuerySitemapMetadata($site);
+        $customPages = CustomPagesSitemapMetadataHelper::getCustomPagesSitemapMetadata($site);
 
-        $elementsWithUris = $sitemapsService->getElementWithUris();
-        $contentSitemapMetadata = $sitemapsService->getContentSitemapMetadata($site);
-        $contentQueries = $sitemapsService->getContentQuerySitemapMetadata($site->id);
-        $customPages = $sitemapsService->getCustomPagesSitemapMetadata($site->id);
-
-        $elementsToDisplayForSitemaps = array_column($contentSitemapMetadata, 'type');
-        $elementsWithUris = array_filter($elementsWithUris,
-            static function($element) use ($elementsToDisplayForSitemaps) {
-                return in_array($element::class, $elementsToDisplayForSitemaps, true);
-            });
+        $allowedElementTypes = array_unique(array_column($contentSitemapMetadata, 'type'));
+        $elementsWithUris = ElementUriHelper::getElementsWithUrisForSitemaps($allowedElementTypes);
 
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/index.twig', [
             'title' => Craft::t('sprout-module-sitemaps', 'Sitemaps'),
@@ -58,17 +53,14 @@ class SitemapMetadataController extends Controller
             'contentSitemapMetadata' => $contentSitemapMetadata,
             'contentQueries' => $contentQueries,
             'customPages' => $customPages,
-            'settings' => $settings,
+            'settings' => SitemapsModule::getInstance()->getSettings(),
             'displayViewSitemapXmlButton' => $site->id === $firstSiteInGroup->id,
             'DEFAULT_PRIORITY' => SitemapsSettings::DEFAULT_PRIORITY,
             'DEFAULT_CHANGE_FREQUENCY' => SitemapsSettings::DEFAULT_CHANGE_FREQUENCY,
         ]);
     }
 
-    /**
-     * Renders a Sitemap Edit Page
-     */
-    public function actionSitemapMetadataCustomQueryEditTemplate(string $sourceKey, int $sitemapMetadataId = null, SitemapMetadataRecord $sitemapMetadata = null): Response
+    public function actionCustomSitemapMetadataEditTemplate(string $sourceKey, string $sitemapMetadataUid = null, SitemapMetadataRecord $sitemapMetadata = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -77,24 +69,16 @@ class SitemapMetadataController extends Controller
         }
 
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
+        $this->requirePermission('editSite:' . $site->uid);
 
-        $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
-
-        // Make sure the user has permission to edit that site
-        if (!in_array($site->id, $editableSiteIds, false)) {
-            throw new ForbiddenHttpException('User not permitted to edit content for this site.');
-        }
-
-        if (!$sitemapMetadata instanceof ActiveRecord) {
-            if ($sitemapMetadataId) {
-                $sitemapMetadata = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataById($sitemapMetadataId);
+        if (!$sitemapMetadata) {
+            if ($sitemapMetadataUid) {
+                $sitemapMetadata = SitemapsMetadataHelper::getSitemapMetadataByUid($sitemapMetadataUid, $site);
             } else {
                 $sitemapMetadata = new SitemapMetadataRecord();
                 $sitemapMetadata->siteId = $site->id;
             }
         }
-
-        $continueEditingUrl = UrlHelper::cpUrl('sprout/sitemaps/edit/' . $sourceKey . '/{id}');
 
         if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
 
@@ -144,6 +128,8 @@ class SitemapMetadataController extends Controller
             ]);
         }
 
+        $continueEditingUrl = UrlHelper::cpUrl('sprout/sitemaps/edit/' . $sourceKey . '/{uid}');
+
         return $this->renderTemplate('sprout-module-sitemaps/_sitemapmetadata/edit.twig', [
             'site' => $site,
             'sitemapMetadata' => $sitemapMetadata,
@@ -162,25 +148,50 @@ class SitemapMetadataController extends Controller
 
         $sitemapMetadataId = Craft::$app->getRequest()->getBodyParam('sitemapMetadataId');
 
-        $sitemapMetadataRecord = SitemapMetadataRecord::findOne($sitemapMetadataId);
-
-        if ($sitemapMetadataRecord === null) {
+        if (!$sitemapMetadataRecord = SitemapMetadataRecord::findOne($sitemapMetadataId)) {
             $sitemapMetadataRecord = new SitemapMetadataRecord();
         }
 
         $request = Craft::$app->getRequest();
 
-        $type = $request->getBodyParam('type');
+        $siteId = $request->getBodyParam('siteId');
+        $enabled = (bool)$request->getBodyParam('enabled');
         $sourceKey = $request->getBodyParam('sourceKey');
 
-        $sitemapMetadataRecord->siteId = $request->getBodyParam('siteId');
+        // Lite/Pro check - only allow 5 Content or Custom Query Sitemaps per site
+        if ($enabled && // Only validate if a new sitemap is being enabled
+            !$sitemapMetadataRecord->enabled && // Allow updates to existing enabled sitemaps
+            $sourceKey !== SitemapKey::CUSTOM_PAGES && // Custom Pages Sitemaps are not limited
+            ContentSitemapMetadataHelper::hasReachedSitemapLimit($siteId) // Enforce limit of 5 Content or Custom Query Sitemaps
+        ) {
+            if (Craft::$app->request->getAcceptsJson()) {
+                return $this->asJson([
+                    'success' => false,
+                    'errorMessage' => Craft::t('sprout-module-sitemaps', SitemapsModule::getUpgradeMessage())
+                ]);
+            }
+
+            Craft::$app->getSession()->setError(
+                Craft::t('sprout-module-sitemaps', SitemapsModule::getUpgradeMessage())
+            );
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'sitemapMetadata' => $sitemapMetadataRecord,
+            ]);
+
+            return null;
+        }
+
+        $type = $request->getBodyParam('type');
+
+        $sitemapMetadataRecord->siteId = $siteId;
         $sitemapMetadataRecord->sourceKey = $sourceKey;
         $sitemapMetadataRecord->type = $type;
         $sitemapMetadataRecord->uri = $request->getBodyParam('uri', $sitemapMetadataRecord->uri);
-        $sitemapMetadataRecord->priority = $request->getBodyParam('priority');
-        $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency');
+        $sitemapMetadataRecord->priority = $request->getBodyParam('priority', $sitemapMetadataRecord->priority);
+        $sitemapMetadataRecord->changeFrequency = $request->getBodyParam('changeFrequency', $sitemapMetadataRecord->changeFrequency);
         $sitemapMetadataRecord->description = $request->getBodyParam('description', $sitemapMetadataRecord->description);
-        $sitemapMetadataRecord->enabled = (bool)$request->getBodyParam('enabled');
+        $sitemapMetadataRecord->enabled = $enabled;
 
         if ($sourceKey === SitemapKey::CUSTOM_PAGES) {
             $sitemapMetadataRecord->type = null;
@@ -188,7 +199,6 @@ class SitemapMetadataController extends Controller
         }
 
         if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
-
             $conditionBuilderParam = $type::lowerDisplayName() . '-conditionRules';
             $condition = $request->getBodyParam($conditionBuilderParam);
             $sitemapMetadataRecord->settings = $condition;
@@ -197,6 +207,7 @@ class SitemapMetadataController extends Controller
         if (!SitemapsModule::getInstance()->sitemaps->saveSitemapMetadata($sitemapMetadataRecord)) {
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([
+                    'success' => false,
                     'errors' => $sitemapMetadataRecord->getErrors(),
                 ]);
             }
@@ -235,89 +246,10 @@ class SitemapMetadataController extends Controller
 
         if (Craft::$app->request->getAcceptsJson()) {
             return $this->asJson([
-                'success' => $result >= 0,
+                'success' => $result,
             ]);
         }
 
         return $this->redirectToPostedUrl();
-    }
-
-    public function getEditableSiteIds($settings, $isMultiSite): array
-    {
-        $isAggregationMethodMultiLanguage =
-            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
-
-        $enabledSiteIds = $settings->getEnabledSiteIds();
-        $enabledSiteGroupIds = $settings->getEnabledGroupIds();
-
-        $missingSettingsScenario1 = !$isAggregationMethodMultiLanguage && empty($enabledSiteIds);
-
-        $missingSettingsScenario2 = $isMultiSite
-            && !$isAggregationMethodMultiLanguage
-            && empty($enabledSiteGroupIds);
-
-        if ($missingSettingsScenario1 && $missingSettingsScenario2) {
-            throw new NotFoundHttpException('No Sites are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site for your Sitemap.');
-        }
-
-        $missingSettingsScenario3 = $isMultiSite
-            && $isAggregationMethodMultiLanguage
-            && empty($enabledSiteGroupIds);
-
-        if ($missingSettingsScenario3) {
-            throw new NotFoundHttpException('No Site Groups are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site Group for your Sitemap.');
-        }
-
-        $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
-
-        // For per-site sitemaps, only display the Sites enabled in the Sprout SEO settings
-        if ($isAggregationMethodMultiLanguage) {
-            $siteIdsFromEditableGroups = [];
-
-            foreach ($enabledSiteGroupIds as $groupUid => $enabledSiteGroupId) {
-                $enabledSitesInGroup = Craft::$app->sites->getSitesByGroupId($enabledSiteGroupId);
-                foreach ($enabledSitesInGroup as $enabledSite) {
-                    $siteIdsFromEditableGroups[$groupUid] = $enabledSite->id;
-                }
-            }
-
-            $editableSiteIds = array_intersect($siteIdsFromEditableGroups, $editableSiteIds);
-        } else {
-            $editableSiteIds = array_intersect($enabledSiteIds, $editableSiteIds);
-        }
-
-        $currentUser = Craft::$app->getUser()->getIdentity();
-
-        // The array keys of our editableSiteIds are their UIDs
-        foreach (array_keys($editableSiteIds) as $key => $siteUid) {
-            if (!$currentUser->can('editSite:' . $siteUid)) {
-                unset($editableSiteIds[$key]);
-            }
-        }
-
-        if (empty($editableSiteIds)) {
-            throw new ForbiddenHttpException('User not permitted to edit sitemaps for any sites.');
-        }
-
-        return $editableSiteIds;
-    }
-
-    public function getFirstSiteInGroup(Site $site, bool $isMultiSite): Site
-    {
-        if ($isMultiSite) {
-            // For Multi-Site we have to figure out which Site and Site Group matter
-            $currentSiteGroup = Craft::$app->sites->getGroupById($site->groupId);
-
-            if (!$currentSiteGroup) {
-                throw new NotFoundHttpException('Site group not found.');
-            }
-
-            $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-            $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-
-            return $firstSiteInGroup;
-        }
-
-        return $site;
     }
 }

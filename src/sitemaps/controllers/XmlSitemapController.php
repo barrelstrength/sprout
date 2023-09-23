@@ -2,15 +2,14 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
+use BarrelStrength\Sprout\core\helpers\RegexHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
-use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\models\Site;
 use craft\web\Controller;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -23,7 +22,7 @@ class XmlSitemapController extends Controller
     /**
      * Generates an XML sitemapindex or sitemap
      */
-    public function actionRenderXmlSitemap($sitemapMetadataUid = null, int $pageNumber = null): Response
+    public function actionRenderXmlSitemap(string $sitemapMetadataUid = null, int $pageNumber = null): Response
     {
         $site = Craft::$app->sites->getCurrentSite();
 
@@ -33,45 +32,11 @@ class XmlSitemapController extends Controller
             throw new NotFoundHttpException('XML Sitemaps not enabled.');
         }
 
-        $settings = SitemapsModule::getInstance()->getSettings();
-        $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
-
-        $sitesInGroup = $xmlSitemapService->getSitemapSites();
-        $multiSiteSiteIds = [];
-
-        if (Craft::$app->getIsMultiSite() && $aggregationMethodMultiLingual) {
-
-            $firstSiteInGroup = $sitesInGroup[0] ?? null;
-
-            // Only render sitemaps for the primary site in a group
-            if (!$firstSiteInGroup instanceof Site || $site->id !== $firstSiteInGroup->id) {
-                throw new HttpException(404);
-            }
-
-            foreach ($sitesInGroup as $siteInGroup) {
-                $multiSiteSiteIds[] = (int)$siteInGroup->id;
-            }
-        }
-
-        if (empty($sitesInGroup)) {
-            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
-        }
-
-        $sitemapIndexUrls = [];
         $elements = [];
+        $sitemapIndexUrls = [];
+        $sitemapKey = $this->getSitemapKey($sitemapMetadataUid, $site);
+        [$sitesInGroup, $multiSiteSiteIds] = SitemapsMetadataHelper::getSiteInfo($site);
 
-        $uuidPattern = SitemapsMetadataHelper::UUID_PATTERN;
-
-        if (preg_match("/^$uuidPattern$/", $sitemapMetadataUid)) {
-            $sitemapKey = SitemapMetadataRecord::find()
-                ->select(['sourceKey'])
-                ->where(['enabled' => true])
-                ->andWhere(['siteId' => $site->id])
-                ->andWhere(['uid' => $sitemapMetadataUid])
-                ->scalar();
-        } else {
-            $sitemapKey = $sitemapMetadataUid;
-        }
 
         switch ($sitemapKey) {
             // Generate Sitemap Index
@@ -102,17 +67,17 @@ class XmlSitemapController extends Controller
             // Prepare Custom Pages Sitemap
             case SitemapKey::CUSTOM_PAGES:
                 if (!empty($multiSiteSiteIds)) {
-                    $elements = $xmlSitemapService->getCustomPagesUrlsForMultipleIds(
+                    $elements = CustomPagesSitemapMetadataHelper::getCustomPagesUrlsForMultipleIds(
                         $multiSiteSiteIds,
                         $sitesInGroup
                     );
                 } else {
-                    $elements = $xmlSitemapService->getCustomPagesUrls($site);
+                    $elements = CustomPagesSitemapMetadataHelper::getCustomPagesUrls($site);
                 }
 
                 break;
 
-            // Prepare Element Group Sitemap
+            // Prepare Content Sitemap
             default:
                 $elements = $xmlSitemapService->getDynamicSitemapElements(
                     $sitemapMetadataUid,
@@ -140,5 +105,23 @@ class XmlSitemapController extends Controller
         return $this->renderTemplate($sitemapIndexTemplate, [
             'sitemapIndexUrls' => $sitemapIndexUrls,
         ]);
+    }
+
+    protected function getSitemapKey(mixed $sitemapMetadataUid, Site $site): mixed
+    {
+        $uuidPattern = RegexHelper::UUID_PATTERN;
+
+        if (preg_match("/^$uuidPattern$/", $sitemapMetadataUid)) {
+            $sitemapKey = SitemapMetadataRecord::find()
+                ->select(['sourceKey'])
+                ->where(['enabled' => true])
+                ->andWhere(['siteId' => $site->id])
+                ->andWhere(['uid' => $sitemapMetadataUid])
+                ->scalar();
+        } else {
+            $sitemapKey = $sitemapMetadataUid;
+        }
+
+        return $sitemapKey;
     }
 }
