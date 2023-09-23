@@ -184,6 +184,9 @@ class SitemapMetadataController extends Controller
                 $condition->name = $element::lowerDisplayName() . '-conditionRules';
                 $condition->id = $element::lowerDisplayName() . '-conditionRules';
 
+                // Don't allow any site conditions in the builder, we manage these in Sitemaps module
+                $condition->queryParams[] = 'site';
+
                 $settingsHtml .= Html::tag('div', $condition->getBuilderHtml(), [
                     'id' => 'element-type-' . Html::id($element::class),
                     'class' => 'hidden',
