@@ -257,10 +257,6 @@ class SitemapMetadata extends Component
         $siteIds = [];
 
         foreach ($sitesInGroup as $siteInGroup) {
-            if ($siteInGroup->id === (int)$sitemapMetadata->siteId) {
-                continue;
-            }
-
             $siteIds[] = $siteInGroup->id;
         }
 
@@ -277,11 +273,14 @@ class SitemapMetadata extends Component
 
         foreach ($sitesInGroup as $siteInGroup) {
 
-            $sitemapMetadataRecord = $sitemapMetadataRecords[$siteInGroup->id]
-                ?? new SitemapMetadataRecord($sitemapMetadata->getAttributes());
+            if (isset($sitemapMetadataRecords[$siteInGroup->id])) {
+                $sitemapMetadataRecord = $sitemapMetadataRecords[$siteInGroup->id];
+            } else {
+                $sitemapMetadataRecord = new SitemapMetadataRecord();
+                $sitemapMetadataRecord->sourceKey = $sitemapMetadata->sourceKey;
+            }
 
             $sitemapMetadataRecord->siteId = $siteInGroup->id;
-            $sitemapMetadataRecord->sourceKey = $sitemapMetadata->sourceKey;
             $sitemapMetadataRecord->type = $sitemapMetadata->type;
             $sitemapMetadataRecord->uri = $sitemapMetadata->uri;
             $sitemapMetadataRecord->priority = $sitemapMetadata->priority;
