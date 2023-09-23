@@ -143,12 +143,12 @@ class XmlSitemap extends Component
         $offset = ($totalElementsPerSitemap * $pageNumber) - $totalElementsPerSitemap;
 
         if ($sitemapKey === SitemapKey::SINGLES) {
-            $enabledSitemapSections = SitemapsMetadataHelper::getSinglesSitemapMetadata($site);
+            $sitemapMetadataRecords = SitemapsMetadataHelper::getSinglesSitemapMetadata($site);
         } else {
-            $enabledSitemapSections = SitemapsMetadataHelper::getSitemapMetadataByUid($sitemapMetadataUid, $site);
+            $sitemapMetadataRecords = SitemapsMetadataHelper::getSitemapMetadataByUid($sitemapMetadataUid, $site);
         }
 
-        foreach ($enabledSitemapSections as $sitemapMetadata) {
+        foreach ($sitemapMetadataRecords as $sitemapMetadata) {
             if (!$sitemapMetadata->enabled) {
                 continue;
             }
