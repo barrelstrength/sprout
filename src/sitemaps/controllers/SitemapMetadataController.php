@@ -234,7 +234,15 @@ class SitemapMetadataController extends Controller
         $sitemapMetadataRecord->description = $request->getBodyParam('description', $sitemapMetadataRecord->description);
         $sitemapMetadataRecord->enabled = (bool)$request->getBodyParam('enabled');
 
+        if ($sourceKey === SitemapKey::CUSTOM_PAGES) {
+            $sitemapMetadataRecord->type = SitemapKey::CUSTOM_PAGES;
+            // remove initial slash
+            $sitemapMetadataRecord->uri = ltrim($sitemapMetadataRecord->uri, '/');
+        }
+
         if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
+            $sitemapMetadataRecord->type = SitemapKey::CUSTOM_QUERY;
+
             $conditionBuilderParam = $type::lowerDisplayName() . '-conditionRules';
             $condition = $request->getBodyParam($conditionBuilderParam);
             $sitemapMetadataRecord->settings = $condition;
