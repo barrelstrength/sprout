@@ -4,6 +4,8 @@ namespace BarrelStrength\Sprout\sitemaps;
 
 use Craft;
 use craft\config\BaseConfig;
+use craft\db\Query;
+use craft\db\Table;
 
 class SitemapsSettings extends BaseConfig
 {
@@ -31,10 +33,42 @@ class SitemapsSettings extends BaseConfig
     {
         if (empty($this->siteSettings)) {
             $site = Craft::$app->getSites()->getPrimarySite();
-            $this->siteSettings[$site->id] = $site->id;
+            $this->siteSettings[$site->uid] = $site->uid;
         }
 
         parent::init();
+    }
+
+    public function getEnabledSiteIds(): array
+    {
+        if (!$enabledSiteUids = array_keys(array_filter($this->siteSettings))) {
+            return [];
+        }
+
+        $ids = (new Query())
+            ->select(['id'])
+            ->from(Table::SITES)
+            ->where(['in', 'uid', $enabledSiteUids])
+            ->indexBy('uid')
+            ->column();
+
+        return array_map('intval', $ids);
+    }
+
+    public function getEnabledGroupIds(): array
+    {
+        if (!$enabledGroupUids = array_keys(array_filter($this->groupSettings))) {
+            return [];
+        }
+
+        $ids = (new Query())
+            ->select(['id'])
+            ->from(Table::SITEGROUPS)
+            ->where(['in', 'uid', $enabledGroupUids])
+            ->indexBy('uid')
+            ->column();
+
+        return array_map('intval', $ids);
     }
 
     public function enableContentQuerySitemaps(bool $value): self

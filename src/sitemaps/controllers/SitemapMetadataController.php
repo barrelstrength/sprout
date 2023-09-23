@@ -31,67 +31,12 @@ class SitemapMetadataController extends Controller
 
         $this->requirePermission(SitemapsModule::p('editSitemaps'));
 
+        $sitemapsService = SitemapsModule::getInstance()->sitemaps;
+
         $settings = SitemapsModule::getInstance()->getSettings();
         $isMultiSite = Craft::$app->getIsMultiSite();
-        $isAggregationMethodMultiLanguage = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
-
-        // Get Enabled Site IDs. Remove any disabled IDS.
-        $enabledSiteIds = array_filter($settings->siteSettings);
-        $enabledSiteGroupIds = array_filter($settings->groupSettings);
-
-        $missingSettingsScenario1 = !$isAggregationMethodMultiLanguage && empty($enabledSiteIds);
-
-        $missingSettingsScenario2 = $isMultiSite
-            && !$isAggregationMethodMultiLanguage
-            && empty($enabledSiteGroupIds);
-
-        if ($missingSettingsScenario1 && $missingSettingsScenario2) {
-            throw new NotFoundHttpException('No Sites are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site for your Sitemap.');
-        }
-
-        $missingSettingsScenario3 = $isMultiSite
-            && $isAggregationMethodMultiLanguage
-            && empty($enabledSiteGroupIds);
-
-        if ($missingSettingsScenario3) {
-            throw new NotFoundHttpException('No Site Groups are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site Group for your Sitemap.');
-        }
-
-        // Get all Editable Sites for this user that also have editable Sitemaps
-        $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
-
-        // For per-site sitemaps, only display the Sites enabled in the Sprout SEO settings
-        if ($isAggregationMethodMultiLanguage) {
-            $siteIdsFromEditableGroups = [];
-
-            foreach ($enabledSiteGroupIds as $enabledSiteGroupId) {
-                $enabledSitesInGroup = Craft::$app->sites->getSitesByGroupId($enabledSiteGroupId);
-                foreach ($enabledSitesInGroup as $enabledSites) {
-                    $siteIdsFromEditableGroups[] = (int)$enabledSites->id;
-                }
-            }
-
-            $editableSiteIds = array_intersect($siteIdsFromEditableGroups, $editableSiteIds);
-        } else {
-            $editableSiteIds = array_intersect($enabledSiteIds, $editableSiteIds);
-        }
-
-        if ($isMultiSite) {
-            // For Multi-Site we have to figure out which Site and Site Group matter
-            $currentSiteGroup = Craft::$app->sites->getGroupById($site->groupId);
-
-            if (!$currentSiteGroup) {
-                throw new NotFoundHttpException('Site group not found.');
-            }
-
-            $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-            $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
-        } else {
-            // For a single site, the primary site ID will do
-            $firstSiteInGroup = $site;
-        }
-
-        $sitemapsService = SitemapsModule::getInstance()->sitemaps;
+        $editableSiteIds = $this->getEditableSiteIds($settings, $isMultiSite);
+        $firstSiteInGroup = $this->getFirstSiteInGroup($site, $isMultiSite);
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
         $contentSitemapMetadata = $sitemapsService->getContentSitemapMetadata($site);
@@ -295,5 +240,84 @@ class SitemapMetadataController extends Controller
         }
 
         return $this->redirectToPostedUrl();
+    }
+
+    public function getEditableSiteIds($settings, $isMultiSite): array
+    {
+        $isAggregationMethodMultiLanguage =
+            $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
+
+        $enabledSiteIds = $settings->getEnabledSiteIds();
+        $enabledSiteGroupIds = $settings->getEnabledGroupIds();
+
+        $missingSettingsScenario1 = !$isAggregationMethodMultiLanguage && empty($enabledSiteIds);
+
+        $missingSettingsScenario2 = $isMultiSite
+            && !$isAggregationMethodMultiLanguage
+            && empty($enabledSiteGroupIds);
+
+        if ($missingSettingsScenario1 && $missingSettingsScenario2) {
+            throw new NotFoundHttpException('No Sites are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site for your Sitemap.');
+        }
+
+        $missingSettingsScenario3 = $isMultiSite
+            && $isAggregationMethodMultiLanguage
+            && empty($enabledSiteGroupIds);
+
+        if ($missingSettingsScenario3) {
+            throw new NotFoundHttpException('No Site Groups are enabled for your Sitemap. Check your Craft Sites settings and Sprout SEO Sitemap Settings to enable a Site Group for your Sitemap.');
+        }
+
+        $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
+
+        // For per-site sitemaps, only display the Sites enabled in the Sprout SEO settings
+        if ($isAggregationMethodMultiLanguage) {
+            $siteIdsFromEditableGroups = [];
+
+            foreach ($enabledSiteGroupIds as $groupUid => $enabledSiteGroupId) {
+                $enabledSitesInGroup = Craft::$app->sites->getSitesByGroupId($enabledSiteGroupId);
+                foreach ($enabledSitesInGroup as $enabledSite) {
+                    $siteIdsFromEditableGroups[$groupUid] = $enabledSite->id;
+                }
+            }
+
+            $editableSiteIds = array_intersect($siteIdsFromEditableGroups, $editableSiteIds);
+        } else {
+            $editableSiteIds = array_intersect($enabledSiteIds, $editableSiteIds);
+        }
+
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        // The array keys of our editableSiteIds are their UIDs
+        foreach (array_keys($editableSiteIds) as $key => $siteUid) {
+            if (!$currentUser->can('editSite:' . $siteUid)) {
+                unset($editableSiteIds[$key]);
+            }
+        }
+
+        if (empty($editableSiteIds)) {
+            throw new ForbiddenHttpException('User not permitted to edit sitemaps for any sites.');
+        }
+
+        return $editableSiteIds;
+    }
+
+    public function getFirstSiteInGroup(Site $site, bool $isMultiSite): Site
+    {
+        if ($isMultiSite) {
+            // For Multi-Site we have to figure out which Site and Site Group matter
+            $currentSiteGroup = Craft::$app->sites->getGroupById($site->groupId);
+
+            if (!$currentSiteGroup) {
+                throw new NotFoundHttpException('Site group not found.');
+            }
+
+            $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
+            $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
+
+            return $firstSiteInGroup;
+        }
+
+        return $site;
     }
 }

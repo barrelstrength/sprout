@@ -85,11 +85,11 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         // Just in case
         if (empty($newSettings['siteSettings'])) {
-            $newSettings['siteSettings'][$primarySite->id] = $primarySite->id;
+            $newSettings['siteSettings'][$primarySite->uid] = 1;
         }
 
         if (empty($newSettings['groupSettings'])) {
-            $newSettings['groupSettings'][$primarySite->groupId] = $primarySite->groupId;
+            $newSettings['groupSettings'][$primarySite->getGroup()->uid] = 1;
         }
 
         // Ensure proper data types
