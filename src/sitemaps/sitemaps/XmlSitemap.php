@@ -297,12 +297,12 @@ class XmlSitemap extends Component
         $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
 
         // For multi-lingual sitemaps, get all sites in the Current Site group
-        if ($isMultisite && $aggregationMethodMultiLingual && in_array($currentSite->groupId, $settings->groupSettings, false)) {
+        if ($isMultisite && $aggregationMethodMultiLingual && in_array($currentSite->groupId, $settings->getEnabledGroupIds(), false)) {
             return Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
         }
 
         // For non-multi-lingual sitemaps, get the current site
-        if (!$aggregationMethodMultiLingual && in_array($currentSite->id, array_filter($settings->siteSettings), false)) {
+        if (!$aggregationMethodMultiLingual && in_array($currentSite->id, array_filter($settings->getEnabledSiteIds()), false)) {
             return [$currentSite];
         }
 
