@@ -68,33 +68,22 @@
     'never': 'Never'|t
 } %}
 
+{# This should be true for Single Language and Multi-Lingual/Regional Sitemaps #}
+{% set isPrimarySitemapMetadataPage = site.id == firstSiteInGroup.id %}
+
 {% block main %}
 
-    <div class="content-pane">
+    {% if isPrimarySitemapMetadataPage %}
 
-        <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
-            <div style="flex-grow: 1;">
-                <h3 style="text-transform: uppercase;">{{ "Content Sitemaps"|t('sprout-module-sitemaps') }}
-                    <span class="info">{{ "Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data."|t('sprout-module-sitemaps') }}</span>
-                </h3>
-            </div>
-            <div style="flex-shrink: 0;">
-                {% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}
-                    <div class="buttons right">
-                        <a class="btn submit icon"
-                            href="{{ cpUrl('sprout/sitemaps', {
-                                site: firstSiteInGroup.handle
-                            }) }}">
-                            {{ "Edit {group} Sitemap"|t('sprout-module-sitemaps', {
-                                group: siteGroup.name
-                            }) }}
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+        <div class="content-pane">
 
-        {% if not settings.aggregateBySiteGroup() or (craft.app.getIsMultiSite() and site.id == firstSiteInGroup.id) %}
+            <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
+                <div style="flex-grow: 1;">
+                    <h3 style="text-transform: uppercase;">{{ "Content Sitemaps"|t('sprout-module-sitemaps') }}
+                        <span class="info">{{ "Manage all of your Section-level SEO for Search, Social Sharing, Sitemaps, and Structured Data."|t('sprout-module-sitemaps') }}</span>
+                    </h3>
+                </div>
+            </div>
 
             {% for elementWithUri in elementsWithUris %}
 
@@ -172,112 +161,100 @@
 
             {% endfor %}
 
-        {% else %}
-            {% set boxBody %}
-                <p>{{ "Multi-lingual sitemaps have a single sitemap edit page for all URL-Enabled Sites in a Site Group. Edit the <a href='{url}'>{group} Sitemap</a> to manage the multi-lingual sitemap for all sites in the site group."|t('sprout-module-sitemaps', {
-                        group: siteGroup.name,
-                        url: url('sprout/sitemaps/') ~ firstSiteInGroup.handle
-                    })|raw }}</p>
-            {% endset %}
+        </div>
 
-            {{ sproutCp.mediaBox({
-                heading: "{group} Multi-lingual Sitemap"|t('sprout-module-sitemaps', {
-                    group: siteGroup.name
-                }),
-                body: boxBody,
-                resourcePath: '@Sprout/Assets/sprout/icons/sitemaps/icon.svg'
-            }) }}
-        {% endif %}
+        {% if settings.enableContentQuerySitemaps %}
 
-    </div>
-
-    {% if settings.enableContentQuerySitemaps %}
-
-        <br>
-        <div class="content-pane">
-            <div class="sprout-section-header" style="display: flex;align-items: center;">
-                <div style="flex-grow: 1;">
-                    <h3 style="text-transform: uppercase;">{{ "Content Query Sitemaps"|t('sprout-module-sitemaps') }}</h3>
-                </div>
-                <div style="flex-shrink: 0;">
-                    <div class="buttons right">
-                        <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-query/new') }}">
-                            {{ "Custom Sitemap"|t('sprout-module-sitemaps') }}
-                        </a>
+            <br>
+            <div class="content-pane">
+                <div class="sprout-section-header" style="display: flex;align-items: center;">
+                    <div style="flex-grow: 1;">
+                        <h3 style="text-transform: uppercase;">{{ "Content Query Sitemaps"|t('sprout-module-sitemaps') }}</h3>
+                    </div>
+                    <div style="flex-shrink: 0;">
+                        <div class="buttons right">
+                            <a class="btn submit add icon" href="{{ cpUrl('sprout/sitemaps/custom-query/new') }}">
+                                {{ "Custom Sitemap"|t('sprout-module-sitemaps') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {% if contentQueries|length %}
+                {% if contentQueries|length %}
 
-                <table class="data fullwidth custom-pages sitemap-settings" id="custom-pages">
-                    <thead>
+                    <table class="data fullwidth custom-pages sitemap-settings" id="custom-pages">
+                        <thead>
 
-                    <th colspan="2" style="padding-left:9px;width:62%;">
-                        {{ "Description"|t('sprout-module-sitemaps') }}
-                        <span class="info">
+                        <th colspan="2" style="padding-left:9px;width:62%;">
+                            {{ "Description"|t('sprout-module-sitemaps') }}
+                            <span class="info">
                             {{ "A Custom Page allows you to add a Custom URL that will display in your sitemap when enabled."|t('sprout-module-sitemaps') }}
                         </span>
-                    </th>
-                    <th style="width:15%;">{{ "Priority"|t('sprout-module-sitemaps') }}</th>
-                    <th style="width:15%;">{{ "Change Frequency"|t('sprout-module-sitemaps') }}</th>
-                    <th style="width:8%;text-align: center;">{{ "Enabled"|t('sprout-module-sitemaps') }}</th>
-                    <th class="thin"></th>
+                        </th>
+                        <th style="width:15%;">{{ "Priority"|t('sprout-module-sitemaps') }}</th>
+                        <th style="width:15%;">{{ "Change Frequency"|t('sprout-module-sitemaps') }}</th>
+                        <th style="width:8%;text-align: center;">{{ "Enabled"|t('sprout-module-sitemaps') }}</th>
+                        <th class="thin"></th>
 
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
 
-                    {% for sitemapMetadata in contentQueries %}
+                        {% for sitemapMetadata in contentQueries %}
 
-                        <tr
-                            x-data="SitemapMetadataRow"
-                            x-ref="sitemapMetadataRow"
-                            data-description="{{ sitemapMetadata.description }}"
-                            data-type="custom-query"
-                            data-source-key="custom-query"
-                            data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
-                            data-site-id="{{ site.id }}"
-                            data-uri="{{ sitemapMetadata.description }}"
-                            data-priority="{{ sitemapMetadata.priority ?? DEFAULT_PRIORITY }}"
-                            data-change-frequency="{{ sitemapMetadata.changeFrequency ?? DEFAULT_CHANGE_FREQUENCY }}"
-                            data-enabled="{{ sitemapMetadata.enabled ?? '0' }}"
+                            <tr
+                                x-data="SitemapMetadataRow"
+                                x-ref="sitemapMetadataRow"
+                                data-description="{{ sitemapMetadata.description }}"
+                                data-type="custom-query"
+                                data-source-key="custom-query"
+                                data-sitemap-metadata-id="{{ sitemapMetadata.id ?? null }}"
+                                data-site-id="{{ site.id }}"
+                                data-uri="{{ sitemapMetadata.description }}"
+                                data-priority="{{ sitemapMetadata.priority ?? DEFAULT_PRIORITY }}"
+                                data-change-frequency="{{ sitemapMetadata.changeFrequency ?? DEFAULT_CHANGE_FREQUENCY }}"
+                                data-enabled="{{ sitemapMetadata.enabled ?? '0' }}"
 
-                            data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
+                                data-name="{{ "Custom Page"|t('sprout-module-sitemaps') }}">
 
-                            {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-query" with {
-                                sourceKey: sitemapMetadata.sourceKey,
-                                sitemapMetadata: sitemapMetadata,
-                                priorityList: priorityList,
-                                frequencyList: frequencyList,
-                            } only %}
+                                {% include "sprout-module-sitemaps/_sitemapmetadata/row-metadata-query" with {
+                                    sourceKey: sitemapMetadata.sourceKey,
+                                    sitemapMetadata: sitemapMetadata,
+                                    priorityList: priorityList,
+                                    frequencyList: frequencyList,
+                                } only %}
 
-                        </tr>
+                            </tr>
 
-                    {% endfor %}
+                        {% endfor %}
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
 
-            {% else %}
+                {% else %}
 
-                {% set boxBody %}
-                    <p>{{ "Custom Queries can be used to build more-specific Sitemaps."|t('sprout-module-sitemaps')|raw }}</p>
-                {% endset %}
+                    {% set boxBody %}
+                        <p>{{ "Custom Queries can be used to build more-specific Sitemaps."|t('sprout-module-sitemaps')|raw }}</p>
+                    {% endset %}
 
-                {{ sproutCp.mediaBox({
-                    heading: "Custom Queries"|t('sprout-module-sitemaps'),
-                    body: boxBody,
-                    resourcePath: '@Sprout/Assets/dist/static/sitemaps/icons/icon.svg'
-                }) }}
+                    {{ sproutCp.mediaBox({
+                        heading: "Custom Queries"|t('sprout-module-sitemaps'),
+                        body: boxBody,
+                        resourcePath: '@Sprout/Assets/dist/static/sitemaps/icons/icon.svg'
+                    }) }}
 
-            {% endif %}
+                {% endif %}
 
-        </div>
+            </div>
+        {% endif %}
+
     {% endif %}
 
     {% if settings.enableCustomPagesSitemap %}
 
-        <br>
+        {% if isPrimarySitemapMetadataPage %}
+            <br>
+        {% endif %}
+
         <div class="content-pane">
             <div class="sprout-section-header" style="display: flex;align-items: center;">
                 <div style="flex-grow: 1;">
@@ -356,6 +333,55 @@
             {% endif %}
 
         </div>
+    {% endif %}
+
+    {% if not isPrimarySitemapMetadataPage %}
+
+        {% if settings.enableCustomPagesSitemap %}
+            <br>
+        {% endif %}
+
+        {% set primaryGroupSitemapUrl = cpUrl('sprout/sitemaps', {
+            site: firstSiteInGroup.handle
+        }) %}
+
+        <div class="content-pane">
+            <div class="sprout-section-header" style="display: flex;align-items: center;{% if craft.app.getIsMultiSite() and site.id != firstSiteInGroup.id %}padding:18px 24px 17px;{% endif %}">
+                <div style="flex-grow: 1;">
+                    <h3 style="text-transform: uppercase;">{{ "Multi-Lingual Sitemaps"|t('sprout-module-sitemaps') }}
+                    </h3>
+                </div>
+                <div style="flex-shrink: 0;">
+                    <div class="preview-btn-container btngroup buttons right">
+                        <a class="view-btn btn"
+                            href="{{ primaryGroupSitemapUrl }}">
+                            {{ "Edit Primary Group Sitemap"|t('sprout-module-sitemaps') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% set boxBody %}
+                <p>{{ "Edit the <a href='{url}'>Primary Group Sitemap</a> to manage the multi-lingual sitemap for all sites in this site group."|t
+                        ('sprout-module-sitemaps', {
+                            url: primaryGroupSitemapUrl
+                        })|raw }}</p>
+
+                <ul class="bullets">
+                    <li>{{ "Content and Custom Query sitemaps are managed in one place for all sites in a group."|t('sprout-module-sitemaps') }}</li>
+                    <li>{{ "Custom Pages are managed on a site by site basis."|t('sprout-module-sitemaps') }}</li>
+                </ul>
+            {% endset %}
+
+            {{ sproutCp.mediaBox({
+                heading: "How to manage multi-lingual sitemaps"|t('sprout-module-sitemaps', {
+                    group: siteGroup.name
+                }),
+                body: boxBody,
+                resourcePath: '@Sprout/Assets/sprout/icons/sitemaps/icon.svg'
+            }) }}
+        </div>
+
     {% endif %}
 
 {% endblock %}
