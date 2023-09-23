@@ -42,12 +42,6 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
             'sourceKey',
         ];
 
-        $sourceKeyMapping = [
-            'craft\elements\Entry' => 'entries',
-            'craft\elements\Category' => 'categories',
-            'barrelstrength\sproutbaseuris\sectiontypes\Product' => 'products',
-        ];
-
         if ($this->getDb()->tableExists(self::OLD_SITEMAPS_TABLE)) {
             $rows = (new Query())
                 ->select($oldCols)
@@ -56,21 +50,43 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
 
             // update urlEnabledSectionId to sourceKey
             foreach ($rows as &$row) {
-                // Only modify Element Sitemap Metadata
-                if (!empty($row['type'])) {
-                    if (isset($sourceKeyMapping[$row['type']])) {
-                        $sourceKey = $sourceKeyMapping[$row['type']] . '-' . $row['urlEnabledSectionId'];
-                    } else {
-                        $sourceKey = 'unknown';
-                    }
 
-                    $row['sourceKey'] = $sourceKey;
+                $sourceKey = null;
+
+                if ($row['type'] === 'craft\elements\Entry') {
                     $row['uri'] = null;
-                } else {
-                    $row['sourceKey'] = 'custom-pages';
-                    $row['type'] = null;
+                    $sourceKey = (new Query())
+                        ->select(['uid'])
+                        ->from(['{{%sections}}'])
+                        ->where(['id' => $row['urlEnabledSectionId']])
+                        ->scalar();
                 }
 
+                if ($row['type'] === 'craft\elements\Category') {
+                    $row['uri'] = null;
+                    $sourceKey = (new Query())
+                        ->select(['uid'])
+                        ->from(['{{%categorygroups}}'])
+                        ->where(['id' => $row['urlEnabledSectionId']])
+                        ->scalar();
+                }
+
+                if ($row['type'] === 'craft\commerce\elements\Product') {
+                    $row['uri'] = null;
+                    $sourceKey = (new Query())
+                        ->select(['uid'])
+                        ->from(['{{%commerce_producttypes}}'])
+                        ->where(['id' => $row['urlEnabledSectionId']])
+                        ->scalar();
+                }
+
+                // this might be null or an empty string
+                if (empty($row['type'])) {
+                    $row['type'] = null;
+                    $sourceKey = 'custom-pages';
+                }
+
+                $row['sourceKey'] = $sourceKey;
                 $row['priority'] = (float)$row['priority'];
 
                 // Unset old column on all rows

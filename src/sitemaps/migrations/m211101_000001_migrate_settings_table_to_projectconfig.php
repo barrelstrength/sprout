@@ -113,6 +113,22 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             $newSettings['sitemapAggregationMethod'] = self::AGGREGATION_METHOD_SINGLE_LANGUAGE;
         }
 
+        if (isset($newSettings['groupSettings'])) {
+            $newGroupSettings = [];
+            foreach ($newSettings['groupSettings'] as $key => $value) {
+                $newGroupSettings[(int)$key] = (string)$value;
+            }
+            $newSettings['groupSettings'] = $newGroupSettings;
+        }
+
+        if (isset($newSettings['siteSettings'])) {
+            $newSiteSettings = [];
+            foreach ($newSettings['siteSettings'] as $key => $value) {
+                $newSiteSettings[(int)$key] = (string)$value;
+            }
+            $newSettings['siteSettings'] = $newSiteSettings;
+        }
+
         return $newSettings;
     }
 
