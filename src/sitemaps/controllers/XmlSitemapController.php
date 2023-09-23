@@ -26,19 +26,18 @@ class XmlSitemapController extends Controller
     public function actionRenderXmlSitemap($sitemapMetadataUid = null, int $pageNumber = null): Response
     {
         $site = Craft::$app->sites->getCurrentSite();
-        $multiSiteSiteIds = [];
-        $sitesInGroup = [];
 
         $xmlSitemapService = SitemapsModule::getInstance()->xmlSitemap;
 
         if (!SitemapsModule::isEnabled()) {
-            throw new NotFoundHttpException('XML Sitemap not enabled.');
+            throw new NotFoundHttpException('XML Sitemaps not enabled.');
         }
 
         $settings = SitemapsModule::getInstance()->getSettings();
         $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
 
         $sitesInGroup = $xmlSitemapService->getSitemapSites();
+        $multiSiteSiteIds = [];
 
         if (Craft::$app->getIsMultiSite() && $aggregationMethodMultiLingual) {
 

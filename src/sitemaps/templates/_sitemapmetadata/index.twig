@@ -32,13 +32,15 @@
             </a>
         </div>
     {% else %}
-        <a
-            href="{{ siteUrl('sitemap.xml', null, null, site.id) }}"
-            target="_blank"
-            class="view-btn btn"
-            aria-label="View">
-            {{ "View sitemap.xml"|t('sprout-module-sitemaps') }}
-        </a>
+        {% if displayViewSitemapXmlButton %}
+            <a
+                href="{{ siteUrl('sitemap.xml', null, null, site.id) }}"
+                target="_blank"
+                class="view-btn btn"
+                aria-label="View">
+                {{ "View sitemap.xml"|t('sprout-module-sitemaps') }}
+            </a>
+        {% endif %}
     {% endif %}
 {% endblock %}
 

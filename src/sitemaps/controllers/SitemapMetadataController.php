@@ -114,6 +114,7 @@ class SitemapMetadataController extends Controller
             'contentQueries' => $contentQueries,
             'customPages' => $customPages,
             'settings' => $settings,
+            'displayViewSitemapXmlButton' => $site->id === $firstSiteInGroup->id,
             'DEFAULT_PRIORITY' => SitemapsSettings::DEFAULT_PRIORITY,
             'DEFAULT_CHANGE_FREQUENCY' => SitemapsSettings::DEFAULT_CHANGE_FREQUENCY,
         ]);
