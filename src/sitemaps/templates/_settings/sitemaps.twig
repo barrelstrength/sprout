@@ -11,6 +11,10 @@
 
 {% block settings %}
 
+    {% if craft.app.isMultiSite %}
+        {% include "sprout-module-sitemaps/_settings/multisite" %}
+    {% endif %}
+
     {{ forms.textField({
         label: "Total Elements Per Sitemap"|t('sprout-module-sitemaps') ~ isProBadge,
         instructions: "The number of items that display on each page of your sitemap. A lower number may be necessary for sitemaps with a large number of elements or limited server resources."|t('sprout-module-sitemaps'),
@@ -20,7 +24,6 @@
         value: settings.totalElementsPerSitemap,
         errors: '',
         warning: sproutConfigWarning(module, 'totalElementsPerSitemap'),
-        first: true
     }) }}
 
     {{ forms.lightswitchField({
@@ -42,9 +45,5 @@
         offLabel: "Disable"|t('sprout-module-sitemaps'),
         warning: sproutConfigWarning(module, 'enableCustomPagesSitemap'),
     }) }}
-
-    {% if craft.app.isMultiSite %}
-        {% include "sprout-module-sitemaps/_settings/multisite" %}
-    {% endif %}
 
 {% endblock %}
