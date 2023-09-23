@@ -21,9 +21,6 @@ use yii\web\Response;
 
 class SitemapMetadataController extends Controller
 {
-    /**
-     * Renders the Sitemap Index Page
-     */
     public function actionSitemapMetadataIndexTemplate(): Response
     {
         $site = Cp::requestedSite();
@@ -42,7 +39,8 @@ class SitemapMetadataController extends Controller
         $enabledSiteIds = array_filter($settings->siteSettings);
         $enabledSiteGroupIds = array_filter($settings->groupSettings);
 
-        $missingSettingsScenario1 = !$isMultiSite && empty($enabledSiteIds);
+        $missingSettingsScenario1 = !$isAggregationMethodMultiLanguage && empty($enabledSiteIds);
+
         $missingSettingsScenario2 = $isMultiSite
             && !$isAggregationMethodMultiLanguage
             && empty($enabledSiteGroupIds);
