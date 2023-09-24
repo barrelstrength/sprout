@@ -13,14 +13,19 @@ use craft\models\Site;
 
 class ContentSitemapMetadataHelper
 {
-    public static function getSitemapUrls(array &$sitemapUrls, Site $site): void
+    public static function getSitemapUrls(array &$sitemapUrls, array $sites): void
     {
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
 
         $hasSingles = false;
 
         $elementsWithUris = $sitemapsService->getElementWithUris();
-        $contentSitemapMetadata = self::getContentSitemapMetadata($site);
+
+        // Single Site - $sites should be an array of one site
+        // Multi-Site - first site in list is the first in the site group
+        $firstSiteInGroup = reset($sites);
+
+        $contentSitemapMetadata = self::getContentSitemapMetadata($firstSiteInGroup);
 
         foreach ($elementsWithUris as $elementWithUri) {
 
@@ -53,7 +58,7 @@ class ContentSitemapMetadataHelper
                         UrlHelper::siteUrl() . 'sitemap-singles.xml'
                     );
                 } else {
-                    $sitemapUrls = SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $sitemapMetadata, $totalElements);
+                    SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $sitemapMetadata, $totalElements);
                 }
             }
         }

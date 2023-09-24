@@ -167,7 +167,7 @@ class SitemapMetadataController extends Controller
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([
                     'success' => false,
-                    'errorMessage' => Craft::t('sprout-module-sitemaps', SitemapsModule::getUpgradeMessage())
+                    'errorMessage' => Craft::t('sprout-module-sitemaps', SitemapsModule::getUpgradeMessage()),
                 ]);
             }
 

@@ -8,7 +8,6 @@ use Craft;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use yii\web\ForbiddenHttpException;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class SitemapsMetadataHelper
@@ -32,7 +31,7 @@ class SitemapsMetadataHelper
         return $query->one();
     }
 
-    public static function getPaginatedSitemapUrls(array $sitemapIndexPages, SitemapMetadataRecord $sitemapMetadata, $totalElements): array
+    public static function getPaginatedSitemapUrls(array &$sitemapIndexPages, SitemapMetadataRecord $sitemapMetadata, $totalElements): void
     {
         $totalElementsPerSitemap = self::getTotalElementsPerSitemap();
         $totalSitemaps = ceil($totalElements / $totalElementsPerSitemap);
@@ -45,61 +44,52 @@ class SitemapsMetadataHelper
 
             $sitemapIndexPages[] = $sitemapIndexUrl;
         }
-
-        return $sitemapIndexPages;
     }
 
-    public static function getSiteInfo(Site $site): array
+    public static function isValidSitemapRequest(array $siteIds, Site $site): void
     {
+        if (empty($siteIds)) {
+            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
+        }
+
         $settings = SitemapsModule::getInstance()->getSettings();
         $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
-
-        $sitesInGroup = self::getSitemapSites();
-
-        $multiSiteSiteIds = [];
 
         if (Craft::$app->getIsMultiSite() && $aggregationMethodMultiLingual) {
 
             // get first item in $sitesInGroup array unknown key
-            $firstSiteInGroup = reset($sitesInGroup) ?: null;
+            $firstSiteIdInGroup = reset($siteIds) ?: null;
 
             // Only render sitemaps for the primary site in a group
-            if (!$firstSiteInGroup instanceof Site || $site->id !== $firstSiteInGroup->id) {
-                throw new HttpException(404);
-            }
-
-            foreach ($sitesInGroup as $siteInGroup) {
-                $multiSiteSiteIds[] = (int)$siteInGroup->id;
+            if ($site->id !== $firstSiteIdInGroup) {
+                throw new NotFoundHttpException('Unable to find XML Sitemap for first site in group.');
             }
         }
-
-        return [$sitesInGroup, $multiSiteSiteIds];
     }
 
     /**
      * Returns all sites to process for the current sitemap request
      * If only one site is found, it is also returned as an array
      */
-    public static function getSitemapSites(): array
+    public static function getSitemapSites(Site $site): array
     {
         $settings = SitemapsModule::getInstance()->getSettings();
 
-        $currentSite = Craft::$app->sites->getCurrentSite();
         $isMultisite = Craft::$app->getIsMultiSite();
         $aggregationMethodMultiLingual = $settings->sitemapAggregationMethod === SitemapsSettings::AGGREGATION_METHOD_MULTI_LINGUAL;
 
         // For multi-lingual sitemaps, get all sites in the Current Site group
-        if ($isMultisite && $aggregationMethodMultiLingual && in_array($currentSite->groupId, $settings->getEnabledGroupIds(), false)) {
-            $sitesInGroup = Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
+        if ($isMultisite && $aggregationMethodMultiLingual && in_array($site->groupId, $settings->getEnabledGroupIds(), false)) {
+            $sitesInGroup = Craft::$app->getSites()->getSitesByGroupId($site->groupId);
 
             // update keys to be the siteId
             return array_combine(array_column($sitesInGroup, 'id'), $sitesInGroup);
         }
 
         // For non-multi-lingual sitemaps, get the current site
-        if (!$aggregationMethodMultiLingual && in_array($currentSite->id, array_filter($settings->getEnabledSiteIds()), false)) {
+        if (!$aggregationMethodMultiLingual && in_array($site->id, array_filter($settings->getEnabledSiteIds()), false)) {
             return [
-                $currentSite->id => $currentSite,
+                $site->id => $site,
             ];
         }
 

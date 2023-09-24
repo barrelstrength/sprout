@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\sitemaps\controllers;
 use BarrelStrength\Sprout\core\helpers\RegexHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
@@ -35,59 +36,39 @@ class XmlSitemapController extends Controller
         $elements = [];
         $sitemapIndexUrls = [];
         $sitemapKey = $this->getSitemapKey($sitemapMetadataUid, $site);
-        [$sitesInGroup, $multiSiteSiteIds] = SitemapsMetadataHelper::getSiteInfo($site);
-        $sites = SitemapsMetadataHelper::getSitemapSites();
+        $sites = SitemapsMetadataHelper::getSitemapSites($site);
+        $siteIds = array_keys($sites);
 
-        if (empty($sites)) {
-            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
-        }
+        SitemapsMetadataHelper::isValidSitemapRequest($siteIds, $site);
+
+        // Two scenarios:
+        // Single Site - $sites should be an array of one site
+        // Multi-Site - $sites should be an array of one or more sites
 
         switch ($sitemapKey) {
             // Generate Sitemap Index
             case SitemapKey::INDEX:
-                $sitemapIndexUrls = $xmlSitemapService->getSitemapIndex($site);
-                break;
-
-            // Prepare Singles Sitemap
-            case SitemapKey::SINGLES:
-                $elements = $xmlSitemapService->getDynamicSitemapElements(
-                    $sitemapMetadataUid,
-                    $sitemapKey,
-                    $pageNumber,
-                    $site
-                );
-                break;
-
-            case SitemapKey::CUSTOM_QUERY:
-                $elements = $xmlSitemapService->getDynamicSitemapElements(
-                    $sitemapMetadataUid,
-                    $sitemapKey,
-                    $pageNumber,
-                    $site,
-                );
-
+                $sitemapIndexUrls = $xmlSitemapService->getSitemapIndex($sites);
                 break;
 
             // Prepare Custom Pages Sitemap
             case SitemapKey::CUSTOM_PAGES:
-                if (!empty($multiSiteSiteIds)) {
-                    $elements = CustomPagesSitemapMetadataHelper::getCustomPagesUrlsForMultipleIds(
-                        $multiSiteSiteIds,
-                        $sitesInGroup
-                    );
-                } else {
-                    $elements = CustomPagesSitemapMetadataHelper::getCustomPagesUrls($site);
-                }
-
+                $elements = CustomPagesSitemapMetadataHelper::getCustomPagesUrls($sites);
                 break;
 
-            // Prepare Content Sitemap
+            case SitemapKey::SINGLES:
+            case SitemapKey::CUSTOM_QUERY:
             default:
+                // Single Site - uses the current site, which is the only site in $sites array
+                // Multi-Site - uses the Primary Site in the group, which is the first site in $sites array
+                $sitemapSite = reset($sites);
+
                 $elements = $xmlSitemapService->getDynamicSitemapElements(
                     $sitemapMetadataUid,
                     $sitemapKey,
                     $pageNumber,
-                    $site,
+                    $sites,
+                    $sitemapSite,
                 );
         }
 

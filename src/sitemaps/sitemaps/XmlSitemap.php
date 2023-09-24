@@ -16,13 +16,13 @@ class XmlSitemap extends Component
     /**
      * Prepares sitemaps for a sitemapindex
      */
-    public function getSitemapIndex(Site $site): array
+    public function getSitemapIndex(array $sites): array
     {
         $sitemapUrls = [];
 
-        ContentSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $site);
-        CustomQuerySitemapMetadataHelper::getSitemapUrls($sitemapUrls, $site);
-        CustomPagesSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $site);
+        ContentSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
+        CustomQuerySitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
+        CustomPagesSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
 
         return $sitemapUrls;
     }
@@ -34,7 +34,7 @@ class XmlSitemap extends Component
      * - Content Sitemap: Channel/Structure
      * - Custom Query Sitemap
      */
-    public function getDynamicSitemapElements($sitemapMetadataUid, $sitemapKey, $pageNumber, Site $site): array
+    public function getDynamicSitemapElements($sitemapMetadataUid, $sitemapKey, $pageNumber, array $sitemapSites, Site $site): array
     {
         $urls = [];
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
@@ -67,9 +67,7 @@ class XmlSitemap extends Component
                 continue;
             }
 
-            $sitemapSites = SitemapsMetadataHelper::getSitemapSites();
-
-            foreach ($sitemapSites as $currentSitemapSite) {
+            foreach ($sitemapSites as $sitemapSite) {
 
                 if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_QUERY) {
                     $elementQuery = CustomQuerySitemapMetadataHelper::getElementQuery($sitemapMetadata);
@@ -79,7 +77,7 @@ class XmlSitemap extends Component
                 }
 
                 $elements = $elementQuery
-                    ->siteId($currentSitemapSite->id)
+                    ->siteId($sitemapSite->id)
                     ->offset($offset)
                     ->limit($totalElementsPerSitemap)
                     ->all();
@@ -107,7 +105,7 @@ class XmlSitemap extends Component
                     $urls[$element->id][] = [
                         'id' => $element->id,
                         'url' => $url,
-                        'locale' => $currentSitemapSite->language,
+                        'locale' => $sitemapSite->language,
                         'modified' => $element->dateUpdated->format('Y-m-d\Th:i:s\Z'),
                         'priority' => $sitemapMetadata['priority'],
                         'changeFrequency' => $sitemapMetadata['changeFrequency'],

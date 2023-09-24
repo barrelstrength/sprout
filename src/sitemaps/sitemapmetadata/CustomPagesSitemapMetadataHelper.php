@@ -4,22 +4,23 @@ namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
-use BarrelStrength\Sprout\sitemaps\SitemapsModule;
-use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\db\Query;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use DateTime;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
 
 class CustomPagesSitemapMetadataHelper
 {
-    public static function getSitemapUrls(array &$sitemapUrls, Site $site): void
+    public static function getSitemapUrls(array &$sitemapUrls, array $sites): void
     {
-        if (self::hasCustomPages($site)) {
-            $sitemapUrls[] = UrlHelper::siteUrl('sitemap-custom-pages.xml');
+        foreach ($sites as $site) {
+            // if we find one site that has custom pages, we add the custom pages sitemap to the sitemap index
+            if (self::hasCustomPages($site)) {
+                $sitemapUrls[] = UrlHelper::siteUrl('sitemap-custom-pages.xml');
+
+                return;
+            }
         }
     }
 
@@ -34,43 +35,12 @@ class CustomPagesSitemapMetadataHelper
     }
 
     /**
-     * Returns all Custom Section URLs
-     */
-    public static function getCustomPagesUrls(Site $site): array
-    {
-        $urls = [];
-
-        // Fetch all Custom Pages
-        $sitemapMetadata = (new Query())
-            ->select('uri, priority, [[changeFrequency]], [[dateUpdated]]')
-            ->from([SproutTable::SITEMAPS_METADATA])
-            ->where(['enabled' => true])
-            ->andWhere(['[[siteId]]' => $site->id])
-            ->andWhere(['[[sourceKey]]' => SitemapKey::CUSTOM_PAGES])
-            ->all();
-
-        foreach ($sitemapMetadata as $sitemapMetadataGroup) {
-            $sitemapMetadataGroup['url'] = null;
-            // Adding each custom location indexed by its URL
-            if (!UrlHelper::isAbsoluteUrl($sitemapMetadataGroup['uri'])) {
-                $sitemapMetadataGroup['url'] = UrlHelper::siteUrl($sitemapMetadataGroup['uri']);
-            }
-
-            $modified = new DateTime($sitemapMetadataGroup['dateUpdated']);
-            $sitemapMetadataGroup['modified'] = $modified->format('Y-m-d\Th:i:s\Z');
-
-            $urls[$sitemapMetadataGroup['uri']] = $sitemapMetadataGroup;
-        }
-
-        return self::getSitemapStructure($urls);
-    }
-
-    /**
      * Process Custom Pages Sitemaps for Multi-Lingual Sitemaps that can have custom pages from multiple sections
      */
-    public static function getCustomPagesUrlsForMultipleIds($siteIds, $sitesInGroup): array
+    public static function getCustomPagesUrls(array $sites): array
     {
         $urls = [];
+        $siteIds = array_keys($sites);
 
         $sitemapMetadata = (new Query())
             ->select('[[siteId]], uri, priority, [[changeFrequency]], [[dateUpdated]]')
@@ -80,22 +50,22 @@ class CustomPagesSitemapMetadataHelper
             ->andWhere(['[[sourceKey]]' => SitemapKey::CUSTOM_PAGES])
             ->all();
 
-        foreach ($sitesInGroup as $siteInGroup) {
+        foreach ($sites as $site) {
 
             foreach ($sitemapMetadata as $sitemapMetadataGroup) {
-                if ($siteInGroup->id !== (int)$sitemapMetadataGroup['siteId']) {
+                if ($site->id !== (int)$sitemapMetadataGroup['siteId']) {
                     continue;
                 }
 
                 $sitemapMetadataGroup['url'] = null;
-                // Adding each custom location indexed by its URL
 
-                $url = Craft::getAlias($siteInGroup->baseUrl) . $sitemapMetadataGroup['uri'];
+                $url = Craft::getAlias($site->baseUrl) . $sitemapMetadataGroup['uri'];
                 $sitemapMetadataGroup['url'] = $url;
 
                 $modified = new DateTime($sitemapMetadataGroup['dateUpdated']);
                 $sitemapMetadataGroup['modified'] = $modified->format('Y-m-d\Th:i:s\Z');
 
+                // Adding each custom location indexed by its URL
                 $urls[$sitemapMetadataGroup['uri']] = $sitemapMetadataGroup;
             }
         }

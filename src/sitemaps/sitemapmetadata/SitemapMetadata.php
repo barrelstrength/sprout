@@ -79,8 +79,8 @@ class SitemapMetadata extends Component
             return false;
         }
 
-        // Custom Sections will be allowed to be unique, even in Multi-Lingual Sitemaps
-        if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_PAGES) {
+        // Custom Sections and Custom Queries are unique per-site, even in Multi-Lingual Sitemaps
+        if (in_array($sitemapMetadata->sourceKey, [SitemapKey::CUSTOM_PAGES, SitemapKey::CUSTOM_QUERY], true)) {
             return true;
         }
 
@@ -91,7 +91,7 @@ class SitemapMetadata extends Component
             return true;
         }
 
-        // If aggregating by Site Group, copy Sitemap Metadata to the whole group
+        // If aggregating by Site Group, copy Content Sitemap Metadata to the whole group
         $this->copySitemapMetadataToAllSitesInGroup($sitemapMetadata);
 
         return true;

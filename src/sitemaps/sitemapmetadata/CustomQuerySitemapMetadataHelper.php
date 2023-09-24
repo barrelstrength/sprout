@@ -12,21 +12,23 @@ use craft\models\Site;
 
 class CustomQuerySitemapMetadataHelper
 {
-    public static function getSitemapUrls(array &$sitemapUrls, Site $site): void
+    public static function getSitemapUrls(array &$sitemapUrls, array $sites): void
     {
-        if ($customQuerySitemapMetadata = self::getCustomQuerySitemapMetadata($site)) {
-            foreach ($customQuerySitemapMetadata as $customQuery) {
+        foreach ($sites as $site) {
+            if ($customQuerySitemapMetadata = self::getCustomQuerySitemapMetadata($site)) {
+                foreach ($customQuerySitemapMetadata as $customQuery) {
 
-                $currentConditionRules = Json::decodeIfJson($customQuery['settings']);
-                $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
-                $currentCondition->elementType = Entry::class;
+                    $currentConditionRules = Json::decodeIfJson($customQuery['settings']);
+                    $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
+                    $currentCondition->elementType = Entry::class;
 
-                $query = $currentCondition->elementType::find();
-                $currentCondition->modifyQuery($query);
+                    $query = $currentCondition->elementType::find();
+                    $currentCondition->modifyQuery($query);
 
-                $totalElements = $query->count();
+                    $totalElements = $query->count();
 
-                $sitemapUrls = SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $customQuery, $totalElements);
+                    SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $customQuery, $totalElements);
+                }
             }
         }
     }
