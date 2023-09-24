@@ -46,7 +46,16 @@ export const SitemapMetadataRow = () => ({
 
                 this.sitemapMetadataId = response.data.sitemapMetadata.id;
             } else {
-                Craft.cp.displayError(Craft.t('sprout-module-sitemaps', 'Unable to save Sitemap metadata.'));
+                if (response.data.errorMessage) {
+                    Craft.cp.displayError(Craft.t('sprout-module-sitemaps', response.data.errorMessage));
+                    // not a great experience but delaying the reload lets the user see the message for now
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    Craft.cp.displayError(Craft.t('sprout-module-sitemaps', 'Unable to save Sitemap metadata.'));
+                }
+
             }
 
             if (self.enabled === '1') {
