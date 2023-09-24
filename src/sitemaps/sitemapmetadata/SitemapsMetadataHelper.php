@@ -8,6 +8,7 @@ use Craft;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class SitemapsMetadataHelper
@@ -80,6 +81,7 @@ class SitemapsMetadataHelper
 
     /**
      * Returns all sites to process for the current sitemap request
+     * If only one site is found, it is also returned as an array
      */
     public static function getSitemapSites(): array
     {
@@ -91,12 +93,17 @@ class SitemapsMetadataHelper
 
         // For multi-lingual sitemaps, get all sites in the Current Site group
         if ($isMultisite && $aggregationMethodMultiLingual && in_array($currentSite->groupId, $settings->getEnabledGroupIds(), false)) {
-            return Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
+            $sitesInGroup = Craft::$app->getSites()->getSitesByGroupId($currentSite->groupId);
+
+            // update keys to be the siteId
+            return array_combine(array_column($sitesInGroup, 'id'), $sitesInGroup);
         }
 
         // For non-multi-lingual sitemaps, get the current site
         if (!$aggregationMethodMultiLingual && in_array($currentSite->id, array_filter($settings->getEnabledSiteIds()), false)) {
-            return [$currentSite];
+            return [
+                $currentSite->id => $currentSite,
+            ];
         }
 
         return [];

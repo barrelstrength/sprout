@@ -165,7 +165,7 @@ class ContentSitemapMetadataHelper
             ])
             ->indexBy('sourceKey')
             ->count();
-        
+
         return $count >= 5;
     }
 }
