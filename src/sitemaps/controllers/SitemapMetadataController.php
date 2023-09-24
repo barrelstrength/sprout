@@ -198,7 +198,8 @@ class SitemapMetadataController extends Controller
             $sitemapMetadataRecord->uri = ltrim($sitemapMetadataRecord->uri, '/');
         }
 
-        if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
+        // No need to save condition from Sitemap Index, only from edit page
+        if ($sourceKey === SitemapKey::CUSTOM_QUERY && !$this->request->getAcceptsJson()) {
             $conditionBuilderParam = $type::lowerDisplayName() . '-conditionRules';
             $condition = $request->getBodyParam($conditionBuilderParam);
             $sitemapMetadataRecord->settings = $condition;
