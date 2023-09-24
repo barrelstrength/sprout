@@ -36,7 +36,11 @@ class XmlSitemapController extends Controller
         $sitemapIndexUrls = [];
         $sitemapKey = $this->getSitemapKey($sitemapMetadataUid, $site);
         [$sitesInGroup, $multiSiteSiteIds] = SitemapsMetadataHelper::getSiteInfo($site);
+        $sites = SitemapsMetadataHelper::getSitemapSites();
 
+        if (empty($sites)) {
+            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
+        }
 
         switch ($sitemapKey) {
             // Generate Sitemap Index

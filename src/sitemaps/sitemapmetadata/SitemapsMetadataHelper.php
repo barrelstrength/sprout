@@ -60,7 +60,8 @@ class SitemapsMetadataHelper
 
         if (Craft::$app->getIsMultiSite() && $aggregationMethodMultiLingual) {
 
-            $firstSiteInGroup = $sitesInGroup[0] ?? null;
+            // get first item in $sitesInGroup array unknown key
+            $firstSiteInGroup = reset($sitesInGroup) ?: null;
 
             // Only render sitemaps for the primary site in a group
             if (!$firstSiteInGroup instanceof Site || $site->id !== $firstSiteInGroup->id) {
@@ -70,10 +71,6 @@ class SitemapsMetadataHelper
             foreach ($sitesInGroup as $siteInGroup) {
                 $multiSiteSiteIds[] = (int)$siteInGroup->id;
             }
-        }
-
-        if (empty($sitesInGroup)) {
-            throw new NotFoundHttpException('XML Sitemap not enabled for this site.');
         }
 
         return [$sitesInGroup, $multiSiteSiteIds];
@@ -186,7 +183,12 @@ class SitemapsMetadataHelper
             }
 
             $sitesInCurrentSiteGroup = Craft::$app->sites->getSitesByGroupId($currentSiteGroup->id);
-            $firstSiteInGroup = $sitesInCurrentSiteGroup[0];
+
+            if (empty($sitesInCurrentSiteGroup)) {
+                throw new NotFoundHttpException('No Sites found in group.');
+            }
+
+            $firstSiteInGroup = reset($sitesInCurrentSiteGroup);
 
             return $firstSiteInGroup;
         }
