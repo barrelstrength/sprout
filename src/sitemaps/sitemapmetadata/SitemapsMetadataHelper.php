@@ -139,8 +139,9 @@ class SitemapsMetadataHelper
 
             foreach ($enabledSiteGroupIds as $groupUid => $enabledSiteGroupId) {
                 $enabledSitesInGroup = Craft::$app->sites->getSitesByGroupId($enabledSiteGroupId);
+
                 foreach ($enabledSitesInGroup as $enabledSite) {
-                    $siteIdsFromEditableGroups[$groupUid] = $enabledSite->id;
+                    $siteIdsFromEditableGroups[$enabledSite->uid] = $enabledSite->id;
                 }
             }
 
