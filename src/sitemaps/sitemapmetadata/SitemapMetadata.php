@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
+use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
@@ -24,22 +25,27 @@ class SitemapMetadata extends Component
 
     public function getSitemapMetadataTypes(): array
     {
-        $types = [
+        $defaultMetadataTypes = [
             Entry::class => EntrySitemapMetadata::class,
             Category::class => CategorySitemapMetadata::class,
         ];
 
         if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
-            $types[Product::class] = ProductSitemapMetadata::class;
+            $defaultMetadataTypes[Product::class] = ProductSitemapMetadata::class;
         }
 
-        $event = new RegisterComponentTypesEvent([
-            'types' => $types,
+        $proEvent = new RegisterComponentTypesEvent([
+            'types' => $defaultMetadataTypes,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_ELEMENT_SITEMAP_METADATA, $event);
+        if (SitemapsModule::isPro()) {
+            $this->trigger(self::EVENT_REGISTER_ELEMENT_SITEMAP_METADATA, $proEvent);
 
-        return $event->types;
+            return $proEvent->types;
+        }
+        
+        return $defaultMetadataTypes;
+
     }
 
     public function getElementWithUris(): array
