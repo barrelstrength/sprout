@@ -6,6 +6,6 @@ abstract class SitemapKey
 {
     public const INDEX = '';
     public const SINGLES = 'singles';
-    public const CUSTOM_QUERY = 'custom-query';
+    public const CONTENT_QUERY = 'content-query';
     public const CUSTOM_PAGES = 'custom-pages';
 }

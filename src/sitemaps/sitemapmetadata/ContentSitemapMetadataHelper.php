@@ -81,7 +81,7 @@ class ContentSitemapMetadataHelper
             ->andWhere([
                 'not in', 'sourceKey', [
                     SitemapKey::SINGLES,
-                    SitemapKey::CUSTOM_QUERY,
+                    SitemapKey::CONTENT_QUERY,
                     SitemapKey::CUSTOM_PAGES,
                 ],
             ])

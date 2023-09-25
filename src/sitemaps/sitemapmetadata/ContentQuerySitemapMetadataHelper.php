@@ -10,15 +10,15 @@ use craft\elements\Entry;
 use craft\helpers\Json;
 use craft\models\Site;
 
-class CustomQuerySitemapMetadataHelper
+class ContentQuerySitemapMetadataHelper
 {
     public static function getSitemapUrls(array &$sitemapUrls, array $sites): void
     {
         foreach ($sites as $site) {
-            if ($customQuerySitemapMetadata = self::getCustomQuerySitemapMetadata($site)) {
-                foreach ($customQuerySitemapMetadata as $customQuery) {
+            if ($contentQuerySitemapMetadata = self::getCustomQuerySitemapMetadata($site)) {
+                foreach ($contentQuerySitemapMetadata as $contentQuery) {
 
-                    $currentConditionRules = Json::decodeIfJson($customQuery['settings']);
+                    $currentConditionRules = Json::decodeIfJson($contentQuery['settings']);
                     $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
                     $currentCondition->elementType = Entry::class;
 
@@ -27,7 +27,7 @@ class CustomQuerySitemapMetadataHelper
 
                     $totalElements = $query->count();
 
-                    SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $customQuery, $totalElements);
+                    SitemapsMetadataHelper::getPaginatedSitemapUrls($sitemapUrls, $contentQuery, $totalElements);
                 }
             }
         }
@@ -38,7 +38,7 @@ class CustomQuerySitemapMetadataHelper
     {
         return SitemapMetadataRecord::find()
             ->where([
-                '[[sourceKey]]' => SitemapKey::CUSTOM_QUERY,
+                '[[sourceKey]]' => SitemapKey::CONTENT_QUERY,
                 '[[siteId]]' => $site->id,
             ])
             ->all();
@@ -47,18 +47,18 @@ class CustomQuerySitemapMetadataHelper
     public static function getCustomQuerySitemapMetadata(Site $site): array
     {
         // Fetching all Custom Sitemap defined in Sprout SEO
-        $customQuerySitemapMetadata = (new Query())
+        $contentQuerySitemapMetadata = (new Query())
             ->select('*')
             ->from([SproutTable::SITEMAPS_METADATA])
             ->where(['enabled' => true])
             ->andWhere(['siteId' => $site->id])
-            ->andWhere(['sourceKey' => SitemapKey::CUSTOM_QUERY])
+            ->andWhere(['sourceKey' => SitemapKey::CONTENT_QUERY])
             ->indexBy('uid')
             ->all();
 
         $sitemapMetadata = [];
 
-        foreach ($customQuerySitemapMetadata as $uid => $metadata) {
+        foreach ($contentQuerySitemapMetadata as $uid => $metadata) {
             $sitemapMetadata[$uid] = new SitemapMetadataRecord($metadata);
         }
 

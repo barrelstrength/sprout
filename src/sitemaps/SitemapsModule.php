@@ -197,9 +197,9 @@ class SitemapsModule extends Module
     protected function getCpUrlRules(): array
     {
         return [
-            'sprout/sitemaps/edit/<sourceKey:custom-query|custom-pages>/<sitemapMetadataUid:' . RegexHelper::UUID_PATTERN . '>' =>
+            'sprout/sitemaps/edit/<sourceKey:content-query|custom-pages>/<sitemapMetadataUid:' . RegexHelper::UUID_PATTERN . '>' =>
                 'sprout-module-sitemaps/sitemap-metadata/custom-sitemap-metadata-edit-template',
-            'sprout/sitemaps/<sourceKey:custom-query|custom-pages>/new' =>
+            'sprout/sitemaps/<sourceKey:content-query|custom-pages>/new' =>
                 'sprout-module-sitemaps/sitemap-metadata/custom-sitemap-metadata-edit-template',
             'sprout/sitemaps' =>
                 'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-index-template',

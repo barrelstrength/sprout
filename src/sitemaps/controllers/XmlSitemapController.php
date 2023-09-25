@@ -57,7 +57,7 @@ class XmlSitemapController extends Controller
                 break;
 
             case SitemapKey::SINGLES:
-            case SitemapKey::CUSTOM_QUERY:
+            case SitemapKey::CONTENT_QUERY:
             default:
                 // Single Site - uses the current site, which is the only site in $sites array
                 // Multi-Site - uses the Primary Site in the group, which is the first site in $sites array

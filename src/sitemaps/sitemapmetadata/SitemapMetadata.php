@@ -75,8 +75,8 @@ class SitemapMetadata extends Component
     {
         if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_PAGES) {
             $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_PAGES);
-        } elseif ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_QUERY) {
-            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CUSTOM_QUERY);
+        } elseif ($sitemapMetadata->sourceKey === SitemapKey::CONTENT_QUERY) {
+            $sitemapMetadata->setScenario(SitemapMetadataRecord::SCENARIO_CONTENT_QUERY);
         } else {
             // No need to store URI for Element SitemapMetadata
             $sitemapMetadata->uri = null;
@@ -87,7 +87,7 @@ class SitemapMetadata extends Component
         }
 
         // Custom Sections and Custom Queries are unique per-site, even in Multi-Lingual Sitemaps
-        if (in_array($sitemapMetadata->sourceKey, [SitemapKey::CUSTOM_PAGES, SitemapKey::CUSTOM_QUERY], true)) {
+        if (in_array($sitemapMetadata->sourceKey, [SitemapKey::CUSTOM_PAGES, SitemapKey::CONTENT_QUERY], true)) {
             return true;
         }
 

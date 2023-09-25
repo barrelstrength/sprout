@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\sitemaps\controllers;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentSitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomQuerySitemapMetadataHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentQuerySitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementUriHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
@@ -38,7 +38,7 @@ class SitemapMetadataController extends Controller
         $firstSiteInGroup = SitemapsMetadataHelper::getFirstSiteInGroup($site);
 
         $contentSitemapMetadata = ContentSitemapMetadataHelper::getContentSitemapMetadata($site);
-        $contentQueries = CustomQuerySitemapMetadataHelper::getContentQuerySitemapMetadata($site);
+        $contentQueries = ContentQuerySitemapMetadataHelper::getContentQuerySitemapMetadata($site);
         $customPages = CustomPagesSitemapMetadataHelper::getCustomPagesSitemapMetadata($site);
 
         $allowedElementTypes = array_unique(array_column($contentSitemapMetadata, 'type'));
@@ -80,7 +80,7 @@ class SitemapMetadataController extends Controller
             }
         }
 
-        if ($sourceKey === SitemapKey::CUSTOM_QUERY) {
+        if ($sourceKey === SitemapKey::CONTENT_QUERY) {
 
             if ($sitemapMetadata->settings) {
                 $currentConditionRules = Json::decodeIfJson($sitemapMetadata->settings);
@@ -199,7 +199,7 @@ class SitemapMetadataController extends Controller
         }
 
         // No need to save condition from Sitemap Index, only from edit page
-        if ($sourceKey === SitemapKey::CUSTOM_QUERY && !$this->request->getAcceptsJson()) {
+        if ($sourceKey === SitemapKey::CONTENT_QUERY && !$this->request->getAcceptsJson()) {
             $conditionBuilderParam = $type::lowerDisplayName() . '-conditionRules';
             $condition = $request->getBodyParam($conditionBuilderParam);
             $sitemapMetadataRecord->settings = $condition;

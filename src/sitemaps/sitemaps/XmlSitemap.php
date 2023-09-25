@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\sitemaps\sitemaps;
 
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentSitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomQuerySitemapMetadataHelper;
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentQuerySitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use Craft;
@@ -21,7 +21,7 @@ class XmlSitemap extends Component
         $sitemapUrls = [];
 
         ContentSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
-        CustomQuerySitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
+        ContentQuerySitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
         CustomPagesSitemapMetadataHelper::getSitemapUrls($sitemapUrls, $sites);
 
         return $sitemapUrls;
@@ -32,7 +32,7 @@ class XmlSitemap extends Component
      *
      * - Content Sitemap: Singles
      * - Content Sitemap: Channel/Structure
-     * - Custom Query Sitemap
+     * - Content Query Sitemap
      */
     public function getDynamicSitemapElements($sitemapMetadataUid, $sitemapKey, $pageNumber, array $sitemapSites, Site $site): array
     {
@@ -46,7 +46,7 @@ class XmlSitemap extends Component
         if ($sitemapKey === SitemapKey::SINGLES) {
             $sitemapMetadataRecords = ContentSitemapMetadataHelper::getSinglesSitemapMetadata($site);
         } else {
-            // Get Content or Custom Query sitemap metadata
+            // Get Content or Content Query sitemap metadata
             $sitemapMetadataRecords = [SitemapsMetadataHelper::getEnabledSitemapMetadataByUid($sitemapMetadataUid, $site)];
         }
 
@@ -62,15 +62,15 @@ class XmlSitemap extends Component
                 return $elementWithUri::class === $sitemapMetadata->type;
             });
 
-            // If we don't have a URI, this isn't a Content or Custom Query sitemap that we know how to process
+            // If we don't have a URI, this isn't a Content or Content Query sitemap that we know how to process
             if (!$elementWithUri) {
                 continue;
             }
 
             foreach ($sitemapSites as $sitemapSite) {
 
-                if ($sitemapMetadata->sourceKey === SitemapKey::CUSTOM_QUERY) {
-                    $elementQuery = CustomQuerySitemapMetadataHelper::getElementQuery($sitemapMetadata);
+                if ($sitemapMetadata->sourceKey === SitemapKey::CONTENT_QUERY) {
+                    $elementQuery = ContentQuerySitemapMetadataHelper::getElementQuery($sitemapMetadata);
                 } else {
                     // Content Sitemaps
                     $elementQuery = $sitemapMetadata->getElementQuery();
