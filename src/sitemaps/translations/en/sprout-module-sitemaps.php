@@ -92,4 +92,5 @@ return [
     'Exactly what you were looking for.' => 'Exactly what you were looking for.',
     'Custom Pages Sitemaps are managed on a site by site basis.' => 'Custom Pages Sitemaps are managed on a site by site basis.',
     'Upgrade to Sprout Sitemaps PRO to enable more than 5 sitemaps.' => 'Upgrade to Sprout Sitemaps PRO to enable more than 5 sitemaps.',
+    'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]' => 'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]'
 ];

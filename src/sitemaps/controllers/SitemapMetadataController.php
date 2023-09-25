@@ -2,9 +2,9 @@
 
 namespace BarrelStrength\Sprout\sitemaps\controllers;
 
+use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentQuerySitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentSitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\CustomPagesSitemapMetadataHelper;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ContentQuerySitemapMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementUriHelper;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
