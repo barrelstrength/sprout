@@ -49,7 +49,7 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
                 ->all();
 
             // update urlEnabledSectionId to sourceKey
-            foreach ($rows as $row) {
+            foreach ($rows as &$row) {
 
                 $sourceKey = null;
 
@@ -92,6 +92,8 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
                 // Unset old column on all rows
                 unset($row['urlEnabledSectionId']);
             }
+
+            unset($row);
 
             Craft::$app->getDb()->createCommand()
                 ->batchInsert(self::SITEMAPS_TABLE, $newCols, $rows)

@@ -30,10 +30,10 @@ class m211101_000000_run_install_migration extends Migration
             'totalElementsPerSitemap' => 50,
             'sitemapAggregationMethod' => self::SITEMAP_AGGREGATION_METHOD_SETTING,
             'siteSettings' => [
-                $primarySite->uid => 1,
+                $primarySite->uid => '1',
             ],
             'groupSettings' => [
-                $primarySite->getGroup()->uid => 1,
+                $primarySite->getGroup()->uid => '1',
             ],
         ], "Update Sprout CP Settings for “{$moduleSettingsKey}”");
 

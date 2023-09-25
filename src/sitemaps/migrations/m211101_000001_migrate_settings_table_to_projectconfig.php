@@ -84,15 +84,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
     {
         $primarySite = Craft::$app->getSites()->getPrimarySite();
 
-        // Just in case
-        if (empty($newSettings['siteSettings'])) {
-            $newSettings['siteSettings'][$primarySite->uid] = 1;
-        }
-
-        if (empty($newSettings['groupSettings'])) {
-            $newSettings['groupSettings'][$primarySite->getGroup()->uid] = 1;
-        }
-
         // Ensure proper data types
         if (!is_int($newSettings['totalElementsPerSitemap'])) {
             $newSettings['totalElementsPerSitemap'] = (int)$newSettings['totalElementsPerSitemap'];
@@ -116,18 +107,33 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         if (isset($newSettings['groupSettings'])) {
             $newGroupSettings = [];
-            foreach ($newSettings['groupSettings'] as $key => $value) {
-                $newGroupSettings[(int)$key] = (string)$value;
+            foreach ($newSettings['groupSettings'] as $groupId => $value) {
+                $group = Craft::$app->getSites()->getGroupById((int)$groupId);
+                if ($group) {
+                    $newGroupSettings[$group->uid] = (string)$value;
+                }
             }
             $newSettings['groupSettings'] = $newGroupSettings;
         }
 
         if (isset($newSettings['siteSettings'])) {
             $newSiteSettings = [];
-            foreach ($newSettings['siteSettings'] as $key => $value) {
-                $newSiteSettings[(int)$key] = (string)$value;
+            foreach ($newSettings['siteSettings'] as $siteId => $value) {
+                $site = Craft::$app->getSites()->getSiteById($siteId);
+                if ($site) {
+                    $newSiteSettings[$site->uid] = (string)$value;
+                }
             }
             $newSettings['siteSettings'] = $newSiteSettings;
+        }
+
+        // Just in case
+        if (empty($newSettings['siteSettings'])) {
+            $newSettings['siteSettings'][$primarySite->uid] = '1';
+        }
+
+        if (empty($newSettings['groupSettings'])) {
+            $newSettings['groupSettings'][$primarySite->getGroup()->uid] = '1';
         }
 
         return $newSettings;
