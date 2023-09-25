@@ -158,11 +158,11 @@ class SitemapMetadataController extends Controller
         $enabled = (bool)$request->getBodyParam('enabled');
         $sourceKey = $request->getBodyParam('sourceKey');
 
-        // Lite/Pro check - only allow 5 Content or Custom Query Sitemaps per site
+        // Lite/Pro check - only allow 5 Content or Content Query Sitemaps per site
         if ($enabled && // Only validate if a new sitemap is being enabled
             !$sitemapMetadataRecord->enabled && // Allow updates to existing enabled sitemaps
-            $sourceKey !== SitemapKey::CUSTOM_PAGES && // Custom Pages Sitemaps are not limited
-            ContentSitemapMetadataHelper::hasReachedSitemapLimit($siteId) // Enforce limit of 5 Content or Custom Query Sitemaps
+            $sourceKey !== SitemapKey::CUSTOM_PAGES && // Custom Pages Sitemap is not limited
+            ContentSitemapMetadataHelper::hasReachedSitemapLimit($siteId) // Enforce limit of 5 Content or Content Query Sitemaps
         ) {
             if (Craft::$app->request->getAcceptsJson()) {
                 return $this->asJson([

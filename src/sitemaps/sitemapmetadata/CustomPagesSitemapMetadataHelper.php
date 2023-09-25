@@ -35,7 +35,7 @@ class CustomPagesSitemapMetadataHelper
     }
 
     /**
-     * Process Custom Pages Sitemaps for Multi-Lingual Sitemaps that can have custom pages from multiple sections
+     * Process Custom Pages Sitemap for Multi-Lingual Sitemaps that can have custom pages from multiple sections
      */
     public static function getCustomPagesUrls(array $sites): array
     {

@@ -151,7 +151,7 @@ class ContentSitemapMetadataHelper
 
     /**
      * Lite users can use the full features of Sitemaps but are limited
-     * to a total of 5 Content or Custom Query Sitemaps per site
+     * to a total of 5 Content or Content Query Sitemaps per site
      */
     public static function hasReachedSitemapLimit($siteId): bool
     {

@@ -131,7 +131,7 @@ class SitemapsMetadataHelper
         if ($isAggregationMethodMultiLanguage) {
             $siteIdsFromEditableGroups = [];
 
-            foreach ($enabledSiteGroupIds as $groupUid => $enabledSiteGroupId) {
+            foreach ($enabledSiteGroupIds as $enabledSiteGroupId) {
                 $enabledSitesInGroup = Craft::$app->sites->getSitesByGroupId($enabledSiteGroupId);
 
                 foreach ($enabledSitesInGroup as $enabledSite) {

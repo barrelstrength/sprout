@@ -67,7 +67,7 @@ class SitemapsModule extends Module
 
     public static function getUpgradeMessage(): string
     {
-        return Craft::t('sprout-module-core', 'Upgrade to Sprout Sitemaps PRO to manage unlimited Content and Custom Query Sitemaps.');
+        return Craft::t('sprout-module-core', 'Upgrade to Sprout Sitemaps PRO to manage unlimited Content and Content Query Sitemaps.');
     }
 
     public function init(): void

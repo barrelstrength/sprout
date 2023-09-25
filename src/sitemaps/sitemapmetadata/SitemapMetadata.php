@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\CategorySitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\EntrySitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\components\sitemapmetadata\ProductSitemapMetadata;
@@ -23,6 +22,9 @@ class SitemapMetadata extends Component
 
     private array $_elementsWithUris = [];
 
+    /**
+     * @return ElementSitemapMetadataInterface[]
+     */
     public function getSitemapMetadataTypes(): array
     {
         $defaultMetadataTypes = [
@@ -43,9 +45,8 @@ class SitemapMetadata extends Component
 
             return $proEvent->types;
         }
-        
-        return $defaultMetadataTypes;
 
+        return $defaultMetadataTypes;
     }
 
     public function getElementWithUris(): array
