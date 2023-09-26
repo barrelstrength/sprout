@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Script to be run as part of the github pre-push hook.
+# These errors display on the command line but not in the Tower app error modal
 
 # create a of the git tags being pushed
 TAGS_PREFIXED_WITH_V=$(git tag -l | grep -E ^v)
@@ -8,5 +9,15 @@ TAGS_PREFIXED_WITH_V=$(git tag -l | grep -E ^v)
 if [ -n "$TAGS_PREFIXED_WITH_V" ]; then
     echo "A tag incorrectly starts with 'v'."
     echo $TAGS_PREFIXED_WITH_V;
+    exit 1
+fi
+
+# check if the version number in the composer.json file is the same value as the most recent tag
+COMPOSER_VERSION=$(cat composer.json | grep -E '"version":' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+MOST_RECENT_TAG=$(git tag -l | sort -V | tail -n 1)
+if [ "$COMPOSER_VERSION" != "$MOST_RECENT_TAG" ]; then
+    echo "The version number in composer.json does not match the most recent tag."
+    echo "composer.json version: $COMPOSER_VERSION"
+    echo "Most recent tag: $MOST_RECENT_TAG"
     exit 1
 fi
