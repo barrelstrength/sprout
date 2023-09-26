@@ -14,17 +14,18 @@ class m211101_000003_update_sitemap_metadata_types extends Migration
             [
                 'oldType' => 'barrelstrength\sproutbaseuris\sectiontypes\Entry',
                 'newType' => 'craft\elements\Entry',
-                'newSourceKeyPrefix' => 'entries',
             ],
             [
                 'oldType' => 'barrelstrength\sproutbaseuris\sectiontypes\Category',
                 'newType' => 'craft\elements\Category',
-                'newSourceKeyPrefix' => 'categories',
             ],
             [
                 'oldType' => 'barrelstrength\sproutbaseuris\sectiontypes\Product',
                 'newType' => 'craft\commerce\elements\Product',
-                'newSourceKeyPrefix' => 'products',
+            ],
+            [
+                'oldType' => 'barrelstrength\sproutbaseuris\sectiontypes\NoSection',
+                'newType' => null,
             ],
         ];
 

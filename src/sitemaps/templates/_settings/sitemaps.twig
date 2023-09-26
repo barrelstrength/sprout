@@ -4,15 +4,14 @@
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
 {% set currentSubNavKey = 'sitemaps' %}
+
 {% set module = sprout.modules.sitemaps %}
 {% set settings = module.getSettings() %}
-
-{% set isProBadge = not module.isPro() ? ' <span class="sprout-pro">PRO</span>' : '' %}
 
 {% block settings %}
 
     {{ forms.textField({
-        label: "Total Elements Per Sitemap"|t('sprout-module-sitemaps') ~ isProBadge,
+        label: "Total Elements Per Sitemap"|t('sprout-module-sitemaps'),
         instructions: "The number of items that display on each page of your sitemap. A lower number may be necessary for sitemaps with a large number of elements or limited server resources."|t('sprout-module-sitemaps'),
         name: 'totalElementsPerSitemap',
         placeholder: '500',
@@ -20,27 +19,26 @@
         value: settings.totalElementsPerSitemap,
         errors: '',
         warning: sproutConfigWarning(module, 'totalElementsPerSitemap'),
-        first: true
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Enable Content Query Sitemaps"|t('sprout-module-sitemaps') ~ isProBadge,
-        instructions: "Add a section on the Sitemaps tab to build Sitemaps via Custom Element Queries."|t('sprout-module-sitemaps'),
-        name: 'enableContentQuerySitemaps',
-        on: (settings.enableContentQuerySitemaps is empty ? false : true),
-        onLabel: "Enable"|t('sprout-module-sitemaps'),
-        offLabel: "Disable"|t('sprout-module-sitemaps'),
-        warning: sproutConfigWarning(module, 'enableContentQuerySitemaps'),
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: "Enable Custom Pages Sitemap"|t('sprout-module-sitemaps') ~ isProBadge,
+        label: "Enable Custom Pages Sitemap"|t('sprout-module-sitemaps'),
         instructions: "Add a section on the Sitemaps tab to manage Custom Pages that exist outside of any URL-Enabled Sections."|t('sprout-module-sitemaps'),
         name: 'enableCustomPagesSitemap',
-        on: (settings.enableCustomPagesSitemap is empty ? false : true),
+        on: settings.enableCustomPagesSitemap,
         onLabel: "Enable"|t('sprout-module-sitemaps'),
         offLabel: "Disable"|t('sprout-module-sitemaps'),
         warning: sproutConfigWarning(module, 'enableCustomPagesSitemap'),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Enable Content Query Sitemaps"|t('sprout-module-sitemaps'),
+        instructions: "Add a section on the Sitemaps tab to build Sitemaps via Custom Element Queries."|t('sprout-module-sitemaps'),
+        name: 'enableContentQuerySitemaps',
+        on: settings.enableContentQuerySitemaps,
+        onLabel: "Enable"|t('sprout-module-sitemaps'),
+        offLabel: "Disable"|t('sprout-module-sitemaps'),
+        warning: sproutConfigWarning(module, 'enableContentQuerySitemaps'),
     }) }}
 
     {% if craft.app.isMultiSite %}

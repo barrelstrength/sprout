@@ -1,0 +1,30 @@
+{% extends "sprout-module-core/_layouts/landing" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{% set title = "Upgrade to Sprout Sitemaps Pro"|t('sprout-module-sitemaps') %}
+{% set bodyClass = 'sprout-landing-page' %}
+{% set pluginStoreLink = currentUser.admin ? cpUrl('plugin-store/sprout-sitemaps') : 'https://plugins.craftcms.com/sprout-sitemaps' %}
+
+{% block content %}
+
+    <div class="sprout-landing">
+
+        {{ parent() }}
+
+        {{ sproutCp.featureHeader({
+            heading: "Exactly what you were looking for."|t('sprout-module-sitemaps'),
+            message: "Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]"|t('sprout-module-sitemaps'),
+            primaryButtonText: "Upgrade Now"|t('sprout-module-sitemaps'),
+            primaryButtonLink: pluginStoreLink,
+            secondaryButtonText: "Learn More"|t('sprout-module-sitemaps'),
+            secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/sitemaps"
+        }) }}
+
+        {{ sproutCp.featureImage({
+            imageUrl: sproutAssetUrl('redirects/screenshots/sprout-redirects-feature.png'),
+            altText: 'Sitemap Generator for Craft CMS'|t('sprout-module-sitemaps')
+        }) }}
+
+    </div>
+
+{% endblock %}

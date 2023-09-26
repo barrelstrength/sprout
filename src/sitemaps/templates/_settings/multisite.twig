@@ -2,7 +2,7 @@
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
 {{ forms.selectField({
-    label: "Sitemap Aggregation Method"|t('sprout-module-sitemaps') ~ isProBadge,
+    label: "Sitemap Aggregation Method"|t('sprout-module-sitemaps'),
     instructions: "Choose the method to use when generating XML Sitemaps for Sites and Site Groups."|t('sprout-module-sitemaps'),
     name: 'sitemapAggregationMethod',
     options: [
@@ -27,30 +27,30 @@
 {% set groupErrors = settings.getErrors('groupSettings') %}
 
 {% for site in craft.app.sites.getAllSites() %}
-    {% set siteSettings = settings.siteSettings[site.id] ?? null %}
+    {% set siteSettings = settings.siteSettings[site.uid] ?? null %}
 
     {% set siteRows = siteRows|merge({
         (site.handle): {
             heading: site.name|t('site'),
             enabled: include('_includes/forms/lightswitch', {
-                name: 'siteSettings['~site.id~']',
+                name: 'siteSettings['~site.uid~']',
                 on: siteSettings,
-                value: site.id
+                value: true,
             })
         }
     }) %}
 {% endfor %}
 
 {% for group in craft.app.sites.getAllGroups() %}
-    {% set groupSettings = settings.groupSettings[group.id] ?? null %}
+    {% set groupSettings = settings.groupSettings[group.uid] ?? null %}
 
     {% set siteGroupRows = siteGroupRows|merge({
         (group.name): {
             heading: group.name|t('site'),
             enabled: include('_includes/forms/lightswitch', {
-                name: 'groupSettings['~group.id~']',
+                name: 'groupSettings['~group.uid~']',
                 on: groupSettings,
-                value: group.id
+                value: true,
             })
         }
     }) %}

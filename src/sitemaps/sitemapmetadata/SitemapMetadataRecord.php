@@ -9,7 +9,6 @@ use craft\base\Element;
 use craft\db\ActiveRecord;
 use craft\elements\db\ElementQuery;
 use craft\helpers\UrlHelper;
-use craft\models\Site;
 
 /**
  * @property int $id
@@ -26,10 +25,10 @@ use craft\models\Site;
  */
 class SitemapMetadataRecord extends ActiveRecord
 {
-    public const SCENARIO_CUSTOM_QUERY = 'customQuery';
+    public const SCENARIO_CONTENT_QUERY = 'contentQuery';
     public const SCENARIO_CUSTOM_PAGES = 'customPages';
 
-    /** Attribute assigned from URL-Enabled Section integration */
+    /** Attribute assigned for Content Sitemap UI */
     public string $name = '';
 
     public function getElementQuery(): ElementQuery
@@ -64,15 +63,10 @@ class SitemapMetadataRecord extends ActiveRecord
 
         $rules [] = [['uri'], 'sectionUri', 'on' => self::SCENARIO_CUSTOM_PAGES];
         $rules [] = [['uri'], 'required', 'on' => self::SCENARIO_CUSTOM_PAGES, 'message' => 'URI cannot be blank.'];
-        $rules [] = [['description'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Description is required.'];
-        $rules [] = [['settings'], 'required', 'on' => self::SCENARIO_CUSTOM_QUERY, 'message' => 'Must define at least one query condition.'];
+        $rules [] = [['description'], 'required', 'on' => self::SCENARIO_CONTENT_QUERY, 'message' => 'Description is required.'];
+        $rules [] = [['settings'], 'required', 'on' => self::SCENARIO_CONTENT_QUERY, 'message' => 'Must define at least one query condition.'];
 
         return $rules;
-    }
-
-    public function getSite(): ?Site
-    {
-        return Craft::$app->sites->getSiteById($this->siteId);
     }
 
     /**

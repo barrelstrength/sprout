@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\sitemaps;
 
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
+use BarrelStrength\Sprout\core\helpers\RegexHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
@@ -12,7 +13,6 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
-use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapsMetadataHelper;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
@@ -67,7 +67,7 @@ class SitemapsModule extends Module
 
     public static function getUpgradeMessage(): string
     {
-        return Craft::t('sprout-module-core', 'Upgrade to Sprout Sitemaps PRO to create paginated and multi-lingual sitemaps.');
+        return Craft::t('sprout-module-core', 'Upgrade to Sprout Sitemaps PRO to manage unlimited Content and Content Query Sitemaps.');
     }
 
     public function init(): void
@@ -197,10 +197,10 @@ class SitemapsModule extends Module
     protected function getCpUrlRules(): array
     {
         return [
-            'sprout/sitemaps/edit/<sourceKey:custom-query|custom-pages>/<sitemapMetadataId:\d+>' =>
-                'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-custom-query-edit-template',
-            'sprout/sitemaps/<sourceKey:custom-query|custom-pages>/new' =>
-                'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-custom-query-edit-template',
+            'sprout/sitemaps/edit/<sourceKey:content-query|custom-pages>/<sitemapMetadataUid:' . RegexHelper::UUID_PATTERN . '>' =>
+                'sprout-module-sitemaps/sitemap-metadata/custom-sitemap-metadata-edit-template',
+            'sprout/sitemaps/<sourceKey:content-query|custom-pages>/new' =>
+                'sprout-module-sitemaps/sitemap-metadata/custom-sitemap-metadata-edit-template',
             'sprout/sitemaps' =>
                 'sprout-module-sitemaps/sitemap-metadata/sitemap-metadata-index-template',
 
@@ -212,6 +212,9 @@ class SitemapsModule extends Module
             // Welcome
             'sprout/welcome/sitemaps' => [
                 'template' => 'sprout-module-sitemaps/_admin/welcome',
+            ],
+            'sprout/upgrade/sitemaps' => [
+                'template' => 'sprout-module-sitemaps/_admin/upgrade',
             ],
         ];
     }
@@ -248,7 +251,7 @@ class SitemapsModule extends Module
         }
 
         return [
-            'sitemap-<sitemapMetadataUid:' . SitemapsMetadataHelper::UUID_PATTERN . '>-<pageNumber:\d+>.xml' =>
+            'sitemap-<sitemapMetadataUid:' . RegexHelper::UUID_PATTERN . '>-<pageNumber:\d+>.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
             'sitemap-<sitemapMetadataUid:singles|custom-pages>.xml' =>
                 'sprout-module-sitemaps/xml-sitemap/render-xml-sitemap',
