@@ -47,7 +47,7 @@ class XmlSitemap extends Component
             $sitemapMetadataRecords = ContentSitemapMetadataHelper::getSinglesSitemapMetadata($site);
         } else {
             // Get Content or Content Query sitemap metadata
-            $sitemapMetadataRecords = [SitemapsMetadataHelper::getEnabledSitemapMetadataByUid($sitemapMetadataUid, $site)];
+            $sitemapMetadataRecords = [SitemapsMetadataHelper::getXmlSitemapMetadataByUid($sitemapMetadataUid, $site)];
         }
 
         foreach ($sitemapMetadataRecords as $sitemapMetadata) {

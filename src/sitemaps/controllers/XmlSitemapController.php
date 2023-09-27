@@ -39,6 +39,10 @@ class XmlSitemapController extends Controller
         $sites = SitemapsMetadataHelper::getSitemapSites($site);
         $siteIds = array_keys($sites);
 
+        if ($sitemapKey === null && $sitemapMetadataUid !== null) {
+            throw new NotFoundHttpException('XML Sitemap not found.');
+        }
+
         SitemapsMetadataHelper::isValidSitemapRequest($siteIds, $site);
 
         // Two scenarios:
@@ -92,7 +96,7 @@ class XmlSitemapController extends Controller
         ]);
     }
 
-    protected function getSitemapKey(mixed $sitemapMetadataUid, Site $site): mixed
+    protected function getSitemapKey(mixed $sitemapMetadataUid, Site $site): ?string
     {
         $uuidPattern = RegexHelper::UUID_PATTERN;
 
@@ -103,6 +107,10 @@ class XmlSitemapController extends Controller
                 ->andWhere(['siteId' => $site->id])
                 ->andWhere(['uid' => $sitemapMetadataUid])
                 ->scalar();
+
+            if ($sitemapKey === false) {
+                return null;
+            }
         } else {
             $sitemapKey = $sitemapMetadataUid;
         }

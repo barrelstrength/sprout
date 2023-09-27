@@ -92,5 +92,6 @@ return [
     'Exactly what you were looking for.' => 'Exactly what you were looking for.',
     'Custom Pages Sitemaps are managed on a site by site basis.' => 'Custom Pages Sitemaps are managed on a site by site basis.',
     'Upgrade to Sprout Sitemaps PRO to enable more than 5 sitemaps.' => 'Upgrade to Sprout Sitemaps PRO to enable more than 5 sitemaps.',
-    'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]' => 'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]'
+    'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]' => 'Manage unlimited Content Sitemaps and Content Query Sitemaps with Sprout Sitemaps [pro]',
+    'Enjoy fine-grained control over your XML Sitemaps for standalone, multi-lingual, and multi-regional sites. Sitemaps are managed directly within Craft – no template updates required.' => 'Enjoy fine-grained control over your XML Sitemaps for standalone, multi-lingual, and multi-regional sites. Sitemaps are managed directly within Craft – no template updates required.'
 ];

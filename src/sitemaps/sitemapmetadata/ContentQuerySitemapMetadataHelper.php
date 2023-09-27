@@ -2,11 +2,8 @@
 
 namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
-use BarrelStrength\Sprout\sitemaps\db\SproutTable;
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use Craft;
-use craft\db\Query;
-use craft\elements\Entry;
 use craft\helpers\Json;
 use craft\models\Site;
 
@@ -15,14 +12,15 @@ class ContentQuerySitemapMetadataHelper
     public static function getSitemapUrls(array &$sitemapUrls, array $sites): void
     {
         foreach ($sites as $site) {
-            if ($contentQuerySitemapMetadata = self::getCustomQuerySitemapMetadata($site)) {
+            if ($contentQuerySitemapMetadata = self::getContentQueryXmlSitemapMetadata($site)) {
                 foreach ($contentQuerySitemapMetadata as $contentQuery) {
 
                     $currentConditionRules = Json::decodeIfJson($contentQuery['settings']);
                     $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
-                    $currentCondition->elementType = Entry::class;
+                    $currentCondition->elementType = $contentQuery['type'];
 
                     $query = $currentCondition->elementType::find();
+
                     $currentCondition->modifyQuery($query);
 
                     $totalElements = $query->count();
@@ -33,26 +31,14 @@ class ContentQuerySitemapMetadataHelper
         }
     }
 
-    // @todo - very similar to getCustomQuerySitemapMetadata method. Normalize getContent + getCustom language.
-    public static function getContentQuerySitemapMetadata(Site $site): array
+    public static function getContentQueryXmlSitemapMetadata(Site $site): array
     {
-        return SitemapMetadataRecord::find()
+        $contentQuerySitemapMetadata = SitemapMetadataRecord::find()
             ->where([
                 '[[sourceKey]]' => SitemapKey::CONTENT_QUERY,
                 '[[siteId]]' => $site->id,
+                '[[enabled]]' => true,
             ])
-            ->all();
-    }
-
-    public static function getCustomQuerySitemapMetadata(Site $site): array
-    {
-        // Fetching all Custom Sitemap defined in Sprout SEO
-        $contentQuerySitemapMetadata = (new Query())
-            ->select('*')
-            ->from([SproutTable::SITEMAPS_METADATA])
-            ->where(['enabled' => true])
-            ->andWhere(['siteId' => $site->id])
-            ->andWhere(['sourceKey' => SitemapKey::CONTENT_QUERY])
             ->indexBy('uid')
             ->all();
 
@@ -63,6 +49,16 @@ class ContentQuerySitemapMetadataHelper
         }
 
         return $sitemapMetadata;
+    }
+
+    public static function getContentQuerySitemapMetadata(Site $site): array
+    {
+        return SitemapMetadataRecord::find()
+            ->where([
+                '[[sourceKey]]' => SitemapKey::CONTENT_QUERY,
+                '[[siteId]]' => $site->id,
+            ])
+            ->all();
     }
 
     public static function getElementQuery(SitemapMetadataRecord $sitemapMetadata)

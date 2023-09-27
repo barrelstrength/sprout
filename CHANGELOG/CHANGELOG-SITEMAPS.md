@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.4 - UNRELEASED
+
+### Fixed
+
+- Fixed dynamic reference to Content Query condition class names when building non-Entry queries
+- Fixed an issue where a disabled sitemap URL accessed directly would render the Sitemap Index
+
 ## 4.1.3 - 2023-09-25
 
 ### Added
