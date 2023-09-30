@@ -14,6 +14,10 @@ fi
 
 # check if the version number in the composer.json file is the same value as the most recent tag
 COMPOSER_VERSION=$(cat composer.json | grep -E '"version":' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+# First check for a 4 digit version number 4.3.2.1 and then check for a 3 digit version number 4.3.2
+if [ -z "$COMPOSER_VERSION" ]; then
+    COMPOSER_VERSION=$(cat composer.json | grep -E '"version":' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+fi
 MOST_RECENT_TAG=$(git tag -l | sort -V | tail -n 1)
 if [ "$COMPOSER_VERSION" != "$MOST_RECENT_TAG" ]; then
     echo "The version number in composer.json does not match the most recent tag."
