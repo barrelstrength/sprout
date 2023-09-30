@@ -138,6 +138,8 @@ class FormsController extends BaseController
             throw new ForbiddenHttpException('User not authorized to save this report.');
         }
 
+        $form->name = '';
+        $form->handle = '';
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
         $form->formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
 

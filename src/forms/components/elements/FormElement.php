@@ -272,12 +272,13 @@ class FormElement extends Element
         Craft::$app->getView()->registerJs("new Craft.HandleGenerator('#name', '#handle');");
 
         $tabs = array_merge(
+            empty($this->name) ? [$settingsTab] : [],
             [$formBuilderTab],
             $formTypeTabs,
             $formType->enableNotificationsTab ? [$notificationsTab] : [],
             $formType->enableReportsTab ? [$reportsTab] : [],
             $formType->enableIntegrationsTab ? [$integrationsTab] : [],
-            [$settingsTab],
+            !empty($this->name) ? [$settingsTab] : [],
         );
 
         $fieldLayout->setTabs($tabs);
@@ -549,11 +550,6 @@ class FormElement extends Element
         Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
     }
 
-    //public function getIsNew($id): bool
-    //{
-    //    return (!$id || str_starts_with($id, 'new'));
-    //}
-
     public function afterSave(bool $isNew): void
     {
         // Get the form record
@@ -781,8 +777,6 @@ class FormElement extends Element
                 }
 
                 // @TODO - extract fields and validate them before saving ANY
-
-
 
                 $this->saveFormField($fieldData);
             }
@@ -1125,6 +1119,11 @@ class FormElement extends Element
 
     public function __construct($config = [])
     {
+        // Set title for Unified Element Editor display behavior
+        if (isset($config['name'])) {
+            $this->title = $config['name'];
+        }
+
         if (isset($config['redirectUri'])) {
             $config['redirectUri'] = Links::toLinkField($config['redirectUri']) ?: null;
         }
