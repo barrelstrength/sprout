@@ -89,12 +89,13 @@ class XmlSitemap extends Component
                 // Add each Element with a URL to the Sitemap
                 foreach ($elements as $element) {
 
-                    $canonicalOverride = $metadata['canonical'] ?? null;
-
-                    if (!empty($canonicalOverride)) {
-                        Craft::info('Element ID ' . $element->id . ' is using a canonical override and has not been included in the sitemap. Element URL: ' . $element->getUrl() . '. Canonical URL: ' . $canonicalOverride . '.', __METHOD__);
-                        continue;
-                    }
+                    // @todo - integrate metadata overrides
+                    //$canonicalOverride = $metadata['canonical'] ?? null;
+                    //
+                    //if (!empty($canonicalOverride)) {
+                    //    Craft::info('Element ID ' . $element->id . ' is using a canonical override and has not been included in the sitemap. Element URL: ' . $element->getUrl() . '. Canonical URL: ' . $canonicalOverride . '.', __METHOD__);
+                    //    continue;
+                    //}
 
                     if (!$url = $element->getUrl()) {
                         Craft::info('Element ID ' . $element->id . ' not added to sitemap. Element does not have a URL.', __METHOD__);
