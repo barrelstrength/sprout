@@ -295,6 +295,8 @@ export const FormBuilder = (formId) => ({
         console.log('dropOnLayoutTabBody');
         let self = this;
 
+        e.target.classList.remove('no-pointer-events');
+
         let type = e.dataTransfer.getData('sprout/field-type');
         let originTabUid = e.dataTransfer.getData('sprout/origin-page-tab-uid');
 
@@ -322,6 +324,8 @@ export const FormBuilder = (formId) => ({
     dropOnExistingLayoutField(e) {
         console.log('dropOnExistingLayoutField');
         let self = this;
+
+        e.target.classList.remove('no-pointer-events');
 
         // let fieldUid = e.dataTransfer.getData('sprout/field-id');
         let type = e.dataTransfer.getData('sprout/field-type');
@@ -354,6 +358,8 @@ export const FormBuilder = (formId) => ({
         console.log('dropOnLayoutEndZone');
         let self = this;
 
+        e.target.classList.remove('no-pointer-events');
+
         let type = e.dataTransfer.getData('sprout/field-type');
         let originTabUid = e.dataTransfer.getData('sprout/origin-page-tab-uid');
         let targetTabUid = e.target.dataset.tabUid;
@@ -364,7 +370,7 @@ export const FormBuilder = (formId) => ({
         }
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
-            this.updateFieldPosition(originTabUid, targetTabUid, self.isDraggingFormFieldUid, beforeFieldUid)
+            this.updateFieldPosition(originTabUid, targetTabUid, self.isDraggingFormFieldUid, beforeFieldUid);
         }
     },
 
@@ -482,6 +488,10 @@ export const FormBuilder = (formId) => ({
         let targetTabIndex = this.getTabIndexByTabUid(targetTabUid);
         let targetTab = this.tabs[targetTabIndex];
 
+        if (!targetTab) {
+            targetTab = originTab;
+        }
+
         let originFieldIndex = this.getFieldIndexByFieldUid(originTab, fieldUid);
         let targetField = originTab.elements[originFieldIndex];
 
@@ -511,8 +521,8 @@ export const FormBuilder = (formId) => ({
         let tab = {
             uid: newUid,
             name: 'New Page',
+            userCondition: null,
             elementCondition: null,
-            tabCondition: null,
             elements: [],
         };
 
@@ -671,22 +681,22 @@ export const FormBuilder = (formId) => ({
             const $contents = $body.add($footer);
 
             // Make sure condition builder js is only added once
-            $('#sprout-tab-modal').remove();
+            $('.sprout-conditionbuilder-slideout').remove();
 
             const slideout = new Craft.Slideout($contents, {
                 containerElement: 'form',
                 containerAttributes: {
                     method: 'post',
                     action: '',
-                    class: 'fld-element-settings slideout',
+                    class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
                     id: 'sprout-tab-modal',
                 },
             });
 
             const $form = slideout.$container;
 
-            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.tabUid);
-            Craft.appendBodyHtml(conditionBuilderJs);
+            let tabSettingsJs = self.swapPlaceholders(response.data.tabSettingsJs, response.data.tabUid);
+            Craft.appendBodyHtml(tabSettingsJs);
 
             $form.on('submit', function(event) {
                 event.preventDefault();
@@ -709,21 +719,22 @@ export const FormBuilder = (formId) => ({
             $removeBtn.on('click', () => {
                 // if only 1 tab exists, don't allow it to be removed
                 if (self.tabs.length === 1) {
+                    Craft.cp.displayNotice(Craft.t('sprout-module-forms', 'Form must contain at least one tab.'));
+
                     return;
                 }
 
                 let tabIndex = self.getTabIndexByTabUid(self.selectedTabUid);
 
-                // if a tab before the current tab exists, select it
-                if (self.tabs[tabIndex - 1]) {
-                    self.selectedTabUid = self.tabs[tabIndex - 1].uid;
-                } else {
-                    // otherwise select the next tab
-                    self.selectedTabUid = self.tabs[tabIndex + 1].uid;
-                }
+                let newSelectedTabUid = (tabIndex - 1) >= 0
+                    ? self.tabs[tabIndex - 1].uid
+                    : self.tabs[tabIndex + 1].uid;
 
                 self.tabs.splice(tabIndex, 1);
-                self.editTabUid = null;
+
+                let newTabIndex = self.getTabIndexByTabUid(newSelectedTabUid);
+                self.selectedTabUid = self.tabs[newTabIndex].uid;
+                self.editTabUid = self.selectedTabUid;
 
                 slideout.close();
             });
@@ -796,14 +807,14 @@ export const FormBuilder = (formId) => ({
             const $contents = $body.add($footer);
 
             // Make sure condition builder js is only added once
-            $('#sprout-field-modal').remove();
+            $('.sprout-conditionbuilder-slideout').remove();
 
             const slideout = new Craft.Slideout($contents, {
                 containerElement: 'form',
                 containerAttributes: {
                     method: 'post',
                     action: '',
-                    class: 'fld-element-settings slideout',
+                    class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
                     id: 'sprout-field-modal',
                 },
             });
@@ -812,8 +823,8 @@ export const FormBuilder = (formId) => ({
 
             Craft.initUiElements($body);
 
-            let conditionBuilderJs = self.swapPlaceholders(response.data.conditionBuilderJs, response.data.fieldUid);
-            Craft.appendBodyHtml(conditionBuilderJs);
+            let fieldSettingsJs = self.swapPlaceholders(response.data.fieldSettingsJs, response.data.fieldUid);
+            Craft.appendBodyHtml(fieldSettingsJs);
 
             $form.on('submit', function(event) {
                 event.preventDefault();
