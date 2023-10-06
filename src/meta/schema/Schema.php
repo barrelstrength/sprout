@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\meta\schema;
 
-use BarrelStrength\Sprout\fields\fields\phone\Phone;
+use BarrelStrength\Sprout\forms\components\formfields\PhoneFormFieldData;
 use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
 use BarrelStrength\Sprout\meta\components\schema\ContactPointSchema;
 use BarrelStrength\Sprout\meta\components\schema\GeoSchema;
@@ -277,7 +277,7 @@ abstract class Schema
     public function addTelephone(string $propertyName, array $phone): void
     {
         if (isset($phone['phone'], $phone['country']) && !empty($phone['phone'])) {
-            $phoneModel = new Phone();
+            $phoneModel = new PhoneFormFieldData();
             $phoneModel->country = $phone['country'];
             $phoneModel->phone = $phone['phone'];
             $this->structuredData[$propertyName] = $phoneModel->getInternational();
