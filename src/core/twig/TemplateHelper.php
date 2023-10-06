@@ -95,9 +95,9 @@ class TemplateHelper
         return $options;
     }
 
-    public static function getConfigWarning(SproutModuleTrait|Module $module, string $setting): string
+    public static function getConfigWarning(Module $module, string $setting): string
     {
-        // Get the module Settings class
+        /** @var SproutModuleTrait $module */
         $module = new $module($module::class);
         $settings = $module->createSettingsModel();
 
