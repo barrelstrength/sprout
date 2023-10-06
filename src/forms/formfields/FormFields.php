@@ -206,11 +206,6 @@ class FormFields extends Component
         return $registeredFields;
     }
 
-    public function getFieldCondition($conditionClass, $formField): Condition
-    {
-        return new $conditionClass(['formField' => $formField]);
-    }
-
     public function getDefaultTabName(): string
     {
         return Craft::t('sprout-module-forms', 'Page 1');

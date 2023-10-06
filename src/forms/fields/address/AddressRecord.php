@@ -27,6 +27,8 @@ class AddressRecord extends ActiveRecord
 {
     public static function tableName(): string
     {
-        return SproutTable::ADDRESSES;
+        // @todo - remove this once AddressRecord references are resolved
+        // SproutTable::ADDRESSES
+        return '{{%sprout_addresses}}';
     }
 }

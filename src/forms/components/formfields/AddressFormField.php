@@ -191,7 +191,7 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
                 'namespaceInputId' => $namespaceInputId,
                 'namespaceInputName' => $namespaceInputName,
                 'field' => $this,
-                'fieldId' => $addressModel->fieldId ?? $field->id ?? null,
+                'fieldId' => $addressModel->fieldId ?? $this->id ?? null,
                 'addressId' => $addressId,
                 'defaultCountryCode' => $defaultCountryCode,
                 'addressDisplayHtml' => Template::raw($addressDisplayHtml),

@@ -132,7 +132,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
             }
         }
 
-        return $options ?? [];
+        return $options;
     }
 
     public function getConfig(): array

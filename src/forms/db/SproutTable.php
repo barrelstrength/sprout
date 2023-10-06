@@ -15,4 +15,7 @@ abstract class SproutTable
     public const FORM_SUBMISSIONS = '{{%sprout_form_submissions}}';
 
     public const FORM_SUBMISSIONS_SPAM_LOG = '{{%sprout_form_submissions_spam_log}}';
+
+    // @todo - remove once address updated
+    public const ADDRESSES = '{{%sprout_addresses}}';
 }
