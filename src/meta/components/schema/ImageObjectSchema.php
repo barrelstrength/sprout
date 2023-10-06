@@ -39,10 +39,10 @@ class ImageObjectSchema extends Schema
 
         $prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
-        if (isset($prioritizedMetadataModel)) {
+        if ($prioritizedMetadataModel) {
             $openGraphMetaType = $prioritizedMetadataModel->getMetaTypes('openGraph');
 
-            if (isset($openGraphMetaType)) {
+            if (!empty($openGraphMetaType)) {
                 if ($openGraphMetaType->getOgImage()) {
                     $this->addUrl('url', $openGraphMetaType->getOgImage());
                 }

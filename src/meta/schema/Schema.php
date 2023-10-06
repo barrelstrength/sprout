@@ -54,7 +54,7 @@ abstract class Schema
     /**
      * The result after we optimize data from Globals and Element Metadata
      */
-    public Metadata $prioritizedMetadataModel;
+    public ?Metadata $prioritizedMetadataModel = null;
 
     /**
      * Defines our Schema's `@type` property
