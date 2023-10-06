@@ -56,7 +56,7 @@ class EmailTypesController extends Controller
 
         return $this->renderTemplate('sprout-module-mailer/_settings/email-types/edit.twig', [
             'emailType' => $emailType,
-            'mailerTypeOptions' => $mailerTypeOptions ?? [],
+            'mailerTypeOptions' => $mailerTypeOptions,
         ]);
     }
 

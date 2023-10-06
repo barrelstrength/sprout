@@ -172,7 +172,6 @@ class ElementMetadataField extends Field
 
     protected function populateOptimizeServiceValues(ElementInterface $element = null): void
     {
-        /** @var Element $element */
         $site = isset($element)
             ? Craft::$app->sites->getSiteById($element->siteId)
             : Craft::$app->sites->getPrimarySite();
