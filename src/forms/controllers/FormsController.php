@@ -223,13 +223,13 @@ class FormsController extends BaseController
         $view = Craft::$app->getView();
         $view->startJsBuffer();
         $settingsHtml = $tab->getSettingsHtml();
-        $conditionBuilderJs = $view->clearJsBuffer();
+        $tabSettingsJs = $view->clearJsBuffer();
 
         return $this->asJson([
             'success' => true,
             'tabUid' => $tabSettings['uid'],
             'settingsHtml' => $settingsHtml,
-            'conditionBuilderJs' => $conditionBuilderJs,
+            'tabSettingsJs' => $tabSettingsJs,
         ]);
     }
 
@@ -282,30 +282,30 @@ class FormsController extends BaseController
         $view = Craft::$app->getView();
         $view->startJsBuffer();
         $settingsHtml = $fieldLayoutElement->getSettingsHtml();
-        $conditionBuilderJs = $view->clearJsBuffer();
 
-        // Setting fieldUid throws an if the field isn't created in the DB yet, so we work around that
+        // @featureRequest
+        // Setting fieldUid throws an error if the field is just created in the layout
+        // and isn't yet created in the DB, so we work around that by not setting it here
         //$fieldLayoutElement->fieldUid = $layoutElementConfig['fieldUid'];
-        //\Craft::dd($settingsHtml);
+
         $requiredSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
             'fieldLayoutElement' => $fieldLayoutElement,
             'field' => $field,
-            //'settingsHtml' => $settingsHtml,
-            //'conditionBuilderJs' => $conditionBuilderJs,
         ]);
 
         $fieldSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSettings', [
             'field' => $field,
         ]);
 
+        $fieldSettingsJs = $view->clearJsBuffer();
+
         return $this->asJson([
             'success' => true,
             'fieldUid' => $layoutElementConfig['fieldUid'],
-            //'settingsHtml' => StringHelper::collapseWhitespace($html),
             'requiredSettingsHtml' => $requiredSettingsHtml,
             'additionalSettingsHtml' => $fieldSettingsHtml,
             'settingsHtml' => $settingsHtml,
-            'conditionBuilderJs' => $conditionBuilderJs,
+            'fieldSettingsJs' => $fieldSettingsJs,
         ]);
     }
 
