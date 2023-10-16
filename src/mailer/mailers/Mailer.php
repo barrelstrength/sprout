@@ -17,6 +17,18 @@ abstract class Mailer extends SavableComponent implements MailerInterface
 
     protected ?FieldLayout $_fieldLayout = null;
 
+    public function __construct($config = [])
+    {
+        if ($config['settings']) {
+            foreach ($config['settings'] as $key => $value) {
+                $this->$key = $value;
+            }
+            unset($config['settings']);
+        }
+
+        parent::__construct($config);
+    }
+
     public function __toString()
     {
         return self::displayName();

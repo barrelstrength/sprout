@@ -23,14 +23,7 @@ class EmailTypeConditionRule extends BaseMultiSelectConditionRule implements Ele
 
     protected function options(): array
     {
-        $emailTypes = EmailTypeHelper::getEmailTypes();
-
-        return array_map(static function($emailType) {
-            return [
-                'label' => $emailType->name,
-                'value' => $emailType->uid,
-            ];
-        }, $emailTypes);
+        return EmailTypeHelper::getEmailTypesOptions();
     }
 
     public function modifyQuery(QueryInterface $query): void

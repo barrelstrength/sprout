@@ -4,6 +4,8 @@
     {% set resourceAltText = settings.resourceAltText ?? null %}
     {% set heading = settings.heading ?? null %}
     {% set body = settings.body ?? null %}
+    {% set addButtonText = settings.addButtonText ?? null %}
+    {% set addButtonLink = settings.addButtonLink ?? null %}
     {% set alignItems = settings.alignItems ?? null %}
 
     <div class="sprout-mediabox-outer">
@@ -19,6 +21,12 @@
                 <hr>
 
                 {{ body|raw }}
+
+                {% if addButtonText and addButtonLink %}
+                    <div class="buttons">
+                        <a class="btn secondary add icon" href="{{ addButtonLink }}">{{ addButtonText }}</a>
+                    </div>
+                {% endif %}
 
             </div>
         </div>

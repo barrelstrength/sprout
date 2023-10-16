@@ -123,4 +123,16 @@ class EmailTypeHelper
 
         return reset($emailTypes);
     }
+
+    public static function getEmailTypesOptions(): array
+    {
+        $emailTypes = self::getEmailTypes();
+
+        return array_map(static function($emailType) {
+            return [
+                'label' => $emailType->name,
+                'value' => $emailType->uid,
+            ];
+        }, $emailTypes);
+    }
 }

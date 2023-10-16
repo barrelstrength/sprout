@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
+use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
@@ -193,23 +194,44 @@ class FormElement extends Element
             new FormBuilderField(),
         ]);
 
+        $notifications = $this->getNotifications();
+
+        $newNotificationsButtonText = Craft::t('sprout-module-forms', 'New Notification');
+        $newNotificationsReportButtonLink = UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
+            'emailVariantSettings' => [
+                'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
+                'eventId' => SaveSubmissionNotificationEvent::class,
+            ],
+            'site' => Cp::requestedSite()->handle,
+        ]);
+
         $notificationsTab = new FieldLayoutTab();
         $notificationsTab->layout = $fieldLayout;
         $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
         $notificationsTab->uid = 'SPROUT-UID-FORMS-NOTIFICATIONS-TAB';
         $notificationsTab->setElements([
-            new RelationsTableField([
-                'attribute' => 'notifications',
-                'rows' => $this->getNotifications(),
-                'newButtonLabel' => Craft::t('sprout-module-forms', 'New Notification'),
-                'cpEditUrl' => UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
-                    'emailVariantSettings' => [
-                        'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
-                        'eventId' => SaveSubmissionNotificationEvent::class,
-                    ],
-                    'site' => Cp::requestedSite()->handle,
+            count($notifications) > 0 ?
+                new RelationsTableField([
+                    'attribute' => 'notifications',
+                    'rows' => $notifications,
+                    'newButtonLabel' => $newNotificationsButtonText,
+                    'cpEditUrl' => $newNotificationsReportButtonLink,
+                ]) :
+                new MediaBoxField([
+                    'heading' => Craft::t('sprout-module-forms', 'Create your first notification'),
+                    'body' => Craft::t('sprout-module-forms', 'Notify visitors or admins after a form has been submitted.'),
+                    'addButtonText' => $newNotificationsButtonText,
+                    'addButtonLink' => $newNotificationsReportButtonLink,
+                    'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
                 ]),
-            ]),
+        ]);
+
+        $reports = $this->getReports();
+
+        $newReportButtonText = Craft::t('sprout-module-forms', 'New Report');
+        $newReportButtonLink = UrlHelper::cpUrl('sprout/data-studio/new', [
+            'type' => SubmissionsDataSource::class,
+            'site' => Cp::requestedSite()->handle,
         ]);
 
         $reportsTab = new FieldLayoutTab();
@@ -217,15 +239,20 @@ class FormElement extends Element
         $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
         $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
         $reportsTab->setElements([
-            new RelationsTableField([
-                'attribute' => 'reports',
-                'rows' => $this->getReports(),
-                'newButtonLabel' => Craft::t('sprout-module-forms', 'New Data Set'),
-                'cpEditUrl' => UrlHelper::cpUrl('sprout/data-studio/new', [
-                    'type' => SubmissionsDataSource::class,
-                    'site' => Cp::requestedSite()->handle,
+            count($reports) > 0 ?
+                new RelationsTableField([
+                    'attribute' => 'reports',
+                    'rows' => $reports,
+                    'newButtonLabel' => $newReportButtonText,
+                    'cpEditUrl' => $newReportButtonLink,
+                ]) :
+                new MediaBoxField([
+                    'heading' => Craft::t('sprout-module-forms', 'Create your first report'),
+                    'body' => Craft::t('sprout-module-forms', 'Create a report to view and export your form submissions.'),
+                    'addButtonText' => $newReportButtonText,
+                    'addButtonLink' => $newReportButtonLink,
+                    'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
                 ]),
-            ]),
         ]);
 
         $integrationsTab = new FieldLayoutTab();
@@ -269,7 +296,9 @@ class FormElement extends Element
             ]),
         ]);
 
-        Craft::$app->getView()->registerJs("new Craft.HandleGenerator('#name', '#handle');");
+        if (empty($this->name)) {
+            Craft::$app->getView()->registerJs("new Craft.HandleGenerator('#name', '#handle');");
+        }
 
         $tabs = array_merge(
             empty($this->name) ? [$settingsTab] : [],

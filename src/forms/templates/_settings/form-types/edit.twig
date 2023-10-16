@@ -105,26 +105,34 @@
 
     <div id="features" class="hidden">
 
-        {{ forms.editableTableField({
-            label: "Features"|t('sprout-module-forms'),
-            instructions: "Select the features to display when authoring forms of this type."|t('sprout-module-forms'),
-            id: 'enabledFeatures',
-            name: 'enabledFeatures',
-            cols: {
-                enabled: {
-                    type: 'heading',
-                    thin: true
-                },
-                heading: {
-                    type: 'heading',
-                    heading: "Feature"|t('sprout-module-forms'),
-                    info: 'Customize the form features that are available and enabled.'|t('sprout-module-forms'),
-                },
-            }|filter,
-            rows: formType.getFeatureRows(),
-            fullWidth: true,
-            staticRows: true,
-            errors: settings.getErrors('modules'),
+        {{ forms.lightswitchField({
+            label: "Enable Notifications"|t('sprout-module-forms'),
+            name: 'enableNotificationsTab',
+            on: formType.enableNotificationsTab,
+            toggle: 'sprout-enable-notifications-settings'
+        }) }}
+
+        <div id="sprout-enable-notifications-settings" class="hidden">
+            {{ forms.selectField({
+                label: 'Default Email Type'|t('sprout-module-forms'),
+                instructions: 'The email type that will be used when creating notifications for this form.'|t('sprout-module-forms'),
+                id: 'defaultEmailTypeUid',
+                name: 'defaultEmailTypeUid',
+                value: formType.defaultEmailTypeUid,
+                options: formType.getEmailTypesOptions(),
+            }) }}
+        </div>
+
+        {{ forms.lightswitchField({
+            label: "Enable Reports"|t('sprout-module-forms'),
+            name: 'enableReportsTab',
+            on: formType.enableReportsTab,
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Enable Integrations"|t('sprout-module-forms'),
+            name: 'enableIntegrationsTab',
+            on: formType.enableIntegrationsTab,
         }) }}
 
         <hr>
@@ -134,7 +142,7 @@
             <div class="user-permissions">
                 <h3>{{ '{groupName}'|t('sprout-module-forms', { groupName: groupLabel }) }}</h3>
                 {{ tag('div', {
-                    text: 'Select All',
+                    text: 'Select All'|t('sprout-module-forms'),
                     class: 'select-all'
                 }) }}
                 <div class="checkbox-group">

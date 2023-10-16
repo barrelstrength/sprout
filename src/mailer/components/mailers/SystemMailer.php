@@ -38,6 +38,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public string $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;
 
     public ?string $defaultFromName = null;
+
     public ?string $defaultFromEmail = null;
 
     public ?string $defaultReplyToEmail = null;

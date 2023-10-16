@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\forms\formtypes;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\SavableComponent;
 use craft\models\FieldLayout;
@@ -21,6 +22,8 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
     public bool $enableReportsTab = true;
 
     public bool $enableIntegrationsTab = true;
+
+    public ?string $defaultEmailTypeUid = null;
 
     public array $enabledFormFieldTypes = [];
 
@@ -79,36 +82,6 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         $this->_fieldLayout = $fieldLayout;
     }
 
-    public function getFeatureRows(): array
-    {
-        return [
-            [
-                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'enableNotificationsTab',
-                    'on' => $this->enableNotificationsTab,
-                    'small' => true,
-                ]),
-                'heading' => 'Notifications',
-            ],
-            [
-                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'enableReportsTab',
-                    'on' => $this->enableReportsTab,
-                    'small' => true,
-                ]),
-                'heading' => 'Reports',
-            ],
-            [
-                'enabled' => Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch.twig', [
-                    'name' => 'enableIntegrationsTab',
-                    'on' => $this->enableIntegrationsTab,
-                    'small' => true,
-                ]),
-                'heading' => 'Integrations',
-            ],
-        ];
-    }
-
     public function getFormFieldTypesByType(): array
     {
         if (empty($this->enabledFormFieldTypes)) {
@@ -117,6 +90,11 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
         }
 
         return array_combine($this->enabledFormFieldTypes, array_fill_keys($this->enabledFormFieldTypes, true));
+    }
+
+    public function getEmailTypesOptions(): array
+    {
+        return EmailTypeHelper::getEmailTypesOptions();
     }
 
     public function getFormFieldFeatures(): array

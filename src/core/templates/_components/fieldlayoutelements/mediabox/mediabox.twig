@@ -1,0 +1,9 @@
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+{{ sproutCp.mediaBox({
+    heading: heading,
+    body: body,
+    addButtonText: addButtonText ?? null,
+    addButtonLink: addButtonLink ?? null,
+    resourcePath: resourcePath,
+}) }}
