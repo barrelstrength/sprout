@@ -146,11 +146,8 @@ class SubmissionStatuses extends Component
         try {
             foreach ($submissionStatusIds as $submissionStatus => $submissionStatusId) {
                 $submissionStatusRecord = $this->getSubmissionStatusRecordById($submissionStatusId);
-
-                if ($submissionStatusRecord) {
-                    $submissionStatusRecord->sortOrder = $submissionStatus + 1;
-                    $submissionStatusRecord->save();
-                }
+                $submissionStatusRecord->sortOrder = $submissionStatus + 1;
+                $submissionStatusRecord->save();
             }
 
             $transaction->commit();
@@ -256,10 +253,8 @@ class SubmissionStatuses extends Component
             if (!$submissionStatusRecord instanceof SubmissionStatusRecord) {
                 throw new Exception('No Submission Status exists with the ID: ' . $submissionStatusId);
             }
-        } else {
-            $submissionStatusRecord = new SubmissionStatusRecord();
         }
 
-        return $submissionStatusRecord;
+        return $submissionStatusRecord ?? new SubmissionStatusRecord();
     }
 }

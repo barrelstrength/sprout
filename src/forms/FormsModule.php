@@ -239,10 +239,6 @@ class FormsModule extends Module
             SubmissionsController::EVENT_BEFORE_VALIDATE,
             [SubmissionHelper::class, 'validateCaptchas']);
 
-        Craft::$app->view->hook('sproutForms.modifyForm', static function(array &$context) {
-            return FormsModule::getInstance()->forms->handleModifyFormHook($context);
-        });
-
         $this->registerProjectConfigEventListeners();
     }
 

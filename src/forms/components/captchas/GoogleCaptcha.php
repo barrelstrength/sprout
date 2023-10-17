@@ -106,7 +106,7 @@ class GoogleCaptcha extends Captcha
         }
 
         $settings = $this->getSettings();
-        $this->secretKey = Craft::parseEnv($settings['secretKey']);
+        $this->secretKey = App::parseEnv($settings['secretKey']);
 
         $gRecaptchaResponse = $_POST['g-recaptcha-response'] ?? null;
 

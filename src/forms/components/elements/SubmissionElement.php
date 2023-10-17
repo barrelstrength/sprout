@@ -485,7 +485,7 @@ class SubmissionElement extends Element
     public function hasCaptchaErrors(): bool
     {
         // When saving in the CP
-        if ($this->captchas === null) {
+        if (empty($this->captchas)) {
             return false;
         }
 

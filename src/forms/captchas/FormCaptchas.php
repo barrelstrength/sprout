@@ -87,17 +87,4 @@ class FormCaptchas extends Component
 
         return $captchas;
     }
-
-    public function getCaptchasHtml(FormElement $form): string
-    {
-        $captchas = $this->getAllEnabledCaptchas();
-        $captchaHtml = '';
-
-        foreach ($captchas as $captcha) {
-            $captcha->form = $form;
-            $captchaHtml .= $captcha->getCaptchaHtml();
-        }
-
-        return $captchaHtml;
-    }
 }

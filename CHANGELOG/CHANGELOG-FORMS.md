@@ -41,8 +41,12 @@
   upgrade notes regarding updates to the FormField::getFrontEndInputHtml()
   method signature and front-end field templates to better support error classes
   in rendering options.
+- From Templates have been updated to treat individual fields and inputs more like components
+  - Many variables are passed in as processed values at higher level templates
+  - New getFrontEndInputVariables
 - Recaptcha ⇒ Sprout Forms native? hasn’t been migrated yet…
 - Form Conditionals and Integrations have not yet been migrated
 - Notes Field ⇒ Default Craft
 - Removed Predefined Field and Predefined Date Field
+- Removed `{% hook 'sproutForms.modifyForm' %}` in favor of `{{ form.getCaptchaHtml() }}`
 

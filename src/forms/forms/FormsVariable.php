@@ -12,31 +12,16 @@ use craft\base\ElementInterface;
 
 class FormsVariable
 {
-    /**
-     * Gets a specific form. If no form is found, returns null
-     *
-     *
-     *
-     */
     public function getFormById(int $id): ?ElementInterface
     {
         return FormsModule::getInstance()->forms->getFormById($id);
     }
 
-    /**
-     * Gets a specific form by handle. If no form is found, returns null
-     *
-     *
-     *
-     */
     public function getForm(string $formHandle): ?ElementInterface
     {
         return FormsModule::getInstance()->forms->getFormByHandle($formHandle);
     }
 
-    /**
-     * Get all forms
-     */
     public function getAllForms(): array
     {
         return FormsModule::getInstance()->forms->getAllForms();
@@ -48,10 +33,7 @@ class FormsVariable
     }
 
     /**
-     * Returns an active or new submission model
-     *
-     *
-     * @return mixed
+     * Returns an active or new Submission Element
      */
     public function getSubmission(FormElement $form): SubmissionElement
     {

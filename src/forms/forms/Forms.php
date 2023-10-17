@@ -282,27 +282,4 @@ class Forms extends Component
 
         return $tabs;
     }
-
-    //public function getFormField($formFieldHandle, $formId)
-    //{
-    //    $form = Craft::$app->elements->getElementById($formId);
-    //
-    //    if (!$form) {
-    //        throw new BadRequestHttpException('No form exists with the ID ' . $formId);
-    //    }
-    //
-    //    return $form->getField($formFieldHandle);
-    //}
-
-    public function handleModifyFormHook($context): ?string
-    {
-        /** @var FormElement $form */
-        $form = $context['form'] ?? null;
-
-        if ($form !== null && $form->enableCaptchas) {
-            return FormsModule::getInstance()->formCaptchas->getCaptchasHtml($form);
-        }
-
-        return null;
-    }
 }

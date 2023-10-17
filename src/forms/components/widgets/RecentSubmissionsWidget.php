@@ -9,7 +9,7 @@ use craft\base\Widget;
 
 class RecentSubmissionsWidget extends Widget
 {
-    public int $formId;
+    public int $formId = 0;
 
     public int $limit = 10;
 
@@ -28,7 +28,7 @@ class RecentSubmissionsWidget extends Widget
     public function getTitle(): ?string
     {
         // Concat form name if the user select a specific form
-        if ($this->formId !== 0 && $this->formId !== null) {
+        if ($this->formId !== 0) {
             $form = FormsModule::getInstance()->forms->getFormById($this->formId);
 
             if ($form !== null) {
@@ -45,7 +45,7 @@ class RecentSubmissionsWidget extends Widget
     {
         $query = SubmissionElement::find();
 
-        if ($this->formId != 0) {
+        if ($this->formId !== 0) {
             $query->formId = $this->formId;
         }
 

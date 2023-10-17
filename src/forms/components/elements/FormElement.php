@@ -536,8 +536,6 @@ class FormElement extends Element
 
     /**
      * Use the name as the string representation.
-     *
-     * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function __toString(): string
     {
@@ -736,7 +734,7 @@ class FormElement extends Element
             Craft::error('Field does not validate.', __METHOD__);
             // @todo - handle errors on layout
             //$this->addError('submissionFieldLayout', 'Field does not validate.');
-            \Craft::dd($field->getErrors());
+            Craft::dd($field->getErrors());
         }
 
         // Check if the handle is updated to also update the titleFormat, rules and integrations
@@ -795,7 +793,7 @@ class FormElement extends Element
                 // since we remove our field data from the submissionLayout after the first save, we need to
                 // exit here so we don't delete fields below
                 // BUT if we remove this, then after we save a field once, somehow field data gets added
-                // to the submisssionLayout field in the db
+                // to the submission Layout field in the db
                 //if (empty($element['field'])) {
                 //    return;
                 //}
@@ -857,21 +855,6 @@ class FormElement extends Element
 
         return $this->_fields;
     }
-
-    /**
-     *
-     * @return FieldInterface|null
-     */
-    //public function getField(string $handle): ?FormField
-    //{
-    //    $fields = $this->getFields();
-    //
-    //    if (is_string($handle) && !empty($handle)) {
-    //        return $fields[$handle] ?? null;
-    //    }
-    //
-    //    return null;
-    //}
 
     public function getClassesOptions($cssClasses = null): array
     {
@@ -1000,6 +983,23 @@ class FormElement extends Element
         return array_map(static function($path) use ($name) {
             return $path . '/' . $name;
         }, $includePaths);
+    }
+
+    public function getCaptchaHtml(): ?string
+    {
+        if (!$this->enableCaptchas) {
+            return null;
+        }
+
+        $captchas = FormsModule::getInstance()->formCaptchas->getAllEnabledCaptchas();
+        $captchaHtml = '';
+
+        foreach ($captchas as $captcha) {
+            $captcha->form = $this;
+            $captchaHtml .= $captcha->getCaptchaHtml();
+        }
+
+        return $captchaHtml;
     }
 
     public function canView(User $user): bool

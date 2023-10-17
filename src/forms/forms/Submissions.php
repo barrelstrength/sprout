@@ -186,18 +186,13 @@ class Submissions extends Component
             return;
         }
 
-        // Default to 5000 if no integer is found in settings
-        $spamLimit = is_int($settings->spamLimit)
-            ? $settings->spamLimit
-            : static::SPAM_DEFAULT_LIMIT;
-
-        if ($spamLimit <= 0) {
+        if ($settings->spamLimit <= 0) {
             return;
         }
 
         $ids = SubmissionElement::find()
             ->limit(null)
-            ->offset($spamLimit)
+            ->offset($settings->spamLimit)
             ->status(SubmissionStatus::SPAM_STATUS_HANDLE)
             ->orderBy(['sprout_form_submissions.dateCreated' => SORT_DESC])
             ->ids();

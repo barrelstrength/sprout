@@ -197,15 +197,15 @@ class FormIntegrationsController extends BaseController
         ]);
     }
 
-    private function returnJson(bool $success, Integration $integration = null): Response
+    private function returnJson(bool $success, Integration $integration): Response
     {
         // @todo how we should return errors to the edit integration modal? template response is disabled for now
         return $this->asJson([
             'success' => $success,
-            'errors' => $integration ? $integration->getErrors() : null,
+            'errors' => $integration->getErrors(),
             'integration' => [
                 'id' => $integration->id,
-                'name' => $integration->name ?? null,
+                'name' => $integration->name,
                 'enabled' => $integration->enabled,
             ],
             //'template' => $success ? false : Sprout::$app->integrations->getModalIntegrationTemplate($integration),
