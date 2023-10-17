@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\forms\submissions\SubmissionStatus;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use Craft;
 
 class SubmissionElementQuery extends ElementQuery
 {
@@ -197,9 +198,14 @@ class SubmissionElementQuery extends ElementQuery
     protected function customFields(): array
     {
         // This method won't get called if $this->formId isn't set to a single int
-        /** @var FormElement $form */
         $form = FormsModule::getInstance()->forms->getFormById($this->formId);
 
-        return $form->getFields();
+        if (!$form) {
+            return [];
+        }
+        
+        $fields = Craft::$app->getFields()->getAllFields($form->getSubmissionFieldContext());
+
+        return $fields;
     }
 }

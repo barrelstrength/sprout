@@ -29,11 +29,6 @@ use craft\web\CpScreenResponseBehavior;
 use yii\base\Exception;
 use yii\web\Response;
 
-/**
- *
- * @property null|array $hiddenFields
- * @property null|array $conditionalLogicResults
- */
 class SubmissionElement extends Element
 {
     public ?int $formId = null;
