@@ -36,6 +36,7 @@ export default ({command}) => ({
 
                 forms: '/forms/Forms.js',
                 formTypes: '/forms/FormTypesSettings.js',
+                submissionStatusSettings: '/forms/SubmissionStatusSettings.js',
 
                 // Front End
                 DynamicCsrfInput: '/core/DynamicCsrfInput.js',

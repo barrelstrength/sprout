@@ -22,16 +22,20 @@
 {% set title = submissionStatus.name ?? 'Create New Submission Status'|t('sprout-module-forms') %}
 
 {% set fullPageForm = true %}
+{% set isSpamStatus = submissionStatus.handle == 'spam' %}
+{% set spamStatusMessage = 'Spam is a default status and cannot be edited'|t('sprout-module-forms') %}
 
 {% block actionButton %}
 
-    <div class="buttons">
-        <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
+    {% if not isSpamStatus %}
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
 
-        {% if not canCreateForm %}
-            {{ sproutCp.upgradeToProButton(module) }}
-        {% endif %}
-    </div>
+            {% if not canCreateForm %}
+                {{ sproutCp.upgradeToProButton(module) }}
+            {% endif %}
+        </div>
+    {% endif %}
 
 {% endblock %}
 
@@ -54,7 +58,9 @@
         autofocus: true,
         required: true,
         translatable: true,
-        errors: submissionStatus.getErrors("name")
+        errors: submissionStatus.getErrors("name"),
+        disabled: isSpamStatus,
+        tip: isSpamStatus ? spamStatusMessage : null,
     }) }}
 
     {{ forms.textField({
@@ -65,42 +71,48 @@
         value: submissionStatus.handle,
         instructions: "How you’ll refer to this order status type in your templates."|t('sprout-module-forms'),
         required: true,
-        errors: submissionStatus.getErrors("handle")
+        errors: submissionStatus.getErrors("handle"),
+        disabled: isSpamStatus,
+        tip: isSpamStatus ? spamStatusMessage : null,
     }) }}
 
-    {{ forms.hidden({
-        id: 'color',
-        name: 'color',
-        value: submissionStatus.color
-    }) }}
-    {% set colorField %}
-        <div>
-            <a id="color-menu-btn" class="btn menubtn" href="#">
-                <span class="status {{ submissionStatus.color }}"></span>{{ submissionStatus.color|t|title }}
-            </a>
-            <div class="menu">
-                <ul class="padded">
-                    {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
-                        <li>
-                            <a data-val="{{ color }}" {% if submissionStatus.color == color %}class="sel"{% endif %} href="#"><span class="status {{ color }}"></span>{{ color|t|title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+    {% if not isSpamStatus %}
+
+        {{ forms.hidden({
+            id: 'color',
+            name: 'color',
+            value: submissionStatus.color
+        }) }}
+        {% set colorField %}
+            <div>
+                <a id="color-menu-btn" class="btn menubtn" href="#">
+                    <span class="status {{ submissionStatus.color }}"></span>{{ submissionStatus.color|t|title }}
+                </a>
+                <div class="menu">
+                    <ul class="padded">
+                        {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+                            <li>
+                                <a data-val="{{ color }}" {% if submissionStatus.color == color %}class="sel"{% endif %} href="#"><span class="status {{ color }}"></span>{{ color|t|title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-        </div>
-    {% endset %}
-    {{ forms.field({
-        label: 'Color'|t('sprout-module-forms'),
-        instructions: 'Choose a color for the submission status'|t('sprout-module-forms')
-    },colorField) }}
+        {% endset %}
+        {{ forms.field({
+            label: 'Color'|t('sprout-module-forms'),
+            instructions: 'Choose a color for the submission status'|t('sprout-module-forms')
+        },colorField) }}
 
-    {{ forms.lightswitchField({
-        label: "Default Submission Status"|t('sprout-module-forms'),
-        instructions: "Use this Submission Status as the default when a form is submitted."|t('sprout-module-forms'),
-        name: 'isDefault',
-        on: submissionStatus.isDefault
-    }) }}
+        {{ forms.lightswitchField({
+            label: "Default Submission Status"|t('sprout-module-forms'),
+            instructions: "Use this Submission Status as the default when a form is submitted."|t('sprout-module-forms'),
+            name: 'isDefault',
+            on: submissionStatus.isDefault
+        }) }}
+
+    {% endif %}
 
 {% endblock %}
 
