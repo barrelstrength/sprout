@@ -150,10 +150,8 @@ class Submissions extends Component
      */
     public function isSaveDataEnabled(FormElement $form, bool $isSpam = false): bool
     {
-        $settings = FormsModule::getInstance()->getSettings();
-
-        // Get the global saveData setting
-        $saveData = $settings->enableSaveData;
+        $formType = $form->getFormType();
+        $saveData = $formType->enableSaveData;
 
         if ($saveData) {
             // Allow Form to override global saveData setting
@@ -168,8 +166,8 @@ class Submissions extends Component
             Craft::$app->getRequest()->getIsSiteRequest() &&
             $isSpam
         ) {
-
             // If we have a spam submission, use the spam saveData setting
+            $settings = FormsModule::getInstance()->getSettings();
             $saveData = $settings->saveSpamToDatabase;
         }
 
@@ -184,7 +182,6 @@ class Submissions extends Component
 
         // See Craft Garbage collection treatment of probability
         // https://docs.craftcms.com/v3/gc.html
-        /** @noinspection RandomApiMigrationInspection */
         if (!$force && random_int(0, 1_000_000) >= $probability) {
             return;
         }

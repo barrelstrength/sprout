@@ -298,6 +298,7 @@ class Forms extends Component
     {
         /** @var FormElement $form */
         $form = $context['form'] ?? null;
+
         if ($form !== null && $form->enableCaptchas) {
             return FormsModule::getInstance()->formCaptchas->getCaptchasHtml($form);
         }

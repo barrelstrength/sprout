@@ -24,7 +24,6 @@ use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
-use craft\web\assets\conditionbuilder\ConditionBuilderAsset;
 use craft\web\CpScreenResponseBehavior;
 use yii\base\Exception;
 use yii\web\Response;
@@ -195,7 +194,7 @@ class SubmissionElement extends Element
     protected static function defineSortOptions(): array
     {
         return [
-            'name' => Craft::t('sprout-module-forms', 'Form Name'),
+            'sprout_forms.name' => Craft::t('sprout-module-forms', 'Form Name'),
             [
                 'label' => Craft::t('sprout-module-forms', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
@@ -338,7 +337,6 @@ class SubmissionElement extends Element
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->crumbs($crumbs);
-
         //Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
     }
 
@@ -359,11 +357,11 @@ class SubmissionElement extends Element
         $html = parent::getSidebarHtml($static);
 
         $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarIntegrations', [
-            'submission' => $this
+            'submission' => $this,
         ]);
 
         $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarSpam', [
-            'submission' => $this
+            'submission' => $this,
         ]);
 
         return $html;

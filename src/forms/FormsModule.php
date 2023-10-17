@@ -22,6 +22,7 @@ use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
+use BarrelStrength\Sprout\forms\controllers\SubmissionsController;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
 use BarrelStrength\Sprout\forms\formfields\FormFields;
@@ -33,6 +34,7 @@ use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\formtypes\FormTypes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
+use BarrelStrength\Sprout\forms\submissions\SubmissionHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
@@ -231,6 +233,15 @@ class FormsModule extends Module
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             [FormTypeHelper::class, 'defineNativeFieldsPerFormType']);
+
+        Event::on(
+            SubmissionsController::class,
+            SubmissionsController::EVENT_BEFORE_VALIDATE,
+            [SubmissionHelper::class, 'validateCaptchas']);
+
+        Craft::$app->view->hook('sproutForms.modifyForm', static function(array &$context) {
+            return FormsModule::getInstance()->forms->handleModifyFormHook($context);
+        });
 
         $this->registerProjectConfigEventListeners();
     }

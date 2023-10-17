@@ -52,8 +52,8 @@
         <input type="hidden" aria-hidden="true" name="redirect" value="{{ redirectUri|hash }}">
     {% endif %}
 
-    {% if globalErrorsEnabled and errors|length and (form.errorMessage or globalErrorListHtml) %}
-        {% set errorMessage = view.renderObjectTemplate(form.errorMessage, submission) %}
+    {% if globalErrorsEnabled and errors|length and (form.messageOnError or globalErrorListHtml) %}
+        {% set errorMessage = view.renderObjectTemplate(form.messageOnError, submission) %}
         {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
         <div data-label="{{ id }}-message-box" data-description="error-message">
             {{ errorMessage|markdown }}
@@ -61,8 +61,8 @@
         </div>
     {% endif %}
 
-    {% if lastSubmission and form.id == lastSubmission.getForm().id and form.successMessage %}
-        {% set successMessageTemplate = form.successMessage ?? '' %}
+    {% if lastSubmission and form.id == lastSubmission.getForm().id and form.messageOnSuccess %}
+        {% set successMessageTemplate = form.messageOnSuccess ?? '' %}
         {% set successMessage = view.renderObjectTemplate(successMessageTemplate, lastSubmission) %}
         {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
         <div data-label="{{ id }}-message-box" data-description="success-message">

@@ -6,10 +6,10 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\submissions\SubmissionStatus;
+use Craft;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
-use Craft;
 
 class SubmissionElementQuery extends ElementQuery
 {
@@ -203,7 +203,7 @@ class SubmissionElementQuery extends ElementQuery
         if (!$form) {
             return [];
         }
-        
+
         $fields = Craft::$app->getFields()->getAllFields($form->getSubmissionFieldContext());
 
         return $fields;

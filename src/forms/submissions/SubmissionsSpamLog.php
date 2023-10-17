@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\Model;
+use DateTime;
 
 class SubmissionsSpamLog extends Model
 {
@@ -17,9 +18,9 @@ class SubmissionsSpamLog extends Model
 
     public $errors;
 
-    public string $dateCreated;
+    public DateTime|string $dateCreated;
 
-    public string $dateUpdated;
+    public DateTime|string $dateUpdated;
 
     public string $uid;
 
