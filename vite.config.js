@@ -46,6 +46,9 @@ export default ({command}) => ({
                 disableSubmitButton: '/forms-frontend/DisableSubmitButton.js',
                 rules: '/forms-frontend/Rules.js',
                 submitHandler: '/forms-frontend/SubmitHandler.js',
+
+                reCaptchaCheckbox: '/forms-frontend/recaptcha_v2_checkbox.js',
+                reCaptchaInvisible: '/forms-frontend/recaptcha_v2_invisible.js',
             },
             output: {
                 sourcemap: true,

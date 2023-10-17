@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\forms\captchas;
 
 use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
+use BarrelStrength\Sprout\forms\components\captchas\GoogleCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\HoneypotCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\JavascriptCaptcha;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
@@ -23,6 +24,7 @@ class FormCaptchas extends Component
     {
         $captchas = [
             DuplicateCaptcha::class,
+            GoogleCaptcha::class,
             HoneypotCaptcha::class,
             JavascriptCaptcha::class,
         ];

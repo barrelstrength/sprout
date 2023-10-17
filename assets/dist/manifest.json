@@ -130,6 +130,16 @@
     "isEntry": true,
     "src": "forms-frontend/SubmitHandler.js"
   },
+  "forms-frontend/recaptcha_v2_checkbox.js": {
+    "file": "assets/reCaptchaCheckbox-3abc96a4.js",
+    "isEntry": true,
+    "src": "forms-frontend/recaptcha_v2_checkbox.js"
+  },
+  "forms-frontend/recaptcha_v2_invisible.js": {
+    "file": "assets/reCaptchaInvisible-ddc145dc.js",
+    "isEntry": true,
+    "src": "forms-frontend/recaptcha_v2_invisible.js"
+  },
   "forms/FormTypesSettings.js": {
     "file": "assets/formTypes-d0b78584.js",
     "isEntry": true,
@@ -149,6 +159,11 @@
     ],
     "isEntry": true,
     "src": "forms/Forms.js"
+  },
+  "forms/SubmissionStatusSettings.js": {
+    "file": "assets/submissionStatusSettings-5dd799f5.js",
+    "isEntry": true,
+    "src": "forms/SubmissionStatusSettings.js"
   },
   "mailer/EmailTypesSettings.js": {
     "file": "assets/emailTypes-25710d85.js",
