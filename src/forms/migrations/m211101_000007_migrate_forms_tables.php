@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection DuplicatedCode */
-
 namespace BarrelStrength\Sprout\forms\migrations;
 
 use Craft;
