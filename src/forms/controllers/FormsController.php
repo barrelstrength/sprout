@@ -9,17 +9,12 @@ use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
-use craft\base\ElementInterface;
-use craft\base\FieldInterface;
 use craft\errors\WrongEditionException;
-use craft\fieldlayoutelements\CustomField;
 use craft\helpers\Cp;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\web\Controller as BaseController;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
@@ -525,4 +520,20 @@ class FormsController extends BaseController
     //        $form->errorDisplayMethod = 'inline';
     //    }
     //}
+
+    public function actionGetReportsTable()
+    {
+        $elementId = Craft::$app->getRequest()->getRequiredParam('elementId');
+
+        $element = Craft::$app->getElements()->getElementById($elementId);
+
+        $relationsTableField = $element->getReportRelationsTableField();
+
+        if (Craft::$app->getRequest()->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'html' => $relationsTableField->formHtml(),
+            ]);
+        }
+    }
 }

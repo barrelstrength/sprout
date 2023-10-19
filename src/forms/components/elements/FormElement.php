@@ -6,7 +6,9 @@ use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
@@ -30,7 +32,6 @@ use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\Element;
 use craft\base\Field;
-use craft\base\FieldInterface;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\db\Query;
 use craft\db\Table;
@@ -40,6 +41,7 @@ use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
+use craft\events\RegisterComponentTypesEvent;
 use craft\fieldlayoutelements\TextField;
 use craft\helpers\Cp;
 use craft\helpers\Db;
@@ -47,6 +49,7 @@ use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -64,6 +67,8 @@ use yii\web\Response;
  */
 class FormElement extends Element
 {
+    public const EVENT_REGISTER_COMPATIBLE_DATA_SOURCES = 'registerCompatibleDataSources';
+
     public ?string $name = null;
 
     public ?string $handle = null;
@@ -226,33 +231,18 @@ class FormElement extends Element
                 ]),
         ]);
 
-        $reports = $this->getReports();
-
-        $newReportButtonText = Craft::t('sprout-module-forms', 'New Report');
-        $newReportButtonLink = UrlHelper::cpUrl('sprout/data-studio/new', [
-            'type' => SubmissionsDataSource::class,
-            'site' => Cp::requestedSite()->handle,
-        ]);
-
         $reportsTab = new FieldLayoutTab();
         $reportsTab->layout = $fieldLayout;
         $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
         $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
         $reportsTab->setElements([
-            count($reports) > 0 ?
-                new RelationsTableField([
-                    'attribute' => 'reports',
-                    'rows' => $reports,
-                    'newButtonLabel' => $newReportButtonText,
-                    'cpEditUrl' => $newReportButtonLink,
-                ]) :
-                new MediaBoxField([
-                    'heading' => Craft::t('sprout-module-forms', 'Create your first report'),
-                    'body' => Craft::t('sprout-module-forms', 'Create a report to view and export your form submissions.'),
-                    'addButtonText' => $newReportButtonText,
-                    'addButtonLink' => $newReportButtonLink,
-                    'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
-                ]),
+            $this->getReportRelationsTableField(),
+        ]);
+
+        $newIntegrationButtonText = Craft::t('sprout-module-forms', 'New Integration');
+        $newIntegrationButtonLink = UrlHelper::cpUrl('sprout/data-studio/new', [
+            'type' => SubmissionsDataSource::class,
+            'site' => Cp::requestedSite()->handle,
         ]);
 
         $integrationsTab = new FieldLayoutTab();
@@ -261,6 +251,13 @@ class FormElement extends Element
         $integrationsTab->uid = 'SPROUT-UID-FORMS-INTEGRATIONS-TAB';
         $integrationsTab->setElements([
             new IntegrationsField(),
+            new MediaBoxField([
+                'heading' => Craft::t('sprout-module-forms', 'Create your first integration'),
+                'body' => Craft::t('sprout-module-forms', 'Send your form submission data to somewhere other than Craft.'),
+                'addButtonText' => $newIntegrationButtonText,
+                'addButtonLink' => $newIntegrationButtonLink,
+                'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
+            ]),
         ]);
 
         $linkHtml = Links::enhancedLinkFieldHtml([
@@ -933,10 +930,22 @@ class FormElement extends Element
 
     public function getReports(): array
     {
-        $query = DataSetElement::find()
-            ->type(SubmissionsDataSource::class);
+        $dataSourceTypes = [
+            SubmissionsDataSource::class,
+        ];
 
-        return array_map(static function($element) {
+        $event = new RegisterComponentTypesEvent([
+            'types' => $dataSourceTypes,
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_COMPATIBLE_DATA_SOURCES, $event);
+
+        // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
+        $query = DataSetElement::find()
+            ->where(['in', 'sprout_datasets.type', $event->types])
+            ->orderBy('sprout_datasets.name');
+
+        $rows = array_map(static function($element) {
             return [
                 'name' => $element->name,
                 'cpEditUrl' => $element->getCpEditUrl(),
@@ -944,6 +953,59 @@ class FormElement extends Element
                 'actionUrl' => $element->getCpEditUrl(),
             ];
         }, $query->all());
+
+        $types = DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+
+        $options = TemplateHelper::optionsFromComponentTypes($types);
+
+        $optionValues = [
+            [
+                'label' => 'Select Data Set Type...',
+                'value' => '',
+            ],
+        ];
+
+        foreach ($options as $option) {
+            $optionValues[] = $option;
+        }
+
+        $createReportSelect = Cp::selectHtml([
+            'id' => 'new-report',
+            'name' => 'new-report',
+            'options' => $optionValues,
+            'value' => '',
+        ]);
+
+        $rows[] = [
+            'name' => Craft::t('sprout-module-forms', 'New Report'),
+            'cpEditUrl' => '',
+            'type' => Template::raw($createReportSelect),
+            'actionUrl' => '',
+        ];
+
+        return $rows;
+    }
+
+    public function getReportRelationsTableField(): RelationsTableField
+    {
+        $reports = $this->getReports();
+
+        //$newReportButtonText = Craft::t('sprout-module-forms', 'New Report');
+        //$newReportButtonLink = UrlHelper::cpUrl('sprout/data-studio/new', [
+        //    'type' => SubmissionsDataSource::class,
+        //    'site' => Cp::requestedSite()->handle,
+        //]);
+
+        $reportTable = new RelationsTableField([
+            'attribute' => 'reports',
+            'rows' => $reports,
+            //'newButtonLabel' => $newReportButtonText,
+            //'cpEditUrl' => $newReportButtonLink,
+        ]);
+
+        Craft::$app->getView()->registerJs('new SproutFormReportsRelationsTable(' . $this->id . ');');
+
+        return $reportTable;
     }
 
     public string|array $additionalTemplates = [];
