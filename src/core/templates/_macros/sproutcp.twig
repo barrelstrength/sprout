@@ -124,9 +124,13 @@
         {% for relation in relations %}
             <tr>
                 <td>
-                    <a href="{{ relation.cpEditUrl }}" target="_blank">
+                    {% if relation.cpEditUrl %}
+                        <a href="{{ relation.cpEditUrl }}" target="_blank">
+                            {{ relation.name }}
+                        </a>
+                    {% else %}
                         {{ relation.name }}
-                    </a>
+                    {% endif %}
                 </td>
                 <td>{{ relation.type }}</td>
                 <td>
@@ -140,5 +144,6 @@
         {% endfor %}
         </tbody>
     </table>
+
 {% endmacro %}
 
