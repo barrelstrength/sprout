@@ -7,6 +7,10 @@ export default ({command}) => ({
     root: 'assets/src',
     // Relative to "root" setting folder
     publicDir: '../public',
+    // https://github.com/vitejs/vite/discussions/7920
+    esbuild: {
+        drop: ['console', 'debugger'],
+    },
     build: {
         emptyOutDir: true,
         manifest: true,
