@@ -2,14 +2,19 @@
 
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceOrderHistoryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceProductRevenueDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplateQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource;
+use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Cp;
+use craft\helpers\Template;
 use yii\base\Component;
 
 class DataSources extends Component
@@ -90,5 +95,53 @@ class DataSources extends Component
         $this->_dataSources = $types;
 
         return $this->_dataSources;
+    }
+
+    public function getDataSourceRelations(array $dataSourceTypes = null): array
+    {
+        $dataSourceTypes = $dataSourceTypes ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+
+        // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
+        $query = DataSetElement::find()
+            ->orderBy('sprout_datasets.name')
+            ->where(['in', 'sprout_datasets.type', $dataSourceTypes]);
+
+        $rows = array_map(static function($element) {
+            return [
+                'name' => $element->name,
+                'cpEditUrl' => $element->getCpEditUrl(),
+                'type' => $element->getDataSource()::displayName(),
+                'actionUrl' => $element->getCpEditUrl(),
+            ];
+        }, $query->all());
+
+        $options = TemplateHelper::optionsFromComponentTypes($dataSourceTypes);
+
+        $optionValues = [
+            [
+                'label' => Craft::t('sprout-module-data-studio', 'Select Data Set Type...'),
+                'value' => '',
+            ],
+        ];
+
+        foreach ($options as $option) {
+            $optionValues[] = $option;
+        }
+
+        $createReportSelect = Cp::selectHtml([
+            'id' => 'new-data-set',
+            'name' => 'new-data-set',
+            'options' => $optionValues,
+            'value' => '',
+        ]);
+
+        $rows[] = [
+            'name' => Craft::t('sprout-module-data-studio', 'New Report'),
+            'cpEditUrl' => '',
+            'type' => Template::raw($createReportSelect),
+            'actionUrl' => '',
+        ];
+
+        return $rows;
     }
 }
