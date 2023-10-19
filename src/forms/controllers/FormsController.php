@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
+use BarrelStrength\Sprout\datastudio\components\fieldlayoutelements\DataStudioRelationsTableField;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
@@ -521,19 +522,21 @@ class FormsController extends BaseController
     //    }
     //}
 
-    public function actionGetReportsTable()
+    public function actionGetDataSourceRelationsTable(): Response
     {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
         $elementId = Craft::$app->getRequest()->getRequiredParam('elementId');
 
+        /** @var FormElement $element */
         $element = Craft::$app->getElements()->getElementById($elementId);
 
-        $relationsTableField = $element->getReportRelationsTableField();
+        return $this->asJson([
+            'success' => true,
+            'html' => $element->getDataSourceRelationsField()->formHtml(),
+        ]);
+    }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
-            return $this->asJson([
-                'success' => true,
-                'html' => $relationsTableField->formHtml(),
-            ]);
-        }
     }
 }
