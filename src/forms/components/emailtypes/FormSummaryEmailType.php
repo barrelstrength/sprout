@@ -45,7 +45,7 @@ class FormSummaryEmailType extends EmailType
 
         $fieldLayoutTab = new FieldLayoutTab([
             'layout' => $fieldLayout,
-            'name' => Craft::t('sprout-module-mailer', 'Content'),
+            'name' => Craft::t('sprout-module-forms', 'Content'),
             'sortOrder' => 1,
             'uid' => StringHelper::UUID(),
         ]);
@@ -54,7 +54,7 @@ class FormSummaryEmailType extends EmailType
             new DefaultMessageField(),
             new Tip([
                 'style' => Tip::STYLE_TIP,
-                'tip' => Craft::t('sprout-module-mailer', 'The body of this email will include a summary of the form submission.'),
+                'tip' => Craft::t('sprout-module-forms', 'The body of this email will include a summary of the form submission.'),
                 'uid' => StringHelper::UUID(),
             ]),
         ]);

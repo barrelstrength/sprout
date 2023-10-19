@@ -60,7 +60,7 @@ class GoogleCaptcha extends Captcha
     public function getCaptchaSettingsHtml(): string
     {
         // We just use this here to indicate in the UI if the setting is overridden
-        $config = Craft::$app->getConfig()->getConfigFromFile('sprout-forms-google-recaptcha');
+        $config = Craft::$app->getConfig()->getConfigFromFile('sprout-module-forms');
         $settings = $this->getSettings();
 
         $languageOptions = $this->getLanguageOptions();
@@ -111,14 +111,14 @@ class GoogleCaptcha extends Captcha
         $gRecaptchaResponse = $_POST['g-recaptcha-response'] ?? null;
 
         if (empty($gRecaptchaResponse)) {
-            $errorMessage = Craft::t('sprout-forms-google-recaptcha', "Google reCAPTCHA can't be blank.");
+            $errorMessage = Craft::t('sprout-module-forms', "Google reCAPTCHA can't be blank.");
             $this->addError(self::CAPTCHA_ERRORS_KEY, $errorMessage);
 
             return false;
         }
 
         if ($this->secretKey === null) {
-            $errorMessage = Craft::t('sprout-forms-google-recaptcha', 'Invalid secret key.');
+            $errorMessage = Craft::t('sprout-module-forms', 'Invalid secret key.');
             $this->addError(self::CAPTCHA_ERRORS_KEY, $errorMessage);
 
             return false;
