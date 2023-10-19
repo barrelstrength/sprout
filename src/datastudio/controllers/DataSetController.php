@@ -19,6 +19,7 @@ use craft\models\Site;
 use craft\web\Controller;
 use http\Exception\InvalidArgumentException;
 use Twig\Markup;
+use yii\helpers\Markdown;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -117,13 +118,15 @@ class DataSetController extends Controller
         ]);
     }
 
-    public function actionCreateDataSet(string $type): Response
+    public function actionCreateDataSet(string $type = null): Response
     {
         $site = Cp::requestedSite();
 
         if (!$site instanceof Site) {
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
+
+        $type = Craft::$app->getRequest()->getParam('type', $type);
 
         if (!$type) {
             throw new InvalidArgumentException('No Data Set Type provided.');
@@ -149,6 +152,16 @@ class DataSetController extends Controller
 
         if (!Craft::$app->getDrafts()->saveElementAsDraft($dataSet, Craft::$app->getUser()->getId(), null, null, false)) {
             throw new ServerErrorHttpException(sprintf('Unable to save data set as a draft: %s', implode(', ', $dataSet->getErrorSummary(true))));
+        }
+
+        // Supports creating a new Data Set via Slideout Editor
+        if (Craft::$app->getRequest()->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'elementId' => $dataSet->id,
+                'draftId' => $dataSet->draftId,
+                'siteId' => $dataSet->siteId,
+            ]);
         }
 
         return $this->redirect($dataSet->getCpEditUrl());
