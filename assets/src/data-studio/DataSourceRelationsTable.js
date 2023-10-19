@@ -1,7 +1,7 @@
-class SproutFormReportsRelationsTable {
+class DataSourceRelationsTable {
 
-    constructor(formId) {
-        this.formId = formId;
+    constructor(elementId) {
+        this.elementId = elementId;
 
         this.initElementSlideout();
     }
@@ -11,7 +11,7 @@ class SproutFormReportsRelationsTable {
 
         let self = this;
 
-        let newSelectField = document.getElementById('new-report');
+        let newSelectField = document.getElementById('new-data-set');
 
         newSelectField.addEventListener('change', function(event) {
             Craft.sendActionRequest('POST', 'sprout-module-data-studio/data-set/create-data-set', {
@@ -43,22 +43,22 @@ class SproutFormReportsRelationsTable {
     replaceTable() {
         let self = this;
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-reports-table', {
+        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-data-source-relations-table', {
                 data: {
-                    elementId: self.formId,
+                    elementId: self.elementId,
                 },
             })
             .then((response) => {
                 console.log('reports table html response', response);
 
-                $('#reports-field').html(response.data.html);
+                $('#data-source-relations-field').html(response.data.html);
 
                 self.initElementSlideout();
             });
     }
 }
 
-window.SproutFormReportsRelationsTable = SproutFormReportsRelationsTable;
+window.DataSourceRelationsTable = DataSourceRelationsTable;
 
 
 

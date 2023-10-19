@@ -1,15 +1,3 @@
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
 {{ sproutCp.relationsTable(rows) }}
-
-{% if newButtonLabel and cpEditUrl %}
-    <div style="margin: var(--row-gap) 0 0; text-align: right;">
-        <a
-            href="{{ cpEditUrl }}"
-            target="_blank"
-            class="btn secondary add icon"
-        >
-            {{ newButtonLabel }}
-        </a>
-    </div>
-{% endif %}

@@ -7,5 +7,5 @@ import './FormSettings';
 import './Integrations';
 import './IntegrationModal';
 
-import './SproutFormReportsRelationsTable';
+import '../data-studio/DataSourceRelationsTable';
 
