@@ -9,9 +9,11 @@ use BarrelStrength\Sprout\datastudio\components\datasources\CustomQueryDataSourc
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplateQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\components\events\ModifyDataSourceRelationsQueryEvent;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use Craft;
+use craft\base\ElementInterface;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
 use craft\helpers\Template;
@@ -23,6 +25,8 @@ class DataSources extends Component
      * Only to be used by Sprout
      */
     public const INTERNAL_SPROUT_EVENT_REGISTER_DATA_SOURCES = 'registerInternalSproutDataSources';
+
+    public const EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY = 'modifyDataSourceRelationsQuery';
 
     public const EVENT_REGISTER_DATA_SOURCES = 'registerSproutDataSources';
 
@@ -97,14 +101,21 @@ class DataSources extends Component
         return $this->_dataSources;
     }
 
-    public function getDataSourceRelations(array $dataSourceTypes = null): array
+    public function getDataSourceRelations(DataSourceRelationsInterface $element): array
     {
-        $dataSourceTypes = $dataSourceTypes ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+        $dataSourceTypes = $element->getDataSourceRelationTypes() ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
 
         // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
         $query = DataSetElement::find()
             ->orderBy('sprout_datasets.name')
             ->where(['in', 'sprout_datasets.type', $dataSourceTypes]);
+
+        $event = new ModifyDataSourceRelationsQueryEvent([
+            'element' => $element,
+            'query' => $query,
+        ]);
+
+        $this->trigger(self::EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY, $event);
 
         $rows = array_map(static function($element) {
             return [
@@ -113,7 +124,7 @@ class DataSources extends Component
                 'type' => $element->getDataSource()::displayName(),
                 'actionUrl' => $element->getCpEditUrl(),
             ];
-        }, $query->all());
+        }, $event->query->all());
 
         $options = TemplateHelper::optionsFromComponentTypes($dataSourceTypes);
 
