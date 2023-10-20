@@ -2,17 +2,15 @@
 
 namespace BarrelStrength\Sprout\forms\forms;
 
-use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\components\fieldlayoutelements\DataStudioRelationsTableField;
+use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 
 trait FormsDataSourceRelationsTrait
 {
-    public function getDataSourceRelationTypes(): array
+    public function getAllowedRelationTypes(): array
     {
         $dataSourceTypes = [
             SubmissionsDataSource::class,
@@ -28,11 +26,11 @@ trait FormsDataSourceRelationsTrait
         return $event->types;
     }
 
-    public function getDataSourceRelationsField(): DataStudioRelationsTableField
+    public function getRelationsTableField(): RelationsTableField
     {
         $reportRows = DataStudioModule::getInstance()->dataSources->getDataSourceRelations($this);
 
-        return new DataStudioRelationsTableField([
+        return new RelationsTableField([
             'attribute' => 'data-source-relations',
             'rows' => $reportRows,
         ]);

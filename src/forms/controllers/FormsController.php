@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
-use BarrelStrength\Sprout\datastudio\components\fieldlayoutelements\DataStudioRelationsTableField;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
@@ -534,7 +533,7 @@ class FormsController extends BaseController
 
         return $this->asJson([
             'success' => true,
-            'html' => $element->getDataSourceRelationsField()->formHtml(),
+            'html' => $element->getRelationsTableField()->formHtml(),
         ]);
     }
 

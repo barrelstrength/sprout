@@ -5,8 +5,8 @@ namespace BarrelStrength\Sprout\forms\components\elements;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
-use BarrelStrength\Sprout\datastudio\datasources\DataSourceRelationsInterface;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
@@ -62,7 +62,7 @@ use yii\web\Response;
 /**
  * @mixin FieldLayoutBehavior
  */
-class FormElement extends Element implements DataSourceRelationsInterface
+class FormElement extends Element implements RelationsTableInterface
 {
     use FormsDataSourceRelationsTrait;
 
@@ -242,7 +242,7 @@ class FormElement extends Element implements DataSourceRelationsInterface
             $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
             $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
             $reportsTab->setElements([
-                $this->getDataSourceRelationsField(),
+                $this->getRelationsTableField(),
             ]);
         }
 

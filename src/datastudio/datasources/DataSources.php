@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
+use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceOrderHistoryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceProductRevenueDataSource;
@@ -11,9 +12,7 @@ use BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\components\events\ModifyDataSourceRelationsQueryEvent;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
-use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use Craft;
-use craft\base\ElementInterface;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Cp;
 use craft\helpers\Template;
@@ -101,9 +100,9 @@ class DataSources extends Component
         return $this->_dataSources;
     }
 
-    public function getDataSourceRelations(DataSourceRelationsInterface $element): array
+    public function getDataSourceRelations(RelationsTableInterface $element): array
     {
-        $dataSourceTypes = $element->getDataSourceRelationTypes() ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+        $dataSourceTypes = $element->getAllowedRelationTypes() ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
 
         // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
         $query = DataSetElement::find()
