@@ -6,10 +6,7 @@ use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
-use BarrelStrength\Sprout\core\twig\TemplateHelper;
-use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\components\fieldlayoutelements\DataStudioRelationsTableField;
-use BarrelStrength\Sprout\datastudio\DataStudioModule;
+use BarrelStrength\Sprout\datastudio\datasources\DataSourceRelationsInterface;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
@@ -21,6 +18,7 @@ use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNoti
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
+use BarrelStrength\Sprout\forms\forms\FormsDataSourceRelationsTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
@@ -42,7 +40,6 @@ use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
-use craft\events\RegisterComponentTypesEvent;
 use craft\fieldlayoutelements\TextField;
 use craft\helpers\Cp;
 use craft\helpers\Db;
@@ -50,7 +47,6 @@ use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
-use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
@@ -66,9 +62,13 @@ use yii\web\Response;
 /**
  * @mixin FieldLayoutBehavior
  */
-class FormElement extends Element
+class FormElement extends Element implements DataSourceRelationsInterface
 {
-    public const EVENT_REGISTER_COMPATIBLE_DATA_SOURCES = 'registerCompatibleDataSources';
+    use FormsDataSourceRelationsTrait;
+
+    // @todo - move to DataSourceRelationsTrait when min version PHP = 8.2
+    public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
+
 
     public ?string $name = null;
 
@@ -319,33 +319,6 @@ class FormElement extends Element
         $fieldLayout->setTabs($tabs);
 
         return $this->_fieldLayout = $fieldLayout;
-    }
-
-    public function getDataSourceRelationTypes(): array
-    {
-        $dataSourceTypes = [
-            SubmissionsDataSource::class,
-        ];
-
-        $event = new RegisterComponentTypesEvent([
-            'types' => $dataSourceTypes,
-        ]);
-
-        $this->trigger(self::EVENT_REGISTER_COMPATIBLE_DATA_SOURCES, $event);
-
-        return $event->types;
-    }
-
-    public function getDataSourceRelationsField(): DataStudioRelationsTableField
-    {
-        $reportRows = DataStudioModule::getInstance()->dataSources->getDataSourceRelations(
-            $this->getDataSourceRelationTypes()
-        );
-
-        return new DataStudioRelationsTableField([
-            'attribute' => 'data-source-relations',
-            'rows' => $reportRows,
-        ]);
     }
 
     public function getSubmissionLayoutUid(): string

@@ -28,6 +28,7 @@ use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
 use BarrelStrength\Sprout\forms\formfields\FormFields;
 use BarrelStrength\Sprout\forms\formfields\FrontEndFields;
 use BarrelStrength\Sprout\forms\forms\Forms;
+use BarrelStrength\Sprout\forms\forms\FormsHelper;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
@@ -238,6 +239,11 @@ class FormsModule extends Module
             SubmissionsController::class,
             SubmissionsController::EVENT_BEFORE_VALIDATE,
             [SubmissionHelper::class, 'validateCaptchas']);
+
+        Event::on(
+            DataSources::class,
+            DataSources::EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY,
+            [FormsHelper::class, 'modifyDataSourceRelationsQuery']);
 
         $this->registerProjectConfigEventListeners();
     }
