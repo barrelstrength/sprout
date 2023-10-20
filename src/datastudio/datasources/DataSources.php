@@ -102,7 +102,7 @@ class DataSources extends Component
 
     public function getDataSourceRelations(RelationsTableInterface $element): array
     {
-        $dataSourceTypes = $element->getAllowedRelationTypes() ?? DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
+        $dataSourceTypes = $element->getAllowedRelationTypes() ?? $this->getDataSourceTypes();
 
         // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
         $query = DataSetElement::find()
