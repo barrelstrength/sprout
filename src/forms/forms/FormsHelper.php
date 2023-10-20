@@ -2,14 +2,14 @@
 
 namespace BarrelStrength\Sprout\forms\forms;
 
-use BarrelStrength\Sprout\datastudio\components\events\ModifyDataSourceRelationsQueryEvent;
+use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use yii\db\Expression;
 use Craft;
+use yii\db\Expression;
 
 class FormsHelper
 {
-    public static function modifyDataSourceRelationsQuery(ModifyDataSourceRelationsQueryEvent $event): void
+    public static function modifyDataSourceRelationsQuery(ModifyRelationsTableQueryEvent $event): void
     {
         $element = $event->element;
 

@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
+use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
 use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceOrderHistoryDataSource;
@@ -10,7 +11,6 @@ use BarrelStrength\Sprout\datastudio\components\datasources\CustomQueryDataSourc
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplateQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\components\events\ModifyDataSourceRelationsQueryEvent;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
@@ -109,7 +109,7 @@ class DataSources extends Component
             ->orderBy('sprout_datasets.name')
             ->where(['in', 'sprout_datasets.type', $dataSourceTypes]);
 
-        $event = new ModifyDataSourceRelationsQueryEvent([
+        $event = new ModifyRelationsTableQueryEvent([
             'element' => $element,
             'query' => $query,
         ]);
