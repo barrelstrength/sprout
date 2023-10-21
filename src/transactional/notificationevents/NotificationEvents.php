@@ -2,7 +2,15 @@
 
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
+use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
+use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
+use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\components\notificationevents\EntryCreatedNotificationEvent;
@@ -18,10 +26,12 @@ use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
-use craft\elements\Entry;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Cp;
 use craft\helpers\Json;
+use craft\helpers\Template;
 use yii\base\Event;
+use yii\db\Expression;
 
 class NotificationEvents extends Component
 {
@@ -210,5 +220,107 @@ class NotificationEvents extends Component
         }
 
         return true;
+    }
+
+    public function getTransactionalRelations(NotificationEventRelationsTableInterface $element): array
+    {
+        $notificationEventTypes = $element->getAllowedNotificationEventRelationTypes() ?? $this->getNotificationEventTypes();
+
+        if (Craft::$app->getDb()->getIsPgsql()) {
+            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailVariantSettings, "eventId")');
+        } else {
+            $expression = new Expression('JSON_EXTRACT(sprout_emails.emailVariantSettings, "$.eventId")');
+        }
+
+        $query = TransactionalEmailElement::find()
+            ->orderBy('sprout_emails.subjectLine')
+            ->where(['in', $expression, $notificationEventTypes]);
+
+        /** @var EmailElement[] $emails */
+        $emails = $query->all();
+
+        // @todo - only supporting Save Submission event right now. Several hard coded assumptions here that need abstraction.
+        $submission = new SubmissionElement();
+        $submission->formId = $element->id;
+
+        $submissionEvent = new OnSaveSubmissionEvent();
+        $submissionEvent->submission = $submission;
+
+        $relatedEmails = [];
+
+        // At this point, we're assuming all emails have Save Submission Events
+        foreach ($emails as $email) {
+
+            /** @var TransactionalEmailVariant $emailVariantSettings */
+            $emailVariantSettings = $email->getEmailVariant();
+            $notificationEvent = $emailVariantSettings->getNotificationEvent($email, $submissionEvent);
+
+            // If we have no rules, all forms will match
+            if (!$rules = $notificationEvent->conditionRules['conditionRules'] ?? null) {
+                $relatedEmails[] = $email;
+                continue;
+            }
+
+            foreach ($rules as $key => $rule) {
+                if ($rule['class'] !== 'BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionFormConditionRule') {
+                    unset($rules[$key]);
+                }
+            }
+
+            // Just in case we have rules, but no rules are the SubmissionFormConditionRule, all forms will still match
+            if (empty($rules)) {
+                $relatedEmails[] = $email;
+                continue;
+            }
+
+            // If we have a rule, we should now have a single FormConditionRule and can match against it
+            // Assign the single rule back to the conditionRules attribute
+            $notificationEvent->conditionRules['conditionRules'] = $rules;
+
+            if (!$notificationEvent->matchNotificationEvent($submissionEvent)) {
+                continue;
+            }
+
+            $relatedEmails[] = $email;
+        }
+
+        $rows = array_map(static function($element) {
+            return [
+                'elementId' => $element->id,
+                'name' => $element->title,
+                'cpEditUrl' => $element->getCpEditUrl(),
+                'type' => $element->getEmailType()::displayName(),
+                'actionUrl' => $element->getCpEditUrl(),
+            ];
+        }, $relatedEmails);
+
+        $options = EmailTypeHelper::getEmailTypesOptions();
+
+        $optionValues = [
+            [
+                'label' => Craft::t('sprout-module-transactional', 'Select Email Type...'),
+                'value' => '',
+            ],
+        ];
+
+        foreach ($options as $option) {
+            $optionValues[] = $option;
+        }
+
+        $createSelect = Cp::selectHtml([
+            'id' => 'new-transactional-email',
+            'name' => 'emailTypeUid',
+            'options' => $optionValues,
+            'value' => '',
+        ]);
+
+        $rows[] = [
+            'name' => Craft::t('sprout-module-transactional', 'New Transactional Email'),
+            'cpEditUrl' => '',
+            'type' => Template::raw($createSelect),
+            'actionUrl' => '',
+        ];
+
+        return $rows;
     }
 }
