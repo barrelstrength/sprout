@@ -122,8 +122,8 @@
         </thead>
         <tbody>
         {% for relation in relations %}
-            <tr>
-                <td>
+            <tr {% if relation.elementId is defined %}data-element-id="{{ relation.elementId }}"{% endif %}>
+                <td class="edit-element-col">
                     {% if relation.cpEditUrl %}
                         <a href="{{ relation.cpEditUrl }}" target="_blank">
                             {{ relation.name }}

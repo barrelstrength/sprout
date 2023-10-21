@@ -82,7 +82,6 @@ class TemplateHelper
                 'value' => '',
             ];
         }
-
         foreach ($savableComponentTypes as $savableComponentType) {
             $label = $savableComponentType::displayName();
             $value = $savableComponentType;

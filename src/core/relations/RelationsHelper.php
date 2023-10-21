@@ -72,6 +72,7 @@ class RelationsHelper
 
         return array_map(static function($element) {
             return [
+                'elementId' => $element->id,
                 'name' => $element->title,
                 'cpEditUrl' => $element->getCpEditUrl(),
                 'type' => $element::displayName(),
