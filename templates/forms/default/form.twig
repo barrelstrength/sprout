@@ -109,7 +109,7 @@
 {% do sprout.modules.core.vite.register('forms-frontend/Accessibility.js') %}
 {% do sprout.modules.core.vite.register('forms-frontend/AddressField.js') %}
 {% do sprout.modules.core.vite.register('forms-frontend/DisableSubmitButton.js') %}
-{% do sprout.modules.core.vite.register('forms-frontend/Rules.js') %}
+{#{% do sprout.modules.core.vite.register('forms-frontend/Rules.js') %}#}
 {% do sprout.modules.core.vite.register('forms-frontend/SubmitHandler.js') %}
 
 {% js at endBody %}
@@ -118,7 +118,7 @@
     new SproutFormsAddressField('{{ id }}');
     new SproutFormsCheckableInputs('{{ id }}');
     new SproutFormsDisableSubmitButton('{{ id }}');
-    new SproutFormsRules('{{ id }}');
+    {#new SproutFormsRules('{{ id }}');#}
     new SproutFormsSubmitHandler('{{ id }}');
     });
 {% endjs -%}
