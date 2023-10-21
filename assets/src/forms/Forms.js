@@ -8,4 +8,5 @@ import './Integrations';
 import './IntegrationModal';
 
 import '../data-studio/DataSourceRelationsTable';
+import '../transactional/NotificationEventsRelationsTable';
 
