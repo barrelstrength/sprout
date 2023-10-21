@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
 use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
-use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceOrderHistoryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceProductRevenueDataSource;
@@ -100,9 +99,9 @@ class DataSources extends Component
         return $this->_dataSources;
     }
 
-    public function getDataSourceRelations(RelationsTableInterface $element): array
+    public function getDataSourceRelations(DataSourceRelationsTableInterface $element): array
     {
-        $dataSourceTypes = $element->getAllowedRelationTypes() ?? $this->getDataSourceTypes();
+        $dataSourceTypes = $element->getAllowedDataSourceRelationTypes() ?? $this->getDataSourceTypes();
 
         // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
         $query = DataSetElement::find()
@@ -118,6 +117,7 @@ class DataSources extends Component
 
         $rows = array_map(static function($element) {
             return [
+                'elementId' => $element->id,
                 'name' => $element->name,
                 'cpEditUrl' => $element->getCpEditUrl(),
                 'type' => $element->getDataSource()::displayName(),
