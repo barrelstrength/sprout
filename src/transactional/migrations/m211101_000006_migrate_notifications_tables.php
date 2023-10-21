@@ -265,9 +265,9 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 $ruleUid = StringHelper::UUID();
                 $conditionRules[] = [
                     'uid' => $ruleUid,
-                    'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
+                    'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionFormConditionRule',
                     'type' => Json::encode([
-                        'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\FormConditionRule',
+                        'class' => 'BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionFormConditionRule',
                         'uid' => $ruleUid,
                         'operator' => 'in',
                         'values' => $sectionIds,

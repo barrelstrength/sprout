@@ -10,7 +10,7 @@ use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;
 use yii\db\QueryInterface;
 
-class FormConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
+class SubmissionFormConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {
@@ -42,7 +42,7 @@ class FormConditionRule extends BaseMultiSelectConditionRule implements ElementC
 
     public function matchElement(ElementInterface $element): bool
     {
-        if (in_array($element->id, $this->getValues(), true)) {
+        if (in_array($element->formId, $this->getValues(), false)) {
             return true;
         }
 
