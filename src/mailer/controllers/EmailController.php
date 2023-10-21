@@ -46,7 +46,7 @@ class EmailController extends Controller
         ]);
     }
 
-    public function actionCreateEmail(string $emailVariant = null): Response
+    public function actionCreateEmail(string $emailTypeUid = null, string $emailVariant = null): Response
     {
         $site = Cp::requestedSite();
 
@@ -55,11 +55,13 @@ class EmailController extends Controller
         }
 
         $email = Craft::createObject(EmailElement::class);
-        $email->emailTypeUid = Craft::$app->getRequest()->getRequiredParam('emailTypeUid');
+        $email->emailTypeUid = Craft::$app->getRequest()->getParam('emailTypeUid', $emailTypeUid);
 
         if (!$email->emailTypeUid) {
             throw new NotFoundHttpException('No email types exist.');
         }
+
+        $emailVariant = Craft::$app->getRequest()->getParam('emailVariant', $emailVariant);
 
         $emailVariant = new $emailVariant();
 
@@ -83,6 +85,16 @@ class EmailController extends Controller
 
         if (!Craft::$app->getDrafts()->saveElementAsDraft($email, Craft::$app->getUser()->getId(), null, null, false)) {
             throw new ServerErrorHttpException(sprintf('Unable to save email as a draft: %s', implode(', ', $email->getErrorSummary(true))));
+        }
+
+        // Supports creating a new Email via Slideout Editor
+        if (Craft::$app->getRequest()->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'elementId' => $email->id,
+                'draftId' => $email->draftId,
+                'siteId' => $email->siteId,
+            ]);
         }
 
         return $this->redirect($email->getCpEditUrl());
