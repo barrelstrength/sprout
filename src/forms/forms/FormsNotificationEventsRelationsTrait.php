@@ -6,14 +6,16 @@ use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableFiel
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
+use BarrelStrength\Sprout\transactional\TransactionalModule;
 use craft\events\RegisterComponentTypesEvent;
 
-trait FormsDataSourceRelationsTrait
+trait FormsNotificationEventsRelationsTrait
 {
-    public function getAllowedDataSourceRelationTypes(): array
+    public function getAllowedNotificationEventRelationTypes(): array
     {
         $dataSourceTypes = [
-            SubmissionsDataSource::class,
+            SaveSubmissionNotificationEvent::class,
         ];
 
         $event = new RegisterComponentTypesEvent([
@@ -26,13 +28,13 @@ trait FormsDataSourceRelationsTrait
         return $event->types;
     }
 
-    public function getDataSourceRelationsTableField(): RelationsTableField
+    public function getNotificationEventRelationsTableField(): RelationsTableField
     {
-        $reportRows = DataStudioModule::getInstance()->dataSources->getDataSourceRelations($this);
+        $notificationEventRows = TransactionalModule::getInstance()->notificationEvents->getTransactionalRelations($this);
 
         return new RelationsTableField([
-            'attribute' => 'data-source-relations',
-            'rows' => $reportRows,
+            'attribute' => 'notification-event-relations',
+            'rows' => $notificationEventRows,
         ]);
     }
 }

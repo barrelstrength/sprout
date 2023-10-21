@@ -9,6 +9,7 @@ use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
+use craft\base\Fs;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
 use craft\models\FieldLayoutTab;
@@ -533,9 +534,44 @@ class FormsController extends BaseController
 
         return $this->asJson([
             'success' => true,
-            'html' => $element->getRelationsTableField()->formHtml(),
+            'html' => $element->getDataSourceRelationsTableField()->formHtml(),
         ]);
     }
 
+    public function actionGetNotificationEventsRelationsTable(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $elementId = Craft::$app->getRequest()->getRequiredParam('elementId');
+
+        /** @var FormElement $element */
+        $element = Craft::$app->getElements()->getElementById($elementId);
+
+        return $this->asJson([
+            'success' => true,
+            'html' => $element->getNotificationEventRelationsTableField()->formHtml(),
+        ]);
+    }
+
+    public function actionEditDataSetSlideout(?string $handle = null, ?Fs $filesystem = null): Response
+    {
+        $this->requireAdmin();
+
+        return $this->asCpScreen()
+            //->title(Craft::t('sprout-module-forms', 'New Report'))
+            //->addCrumb(Craft::t('sprout-module-forms', 'Settings'), 'settings')
+            //->addCrumb(Craft::t('sprout-module-forms', 'Filesystems'), 'settings/filesystems')
+            ->action('fs/save')
+            //->redirectUrl('settings/filesystems')
+            ->contentTemplate('sprout-module-forms/forms/_slideouts/newReport.twig')
+            //->contentTemplate('settings/filesystems/_edit.twig', [
+            //    'oldHandle' => $handle,
+            //    'filesystem' => $filesystem,
+            //    'fsOptions' => $fsOptions,
+            //    'fsInstances' => $fsInstances,
+            //    'fsTypes' => $allFsTypes,
+            //])
+            ;
     }
 }

@@ -3,10 +3,9 @@
 namespace BarrelStrength\Sprout\forms\components\elements;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
-use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
-use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
+use BarrelStrength\Sprout\datastudio\datasources\DataSourceRelationsTableInterface;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
@@ -19,12 +18,14 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\forms\FormsDataSourceRelationsTrait;
+use BarrelStrength\Sprout\forms\forms\FormsNotificationEventsRelationsTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
+use BarrelStrength\Sprout\transactional\notificationevents\NotificationEventRelationsTableInterface;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
 use BarrelStrength\Sprout\uris\links\Links;
@@ -62,13 +63,15 @@ use yii\web\Response;
 /**
  * @mixin FieldLayoutBehavior
  */
-class FormElement extends Element implements RelationsTableInterface
+class FormElement extends Element implements DataSourceRelationsTableInterface, NotificationEventRelationsTableInterface
 {
     use FormsDataSourceRelationsTrait;
+    use FormsNotificationEventsRelationsTrait;
 
     // @todo - move to DataSourceRelationsTrait when min version PHP = 8.2
     public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
 
+    public const EVENT_REGISTER_COMPATIBLE_EMAIL_TYPES = 'registerCompatibleEmailTypes';
 
     public ?string $name = null;
 
@@ -200,49 +203,38 @@ class FormElement extends Element implements RelationsTableInterface
             new FormBuilderField(),
         ]);
 
-        $notifications = $this->getNotifications();
-
-        $newNotificationsButtonText = Craft::t('sprout-module-forms', 'New Notification');
-        $newNotificationsReportButtonLink = UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
-            'emailVariantSettings' => [
-                'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
-                'eventId' => SaveSubmissionNotificationEvent::class,
-            ],
-            'site' => Cp::requestedSite()->handle,
-        ]);
-
         if ($formType->enableNotificationsTab) {
+            $notifications = $this->getNotifications();
+
+            $newNotificationsButtonText = Craft::t('sprout-module-forms', 'New Notification');
+            $newNotificationsReportButtonLink = UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
+                'emailVariantSettings' => [
+                    'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
+                    'eventId' => SaveSubmissionNotificationEvent::class,
+                ],
+                'site' => Cp::requestedSite()->handle,
+            ]);
+
+            Craft::$app->getView()->registerJs('new NotificationEventsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
+
             $notificationsTab = new FieldLayoutTab();
             $notificationsTab->layout = $fieldLayout;
             $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
             $notificationsTab->uid = 'SPROUT-UID-FORMS-NOTIFICATIONS-TAB';
             $notificationsTab->setElements([
-                count($notifications) > 0 ?
-                    new RelationsTableField([
-                        'attribute' => 'notifications',
-                        'rows' => $notifications,
-                        'newButtonLabel' => $newNotificationsButtonText,
-                        'cpEditUrl' => $newNotificationsReportButtonLink,
-                    ]) :
-                    new MediaBoxField([
-                        'heading' => Craft::t('sprout-module-forms', 'Create your first notification'),
-                        'body' => Craft::t('sprout-module-forms', 'Notify visitors or admins after a form has been submitted.'),
-                        'addButtonText' => $newNotificationsButtonText,
-                        'addButtonLink' => $newNotificationsReportButtonLink,
-                        'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
-                    ]),
+                $this->getNotificationEventRelationsTableField(),
             ]);
         }
 
         if ($formType->enableReportsTab) {
-            Craft::$app->getView()->registerJs('new DataSourceRelationsTable(' . $this->id . ');');
+            Craft::$app->getView()->registerJs('new DataSourceRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
 
             $reportsTab = new FieldLayoutTab();
             $reportsTab->layout = $fieldLayout;
             $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
             $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
             $reportsTab->setElements([
-                $this->getRelationsTableField(),
+                $this->getDataSourceRelationsTableField(),
             ]);
         }
 
@@ -929,6 +921,7 @@ class FormElement extends Element implements RelationsTableInterface
 
         return array_map(static function($element) {
             return [
+                'elementId' => $element->id,
                 'name' => $element->title,
                 'cpEditUrl' => $element->getCpEditUrl(),
                 'type' => TransactionalEmailElement::displayName(),
