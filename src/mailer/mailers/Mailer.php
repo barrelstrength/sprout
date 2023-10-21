@@ -19,7 +19,7 @@ abstract class Mailer extends SavableComponent implements MailerInterface
 
     public function __construct($config = [])
     {
-        if ($config['settings']) {
+        if (isset($config['settings'])) {
             foreach ($config['settings'] as $key => $value) {
                 $this->$key = $value;
             }
