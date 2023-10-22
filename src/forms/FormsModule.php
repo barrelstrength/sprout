@@ -263,6 +263,11 @@ class FormsModule extends Module
         return [
             self::p('editForms') => [
                 'label' => Craft::t('sprout-module-forms', 'Edit Forms'),
+                'nested' => [
+                    self::p('editIntegrations') => [
+                        'label' => Craft::t('sprout-module-forms', 'Edit Integrations'),
+                    ],
+                ],
             ],
             self::p('viewSubmissions') => [
                 'label' => Craft::t('sprout-module-forms', 'View Submissions'),
@@ -327,6 +332,10 @@ class FormsModule extends Module
                 'label' => Craft::t('sprout-module-forms', 'Form Types'),
                 'url' => 'sprout/settings/forms/form-types',
             ],
+            'integrations' => [
+                'label' => Craft::t('sprout-module-forms', 'Integrations'),
+                'url' => 'sprout/settings/forms/integrations',
+            ],
             'spam-protection' => [
                 'label' => Craft::t('sprout-module-forms', 'Spam Protection'),
                 'url' => 'sprout/settings/forms/spam-protection',
@@ -374,6 +383,14 @@ class FormsModule extends Module
                 'sprout-module-forms/form-types/edit',
             'sprout/settings/forms/form-types' =>
                 'sprout-module-forms/form-types/form-types-index-template',
+
+            // Settings: Integration Types
+            'sprout/settings/forms/integrations/new' =>
+                'sprout-module-forms/form-integrations/edit',
+            'sprout/settings/forms/integrations/edit/<integrationTypeUid:.*>' =>
+                'sprout-module-forms/form-integrations/edit',
+            'sprout/settings/forms/integrations' =>
+                'sprout-module-forms/form-integrations/form-integrations-index-template',
 
             // Settings
             'sprout/settings/general' => [

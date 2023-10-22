@@ -2,9 +2,12 @@
 
 namespace BarrelStrength\Sprout\forms\integrations;
 
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnAfterIntegrationSubmitEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
+use BarrelStrength\Sprout\forms\components\integrationtypes\CustomEndpointIntegrationType;
+use BarrelStrength\Sprout\forms\components\integrationtypes\EntryElementIntegrationType;
 use BarrelStrength\Sprout\forms\components\integrationtypes\MissingIntegrationType;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
@@ -31,8 +34,13 @@ class FormIntegrations extends Component
      */
     public function getAllIntegrationTypes(): array
     {
+        $types = [
+            CustomEndpointIntegrationType::class,
+            EntryElementIntegrationType::class,
+        ];
+
         $event = new RegisterComponentTypesEvent([
-            'types' => [],
+            'types' => $types,
         ]);
 
         $this->trigger(self::EVENT_REGISTER_INTEGRATIONS, $event);
@@ -51,6 +59,31 @@ class FormIntegrations extends Component
 
         foreach ($integrationTypes as $integrationType) {
             $integrations[] = new $integrationType();
+        }
+
+        return $integrations;
+    }
+
+    public function getIntegrations(): array
+    {
+        $results = (new Query())
+            ->select([
+                'integrations.id',
+                'integrations.formId',
+                'integrations.name',
+                'integrations.type',
+                'integrations.sendRule',
+                'integrations.settings',
+                'integrations.enabled',
+            ])
+            ->from(['integrations' => SproutTable::FORM_INTEGRATIONS])
+            ->all();
+
+        $integrations = [];
+
+        foreach ($results as $result) {
+            $integration = ComponentHelper::createComponent($result, IntegrationInterface::class);
+            $integrations[] = $integration;
         }
 
         return $integrations;
@@ -96,6 +129,31 @@ class FormIntegrations extends Component
             ])
             ->from(['integrations' => SproutTable::FORM_INTEGRATIONS])
             ->where(['integrations.id' => $integrationId])
+            ->one();
+
+        if (!$result) {
+            return null;
+        }
+
+        $integration = ComponentHelper::createComponent($result, IntegrationInterface::class);
+
+        return new $result['type']($integration);
+    }
+
+    public function getIntegrationByUid($integrationUid): ?Integration
+    {
+        $result = (new Query())
+            ->select([
+                'integrations.id',
+                'integrations.formId',
+                'integrations.name',
+                'integrations.type',
+                'integrations.sendRule',
+                'integrations.settings',
+                'integrations.enabled',
+            ])
+            ->from(['integrations' => SproutTable::FORM_INTEGRATIONS])
+            ->where(['integrations.uid' => $integrationUid])
             ->one();
 
         if (!$result) {
@@ -330,24 +388,21 @@ class FormIntegrations extends Component
         }
     }
 
-    public function getIntegrationOptions(): array
+    public function getIntegrationsRelationsRows(FormElement $form): array
     {
-        $options = [];
-        $integrations = FormsModule::getInstance()->formIntegrations->getAllIntegrations();
+        $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($form->id);
 
-        $options[] = [
-            'label' => Craft::t('sprout-module-forms', 'Add Integration...'),
-            'value' => '',
-        ];
-
-        foreach ($integrations as $integration) {
-            $options[] = [
-                'label' => $integration::displayName(),
-                'value' => $integration::class,
+        $rows = array_map(static function($element) {
+            return [
+                'elementId' => $element->id,
+                'name' => $element->name,
+                'cpEditUrl' => $element->getCpEditUrl(),
+                'type' => $element->getDataSource()::displayName(),
+                'actionUrl' => $element->getCpEditUrl(),
             ];
-        }
+        }, $integrations);
 
-        return $options;
+        return $rows;
     }
 
     private function sendRuleIsTrue(Integration $integration, $submission): bool

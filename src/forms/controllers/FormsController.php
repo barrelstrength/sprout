@@ -3,13 +3,13 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\integrationtypes\CustomEndpointIntegrationType;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
-use craft\base\Fs;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
 use craft\models\FieldLayoutTab;
@@ -554,24 +554,40 @@ class FormsController extends BaseController
         ]);
     }
 
-    public function actionEditDataSetSlideout(?string $handle = null, ?Fs $filesystem = null): Response
+    public function actionEditIntegrationSlideout(): Response
     {
-        $this->requireAdmin();
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+        $this->requirePermission(FormsModule::p('editIntegrations'));
 
-        return $this->asCpScreen()
-            //->title(Craft::t('sprout-module-forms', 'New Report'))
-            //->addCrumb(Craft::t('sprout-module-forms', 'Settings'), 'settings')
-            //->addCrumb(Craft::t('sprout-module-forms', 'Filesystems'), 'settings/filesystems')
-            ->action('fs/save')
-            //->redirectUrl('settings/filesystems')
-            ->contentTemplate('sprout-module-forms/forms/_slideouts/newReport.twig')
-            //->contentTemplate('settings/filesystems/_edit.twig', [
-            //    'oldHandle' => $handle,
-            //    'filesystem' => $filesystem,
-            //    'fsOptions' => $fsOptions,
-            //    'fsInstances' => $fsInstances,
-            //    'fsTypes' => $allFsTypes,
-            //])
-            ;
+        $integrationType = Craft::$app->getRequest()->getRequiredParam('integrationType');
+        $integrationUid = Craft::$app->getRequest()->getRequiredParam('integrationUid');
+        $formId = Craft::$app->getRequest()->getRequiredParam('formId');
+
+        $integration = null;
+
+        if ($integrationUid) {
+            $integration = FormsModule::getInstance()->formIntegrations->getIntegrationByUid($integrationUid);
+        }
+
+        if (!$integration) {
+            $integration = new $integrationType();
+        }
+
+        $integration->formId = $formId;
+
+        $view = Craft::$app->getView();
+        $view->startJsBuffer();
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_editIntegration', [
+            'integration' => $integration,
+        ]);
+        $slideoutJs = $view->clearJsBuffer();
+
+        return $this->asJson([
+            'success' => true,
+            'integration' => $integration,
+            'html' => $html,
+            'slideoutJs' => $slideoutJs,
+        ]);
     }
 }
