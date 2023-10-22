@@ -7,6 +7,7 @@ import './FormSettings';
 import './Integrations';
 import './IntegrationModal';
 
+import './IntegrationsRelationsTable';
 import '../data-studio/DataSourceRelationsTable';
 import '../transactional/NotificationEventsRelationsTable';
 

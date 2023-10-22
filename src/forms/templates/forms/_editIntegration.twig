@@ -32,9 +32,7 @@
 
     {{ forms.selectField({
         label: 'Send Rule'|t('sprout-module-forms'),
-        instructions: "Defines how to check a form submission to determine if a user has opted in to have data sent to this Integration. The Integration will be sent if the setting is set to
-        'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are
-         met, the Integration will not be sent."|t('sprout-module-forms'),
+        instructions: "The Integration will be sent if the setting is set to 'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Integration will not be sent."|t('sprout-module-forms'),
         required: true,
         id: 'sendRuleToggle',
         name: 'sendRuleToggle',
@@ -56,7 +54,6 @@
     {#            } #}
     {#        ], #}
 
-
     {{ forms.textField({
         label: "Custom Rule"|t('sprout-module-forms'),
         instructions: "Notification Email will be sent if the Custom Rule evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Event will not trigger a Notification
@@ -71,23 +68,23 @@
         value: integration.sendRule ?? null
     }) }}
 
-    {{ forms.selectField({
-        label: 'Integration Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(
-            'Create a new integration if you need to update your integration type. This value cannot be changed.'|t('sprout-module-forms')
-        ),
-        id: 'type',
-        name: 'selectType',
-        hasOptgroups: true,
-        options: [
-            {
-                label: integration.name,
-                value: className(integration)
-            }
-        ],
-        value: className(integration)|e('html'),
-        errors: integration.getErrors('type') ?? null,
-        disabled: true
-    }) }}
+{#    {{ forms.selectField({#}
+{#        label: 'Integration Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(#}
+{#            'Create a new integration if you need to update your integration type. This value cannot be changed.'|t('sprout-module-forms')#}
+{#        ),#}
+{#        id: 'type',#}
+{#        name: 'selectType',#}
+{#        hasOptgroups: true,#}
+{#        options: [#}
+{#            {#}
+{#                label: integration.name,#}
+{#                value: className(integration)#}
+{#            }#}
+{#        ],#}
+{#        value: className(integration)|e('html'),#}
+{#        errors: integration.getErrors('type') ?? null,#}
+{#        disabled: true#}
+{#    }) }}#}
 
     {{ forms.textField({
         id: 'type',

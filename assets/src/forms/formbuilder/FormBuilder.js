@@ -302,6 +302,10 @@ export const FormBuilder = (formId) => ({
 
         if (this.dragOrigin === this.DragOrigins.sourceField) {
             this.addFieldToLayoutTab(type);
+
+            let fieldData = this.getFieldByType(type);
+            let layoutElement = this.getLayoutElement(fieldData.field.uid, fieldData.field, fieldData.uiSettings);
+            this.editFormField(layoutElement);
         }
 
         if (this.dragOrigin === this.DragOrigins.layoutField) {
@@ -639,115 +643,122 @@ export const FormBuilder = (formId) => ({
             },
         }).then((response) => {
 
-            const $body = $('<div/>', {class: 'fld-element-settings-body'});
-            const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
-            const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
-
-            const $removeBtn = Craft.ui.createButton({
-                class: 'icon',
-                attr: {
-                    'data-icon': 'trash',
-                },
-                label: Craft.t('app', 'Remove'),
-                spinner: true,
-            });
-
-            $removeBtn.attr('data-icon', 'trash');
-
-            // Copied from Craft's FieldLayoutDesigner.js
-            const $cancelBtn = Craft.ui.createButton({
-                data: {
-                    trashed: true,
-                },
-                label: Craft.t('app', 'Close'),
-                spinner: true,
-            });
-
-            const $applyButton = Craft.ui.createSubmitButton({
-                class: 'secondary',
-                label: Craft.t('app', 'Apply'),
-                spinner: true,
-            });
-
-            $removeBtn.appendTo($footer);
-            $('<div/>', {class: 'flex-grow'}).appendTo($footer);
-            $cancelBtn.appendTo($footer);
-            $applyButton.appendTo($footer);
-
-            let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.tabUid);
-
-            $(settingsHtml).appendTo($fields);
-
-            const $contents = $body.add($footer);
-
-            // Make sure condition builder js is only added once
-            $('.sprout-conditionbuilder-slideout').remove();
-
-            const slideout = new Craft.Slideout($contents, {
-                containerElement: 'form',
-                containerAttributes: {
-                    method: 'post',
-                    action: '',
-                    class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
-                    id: 'sprout-tab-modal',
-                },
-            });
-
-            const $form = slideout.$container;
-
-            let tabSettingsJs = self.swapPlaceholders(response.data.tabSettingsJs, response.data.tabUid);
-            Craft.appendBodyHtml(tabSettingsJs);
-
-            $form.on('submit', function(event) {
-                event.preventDefault();
-
-                let formData = new FormData($form[0]);
-
-                Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-tab-object', {
-                    data: formData,
-                }).then((response) => {
-                    self.updateTabSettings(self.editTabUid, {
-                        name: response.data.name,
-                        userCondition: response.data.userCondition,
-                        elementCondition: response.data.elementCondition,
-                    });
-                });
-
-                slideout.close();
-            });
-
-            $removeBtn.on('click', () => {
-                // if only 1 tab exists, don't allow it to be removed
-                if (self.tabs.length === 1) {
-                    Craft.cp.displayNotice(Craft.t('sprout-module-forms', 'Form must contain at least one tab.'));
-
-                    return;
-                }
-
-                let tabIndex = self.getTabIndexByTabUid(self.selectedTabUid);
-
-                let newSelectedTabUid = (tabIndex - 1) >= 0
-                    ? self.tabs[tabIndex - 1].uid
-                    : self.tabs[tabIndex + 1].uid;
-
-                self.tabs.splice(tabIndex, 1);
-
-                let newTabIndex = self.getTabIndexByTabUid(newSelectedTabUid);
-                self.selectedTabUid = self.tabs[newTabIndex].uid;
-                self.editTabUid = self.selectedTabUid;
-
-                slideout.close();
-            });
-
-            $cancelBtn.on('click', () => {
-                slideout.close();
-                self.editFieldUid = null;
-            });
+            self.openTabSlideout(response);
 
         }).catch(() => {
             console.log('No form data found.');
         });
 
+    },
+
+    openTabSlideout(response) {
+
+        let self = this;
+
+        const $body = $('<div/>', {class: 'fld-element-settings-body'});
+        const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
+        const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
+
+        const $removeBtn = Craft.ui.createButton({
+            class: 'icon',
+            attr: {
+                'data-icon': 'trash',
+            },
+            label: Craft.t('app', 'Remove'),
+            spinner: true,
+        });
+
+        $removeBtn.attr('data-icon', 'trash');
+
+        // Copied from Craft's FieldLayoutDesigner.js
+        const $cancelBtn = Craft.ui.createButton({
+            data: {
+                trashed: true,
+            },
+            label: Craft.t('app', 'Close'),
+            spinner: true,
+        });
+
+        const $applyButton = Craft.ui.createSubmitButton({
+            class: 'secondary',
+            label: Craft.t('app', 'Apply'),
+            spinner: true,
+        });
+
+        $removeBtn.appendTo($footer);
+        $('<div/>', {class: 'flex-grow'}).appendTo($footer);
+        $cancelBtn.appendTo($footer);
+        $applyButton.appendTo($footer);
+
+        let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.tabUid);
+
+        $(settingsHtml).appendTo($fields);
+
+        const $contents = $body.add($footer);
+
+        // Make sure condition builder js is only added once
+        $('.sprout-conditionbuilder-slideout').remove();
+
+        const slideout = new Craft.Slideout($contents, {
+            containerElement: 'form',
+            containerAttributes: {
+                method: 'post',
+                action: '',
+                class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
+                id: 'sprout-tab-modal',
+            },
+        });
+
+        const $form = slideout.$container;
+
+        let tabSettingsJs = self.swapPlaceholders(response.data.tabSettingsJs, response.data.tabUid);
+        Craft.appendBodyHtml(tabSettingsJs);
+
+        $form.on('submit', function(event) {
+            event.preventDefault();
+
+            let formData = new FormData($form[0]);
+
+            Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-tab-object', {
+                data: formData,
+            }).then((response) => {
+                self.updateTabSettings(self.editTabUid, {
+                    name: response.data.name,
+                    userCondition: response.data.userCondition,
+                    elementCondition: response.data.elementCondition,
+                });
+            });
+
+            slideout.close();
+        });
+
+        $removeBtn.on('click', () => {
+            // if only 1 tab exists, don't allow it to be removed
+            if (self.tabs.length === 1) {
+                Craft.cp.displayNotice(Craft.t('sprout-module-forms', 'Form must contain at least one tab.'));
+
+                return;
+            }
+
+            let tabIndex = self.getTabIndexByTabUid(self.selectedTabUid);
+
+            let newSelectedTabUid = (tabIndex - 1) >= 0
+                ? self.tabs[tabIndex - 1].uid
+                : self.tabs[tabIndex + 1].uid;
+
+            self.tabs.splice(tabIndex, 1);
+
+            let newTabIndex = self.getTabIndexByTabUid(newSelectedTabUid);
+            self.selectedTabUid = self.tabs[newTabIndex].uid;
+            self.editTabUid = self.selectedTabUid;
+
+            slideout.close();
+        });
+
+        $cancelBtn.on('click', () => {
+            slideout.close();
+            self.editFieldUid = null;
+        });
     },
 
     editFormField(layoutElement) {
@@ -763,110 +774,117 @@ export const FormBuilder = (formId) => ({
             },
         }).then((response) => {
 
-            const $body = $('<div/>', {class: 'fld-element-settings-body'});
-            const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
-            const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
-
-            const $removeBtn = Craft.ui.createButton({
-                class: 'icon',
-                attr: {
-                    'data-icon': 'trash',
-                },
-                label: Craft.t('app', 'Remove'),
-                spinner: true,
-            });
-
-            $removeBtn.attr('data-icon', 'trash');
-
-            // Copied from Craft's FieldLayoutDesigner.js
-            const $cancelBtn = Craft.ui.createButton({
-                data: {
-                    trashed: true,
-                },
-                label: Craft.t('app', 'Close'),
-                spinner: true,
-            });
-
-            const $applyButton = Craft.ui.createSubmitButton({
-                class: 'secondary',
-                label: Craft.t('app', 'Apply'),
-                spinner: true,
-            });
-
-            $removeBtn.appendTo($footer);
-            $('<div/>', {class: 'flex-grow'}).appendTo($footer);
-            $cancelBtn.appendTo($footer);
-            $applyButton.appendTo($footer);
-
-            let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
-
-            $(response.data.requiredSettingsHtml).appendTo($fields);
-            $(settingsHtml).appendTo($fields);
-            $(response.data.additionalSettingsHtml).appendTo($fields);
-
-            const $contents = $body.add($footer);
-
-            // Make sure condition builder js is only added once
-            $('.sprout-conditionbuilder-slideout').remove();
-
-            const slideout = new Craft.Slideout($contents, {
-                containerElement: 'form',
-                containerAttributes: {
-                    method: 'post',
-                    action: '',
-                    class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
-                    id: 'sprout-field-modal',
-                },
-            });
-
-            const $form = slideout.$container;
-
-            Craft.initUiElements($body);
-
-            let fieldSettingsJs = self.swapPlaceholders(response.data.fieldSettingsJs, response.data.fieldUid);
-            Craft.appendBodyHtml(fieldSettingsJs);
-
-            $form.on('submit', function(event) {
-                event.preventDefault();
-
-                let formData = new FormData($form[0]);
-                // let fieldSettings = JSON.stringify(Object.fromEntries(formData));
-                // console.log(fieldSettings);
-
-                Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-object', {
-                    data: formData,
-                }).then((response) => {
-
-                    // self.updateTabSettings(self.editTabUid, {
-                    //     name: response.data.name,
-                    //     userCondition: response.data.userCondition,
-                    //     elementCondition: response.data.elementCondition,
-                    // });
-                    //
-                    self.updateFieldSettings(self.editFieldUid, JSON.parse(response.data.fieldSettings));
-                });
-
-                slideout.close();
-            });
-
-            $removeBtn.on('click', () => {
-                let tabIndex = self.getTabIndexByTabUid(self.selectedTabUid);
-                let tab = self.tabs[tabIndex];
-                let fieldIndex = self.getFieldIndexByFieldUid(tab, self.editFieldUid);
-                self.tabs[tabIndex].elements.splice(fieldIndex, 1);
-                self.editFieldUid = null;
-
-                slideout.close();
-            });
-
-            $cancelBtn.on('click', () => {
-                slideout.close();
-                self.editFieldUid = null;
-            });
+            self.openFieldSlideout(response);
 
         }).catch((error) => {
             console.log(error);
             console.log('No form field data found.');
+        });
+    },
+
+    openFieldSlideout(response) {
+
+        let self = this;
+
+        const $body = $('<div/>', {class: 'fld-element-settings-body'});
+        const $fields = $('<div/>', {class: 'fields'}).appendTo($body);
+        const $footer = $('<div/>', {class: 'fld-element-settings-footer'});
+
+        const $removeBtn = Craft.ui.createButton({
+            class: 'icon',
+            attr: {
+                'data-icon': 'trash',
+            },
+            label: Craft.t('app', 'Remove'),
+            spinner: true,
+        });
+
+        $removeBtn.attr('data-icon', 'trash');
+
+        // Copied from Craft's FieldLayoutDesigner.js
+        const $cancelBtn = Craft.ui.createButton({
+            data: {
+                trashed: true,
+            },
+            label: Craft.t('app', 'Close'),
+            spinner: true,
+        });
+
+        const $applyButton = Craft.ui.createSubmitButton({
+            class: 'secondary',
+            label: Craft.t('app', 'Apply'),
+            spinner: true,
+        });
+
+        $removeBtn.appendTo($footer);
+        $('<div/>', {class: 'flex-grow'}).appendTo($footer);
+        $cancelBtn.appendTo($footer);
+        $applyButton.appendTo($footer);
+
+        let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
+
+        $(response.data.requiredSettingsHtml).appendTo($fields);
+        $(settingsHtml).appendTo($fields);
+        $(response.data.additionalSettingsHtml).appendTo($fields);
+
+        const $contents = $body.add($footer);
+
+        // Make sure condition builder js is only added once
+        $('.sprout-conditionbuilder-slideout').remove();
+
+        const slideout = new Craft.Slideout($contents, {
+            containerElement: 'form',
+            containerAttributes: {
+                method: 'post',
+                action: '',
+                class: 'fld-element-settings slideout sprout-conditionbuilder-slideout',
+                id: 'sprout-field-modal',
+            },
+        });
+
+        const $form = slideout.$container;
+
+        Craft.initUiElements($body);
+
+        let fieldSettingsJs = self.swapPlaceholders(response.data.fieldSettingsJs, response.data.fieldUid);
+        Craft.appendBodyHtml(fieldSettingsJs);
+
+        $form.on('submit', function(event) {
+            event.preventDefault();
+
+            let formData = new FormData($form[0]);
+            // let fieldSettings = JSON.stringify(Object.fromEntries(formData));
+            // console.log(fieldSettings);
+
+            Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-object', {
+                data: formData,
+            }).then((response) => {
+
+                // self.updateTabSettings(self.editTabUid, {
+                //     name: response.data.name,
+                //     userCondition: response.data.userCondition,
+                //     elementCondition: response.data.elementCondition,
+                // });
+                //
+                self.updateFieldSettings(self.editFieldUid, JSON.parse(response.data.fieldSettings));
+            });
+
+            slideout.close();
+        });
+
+        $removeBtn.on('click', () => {
+            let tabIndex = self.getTabIndexByTabUid(self.selectedTabUid);
+            let tab = self.tabs[tabIndex];
+            let fieldIndex = self.getFieldIndexByFieldUid(tab, self.editFieldUid);
+            self.tabs[tabIndex].elements.splice(fieldIndex, 1);
+            self.editFieldUid = null;
+
+            slideout.close();
+        });
+
+        $cancelBtn.on('click', () => {
+            slideout.close();
+            self.editFieldUid = null;
         });
     },
 

@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
+use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\integrations\ElementIntegration;
 use BarrelStrength\Sprout\forms\integrations\Integration;
@@ -12,6 +13,16 @@ use yii\web\Response;
 
 class FormIntegrationsController extends BaseController
 {
+    public function actionFormIntegrationsIndexTemplate(): Response
+    {
+        $integrationTypes = FormsModule::getInstance()->formIntegrations->getIntegrations();
+        $integrationTypeTypes = FormsModule::getInstance()->formIntegrations->getAllIntegrationTypes();
+
+        return $this->renderTemplate('sprout-module-forms/_settings/integrations/index.twig', [
+            'integrationTypes' => $integrationTypes,
+            'integrationTypeTypes' => ComponentHelper::typesToInstances($integrationTypeTypes),
+        ]);
+    }
     /**
      * Enable or disable an Integration
      */
