@@ -125,33 +125,6 @@ class DataSources extends Component
             ];
         }, $event->query->all());
 
-        $options = TemplateHelper::optionsFromComponentTypes($dataSourceTypes);
-
-        $optionValues = [
-            [
-                'label' => Craft::t('sprout-module-data-studio', 'Select Data Set Type...'),
-                'value' => '',
-            ],
-        ];
-
-        foreach ($options as $option) {
-            $optionValues[] = $option;
-        }
-
-        $createReportSelect = Cp::selectHtml([
-            'id' => 'new-data-set',
-            'name' => 'new-data-set',
-            'options' => $optionValues,
-            'value' => '',
-        ]);
-
-        $rows[] = [
-            'name' => Craft::t('sprout-module-data-studio', 'New Report'),
-            'cpEditUrl' => '',
-            'type' => Template::raw($createReportSelect),
-            'actionUrl' => '',
-        ];
-
         return $rows;
     }
 }

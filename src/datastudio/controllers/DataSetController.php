@@ -40,7 +40,7 @@ class DataSetController extends Controller
         return $this->renderTemplate('sprout-module-data-studio/_datasets/index.twig', [
             'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
-            'newDataSetButtonHtml' => self::getNewDataSetButtonHtml($site),
+            'newDataSetButtonHtml' => DataSetHelper::getNewDataSetButtonHtml($site),
         ]);
     }
 
@@ -258,57 +258,7 @@ class DataSetController extends Controller
         }
 
         return $this->asJson([
-            'html' => self::getNewDataSetButtonHtml($site),
+            'html' => DataSetHelper::getNewDataSetButtonHtml($site),
         ]);
-    }
-
-    public static function getNewDataSetButtonHtml(Site $site): ?Markup
-    {
-        $dataSourceTypes = DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
-
-        $newDataSetOptions = [];
-
-        foreach ($dataSourceTypes as $dataSourceType) {
-            $currentUser = Craft::$app->getUser()->getIdentity();
-
-            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSourceType))) {
-                continue;
-            }
-
-            $newDataSetOptions[] = [
-                'name' => $dataSourceType::displayName(),
-                'url' => UrlHelper::cpUrl('sprout/data-studio/new', [
-                    'type' => $dataSourceType,
-                    'site' => $site->handle,
-                ]),
-            ];
-        }
-
-        $label = Craft::t('sprout-module-data-studio', 'New {displayName}', [
-            'displayName' => DataSetElement::displayName(),
-        ]);
-
-        $labelHtml = Html::button($label, [
-            'class' => 'btn menubtn submit add icon',
-        ]);
-
-        $menuListHtml = Html::ul($newDataSetOptions, [
-            'item' => function($item) {
-                return Html::tag('li', Html::a($item['name'], $item['url'], [
-                    'class' => 'formsubmit sprout-dataset-new-button',
-                ]));
-            },
-        ]);
-
-        $menuHtml = Html::tag('div', $menuListHtml, [
-            'class' => 'menu',
-        ]);
-
-        $buttonHtml = Html::tag('div', $labelHtml . $menuHtml, [
-            'id' => 'sprout-new-dataset-btn',
-            'class' => 'btngroup',
-        ]);
-
-        return Template::raw($buttonHtml);
     }
 }
