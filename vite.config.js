@@ -40,6 +40,7 @@ export default ({command}) => ({
 
                 forms: '/forms/Forms.js',
                 formTypes: '/forms/FormTypesSettings.js',
+                integrationTypes: '/forms/IntegrationTypesSettings.js',
                 submissionStatusSettings: '/forms/SubmissionStatusSettings.js',
 
                 // Front End

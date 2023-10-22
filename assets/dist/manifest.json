@@ -160,6 +160,11 @@
     "isEntry": true,
     "src": "forms/Forms.js"
   },
+  "forms/IntegrationTypesSettings.js": {
+    "file": "assets/integrationTypes-070b5138.js",
+    "isEntry": true,
+    "src": "forms/IntegrationTypesSettings.js"
+  },
   "forms/SubmissionStatusSettings.js": {
     "file": "assets/submissionStatusSettings-5dd799f5.js",
     "isEntry": true,

@@ -27,16 +27,16 @@ class IntegrationTypesSettings {
         new Craft.VueAdminTable({
             columns: columns,
             container: this.adminTableId,
-            deleteAction: 'sprout-module-forms/form-types/delete',
-            deleteConfirmationMessage: Craft.t('sprout-module-forms', 'Are you sure you want to delete the Form Type “{name}”?'),
-            deleteSuccessMessage: Craft.t('sprout-module-forms', 'Form type deleted'),
-            deleteFailMessage: Craft.t('sprout-module-forms', 'Unable to delete form type. Remove type from all forms before deleting.'),
+            deleteAction: 'sprout-module-forms/form-integrations/delete',
+            deleteConfirmationMessage: Craft.t('sprout-module-forms', 'Are you sure you want to delete the Form Integration Type “{name}”?'),
+            deleteSuccessMessage: Craft.t('sprout-module-forms', 'Form integration deleted'),
+            deleteFailMessage: Craft.t('sprout-module-forms', 'Unable to delete form integration type. Remove integration type from all forms before deleting.'),
             emptyMessage: Craft.t('sprout-module-forms', 'No integration types exist yet.'),
             minItems: 1,
             padded: true,
-            reorderAction: 'sprout-module-forms/form-types/reorder',
-            reorderSuccessMessage: Craft.t('sprout-module-forms', 'Form types reordered.'),
-            reorderFailMessage: Craft.t('sprout-module-forms', 'Couldn’t reorder form types.'),
+            reorderAction: 'sprout-module-forms/form-integrations/reorder',
+            reorderSuccessMessage: Craft.t('sprout-module-forms', 'Form integration types reordered.'),
+            reorderFailMessage: Craft.t('sprout-module-forms', 'Couldn’t reorder form integration types.'),
             tableData: this.tableData,
         });
     }

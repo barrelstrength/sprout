@@ -13,7 +13,7 @@ class DataSourceRelationsTable {
 
         let self = this;
 
-        let editableElements = document.querySelectorAll('#data-source-relations-field .edit-element-col');
+        let editableElements = document.querySelectorAll('#data-source-relations-field .edit-element-col a');
 
         editableElements.forEach(function(editableElement) {
             editableElement.addEventListener('click', function(event) {
@@ -40,31 +40,33 @@ class DataSourceRelationsTable {
 
         let newSelectField = document.getElementById('new-data-set');
 
-        newSelectField.addEventListener('change', function(event) {
-            Craft.sendActionRequest('POST', 'sprout-module-data-studio/data-set/create-data-set', {
-                    data: {
-                        type: event.target.value,
-                    },
-                })
-                .then((response) => {
-                    console.log('create slideout response', response);
+        if (newSelectField) {
+            newSelectField.addEventListener('change', function(event) {
+                Craft.sendActionRequest('POST', 'sprout-module-data-studio/data-set/create-data-set', {
+                        data: {
+                            type: event.target.value,
+                        },
+                    })
+                    .then((response) => {
+                        console.log('create slideout response', response);
 
-                    if (response.data.success) {
-                        let slideout = Craft.createElementEditor('BarrelStrength\\Sprout\\datastudio\\components\\elements\\DataSetElement', {
-                            elementId: response.data.elementId,
-                            siteId: response.data.siteId,
-                            draftId: response.data.draftId,
-                            elementType: 'BarrelStrength\\Sprout\\datastudio\\components\\elements\\DataSetElement',
-                        });
+                        if (response.data.success) {
+                            let slideout = Craft.createElementEditor('BarrelStrength\\Sprout\\datastudio\\components\\elements\\DataSetElement', {
+                                elementId: response.data.elementId,
+                                siteId: response.data.siteId,
+                                draftId: response.data.draftId,
+                                elementType: 'BarrelStrength\\Sprout\\datastudio\\components\\elements\\DataSetElement',
+                            });
 
-                        slideout.on('submit', () => {
-                            console.log('on slideout submit', response);
+                            slideout.on('submit', () => {
+                                console.log('on slideout submit', response);
 
-                            self.replaceTable();
-                        });
-                    }
-                });
-        });
+                                self.replaceTable();
+                            });
+                        }
+                    });
+            });
+        }
     }
 
     replaceTable() {
