@@ -294,33 +294,6 @@ class NotificationEvents extends Component
             ];
         }, $relatedEmails);
 
-        $options = EmailTypeHelper::getEmailTypesOptions();
-
-        $optionValues = [
-            [
-                'label' => Craft::t('sprout-module-transactional', 'Select Email Type...'),
-                'value' => '',
-            ],
-        ];
-
-        foreach ($options as $option) {
-            $optionValues[] = $option;
-        }
-
-        $createSelect = Cp::selectHtml([
-            'id' => 'new-transactional-email',
-            'name' => 'emailTypeUid',
-            'options' => $optionValues,
-            'value' => '',
-        ]);
-
-        $rows[] = [
-            'name' => Craft::t('sprout-module-transactional', 'New Transactional Email'),
-            'cpEditUrl' => '',
-            'type' => Template::raw($createSelect),
-            'actionUrl' => '',
-        ];
-
         return $rows;
     }
 }
