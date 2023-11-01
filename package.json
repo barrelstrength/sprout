@@ -11,7 +11,7 @@
         "jquery-tageditor": "^1.0.1"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^15.1.0",
+        "@rollup/plugin-node-resolve": "^15.2.3",
         "autoprefixer": "^10.4.14",
         "postcss": "^8.4.21",
         "sass": "^1.60.0",
