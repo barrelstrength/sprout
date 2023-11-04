@@ -79,7 +79,7 @@ class NotificationEventsRelationsTable {
     replaceTable() {
         let self = this;
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-notification-events-relations-table', {
+        Craft.sendActionRequest('POST', 'sprout-module-transactional/form-relations-table/get-relations-table', {
                 data: {
                     elementId: self.elementId,
                 },

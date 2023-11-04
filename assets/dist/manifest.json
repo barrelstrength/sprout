@@ -227,5 +227,13 @@
   "transactional/NotificationEvents.css": {
     "file": "assets/NotificationEvents-8e4ab043.css",
     "src": "transactional/NotificationEvents.css"
+  },
+  "transactional/NotificationEvents.js": {
+    "css": [
+      "assets/NotificationEvents-8e4ab043.css"
+    ],
+    "file": "assets/transactionalEmail-7eaf5ef0.js",
+    "isEntry": true,
+    "src": "transactional/NotificationEvents.js"
   }
 }
