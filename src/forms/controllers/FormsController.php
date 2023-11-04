@@ -525,38 +525,6 @@ class FormsController extends BaseController
     //    }
     //}
 
-    public function actionGetDataSourceRelationsTable(): Response
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $elementId = Craft::$app->getRequest()->getRequiredParam('elementId');
-
-        /** @var FormElement $element */
-        $element = Craft::$app->getElements()->getElementById($elementId);
-
-        return $this->asJson([
-            'success' => true,
-            'html' => $element->getDataSourceRelationsTableField()->formHtml(),
-        ]);
-    }
-
-    public function actionGetNotificationEventsRelationsTable(): Response
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $elementId = Craft::$app->getRequest()->getRequiredParam('elementId');
-
-        /** @var FormElement $element */
-        $element = Craft::$app->getElements()->getElementById($elementId);
-
-        return $this->asJson([
-            'success' => true,
-            'html' => $element->getNotificationEventRelationsTableField()->formHtml(),
-        ]);
-    }
-
     public function actionEditIntegrationSlideout(): Response
     {
         $this->requirePostRequest();

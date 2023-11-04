@@ -2,11 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements;
 
-use BarrelStrength\Sprout\core\components\fieldlayoutelements\MediaBoxField;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
-use BarrelStrength\Sprout\datastudio\datasources\DataSourceRelationsTableInterface;
-use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
@@ -18,13 +15,11 @@ use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\FormIntegrationsTrait;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\forms\FormsDataSourceRelationsTrait;
-use BarrelStrength\Sprout\forms\forms\FormsNotificationEventsRelationsTrait;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
-use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEventRelationsTableInterface;
 use BarrelStrength\Sprout\uris\links\AbstractLink;
 use BarrelStrength\Sprout\uris\links\LinkInterface;
@@ -42,7 +37,6 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\TextField;
-use craft\helpers\Cp;
 use craft\helpers\Db;
 use craft\helpers\ElementHelper;
 use craft\helpers\Html;
@@ -63,16 +57,9 @@ use yii\web\Response;
 /**
  * @mixin FieldLayoutBehavior
  */
-class FormElement extends Element implements DataSourceRelationsTableInterface, NotificationEventRelationsTableInterface
+class FormElement extends Element
 {
-    use FormsDataSourceRelationsTrait;
-    use FormsNotificationEventsRelationsTrait;
     use FormIntegrationsTrait;
-
-    // @todo - move to DataSourceRelationsTrait when min version PHP = 8.2
-    public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
-
-    public const EVENT_REGISTER_COMPATIBLE_EMAIL_TYPES = 'registerCompatibleEmailTypes';
 
     public ?string $name = null;
 
@@ -204,69 +191,17 @@ class FormElement extends Element implements DataSourceRelationsTableInterface, 
             new FormBuilderField(),
         ]);
 
-        if ($formType->enableNotificationsTab) {
-            $notifications = $this->getNotifications();
-
-            $newNotificationsButtonText = Craft::t('sprout-module-forms', 'New Notification');
-            $newNotificationsReportButtonLink = UrlHelper::cpUrl('sprout/email/' . TransactionalEmailVariant::refHandle() . '/new', [
-                'emailVariantSettings' => [
-                    'emailTypeUid' => 'SELECT_IN_FORM_TYPE_SETTINGS',
-                    'eventId' => SaveSubmissionNotificationEvent::class,
-                ],
-                'site' => Cp::requestedSite()->handle,
-            ]);
-
-            Craft::$app->getView()->registerJs('new NotificationEventsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
-
-            $notificationsTab = new FieldLayoutTab();
-            $notificationsTab->layout = $fieldLayout;
-            $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
-            $notificationsTab->uid = 'SPROUT-UID-FORMS-NOTIFICATIONS-TAB';
-            $notificationsTab->setElements([
-                $this->getNotificationEventRelationsTableField(),
-            ]);
-        }
-
-        if ($formType->enableReportsTab) {
-            Craft::$app->getView()->registerJs('new DataSourceRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
-
-            $reportsTab = new FieldLayoutTab();
-            $reportsTab->layout = $fieldLayout;
-            $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
-            $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
-            $reportsTab->setElements([
-                $this->getDataSourceRelationsTableField(),
-            ]);
-        }
-
         if ($formType->enableIntegrationsTab) {
-            $newIntegrationButtonText = Craft::t('sprout-module-forms', 'New Integration');
-            $newIntegrationButtonLink = UrlHelper::cpUrl('sprout/data-studio/new', [
-                'type' => SubmissionsDataSource::class,
-                'site' => Cp::requestedSite()->handle,
-            ]);
+            Craft::$app->getView()->registerJs('new IntegrationsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
 
             $integrationsTab = new FieldLayoutTab();
             $integrationsTab->layout = $fieldLayout;
-            $integrationsTab->name = Craft::t('sprout-module-forms', 'Integrations');
+            $integrationsTab->name = Craft::t('sprout-module-forms', 'Workflows');
             $integrationsTab->uid = 'SPROUT-UID-FORMS-INTEGRATIONS-TAB';
             $integrationsTab->setElements([
-                new IntegrationsField(),
-                new MediaBoxField([
-                    'heading' => Craft::t('sprout-module-forms', 'Create your first integration'),
-                    'body' => Craft::t('sprout-module-forms', 'Send your form submission data to somewhere other than Craft.'),
-                    'addButtonText' => $newIntegrationButtonText,
-                    'addButtonLink' => $newIntegrationButtonLink,
-                    'resourcePath' => '@Sprout/Assets/dist/static/forms/icons/icon.svg',
-                ]),
+                $this->getIntegrationRelationsTableField(),
             ]);
         }
-
-        $linkHtml = Links::enhancedLinkFieldHtml([
-            'fieldNamespace' => 'redirectUri',
-            'selectedLink' => $this->redirectUri,
-            'type' => isset($this->redirectUri) ? $this->redirectUri::class : null,
-        ]);
 
         $settingsTab = new FieldLayoutTab();
         $settingsTab->layout = $fieldLayout;

@@ -3,27 +3,34 @@
 namespace BarrelStrength\Sprout\forms\forms;
 
 use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
+use BarrelStrength\Sprout\datastudio\datasources\DataSources;
+use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
+use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
+use craft\events\RegisterComponentTypesEvent;
 use yii\db\Expression;
 
 class FormsHelper
 {
-    public static function modifyDataSourceRelationsQuery(ModifyRelationsTableQueryEvent $event): void
+    public static function registerNotificationEventRelationsTypes(RegisterComponentTypesEvent $event): void
     {
-        $element = $event->element;
-
-        if (!$element instanceof FormElement) {
+        if (!$event->sender instanceof NotificationEvents) {
             return;
         }
 
-        if (Craft::$app->getDb()->getIsPgsql()) {
-            $expression = new Expression('JSON_EXTRACT(sprout_datasets.settings, "formId")');
-        } else {
-            $expression = new Expression('JSON_EXTRACT(sprout_datasets.settings, "$.formId")');
+        $event->types[] = SaveSubmissionNotificationEvent::class;
+    }
+
+    public static function registerDataSourceRelationsTypes(RegisterComponentTypesEvent $event): void
+    {
+        if (!$event->sender instanceof DataSources) {
+            return;
         }
 
-        $event->query->andWhere(['=', $expression, $element->id]);
+        $event->types[] = SubmissionsDataSource::class;
     }
+
 }
 

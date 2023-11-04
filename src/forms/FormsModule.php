@@ -241,9 +241,14 @@ class FormsModule extends Module
             [SubmissionHelper::class, 'validateCaptchas']);
 
         Event::on(
+            NotificationEvents::class,
+            NotificationEvents::EVENT_REGISTER_NOTIFICATION_EVENT_RELATIONS_TYPES,
+            [FormsHelper::class, 'registerNotificationEventRelationsTypes']);
+
+        Event::on(
             DataSources::class,
-            DataSources::EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY,
-            [FormsHelper::class, 'modifyDataSourceRelationsQuery']);
+            DataSources::EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES,
+            [FormsHelper::class, 'registerDataSourceRelationsTypes']);
 
         $this->registerProjectConfigEventListeners();
     }
