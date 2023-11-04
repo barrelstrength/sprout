@@ -46,23 +46,22 @@
         value: integration.sendRule ?? null
     }) }}
 
-{#    {{ forms.selectField({#}
-{#        label: 'Integration Type'|t('sprout-module-forms') ~ sproutCp.infoIcon(#}
-{#            'Create a new integration if you need to update your integration type. This value cannot be changed.'|t('sprout-module-forms')#}
-{#        ),#}
-{#        id: 'type',#}
-{#        name: 'selectType',#}
-{#        hasOptgroups: true,#}
-{#        options: [#}
-{#            {#}
-{#                label: integration.name,#}
-{#                value: className(integration)#}
-{#            }#}
-{#        ],#}
-{#        value: className(integration)|e('html'),#}
-{#        errors: integration.getErrors('type') ?? null,#}
-{#        disabled: true#}
-{#    }) }}#}
+    {{ forms.selectField({
+        label: 'Integration Type'|t('sprout-module-forms'),
+        tip: 'This value cannot be changed. Create a new integration for a new integration type.'|t('sprout-module-forms'),
+        id: 'type',
+        name: 'selectType',
+        hasOptgroups: true,
+        options: [
+            {
+                label: integration.displayName(),
+                value: className(integration)
+            }
+        ],
+        value: className(integration)|e('html'),
+        errors: integration.getErrors('type') ?? null,
+        disabled: true
+    }) }}
 
     {{ forms.textField({
         id: 'type',

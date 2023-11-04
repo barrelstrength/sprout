@@ -210,48 +210,4 @@ class FormFields extends Component
     {
         return Craft::t('sprout-module-forms', 'Page 1');
     }
-
-    /**
-     * Loads the sprout modal field via ajax.
-     */
-    public function getModalFieldTemplate(FormElement $form, $field = null, $tabUid = null): array
-    {
-        $fieldsService = Craft::$app->getFields();
-        $request = Craft::$app->getRequest();
-
-        $data = [];
-        $data['tabUid'] = null;
-        $data['field'] = $fieldsService->createField(SingleLineFormField::class);
-
-        if ($field !== null) {
-            $data['field'] = $field;
-            $tabUidByPost = $request->getBodyParam('tabUid');
-
-            if ($tabUidByPost !== null) {
-                $data['tabUid'] = $tabUidByPost;
-            } elseif ($tabUid !== null) {
-                //edit field
-                $data['tabUid'] = $tabUid;
-            }
-
-            if ($field->id != null) {
-                $data['fieldId'] = $field->id;
-            }
-        }
-
-        $data['sections'] = $form->getFieldLayout()->getTabs();
-        $data['form'] = $form;
-        $data['fieldClass'] = $data['field']::class ?? null;
-        $view = Craft::$app->getView();
-
-        $html = $view->renderTemplate('sprout-module-forms/forms/_editFieldModal', $data);
-        $js = $view->getBodyHtml();
-        $css = $view->getHeadHtml();
-
-        return [
-            'html' => $html,
-            'js' => $js,
-            'css' => $css,
-        ];
-    }
 }

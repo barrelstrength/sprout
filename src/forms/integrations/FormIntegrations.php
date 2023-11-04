@@ -216,27 +216,6 @@ class FormIntegrations extends Component
         return $integration;
     }
 
-    /**
-     * Loads the sprout modal integration via ajax.
-     */
-    public function getModalIntegrationTemplate(Integration $integration): array
-    {
-        $view = Craft::$app->getView();
-
-        $html = $view->renderTemplate('sprout-module-forms/forms/_editIntegrationModal', [
-            'integration' => $integration,
-        ]);
-
-        $js = $view->getBodyHtml();
-        $css = $view->getHeadHtml();
-
-        return [
-            'html' => $html,
-            'js' => $js,
-            'css' => $css,
-        ];
-    }
-
     public function logIntegration(IntegrationLog $integrationLog): IntegrationLog
     {
         $integrationLogRecord = new IntegrationLogRecord();

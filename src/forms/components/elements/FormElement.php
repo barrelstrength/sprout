@@ -668,7 +668,6 @@ class FormElement extends Element
             Craft::error('Field does not validate.', __METHOD__);
             // @todo - handle errors on layout
             //$this->addError('submissionFieldLayout', 'Field does not validate.');
-            Craft::dd($field->getErrors());
         }
 
         // Check if the handle is updated to also update the titleFormat, rules and integrations

@@ -97,11 +97,12 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
             $sourceFormFields[] = $fieldInstance;
         }
 
-        $fields = $this->getForm()->getFields();
-
-        foreach ($fields as $field) {
-            $sourceFormFields[] = $field;
-        }
+        // @todo - move custom field logic to be handled by js
+        //$fields = $this->getForm()->getFields();
+        //
+        //foreach ($fields as $field) {
+        //    $sourceFormFields[] = $field;
+        //}
 
         return $sourceFormFields;
     }
@@ -177,24 +178,26 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
             ],
         ]);
 
-        $fields = $this->getForm()->getFields();
-
-        if ($fields !== []) {
-            if ($addOptGroup) {
-                $options[] = [
-                    'optgroup' => Craft::t('sprout-module-forms', 'Custom Fields'),
-                ];
-            }
-
-            foreach ($fields as $field) {
-                $options[] = [
-                    'label' => $field->name,
-                    'value' => $field->handle,
-                    'compatibleCraftFields' => $field->getCompatibleCraftFieldTypes(),
-                    'fieldType' => $field::class,
-                ];
-            }
-        }
+        // @todo - move custom field logic to be handled by js
+        //$fieldElements = $this->getForm()->getFieldLayout()?->getCustomFieldElements();
+        //
+        //if ($fieldElements !== []) {
+        //    if ($addOptGroup) {
+        //        $options[] = [
+        //            'optgroup' => Craft::t('sprout-module-forms', 'Custom Fields'),
+        //        ];
+        //    }
+        //
+        //    foreach ($fieldElements as $fieldElement) {
+        //        $field = $fieldElement->getField();
+        //        $options[] = [
+        //            'label' => $field->name,
+        //            'value' => $field->handle,
+        //            'compatibleCraftFields' => $field->getCompatibleCraftFieldTypes(),
+        //            'fieldType' => $field::class,
+        //        ];
+        //    }
+        //}
 
         return $options;
     }
@@ -280,51 +283,52 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
         return null;
     }
 
-    final public function getSendRuleOptions(): array
-    {
-        $fields = $this->getForm()->getFields();
-        $optIns = [];
-        $fieldHandles = [];
-
-        foreach ($fields as $field) {
-            if ($field::class == OptInFormField::class) {
-                $optIns[] = [
-                    'label' => $field->name . ' (' . $field->handle . ')',
-                    'value' => $field->handle,
-                ];
-                $fieldHandles[] = $field->handle;
-            }
-        }
-
-        $options = [
-            [
-                'label' => Craft::t('sprout-module-forms', 'Always'),
-                'value' => '*',
-            ],
-        ];
-
-        $options = [...$options, ...$optIns];
-
-        $customSendRule = $this->sendRule;
-
-        $options[] = [
-            'optgroup' => Craft::t('sprout-module-forms', 'Custom Rule'),
-        ];
-
-        if (!in_array($this->sendRule, $fieldHandles, false) && $customSendRule != '*') {
-            $options[] = [
-                'label' => $customSendRule,
-                'value' => $customSendRule,
-            ];
-        }
-
-        $options[] = [
-            'label' => Craft::t('sprout-module-forms', 'Add Custom'),
-            'value' => 'custom',
-        ];
-
-        return $options;
-    }
+    // @todo - update to use Condition Builders and FormBuilder.js, etc
+    //final public function getSendRuleOptions(): array
+    //{
+    //    $fields = $this->getForm()->getFields();
+    //    $optIns = [];
+    //    $fieldHandles = [];
+    //    //
+    //    foreach ($fields as $field) {
+    //        if ($field::class == OptInFormField::class) {
+    //            $optIns[] = [
+    //                'label' => $field->name . ' (' . $field->handle . ')',
+    //                'value' => $field->handle,
+    //            ];
+    //            $fieldHandles[] = $field->handle;
+    //        }
+    //    }
+    //
+    //    $options = [
+    //        [
+    //            'label' => Craft::t('sprout-module-forms', 'Always'),
+    //            'value' => '*',
+    //        ],
+    //    ];
+    //
+    //    $options = [...$options, ...$optIns];
+    //
+    //    $customSendRule = $this->sendRule;
+    //
+    //    $options[] = [
+    //        'optgroup' => Craft::t('sprout-module-forms', 'Custom Rule'),
+    //    ];
+    //
+    //    if (!in_array($this->sendRule, $fieldHandles, false) && $customSendRule != '*') {
+    //        $options[] = [
+    //            'label' => $customSendRule,
+    //            'value' => $customSendRule,
+    //        ];
+    //    }
+    //
+    //    $options[] = [
+    //        'label' => Craft::t('sprout-module-forms', 'Add Custom'),
+    //        'value' => 'custom',
+    //    ];
+    //
+    //    return $options;
+    //}
 
     protected function getDefaultSourceMappingAttributes(): array
     {
