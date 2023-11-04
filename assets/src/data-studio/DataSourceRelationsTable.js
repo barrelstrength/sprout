@@ -72,7 +72,7 @@ class DataSourceRelationsTable {
     replaceTable() {
         let self = this;
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-data-source-relations-table', {
+        Craft.sendActionRequest('POST', 'sprout-module-data-studio/form-relations-table/get-relations-table', {
                 data: {
                     elementId: self.elementId,
                 },

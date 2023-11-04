@@ -141,7 +141,7 @@
     "src": "forms-frontend/recaptcha_v2_invisible.js"
   },
   "forms/FormTypesSettings.js": {
-    "file": "assets/formTypes-d0b78584.js",
+    "file": "assets/formTypes-ae6b6445.js",
     "isEntry": true,
     "src": "forms/FormTypesSettings.js"
   },
@@ -153,7 +153,7 @@
     "css": [
       "assets/Forms-434f74b1.css"
     ],
-    "file": "assets/forms-7132b305.js",
+    "file": "assets/forms-70cc867e.js",
     "imports": [
       "_module.esm-e3630760.js"
     ],
@@ -161,7 +161,7 @@
     "src": "forms/Forms.js"
   },
   "forms/IntegrationTypesSettings.js": {
-    "file": "assets/integrationTypes-070b5138.js",
+    "file": "assets/integrationTypes-ea257b4d.js",
     "isEntry": true,
     "src": "forms/IntegrationTypesSettings.js"
   },
@@ -232,10 +232,7 @@
     "css": [
       "assets/NotificationEvents-8e4ab043.css"
     ],
-    "file": "assets/transactionalEmail-20af11cb.js",
-    "imports": [
-      "_module.esm-e3630760.js"
-    ],
+    "file": "assets/transactionalEmail-7eaf5ef0.js",
     "isEntry": true,
     "src": "transactional/NotificationEvents.js"
   }

@@ -4,6 +4,8 @@ class IntegrationsRelationsTable {
         this.formId = formId;
         this.siteId = siteId;
 
+        this.newSelectField = document.getElementById('new-integration');
+
         this.initLinkSlideout();
         this.initNewSlideout();
     }
@@ -38,27 +40,33 @@ class IntegrationsRelationsTable {
 
         let self = this;
 
-        let newSelectField = document.getElementById('new-integration');
-
-        if (newSelectField) {
+        if (this.newSelectField) {
             let integrationUid = Craft.uuid();
 
-            newSelectField.addEventListener('change', function(event) {
+            this.newSelectField.addEventListener('change', function(event) {
                 if (event.target.value) {
+
                     self.createSlideout(integrationUid, event.target.value);
                 }
             });
         }
     }
 
-    createSlideout(integrationUid, integrationType) {
+    createSlideout(integrationUid, integrationTypeUid) {
         let self = this;
+
+        let onPageIntegrationsFormFieldMetadata = document.querySelector('.sprout-form-builder').dataset.integrationsFormFieldMetadata;
+
+        let integrationsFormFieldMetadata = onPageIntegrationsFormFieldMetadata
+            ? JSON.parse(onPageIntegrationsFormFieldMetadata)
+            : [];
 
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/edit-integration-slideout', {
                 data: {
                     formId: self.formId,
                     integrationUid: integrationUid,
-                    integrationType: integrationType,
+                    integrationTypeUid: integrationTypeUid,
+                    integrationsFormFieldMetadata: integrationsFormFieldMetadata,
                 },
             })
             .then((response) => {
@@ -87,6 +95,13 @@ class IntegrationsRelationsTable {
                         console.log('on slideout submit', response);
 
                         self.replaceTable();
+                    });
+
+                    slideout.on('close', () => {
+                        console.log('on slideout close', response);
+                        if (this.newSelectField) {
+                            this.newSelectField.value = '';
+                        }
                     });
                 }
             });

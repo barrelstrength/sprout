@@ -19,8 +19,8 @@ class IntegrationTypesSettings {
                 },
             },
             {
-                name: 'formType',
-                title: Craft.t('sprout-module-forms', 'Form Type'),
+                name: 'integrationTypeType',
+                title: Craft.t('sprout-module-forms', 'Integration Type'),
             },
         ];
 

@@ -11,26 +11,26 @@ class SproutFormsIntegration {
     constructor(settings) {
         const self = this;
 
-        this.integrationType = typeof settings.integrationType !== 'undefined'
-            ? settings.integrationType
-            : '';
-
-        // Make the sourceFormField read only
-        this.disableOptions();
-
-        // Init all empty field selects
-        this.updateAllFieldSelects();
-
-        this.updateTargetFieldsOnChange = typeof settings.updateTargetFieldsOnChange !== 'undefined'
-            ? settings.updateTargetFieldsOnChange
-            : [];
-
-        this.updateTargetFieldsOnChange.forEach(function(elementId) {
-            // Register an onChange event for all Element IDs identified by the Integration
-            $(elementId).change(function() {
-                self.updateAllFieldSelects();
-            });
-        });
+        // this.integrationType = typeof settings.integrationType !== 'undefined'
+        //     ? settings.integrationType
+        //     : '';
+        //
+        // // Make the sourceFormField read only
+        // this.disableOptions();
+        //
+        // // Init all empty field selects
+        // this.updateAllFieldSelects();
+        //
+        // this.updateTargetFieldsOnChange = typeof settings.updateTargetFieldsOnChange !== 'undefined'
+        //     ? settings.updateTargetFieldsOnChange
+        //     : [];
+        //
+        // this.updateTargetFieldsOnChange.forEach(function(elementId) {
+        //     // Register an onChange event for all Element IDs identified by the Integration
+        //     $(elementId).change(function() {
+        //         self.updateAllFieldSelects();
+        //     });
+        // });
     }
 
     disableOptions() {

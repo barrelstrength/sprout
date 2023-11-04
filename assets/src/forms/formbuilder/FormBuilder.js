@@ -95,6 +95,38 @@ export const FormBuilder = (formId) => ({
         }
     },
 
+    get integrationsFormFieldMetadata() {
+
+        let fieldLayout = {};
+
+        if (this.tabs.length && !this.tabs[0].elements.length) {
+            return [];
+        }
+
+        let fields = [];
+
+        for (const tab of this.tabs) {
+
+            for (const element of tab.elements) {
+
+                let fieldData = this.getFormFieldAttributes(element);
+
+                let field = {
+                    name: fieldData.field.name,
+                    handle: fieldData.field.handle,
+                    type: fieldData.field.type,
+                    uid: fieldData.field.uid,
+                };
+
+                fields.push(field);
+            }
+        }
+
+        this.fields = fields;
+
+        return JSON.stringify(fields);
+    },
+
     get fieldLayoutInputValue() {
 
         let fieldLayout = {};
@@ -294,6 +326,9 @@ export const FormBuilder = (formId) => ({
     dropOnLayoutTabBody(e) {
         console.log('dropOnLayoutTabBody');
         let self = this;
+
+        // @todo - implement
+        this.$dispatch('form-field-update', { 'formFieldName': 'FieldNameTest' });
 
         e.target.classList.remove('no-pointer-events');
 
@@ -763,9 +798,35 @@ export const FormBuilder = (formId) => ({
 
     editFormField(layoutElement) {
 
+        // Testing CP Screen Slideout
+        // this.editFormFieldViaCpScreen(layoutElement);
+
+        // Testing DIY Slideout
+        this.editFormFieldViaSettingsHtml(layoutElement);
+    },
+
+    editFormFieldViaCpScreen(layoutElement) {
         let self = this;
 
         self.editFieldUid = layoutElement.fieldUid;
+
+        let data = {
+            formId: this.formId,
+            layoutElement: layoutElement,
+        };
+
+        new Craft.CpScreenSlideout('sprout-module-forms/forms/edit-form-field-slideout-via-cp-screen', {
+            hasTabs: true,
+            tabManager: '',
+            params: {
+                formId: this.formId,
+                layoutElement: layoutElement,
+            },
+        });
+    },
+
+    editFormFieldViaSettingsHtml(layoutElement) {
+        let self = this;
 
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/get-form-field-settings-html', {
             data: {
@@ -825,7 +886,7 @@ export const FormBuilder = (formId) => ({
 
         $(response.data.requiredSettingsHtml).appendTo($fields);
         $(settingsHtml).appendTo($fields);
-        $(response.data.additionalSettingsHtml).appendTo($fields);
+        // $(response.data.additionalSettingsHtml).appendTo($fields);
 
         const $contents = $body.add($footer);
 
