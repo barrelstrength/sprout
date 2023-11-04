@@ -54,7 +54,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
     public function getEventVariables(): array
     {
         return [
-            'submission' => $this?->event?->element,
+            'submission' => $this?->event?->submission,
         ];
     }
 
