@@ -27,32 +27,10 @@
     }) }}
 
     {% namespace 'settings['~className(integration)~']' %}
-        {{ integration.getSettingsHtml()|raw }}
+        {{ integration.getWorkflowSettingsHtml()|raw }}
     {% endnamespace %}
 
-    {{ forms.selectField({
-        label: 'Send Rule'|t('sprout-module-forms'),
-        instructions: "The Integration will be sent if the setting is set to 'Always'; if an Opt-in field is selected and a user confirms they wish to opt-in; or if the Custom Rule is used and evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Integration will not be sent."|t('sprout-module-forms'),
-        required: true,
-        id: 'sendRuleToggle',
-        name: 'sendRuleToggle',
-        options: integration.getSendRuleOptions(),
-        value: integration.sendRule ?? '*',
-        errors: integration.getErrors('sendRule'),
-        toggle: true,
-        required: true,
-        targetPrefix: 'send-rule-',
-    }) }}
-    {#        options: [ #}
-    {#            { #}
-    {#                label: 'Always'|t('sprout-module-forms'), #}
-    {#                value: '*', #}
-    {#            }, #}
-    {#            { #}
-    {#                label: 'Custom Rule'|t('sprout-module-forms'), #}
-    {#                value: 'custom', #}
-    {#            } #}
-    {#        ], #}
+    {{ conditionBuilderHtml }}
 
     {{ forms.textField({
         label: "Custom Rule"|t('sprout-module-forms'),

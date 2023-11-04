@@ -8,6 +8,8 @@ class CustomFormField extends CustomField
 {
     protected function settingsHtml(): ?string
     {
-        return '<p>Form Field Settings</p>';
+        $field = $this->getField();
+
+        return $field->getSettingsHtml();
     }
 }

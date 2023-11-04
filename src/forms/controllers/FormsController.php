@@ -297,17 +297,12 @@ class FormsController extends BaseController
             'field' => $field,
         ]);
 
-        $fieldSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSettings', [
-            'field' => $field,
-        ]);
-
         $fieldSettingsJs = $view->clearJsBuffer();
 
         return $this->asJson([
             'success' => true,
             'fieldUid' => $layoutElementConfig['fieldUid'],
             'requiredSettingsHtml' => $requiredSettingsHtml,
-            'additionalSettingsHtml' => $fieldSettingsHtml,
             'settingsHtml' => $settingsHtml,
             'fieldSettingsJs' => $fieldSettingsJs,
         ]);
@@ -568,9 +563,10 @@ class FormsController extends BaseController
         $this->requireAcceptsJson();
         $this->requirePermission(FormsModule::p('editIntegrations'));
 
-        $integrationType = Craft::$app->getRequest()->getRequiredParam('integrationType');
+        $integrationTypeUid = Craft::$app->getRequest()->getRequiredParam('integrationTypeUid');
         $integrationUid = Craft::$app->getRequest()->getRequiredParam('integrationUid');
         $formId = Craft::$app->getRequest()->getRequiredParam('formId');
+        $integrationsFormFieldMetadata = Craft::$app->getRequest()->getRequiredParam('integrationsFormFieldMetadata');
 
         $integration = null;
 
@@ -579,15 +575,22 @@ class FormsController extends BaseController
         }
 
         if (!$integration) {
-            $integration = new $integrationType();
+            $integrationType = IntegrationTypeHelper::getIntegrationTypeByUid($integrationTypeUid);
+            $integration = new $integrationType([
+                'formId' => $formId, // initiate with formId to ensure mapping gets refreshed
+                'sourceFormFieldsFromPage' => $integrationsFormFieldMetadata,
+            ]);
         }
 
+        // Ensure formId is set for existing integrations
         $integration->formId = $formId;
 
         $view = Craft::$app->getView();
         $view->startJsBuffer();
+        $conditionBuilderHtml = $this->getIntegrationSendRuleConditionBuilder($integration);
         $html = Craft::$app->getView()->renderTemplate('sprout-module-forms/forms/_editIntegration', [
             'integration' => $integration,
+            'conditionBuilderHtml' => Template::raw($conditionBuilderHtml),
         ]);
         $slideoutJs = $view->clearJsBuffer();
 
@@ -598,5 +601,26 @@ class FormsController extends BaseController
             'slideoutJs' => $slideoutJs,
         ]);
     }
+
+    public function getIntegrationSendRuleConditionBuilder(Integration $integration): string
+    {
+        Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
+
+        /** @var SubmissionCondition $condition */
+        $condition = !empty($integration->conditionRules)
+            ? Craft::$app->conditions->createCondition($integration->conditionRules)
+            : Craft::createObject(SubmissionCondition::class);
+        $condition->elementType = SubmissionElement::class;
+        $condition->sortable = true;
+        $condition->mainTag = 'div';
+        $condition->name = 'conditionRules';
+        $condition->id = 'conditionRules';
+
+        $condition->queryParams[] = 'formId';
+
+        return Cp::fieldHtml($condition->getBuilderHtml(), [
+            'label' => Craft::t('sprout-module-forms', 'Send Rules'),
+            'instructions' => Craft::t('sprout-module-forms', 'Only send an email for events that match the following rules:'),
+        ]);
     }
 }
