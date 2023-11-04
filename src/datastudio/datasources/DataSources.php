@@ -24,9 +24,9 @@ class DataSources extends Component
      */
     public const INTERNAL_SPROUT_EVENT_REGISTER_DATA_SOURCES = 'registerInternalSproutDataSources';
 
-    public const EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY = 'modifyDataSourceRelationsQuery';
-
     public const EVENT_REGISTER_DATA_SOURCES = 'registerSproutDataSources';
+
+    public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
 
     /**
      * @var $_dataSources DataSource[]
@@ -99,32 +99,14 @@ class DataSources extends Component
         return $this->_dataSources;
     }
 
-    public function getDataSourceRelations(DataSourceRelationsTableInterface $element): array
+    public function getDataSourceRelationsTypes(): array
     {
-        $dataSourceTypes = $element->getAllowedDataSourceRelationTypes() ?? $this->getDataSourceTypes();
-
-        // @todo - this reference should lean on DataSources module and let form integration extend with andWhere() on query?
-        $query = DataSetElement::find()
-            ->orderBy('sprout_datasets.name')
-            ->where(['in', 'sprout_datasets.type', $dataSourceTypes]);
-
-        $event = new ModifyRelationsTableQueryEvent([
-            'element' => $element,
-            'query' => $query,
+        $event = new RegisterComponentTypesEvent([
+            'types' => [],
         ]);
 
-        $this->trigger(self::EVENT_MODIFY_DATA_SOURCE_RELATIONS_QUERY, $event);
+        $this->trigger(self::EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES, $event);
 
-        $rows = array_map(static function($element) {
-            return [
-                'elementId' => $element->id,
-                'name' => $element->name,
-                'cpEditUrl' => $element->getCpEditUrl(),
-                'type' => $element->getDataSource()::displayName(),
-                'actionUrl' => $element->getCpEditUrl(),
-            ];
-        }, $event->query->all());
-
-        return $rows;
+        return $event->types;
     }
 }

@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\components\audiences\DataSetAudienceType;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\components\relations\FormRelationsHelper;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
@@ -171,23 +172,26 @@ class DataStudioModule extends Module
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = NumberWidget::class;
-            }
-        );
+            });
 
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             static function(DefineFieldLayoutFieldsEvent $event): void {
                 DataSetElement::defineNativeFields($event);
-            }
-        );
+            });
 
         Event::on(
             Audiences::class,
             Audiences::EVENT_REGISTER_AUDIENCE_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = DataSetAudienceType::class;
-            }
+            });
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_CREATE_FORM,
+            [FormRelationsHelper::class, 'addDataSourceRelationsTab']
         );
     }
 
@@ -276,13 +280,13 @@ class DataStudioModule extends Module
         foreach ($dataSources as $class) {
             $permissions[self::p('viewReports:' . $class)] = [
                 'label' => Craft::t('sprout-module-data-studio', 'View reports: "{dataSet}"', [
-                    'dataSet' => $class::displayName()
+                    'dataSet' => $class::displayName(),
                 ]),
                 'info' => Craft::t('sprout-module-data-studio', 'Includes viewing some settings, running reports, and CSV exports.'),
                 'nested' => [
                     self::p('editDataSet:' . $class) => [
                         'label' => Craft::t('sprout-module-data-studio', 'Edit data sets', [
-                            'dataSet' => $class::displayName()
+                            'dataSet' => $class::displayName(),
                         ]),
                     ],
                 ],
