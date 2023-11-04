@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionConditi
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\integrationtypes\CustomEndpointIntegrationType;
+use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
@@ -14,6 +15,7 @@ use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
+use craft\base\FieldLayoutElement;
 use craft\elements\conditions\ElementCondition;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
@@ -306,6 +308,99 @@ class FormsController extends BaseController
             'settingsHtml' => $settingsHtml,
             'fieldSettingsJs' => $fieldSettingsJs,
         ]);
+    }
+
+    public function actionEditFormFieldSlideoutViaCpScreen(): Response
+    {
+        $this->requireAcceptsJson();
+
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        if (!$currentUser->can(FormsModule::p('editForms'))) {
+            throw new ForbiddenHttpException('User is not authorized to perform this action.');
+        }
+
+        $formId = Craft::$app->getRequest()->getRequiredParam('formId');
+        $form = Craft::$app->getElements()->getElementById($formId, FormElement::class);
+
+        if (!$form) {
+            return $this->asJson([
+                'success' => false,
+                'errors' => 'Form not found.',
+            ]);
+        }
+
+        $layoutElementConfig = Craft::$app->getRequest()->getRequiredParam('layoutElement');
+        $layoutElementConfig = Json::decode($layoutElementConfig);
+        $fieldConfig = $layoutElementConfig['field'];
+
+        $class = $fieldConfig['type'] ?? null;
+        $fieldSettings = $fieldConfig['settings'] ?? [];
+
+        unset(
+            $fieldConfig['type'],
+            $fieldConfig['tabUid'],
+            $fieldConfig['settings'],
+        );
+
+        $field = new $class($fieldConfig);
+        $field->setAttributes($fieldSettings, false);
+
+        $fieldLayoutElement = new CustomFormField($field);
+        $fieldLayoutElement->layout = $form->getSubmissionFieldLayout();
+
+        $fieldLayoutElement->required = $layoutElementConfig['required'];
+        $fieldLayoutElement->width = $layoutElementConfig['width'];
+        $fieldLayoutElement->uid = $layoutElementConfig['uid'];
+
+        $fieldLayoutElement->setUserCondition($layoutElementConfig['userCondition']);
+        $fieldLayoutElement->setElementCondition($layoutElementConfig['elementCondition']);
+
+        $view = Craft::$app->getView();
+        $view->startJsBuffer();
+        $settingsHtml = $fieldLayoutElement->getSettingsHtml();
+
+        // @featureRequest
+        // Setting fieldUid throws an error if the field is just created in the layout
+        // and isn't yet created in the DB, so we work around that by not setting it here
+        //$fieldLayoutElement->fieldUid = $layoutElementConfig['fieldUid'];
+
+        $requiredSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
+            'fieldLayoutElement' => $fieldLayoutElement,
+            'field' => $field,
+        ]);
+
+        $fieldSettingsJs = $view->clearJsBuffer();
+
+        $tabs = [
+            'form-field-general' => [
+                // FieldLayoutForm
+                //'tabId' => 'form-field',
+                'label' => Craft::t('sprout-module-forms', 'Form Field'),
+                'url' => '#form-field-general',
+                'visible' => true,
+                //'class' => $tab->hasErrors ? 'error' : null,
+            ],
+            'form-field-rules' => [
+                // FieldLayoutForm
+                //'tabId' => 'form-field-conditions',
+                'label' => Craft::t('sprout-module-forms', 'Field Rules'),
+                'url' => '#form-field-rules',
+                'visible' => false,
+                //'class' => $tab->hasErrors ? 'error' : null,
+            ],
+        ];
+
+        return $this->asCpScreen()
+            ->tabs($tabs)
+            ->contentTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideoutCpScreen.twig', [
+                'field' => FormBuilderHelper::getFieldData($layoutElementConfig['fieldUid']),
+                'fieldLayoutElement' => $fieldLayoutElement,
+                'fieldUid' => $layoutElementConfig['fieldUid'],
+                'requiredSettingsHtml' => $requiredSettingsHtml,
+                'settingsHtml' => $settingsHtml,
+                'fieldSettingsJs' => $fieldSettingsJs,
+            ]);
     }
 
     public function actionGetFormFieldObject(): Response
