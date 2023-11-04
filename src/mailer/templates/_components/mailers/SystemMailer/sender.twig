@@ -1,0 +1,65 @@
+{% import "_includes/forms" as forms %}
+
+{# Use the invalid value if there are errors, otherwise use the defaults #}
+{% if element.getErrors('fromName') %}
+    {% set fromName = mailerInstructionsSettings.fromName %}
+{% else %}
+    {% set fromName = mailerInstructionsSettings.fromName ?? mailer.defaultFromName ?? mailSettings.fromName %}
+{% endif %}
+
+{% if element.getErrors('fromEmail') %}
+    {% set fromEmail = mailerInstructionsSettings.fromEmail %}
+{% else %}
+    {% set fromEmail = mailerInstructionsSettings.fromEmail ?? mailer.defaultFromEmail ?? mailSettings.fromEmail %}
+{% endif %}
+
+{% if senderEditBehavior == 'curated' %}
+
+    {{ forms.selectField({
+        label: "From"|t('sprout-module-mailer'),
+        name: 'mailerInstructionsSettings[sender]',
+        options: senderOptions,
+        value: selectedSenderOption,
+        errors: element.getErrors('mailerInstructionsSettings.sender') ?? null,
+        first: true,
+        required: true,
+    }) }}
+
+{% elseif senderEditBehavior == 'custom'  %}
+
+    {{ forms.textField({
+        label: "From Name"|t('sprout-module-mailer'),
+        name: 'mailerInstructionsSettings[fromName]',
+        value: fromName,
+        placeholder: mailer.defaultFromName,
+        errors: element.getErrors('fromName'),
+        required: true,
+        first: true,
+    }) }}
+
+    {{ forms.textField({
+        label: "From Email"|t('sprout-module-mailer'),
+        name: 'mailerInstructionsSettings[fromEmail]',
+        value: fromEmail,
+        placeholder: mailer.defaultFromEmail,
+        errors: element.getErrors('fromEmail'),
+        required: true,
+    }) }}
+
+{% else %}
+
+    {{ forms.textField({
+        label: "Sender"|t('sprout-module-mailer'),
+        tip: "Sender is set in the Craft Email Settings."|t('sprout-module-mailer'),
+        name: 'mailerInstructionsSettings[fromName]',
+        value: fromName ~ ' <' ~ fromEmail ~ '>',
+        first: true,
+        disabled: true,
+    }) }}
+
+{% endif %}
+
+
+
+
+

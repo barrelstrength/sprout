@@ -1,13 +1,13 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
-    label: "Sender Edit Behavior"|t('sprout-module-transactional'),
-    instructions: "How to populate Sender and Reply To fields when editing an email."|t('sprout-module-transactional'),
+    label: "Sender Edit Behavior"|t('sprout-module-mailer'),
+    instructions: "How to populate Sender and Reply To fields when editing an email."|t('sprout-module-mailer'),
     id: 'senderEditBehavior',
     name: 'senderEditBehavior',
     options: [
-        { value: 'custom', label: "Editable Defaults"|t('sprout-module-transactional') },
-        { value: 'curated', label: "Approved Sender List"|t('sprout-module-transactional') }
+        { value: 'custom', label: "Editable Defaults"|t('sprout-module-mailer') },
+        { value: 'curated', label: "Approved Sender List"|t('sprout-module-mailer') }
     ],
     default: 'custom',
     value: mailer.senderEditBehavior ?? 'custom',
@@ -18,7 +18,7 @@
 <div id="sender-behavior-custom" class="hidden">
 
     {{ forms.autosuggestField({
-        label: "Default From Name"|t('sprout-module-transactional'),
+        label: "Default From Name"|t('sprout-module-mailer'),
         name: 'defaultFromName',
         placeholder: mailSettings.fromName,
         value: mailer.defaultFromName,
@@ -26,7 +26,7 @@
     }) }}
 
     {{ forms.autosuggestField({
-        label: "Default From Email"|t('sprout-module-transactional'),
+        label: "Default From Email"|t('sprout-module-mailer'),
         name: 'defaultFromEmail',
         placeholder: mailSettings.fromEmail,
         value: mailer.defaultFromEmail,
@@ -34,7 +34,7 @@
     }) }}
 
     {{ forms.autosuggestField({
-        label: "Default Reply-to Email"|t('sprout-module-transactional'),
+        label: "Default Reply-to Email"|t('sprout-module-mailer'),
         name: 'defaultReplyToEmail',
         placeholder: mailSettings.replyToEmail,
         value: mailer.defaultReplyToEmail,
@@ -45,21 +45,21 @@
 
 <div id="sender-behavior-curated" class="hidden">
     {{ forms.editableTableField({
-        label: "Approved Senders"|t('sprout-module-transactional'),
-        instructions: 'The senders from which content authors can select.'|t('sprout-module-transactional'),
-        tip: 'These can be set to an environment variable.'|t('sprout-module-transactional'),
+        label: "Approved Senders"|t('sprout-module-mailer'),
+        instructions: 'The senders from which content authors can select.'|t('sprout-module-mailer'),
+        tip: 'These can be set to an environment variable.'|t('sprout-module-mailer'),
         id: 'approvedSenders',
         name: 'approvedSenders',
         cols: {
             fromName: {
                 type: 'autosuggest',
-                heading: "From Name"|t('sprout-module-transactional'),
+                heading: "From Name"|t('sprout-module-mailer'),
                 code: true,
                 suggestEnvVars: true,
             },
             fromEmail: {
                 type: 'autosuggest',
-                heading: "From Email"|t('sprout-module-transactional'),
+                heading: "From Email"|t('sprout-module-mailer'),
                 required: true,
                 code: true,
                 suggestEnvVars: true,
@@ -73,15 +73,15 @@
     }) }}
 
     {{ forms.editableTableField({
-        label: "Approved Reply-to Addresses"|t('sprout-module-transactional'),
-        instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-transactional'),
-        tip: 'This can be set to environment variable.'|t('sprout-module-transactional'),
+        label: "Approved Reply-to Addresses"|t('sprout-module-mailer'),
+        instructions: 'The reply-to email addresses from which content editors will select.'|t('sprout-module-mailer'),
+        tip: 'This can be set to environment variable.'|t('sprout-module-mailer'),
         id: 'approvedReplyToEmails',
         name: 'approvedReplyToEmails',
         cols: {
             replyToEmail: {
                 type: 'autosuggest',
-                heading: "Reply To Email"|t('sprout-module-transactional'),
+                heading: "Reply To Email"|t('sprout-module-mailer'),
                 code: true,
                 suggestEnvVars: true,
             },
