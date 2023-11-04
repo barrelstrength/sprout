@@ -9,18 +9,21 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
+use BarrelStrength\Sprout\transactional\components\relations\FormRelationsHelper;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\models\FieldLayout;
 use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\UrlManager;
@@ -132,6 +135,12 @@ class TransactionalModule extends Module
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalEmailElement::class;
             }
+        );
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_CREATE_FORM,
+            [FormRelationsHelper::class, 'addNotificationEventsRelationsTab']
         );
     }
 
