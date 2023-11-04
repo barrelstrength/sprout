@@ -1,16 +1,16 @@
 {% import "_includes/forms" as forms %}
 
 {% set instructions = audiencesExist
-    ? 'Select one or more audiences.'|t('sprout-module-mailer')
-    : 'Send to one or more lists.'|t('sprout-module-mailer') ~ ' ' ~ addAudienceLink|raw %}
+    ? 'Select one or more audiences.'|t('sprout-module-transactional')
+    : 'Send to one or more lists.'|t('sprout-module-transactional') ~ ' ' ~ addAudienceLink|raw %}
 
 {{ forms.elementSelectField({
-    label: 'Audience'|t('sprout-module-mailer'),
+    label: 'Audience'|t('sprout-module-transactional'),
     instructions: instructions,
     id: 'audienceIds',
     name: 'mailerInstructionsSettings[audienceIds]',
     elementType: audienceElementType,
-    selectionLabel: "Add Audience"|t('sprout-module-mailer'),
+    selectionLabel: "Add Audience"|t('sprout-module-transactional'),
     sources: '*',
     elements: audiences,
     disabled: not audiencesExist

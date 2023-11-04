@@ -3,7 +3,7 @@
 {% if senderEditBehavior == 'curated' %}
 
     {{ forms.selectField({
-        label: "From"|t('sprout-module-mailer'),
+        label: "From"|t('sprout-module-transactional'),
         name: 'mailerInstructionsSettings[sender]',
         options: senderOptions,
         value: selectedSenderOption,
@@ -15,7 +15,7 @@
 {% elseif senderEditBehavior == 'custom'  %}
 
     {{ forms.textField({
-        label: "From Name"|t('sprout-module-mailer'),
+        label: "From Name"|t('sprout-module-transactional'),
         name: 'mailerInstructionsSettings[fromName]',
         value: mailerInstructionsSettings.fromName ?? mailSettings.fromName,
         placeholder: mailSettings.fromName,
@@ -25,7 +25,7 @@
     }) }}
 
     {{ forms.textField({
-        label: "From Email"|t('sprout-module-mailer'),
+        label: "From Email"|t('sprout-module-transactional'),
         name: 'mailerInstructionsSettings[fromEmail]',
         value: mailerInstructionsSettings.fromEmail ?? mailSettings.fromEmail,
         placeholder: mailSettings.fromEmail,
@@ -36,8 +36,8 @@
 {% else %}
 
     {{ forms.textField({
-        label: "Sender"|t('sprout-module-mailer'),
-        tip: "Sender is set in the Craft Email Settings."|t('sprout-module-mailer'),
+        label: "Sender"|t('sprout-module-transactional'),
+        tip: "Sender is set in the Craft Email Settings."|t('sprout-module-transactional'),
         name: 'mailerInstructionsSettings[fromName]',
         value: mailSettings.fromName ~ ' <' ~ mailSettings.fromEmail ~ '>',
         first: true,

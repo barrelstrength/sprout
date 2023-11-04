@@ -2,14 +2,14 @@
 
 {% set mailerInstructionsSettings = email.getMailerInstructions() %}
 
-<h6>{{ 'Email Details'|t('sprout-module-mailer') }}</h6>
+<h6>{{ 'Email Details'|t('sprout-module-transactional') }}</h6>
 <table>
     <tr>
-        <th>{{ 'Subject Line'|t('sprout-module-mailer') }}</th>
+        <th>{{ 'Subject Line'|t('sprout-module-transactional') }}</th>
         <td>{{ email.subjectLine }}</td>
     </tr>
     <tr>
-        <th>{{ 'From Address'|t('sprout-module-mailer') }}</th>
+        <th>{{ 'From Address'|t('sprout-module-transactional') }}</th>
         <td>{{ mailerInstructionsSettings.getSenderAsString() }}</td>
     </tr>
 </table>
@@ -24,8 +24,8 @@
     {% set placeholder = currentUser.email ~ ', ' ~ currentUser.friendlyName ~ ' <' ~ currentUser.email ~ '>' %}
 
     {{ forms.textField({
-        label: "To"|t('sprout-module-mailer'),
-        instructions: 'Comma-separated list of recipients.'|t('sprout-module-mailer'),
+        label: "To"|t('sprout-module-transactional'),
+        instructions: 'Comma-separated list of recipients.'|t('sprout-module-transactional'),
         name: 'recipients',
         placeholder: placeholder,
         value: '',
