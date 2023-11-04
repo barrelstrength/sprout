@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms\forms;
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Template;
@@ -16,23 +17,30 @@ trait FormIntegrationsTrait
     {
         $rows = FormsModule::getInstance()->formIntegrations->getIntegrationsRelationsRows($this);
 
-        $integrationTypes = FormsModule::getInstance()->formIntegrations->getAllIntegrationTypes();
-        $options = TemplateHelper::optionsFromComponentTypes($integrationTypes);
+        $enabledIntegrationTypes = $this->getFormType()?->enabledIntegrationTypes ?? [];
+        $savedIntegrationTypes = IntegrationTypeHelper::getIntegrationTypes();
+
+        // Remove any integration types that are not enabled
+        foreach ($savedIntegrationTypes as $uid => $integrationType) {
+            if (!array_key_exists($uid, $enabledIntegrationTypes)) {
+                unset($savedIntegrationTypes[$uid]);
+            }
+        }
 
         $optionValues = [
             [
-                'label' => Craft::t('sprout-module-forms', 'Select Integration Type...'),
+                'label' => Craft::t('sprout-module-forms', 'Select Workflow...'),
                 'value' => '',
             ],
         ];
 
-        foreach ($options as $option) {
-            $optionValues[] = $option;
+        foreach ($savedIntegrationTypes as $uid => $savedIntegrationType) {
+            $optionValues[$uid] = $savedIntegrationType->name;
         }
 
         $createSelect = Cp::selectHtml([
             'id' => 'new-integration',
-            'name' => 'integrationType',
+            'name' => 'integrationTypeUid',
             'options' => $optionValues,
             'value' => '',
         ]);

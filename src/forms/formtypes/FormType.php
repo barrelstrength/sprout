@@ -23,6 +23,8 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
 
     public bool $enableIntegrationsTab = true;
 
+    public array $enabledIntegrationTypes = [];
+
     public ?string $defaultEmailTypeUid = null;
 
     public array $enabledFormFieldTypes = [];
@@ -123,6 +125,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
             'enableNotificationsTab' => $this->enableNotificationsTab,
             'enableReportsTab' => $this->enableReportsTab,
             'enableIntegrationsTab' => $this->enableIntegrationsTab,
+            'enabledIntegrationTypes' => $this->enabledIntegrationTypes,
             'enabledFormFieldTypes' => $this->enabledFormFieldTypes,
         ];
 

@@ -32,6 +32,8 @@ class FormsSettings extends BaseConfig
 
     public string $defaultSubmissionMethod = 'sync';
 
+    public array $integrationTypes = [];
+
     public array $formTypes = [];
 
     public ?string $formTypeUid = null;

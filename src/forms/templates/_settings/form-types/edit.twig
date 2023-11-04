@@ -105,35 +105,55 @@
 
     <div id="features" class="hidden">
 
-        {{ forms.lightswitchField({
-            label: "Enable Notifications"|t('sprout-module-forms'),
-            name: 'enableNotificationsTab',
-            on: formType.enableNotificationsTab,
-            toggle: 'sprout-enable-notifications-settings'
-        }) }}
+        <h3>{{ 'Form Tabs'|t('sprout-module-forms') }}</h3>
 
-        <div id="sprout-enable-notifications-settings" class="hidden">
-            {{ forms.selectField({
-                label: 'Default Email Type'|t('sprout-module-forms'),
-                instructions: 'The email type that will be used when creating notifications for this form.'|t('sprout-module-forms'),
-                id: 'defaultEmailTypeUid',
-                name: 'defaultEmailTypeUid',
-                value: formType.defaultEmailTypeUid,
-                options: formType.getEmailTypesOptions(),
-            }) }}
+        <div class="user-permissions">
+            <div class="checkbox-group">
+                {{ forms.checkboxField({
+                    label: "Enable Notifications"|t('sprout-module-forms'),
+                    value: 'enableReportsTab',
+                    checked: formType.enableNotificationsTab,
+                    name: 'enableReportsTab',
+                }) }}
+
+                {{ forms.checkboxField({
+                    label: "Enable Reports"|t('sprout-module-forms'),
+                    value: 'enableNotificationsTab',
+                    checked: formType.enableReportsTab,
+                    name: 'enableNotificationsTab',
+                }) }}
+
+                {% if integrationTypes|length %}
+                    {{ forms.checkboxField({
+                        label: "Enable Integrations"|t('sprout-module-forms'),
+                        value: 'enableIntegrationsTab',
+                        checked: formType.enableIntegrationsTab,
+                        name: 'enableIntegrationsTab',
+                        toggle: 'sprout-enable-integrations-settings',
+                    }) }}
+                {% else %}
+                    {{ hiddenInput('enableIntegrationsTab', false) }}
+                {% endif %}
+            </div>
         </div>
 
-        {{ forms.lightswitchField({
-            label: "Enable Reports"|t('sprout-module-forms'),
-            name: 'enableReportsTab',
-            on: formType.enableReportsTab,
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: "Enable Integrations"|t('sprout-module-forms'),
-            name: 'enableIntegrationsTab',
-            on: formType.enableIntegrationsTab,
-        }) }}
+        {% if integrationTypes|length %}
+            <div id="sprout-enable-integrations-settings" class="hidden">
+                <br>
+                <h4>{{ 'Integration Types'|t('sprout-module-forms') }}</h4>
+                <div class="user-permissions">
+                    {% for uid, integrationType in integrationTypes %}
+                        {% set integrationClassName = className(integrationType) %}
+                        {{ forms.checkboxField({
+                            label: integrationType.name,
+                            value: true,
+                            checked: formType.enabledIntegrationTypes[uid] ?? false,
+                            name: 'enabledIntegrationTypes['~uid~']',
+                        }) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
 
         <hr>
 

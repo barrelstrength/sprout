@@ -21,6 +21,17 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
 
     protected ?string $successMessage = null;
 
+    protected ?array $sourceFormFieldsFromPage = null;
+
+    public function __construct($config = [])
+    {
+        if (isset($config['sourceFormFieldsFromPage'])) {
+            unset($config['sourceFormFieldsFromPage']);
+        }
+
+        parent::__construct($config);
+    }
+
     /**
      */
     public function init(): void
@@ -32,6 +43,7 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
          *    generic element and should add it shortly. We need the Form ID
          *    to properly prepare the fieldMapping.
          */
+
         if ($this->formId) {
             $this->refreshFieldMapping();
         }
@@ -372,5 +384,16 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
                 'type' => SingleLineFormField::class,
             ],
         ];
+    }
+
+    public function getConfig(): array
+    {
+        $config = [
+            'type' => static::class,
+            'name' => $this->name,
+            'settings' => $this->getSettings(),
+        ];
+
+        return $config;
     }
 }

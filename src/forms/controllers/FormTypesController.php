@@ -3,10 +3,12 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
+use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use Craft;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -39,8 +41,11 @@ class FormTypesController extends Controller
             $formType = new $type();
         }
 
+        $integrationTypes = IntegrationTypeHelper::getIntegrationTypes();
+
         return $this->renderTemplate('sprout-module-forms/_settings/form-types/edit.twig', [
             'formType' => $formType,
+            'integrationTypes' => $integrationTypes,
         ]);
     }
 
@@ -121,6 +126,8 @@ class FormTypesController extends Controller
         $formType->name = Craft::$app->request->getBodyParam('name');
         $formType->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
+        $integrationTypes = Craft::$app->request->getBodyParam('enabledIntegrationTypes');
+
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
 
         $fieldLayout->type = $type;
@@ -130,6 +137,7 @@ class FormTypesController extends Controller
         $formType->enableNotificationsTab = Craft::$app->request->getBodyParam('enableNotificationsTab');
         $formType->enableReportsTab = Craft::$app->request->getBodyParam('enableReportsTab');
         $formType->enableIntegrationsTab = Craft::$app->request->getBodyParam('enableIntegrationsTab');
+        $formType->enabledIntegrationTypes = array_filter($integrationTypes);
         $formType->enabledFormFieldTypes = Craft::$app->request->getBodyParam('enabledFormFieldTypes');
 
         if (!$formType::isEditable()) {

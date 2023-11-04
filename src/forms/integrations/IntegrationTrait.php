@@ -56,5 +56,7 @@ trait IntegrationTrait
      */
     public bool $sendRule = false;
 
+    public ?array $conditionRules = null;
+
     public ?string $uid = null;
 }

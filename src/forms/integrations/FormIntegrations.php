@@ -64,6 +64,11 @@ class FormIntegrations extends Component
         return $integrations;
     }
 
+    public function getIntegrationTypeProjectConfig(): array
+    {
+        return IntegrationTypeHelper::getIntegrationTypes();
+    }
+
     public function getIntegrations(): array
     {
         $results = (new Query())

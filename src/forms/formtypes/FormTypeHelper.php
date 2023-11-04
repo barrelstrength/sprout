@@ -88,6 +88,7 @@ class FormTypeHelper
             'enableNotificationsTab' => $formTypeSettings['enableNotificationsTab'] ?? null,
             'enableReportsTab' => $formTypeSettings['enableReportsTab'] ?? null,
             'enableIntegrationsTab' => $formTypeSettings['enableIntegrationsTab'] ?? null,
+            'enabledIntegrationTypes' => $formTypeSettings['enabledIntegrationTypes'] ?? null,
             'enabledFormFieldTypes' => $formTypeSettings['enabledFormFieldTypes'] ?? null,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);

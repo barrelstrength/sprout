@@ -3,11 +3,17 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\forms\formtypes\FormType;
+use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\ElementIntegration;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use BarrelStrength\Sprout\forms\integrations\IntegrationRecord;
+use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use Craft;
+use craft\helpers\Json;
+use craft\helpers\StringHelper;
 use craft\web\Controller as BaseController;
 use yii\web\Response;
 
@@ -15,7 +21,7 @@ class FormIntegrationsController extends BaseController
 {
     public function actionFormIntegrationsIndexTemplate(): Response
     {
-        $integrationTypes = FormsModule::getInstance()->formIntegrations->getIntegrations();
+        $integrationTypes = FormsModule::getInstance()->formIntegrations->getIntegrationTypeProjectConfig();
         $integrationTypeTypes = FormsModule::getInstance()->formIntegrations->getAllIntegrationTypes();
 
         return $this->renderTemplate('sprout-module-forms/_settings/integrations/index.twig', [
@@ -23,6 +29,24 @@ class FormIntegrationsController extends BaseController
             'integrationTypeTypes' => ComponentHelper::typesToInstances($integrationTypeTypes),
         ]);
     }
+
+    public function actionEdit(Integration $integrationType = null, string $integrationTypeUid = null, string $type = null): Response
+    {
+        $this->requireAdmin();
+
+        if ($integrationTypeUid) {
+            $integrationType = IntegrationTypeHelper::getIntegrationTypeByUid($integrationTypeUid);
+        }
+
+        if (!$integrationType && $type) {
+            $integrationType = new $type();
+        }
+
+        return $this->renderTemplate('sprout-module-forms/_settings/integrations/edit.twig', [
+            'integrationType' => $integrationType,
+        ]);
+    }
+
     /**
      * Enable or disable an Integration
      */
@@ -65,6 +89,97 @@ class FormIntegrationsController extends BaseController
         ]);
     }
 
+    public function actionSave(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin();
+
+        $integrationType = $this->populateIntegrationTypeModel();
+
+        $integrationTypesConfig = IntegrationTypeHelper::getIntegrationTypes();
+        $integrationTypesConfig[$integrationType->uid] = $integrationType;
+
+        if (!$integrationType->validate() || !IntegrationTypeHelper::saveIntegrationTypes($integrationTypesConfig)) {
+
+            Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Integration Type.'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'integrationType' => $integrationType,
+            ]);
+
+            return null;
+        }
+
+        Craft::$app->session->setNotice(Craft::t('sprout-module-forms', 'Integration Type saved.'));
+
+        return $this->redirectToPostedUrl();
+    }
+
+    public function actionReorder(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin(false);
+
+        $ids = Json::decode(Craft::$app->request->getRequiredBodyParam('ids'));
+
+        if (!IntegrationTypeHelper::reorderIntegrationTypes($ids)) {
+            return $this->asJson([
+                'success' => false,
+                'error' => Craft::t('sprout-module-forms', "Couldn't reorder Integration Types."),
+            ]);
+        }
+
+        return $this->asJson([
+            'success' => true,
+        ]);
+    }
+
+    public function actionDelete(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin(false);
+
+        $integrationTypeUid = Craft::$app->request->getRequiredBodyParam('id');
+
+        /** @todo determine if any integrations are in use. */
+        return $this->asJson([
+            'success' => false,
+        ]);
+
+        $inUse = FormElement::find()
+            ->formTypeUid($integrationTypeUid)
+            ->exists();
+
+        if ($inUse || !IntegrationTypeHelper::removeIntegrationType($integrationTypeUid)) {
+            return $this->asJson([
+                'success' => false,
+            ]);
+        }
+
+        return $this->asJson([
+            'success' => true,
+        ]);
+    }
+
+    private function populateIntegrationTypeModel(): Integration
+    {
+        $request = Craft::$app->getRequest();
+
+        $type = $request->getRequiredBodyParam('type');
+        $uid = Craft::$app->request->getBodyParam('uid');
+        $uid = empty($uid) ? StringHelper::UUID() : $uid;
+
+        /** @var Integration $integrationType */
+        $integrationType = FormsModule::getInstance()->formIntegrations->createIntegration([
+            'name' => $request->getBodyParam('name'),
+            'settings' => $request->getBodyParam('settings.' . $type),
+            'type' => $type,
+            'uid' => $uid
+        ]);
+
+        return $integrationType;
+    }
+
     public function actionSaveIntegration(): Response
     {
         $this->requirePostRequest();
@@ -84,7 +199,7 @@ class FormIntegrationsController extends BaseController
             'settings' => $request->getBodyParam('settings.' . $type),
         ]);
 
-        $integration = new $type($integration);
+        //$integration = new $type($integration);
 
         if (!FormsModule::getInstance()->formIntegrations->saveIntegration($integration)) {
             Craft::error('Unable to save integration.', __METHOD__);
@@ -158,6 +273,7 @@ class FormIntegrationsController extends BaseController
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
+        // @todo - rewrite to use UID in Formbuilder JS
         $integrationId = Craft::$app->request->getRequiredBodyParam('integrationId');
         $integration = FormsModule::getInstance()->formIntegrations->getIntegrationById($integrationId);
 
@@ -172,12 +288,16 @@ class FormIntegrationsController extends BaseController
 
         return $this->asJson([
             'success' => true,
-            'sourceFormFields' => $sourceFormFields,
+            'sourceFormFields' => [],
         ]);
     }
 
     public function actionGetTargetIntegrationFields(): Response
     {
+        return $this->asJson([
+            'success' => true,
+            'targetIntegrationFields' => [],
+        ]);
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 

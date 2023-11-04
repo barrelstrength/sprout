@@ -10,12 +10,12 @@ use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
-use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\IntegrationsField;
 use BarrelStrength\Sprout\forms\components\formfields\MissingFormField;
 use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
+use BarrelStrength\Sprout\forms\forms\FormIntegrationsTrait;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\forms\FormsDataSourceRelationsTrait;
 use BarrelStrength\Sprout\forms\forms\FormsNotificationEventsRelationsTrait;
@@ -67,6 +67,7 @@ class FormElement extends Element implements DataSourceRelationsTableInterface, 
 {
     use FormsDataSourceRelationsTrait;
     use FormsNotificationEventsRelationsTrait;
+    use FormIntegrationsTrait;
 
     // @todo - move to DataSourceRelationsTrait when min version PHP = 8.2
     public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
@@ -303,8 +304,8 @@ class FormElement extends Element implements DataSourceRelationsTableInterface, 
             [$formBuilderTab],
             $formTypeTabs,
             $formType->enableNotificationsTab && isset($notificationsTab) ? [$notificationsTab] : [],
-            $formType->enableReportsTab && isset($reportsTab) ? [$reportsTab] : [],
             $formType->enableIntegrationsTab && isset($integrationsTab) ? [$integrationsTab] : [],
+            $formType->enableReportsTab && isset($reportsTab) ? [$reportsTab] : [],
             !empty($this->name) ? [$settingsTab] : [],
         );
 

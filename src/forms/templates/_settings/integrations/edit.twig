@@ -5,319 +5,54 @@
 {% set module = sprout.modules.forms %}
 {% set settings = module.getSettings() %}
 
-{% set currentSubNavKey = 'form-types' %}
+{% set currentSubNavKey = 'integration-types' %}
 
 {% set crumbs = [
     { label: "Settings"|t('sprout-module-forms'), url: cpUrl('settings') },
-    { label: "Form Types"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/form-types') }
+    { label: "Integration Types"|t('sprout-module-forms'), url: cpUrl('sprout/settings/forms/integrations') }
 ] %}
 
 {% set fullPageForm = true %}
 
 {% block actionButton %}
 
-    {#    {% if formType.isEditable() %} #}
     <div class="buttons">
         <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-module-forms') }}">
     </div>
-    {#    {% endif %} #}
 
 {% endblock %}
 
 {% block content %}
 
-    <header id="content-header" class="pane-header">
-        {% set tabs = {
-            general: {
-                label: 'General'|t('sprout-module-forms'),
-                url: '#general'
-            },
-            features: {
-                label: 'Features'|t('sprout-module-forms'),
-                url: '#features'
-            },
-            behavior: {
-                label: 'Behavior'|t('sprout-module-forms'),
-                url: '#behavior'
-            },
-            formFieldLayout: {
-                label: 'Template Fields'|t('sprout-module-forms'),
-                url: '#fields'
-            },
-        } %}
-        {% include "_includes/tabs" with {
-            containerAttributes: {
-                id: 'tabs',
-            },
-        } %}
-    </header>
+    {{ forms.textField({
+        label: "Name"|t('sprout-module-forms'),
+        instructions: "How you will refer to this Integration Type."|t('sprout-module-forms'),
+        id: 'name',
+        name: 'name',
+        value: integrationType.name,
+        errors: integrationType.getErrors('name'),
+        warning: sproutConfigWarning(module, 'name'),
+        required: true,
+        first: true,
+    }) }}
 
-    {% set notEditableTipMessage = not formType.isEditable() ? "This setting is defined by the selected form type and is not editable."|t('sprout-module-forms') : null %}
+    {% namespace 'settings['~className(integrationType)~']' %}
+        {{ integrationType.getSettingsHtml()|raw }}
+    {% endnamespace %}
 
-    <div id="general">
-        {{ forms.textField({
-            label: "Name"|t('sprout-module-forms'),
-            instructions: "How you will refer to this Form Type."|t('sprout-module-forms'),
-            id: 'name',
-            name: 'name',
-            value: formType.name,
-            errors: formType.getErrors('name'),
-            warning: sproutConfigWarning(module, 'name'),
-            required: true,
-            first: true,
-        }) }}
+    {{ forms.textField({
+        label: "Integration Type"|t('sprout-module-forms'),
+        tip: 'This setting is not editable.'|t('sprout-module-forms'),
+        value: integrationType.displayName(),
+        disabled: true,
+    }) }}
 
-        {{ forms.autosuggestField({
-            label: "Form Template"|t('sprout-module-forms'),
-            instructions: "The template that will be used to render your form."|t('sprout-module-forms'),
-            tip: notEditableTipMessage,
-            id: 'formTemplate',
-            name: 'formTemplate',
-            suggestEnvVars: false,
-            suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: "_forms/form-type/form.twig"|t('sprout-module-forms'),
-            value: formType.formTemplate ?? null,
-            errors: formType.getErrors('formTemplate'),
-            required: true,
-            disabled: not formType.isEditable(),
-        }) }}
+    {{ actionInput('sprout-module-forms/form-integrations/save') }}
+    {{ redirectInput('sprout/settings/forms/integrations') }}
 
-        {{ forms.autosuggestField({
-            label: "Form Template Override Folder"|t('sprout-module-forms'),
-            instructions: "The folder that will take precedence over any form type files."|t('sprout-module-forms'),
-            id: 'formTemplateOverrideFolder',
-            name: 'formTemplateOverrideFolder',
-            suggestEnvVars: false,
-            suggestions: craft.cp.getTemplateSuggestions(),
-            placeholder: "_forms/form-type/overrides"|t('sprout-module-forms'),
-            value: formType.formTemplateOverrideFolder ?? null,
-            errors: formType.getErrors('formTemplateOverrideFolder'),
-        }) }}
-
-        {{ forms.textField({
-            label: "Form Type"|t('sprout-module-forms'),
-            tip: 'This setting is not editable.'|t('sprout-module-forms'),
-            value: formType.displayName(),
-            disabled: true,
-        }) }}
-
-    </div>
-
-    <div id="features" class="hidden">
-
-        {{ forms.lightswitchField({
-            label: "Enable Notifications"|t('sprout-module-forms'),
-            name: 'enableNotificationsTab',
-            on: formType.enableNotificationsTab,
-            toggle: 'sprout-enable-notifications-settings'
-        }) }}
-
-        <div id="sprout-enable-notifications-settings" class="hidden">
-            {{ forms.selectField({
-                label: 'Default Email Type'|t('sprout-module-forms'),
-                instructions: 'The email type that will be used when creating notifications for this form.'|t('sprout-module-forms'),
-                id: 'defaultEmailTypeUid',
-                name: 'defaultEmailTypeUid',
-                value: formType.defaultEmailTypeUid,
-                options: formType.getEmailTypesOptions(),
-            }) }}
-        </div>
-
-        {{ forms.lightswitchField({
-            label: "Enable Reports"|t('sprout-module-forms'),
-            name: 'enableReportsTab',
-            on: formType.enableReportsTab,
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: "Enable Integrations"|t('sprout-module-forms'),
-            name: 'enableIntegrationsTab',
-            on: formType.enableIntegrationsTab,
-        }) }}
-
-        <hr>
-
-        {% for groupLabel, formFieldTypes in formType.getFormFieldFeatures() %}
-
-            <div class="user-permissions">
-                <h3>{{ '{groupName}'|t('sprout-module-forms', { groupName: groupLabel }) }}</h3>
-                {{ tag('div', {
-                    text: 'Select All'|t('sprout-module-forms'),
-                    class: 'select-all'
-                }) }}
-                <div class="checkbox-group">
-                    {% for formFieldType, label in formFieldTypes %}
-                        {{ forms.checkboxField({
-                            label: label,
-                            value: formFieldType,
-                            checked: formType.getFormFieldTypesByType[formFieldType] ?? false,
-                            name: 'enabledFormFieldTypes[]',
-                        }) }}
-                    {% endfor %}
-                </div>
-            </div>
-
-        {% endfor %}
-
-    </div>
-
-    <div id="behavior" class="hidden">
-
-        {{ forms.selectField({
-            label: 'Submission Method'|t('sprout-module-forms'),
-            instructions: 'The method used to submit your forms.'|t('sprout-module-forms'),
-            id: 'submissionMethod',
-            name: 'submissionMethod',
-            value: formType.submissionMethod,
-            options: [{
-                value: "sync",
-                label: "Reload Page (Synchronous)"|t('sprout-module-forms')
-            },{
-                value: "async",
-                label: "AJAX (Asynchronous)"|t('sprout-module-forms'),
-            }],
-        }) }}
-
-        {{ forms.selectField({
-            label: 'Error Display Method'|t('sprout-module-forms'),
-            instructions: 'The method used to display errors after a form fails validation.'|t('sprout-module-forms'),
-            id: 'errorDisplayMethod',
-            name: 'errorDisplayMethod',
-            value: formType.errorDisplayMethod,
-            options: [{
-                label: 'Inline - Display errors alongside their respective fields',
-                value: 'inline',
-            },{
-                label: 'Globally - Display errors together in a list',
-                value: 'global',
-            },{
-                label: 'Inline & Globally - Display errors everywhere!',
-                value: 'both',
-            }],
-        }) }}
-
-        <hr>
-
-        {{ forms.lightswitchField({
-            label: "Save data to the Craft database"|t('sprout-module-forms'),
-            instructions: "Disable this setting to stop Sprout Forms from saving all form submission data to the Craft database and hide the Submissions tab. Existing data will not be deleted, but will no longer be accessible via the Control Panel."|t('sprout-module-forms'),
-            id: 'enableSaveData',
-            name: 'enableSaveData',
-            toggle: 'settings-savedatadetails',
-            on: formType.enableSaveData,
-            onLabel: "Save Data"|t('sprout-module-forms'),
-            offLabel: "Don't Save Data"|t('sprout-module-forms'),
-        }) }}
-
-        <div id="settings-savedatadetails"
-            class="{{ not formType.enableSaveData ? "hidden" : '' }}">
-
-            {{ forms.lightswitchField({
-                label: "Track Remote IP"|t('sprout-module-forms'),
-                instructions: "Enable to capture the IP Address used when a Submission is saved. IP Addresses may be considered personal information."|t('sprout-module-forms'),
-                name: 'trackRemoteIp',
-                on: formType.trackRemoteIp ? true : false,
-                onLabel: "Save Data"|t('sprout-module-forms'),
-                offLabel: "Don't Save Data"|t('sprout-module-forms'),
-            }) }}
-
-        </div>
-
-        <hr>
-
-        {% set assetField = create('craft\\fields\\Assets') %}
-
-        {{ forms.checkboxSelectField({
-            label: 'Allowed Asset Volumes'|t('sprout-forms'),
-            instructions: 'The asset volumes that will be available to select when adding a File Upload field to a form.'|t('sprout-forms'),
-            name: 'allowedAssetVolumes',
-            options: assetField.getSourceOptions(),
-            values: formType.allowedAssetVolumes,
-            showAllOption: true,
-        }) }}
-
-        {{ forms.textField({
-            label: "Default File Upload Location Subpath"|t('sprout-forms'),
-            instructions: "The default subpath will be used whenever a new File Upload field is added to a form. The subfolder path can contain variables like the Form Entry ID <code>{id}</code> or the Form handle <code>{{ object.getForm().handle }}</code>"|t
-                ('sprout-forms'),
-            id: 'defaultUploadLocationSubpath',
-            name: 'defaultUploadLocationSubpath',
-            value: formType.defaultUploadLocationSubpath,
-            placeholder: '{{ object.getForm().handle }}',
-        }) }}
-
-        <hr>
-
-        {{ forms.lightswitchField({
-            label: "Allow Forms to be edited in front-end templates"|t('sprout-module-forms'),
-            instructions: "Enable this setting to allow users to edit existing submissions in front-end templates. Enabling this feature may have some workflow or security considerations as forms allow anonymous submissions."|t('sprout-module-forms'),
-            id: 'enableEditSubmissionViaFrontEnd',
-            name: 'enableEditSubmissionViaFrontEnd',
-            on: formType.enableEditSubmissionViaFrontEnd,
-            onLabel: "Allow Edits"|t('sprout-module-forms'),
-            offLabel: "Don't Allow Edits"|t('sprout-module-forms'),
-        }) }}
-
-    </div>
-
-    <div id="fields" class="hidden">
-        {% set fieldLayoutInstructions = "The content fields that can be used in this form type."|t('sprout-module-forms') %}
-
-        {{ forms.fieldLayoutDesignerField({
-            fieldLayout: formType.getFieldLayout(),
-            errors: formType.getErrors('fieldLayout'),
-        }) }}
-
-    </div>
-
-    {{ actionInput('sprout-module-forms/form-types/save') }}
-    {{ redirectInput('sprout/settings/forms/form-types') }}
-
-    {{ hiddenInput('uid', formType.uid) }}
-    {{ hiddenInput('type', className(formType)) }}
+    {{ hiddenInput('uid', integrationType.uid) }}
+    {{ hiddenInput('type', className(integrationType)) }}
 
 {% endblock %}
-
-{% css %}
-    .user-permissions h3 {
-    float: left;
-    padding-right: 0.5em;
-    margin: 14px 0.5em 0 !important;
-    margin-left: 0 !important;
-    border-right: 1px solid #eee;
-    }
-
-    .user-permissions ul {
-    clear: both;
-    }
-
-    .user-permissions .checkboxfield {
-    margin: 0;
-    }
-
-    .select-all {
-    color: var(--link-color);
-    cursor: pointer;
-    font-size: .9em;
-    margin: 13px 0;
-    display: inline-block;
-    }
-{% endcss %}
-
-{% js %}
-    let selectLinks = document.querySelectorAll('.select-all');
-
-    selectLinks.forEach(function(link) {
-    link.addEventListener('click', function() {
-    // toggle all checkboxes in .checkbox-group div
-    let checkboxes = this.nextElementSibling.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function(checkbox) {
-    checkbox.checked = !checkbox.checked;
-    });
-    // toggle text of .select-all div
-    this.innerText = this.innerText === 'Select All' ? 'Deselect All' : 'Select All';
-    });
-    });
-{% endjs %}
 
 {# {% js "new Craft.HandleGenerator('#name', '#handle');" %} #}
