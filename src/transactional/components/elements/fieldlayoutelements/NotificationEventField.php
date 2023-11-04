@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
@@ -40,6 +41,9 @@ class NotificationEventField extends BaseNativeField
 
         $emailVariantSettings = $element->getEmailVariant();
         $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
+
+        // This JS works on the Element Editor page but not in the Slideout Editor, which is okay for now
+        Sprout::getInstance()->vite->register('transactional/NotificationEvents.js', false);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-transactional/_components/elements/email/notificationEvents.twig', [
             'notificationEvent' => $notificationEvent,
