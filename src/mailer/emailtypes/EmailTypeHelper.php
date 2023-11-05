@@ -97,7 +97,12 @@ class EmailTypeHelper
     {
         $type = $emailTypeConfig['type'];
 
-        $config = reset($emailTypeConfig['fieldLayouts']);
+        $config = [];
+
+        if (isset($emailTypeConfig['fieldLayouts']) && is_array($emailTypeConfig['fieldLayouts'])) {
+            $config = reset($emailTypeConfig['fieldLayouts']);
+        }
+
         $config['type'] = $type;
 
         $fieldLayout = FieldLayout::createFromConfig($config);
