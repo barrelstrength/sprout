@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.1.5 - 2023-11-05
+
+### Changed
+
+- Improved Transactional Email mailer settings validation
+
+### Fixed
+
+- Updated Audience Field to respect setting that enables/disables audiences
+- Updated Audience Recipients to respect setting that enables/disables audiences
+
 ## 4.1.1 - 2023-09-14
 
 ### Added
