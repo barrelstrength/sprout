@@ -3,11 +3,18 @@
 namespace BarrelStrength\Sprout\mailer\audience;
 
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
+use BarrelStrength\Sprout\mailer\MailerModule;
 
 class AudienceHelper
 {
     public static function getAudienceRecipients($audienceIds): array
     {
+        $settings = MailerModule::getInstance()->getSettings();
+
+        if (!$settings->enableAudiences) {
+            return [];
+        }
+
         if (empty($audienceIds)) {
             return [];
         }
