@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ReplyToF
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\SenderField;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\TestToEmailUiElement;
 use BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements\ToField;
+use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
@@ -67,6 +68,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     public function createFieldLayout(): ?FieldLayout
     {
+        $settings = MailerModule::getInstance()->getSettings();
+
         $fieldLayout = new FieldLayout([
             'type' => static::class,
         ]);
@@ -89,9 +92,11 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             new ToField([
                 'uid' => 'SPROUT-UID-EMAIL-TO-FIELD',
             ]),
-            new AudienceField([
-                'uid' => 'SPROUT-UID-EMAIL-AUDIENCE-FIELD',
-            ]),
+            $settings->enableAudiences ?
+                new AudienceField([
+                    'uid' => 'SPROUT-UID-EMAIL-AUDIENCE-FIELD',
+                ])
+                : [],
             new TestToEmailUiElement([
                 'uid' => 'SPROUT-UID-EMAIL-TEST-TO-UI-ELEMENT',
             ]),
