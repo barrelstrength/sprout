@@ -77,6 +77,8 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
         ## test if any files changed contain content that includes the string 'sprout-module-transactional'
         if git diff --cached --name-only --diff-filter=MRT | grep -E --quiet "src\/$CATEGORY_FOLDER";
         then
+            ## create a new variable that removes the matched category from the TRANSLATION_CATEGORIES array and makes the array a string
+            TRANSLATION_CATEGORIES_STRING=$(printf "|%s" "${TRANSLATION_CATEGORIES[@]/$CATEGORY/}" | tr -d '[:space:]')
             # remove the matched category from the TRANSLATION_CATEGORIES_STRING string
             TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING//$CATEGORY/}
             ## replace any double pipes with single pipe
