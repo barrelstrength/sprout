@@ -197,10 +197,7 @@
     "css": [
       "assets/NotificationEvents-8e4ab043.css"
     ],
-    "file": "assets/transactionalEmail-928f1dbe.js",
-    "imports": [
-      "_module.esm-9a996e1c.js"
-    ],
+    "file": "assets/transactionalEmail-7eaf5ef0.js",
     "isEntry": true,
     "src": "transactional/NotificationEvents.js"
   }
