@@ -212,16 +212,27 @@ trait SystemMailerInstructionsTrait
     {
         $rules = parent::defineRules();
 
-        $rules[] = ['fromName', 'required', 'when' => fn() => $this->fromName !== null];
-        $rules[] = ['fromEmail', 'required', 'when' => fn() => $this->fromEmail !== null];
+
+        // Set Scenarios to Mailer Instructions Scenarios: Craft, EditableDefaults, ApprovedSenderList
+        $rules[] = ['fromName', 'required', 'on' => SystemMailer::SENDER_BEHAVIOR_CUSTOM];
+
+        $rules[] = ['fromEmail', 'required', 'on' => SystemMailer::SENDER_BEHAVIOR_CUSTOM];
         $rules[] = ['fromEmail', 'email', 'when' => fn() => $this->fromEmail !== null];
-        $rules[] = [['sender'], 'validateApprovedSender', 'when' => fn() => $this->sender !== null];
+
+        $rules[] = ['sender', 'validateApprovedSender', 'when' => fn() => $this->sender !== null];
 
         $rules[] = ['replyToEmail', 'email', 'when' => fn() => $this->replyToEmail !== null];
         $rules[] = ['replyToEmail', 'validateApprovedReplyTo', 'when' => fn() => $this->replyToEmail !== null];
 
-        $rules[] = [['recipients'], 'required', 'message' => Craft::t('sprout-module-mailer', '{attribute} in "To Field" cannot be blank.')];
         $rules[] = ['recipients', 'validateRecipients'];
+        $rules[] = ['recipients', 'required',
+            'when' => fn() => $this->audienceIds === null,
+            'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless an Audience is selected.'),
+        ];
+        $rules[] = ['audienceIds', 'required',
+            'when' => fn() => $this->recipients === null,
+            'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless a recipient is selected in the "To Field".'),
+        ];
 
         return $rules;
     }

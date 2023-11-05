@@ -49,6 +49,7 @@ class SenderField extends BaseNativeField
             'mailerInstructionsSettings' => $mailerInstructionsSettings,
             'senderOptions' => $senderOptions,
             'senderEditBehavior' => $mailer->senderEditBehavior,
+            'mailer' => $mailer,
             'mailSettings' => App::mailSettings(),
         ]);
     }

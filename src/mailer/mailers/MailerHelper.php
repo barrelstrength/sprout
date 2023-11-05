@@ -73,6 +73,7 @@ class MailerHelper
             unset($config['type']);
 
             $mailers[$uid] = new $type($config);
+            $mailers[$uid]->uid = $uid;
         }
 
         return $mailers ?? [];

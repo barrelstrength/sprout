@@ -705,7 +705,10 @@ class EmailElement extends Element implements EmailPreviewInterface
         $mailerInstructionsSettings->mailer = $mailer;
 
         if (!$mailerInstructionsSettings->validate()) {
-            $this->addModelErrors($mailerInstructionsSettings, 'mailerInstructionsSettings');
+            // Adding the error to the Element makes sure the Mailer tab is highlighted with errors
+            $this->addError('mailerInstructionsSettings', Craft::t('sprout-module-mailer', 'Invalid Mailer Instructions Settings.'));
+            // Adding the errors to the model, makes sure the errors are displayed for the fields
+            $this->addModelErrors($mailerInstructionsSettings);
         }
     }
 }
