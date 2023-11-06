@@ -195,9 +195,12 @@ class MetaModule extends Module
         return new MetaSettings();
     }
 
-    public function getSettings(): MetaSettings|BaseConfig
+    public function getSettings(): MetaSettings
     {
-        return SettingsHelper::getSettingsConfig($this, MetaSettings::class);
+        /** @var MetaSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, MetaSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

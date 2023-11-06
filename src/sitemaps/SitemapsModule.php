@@ -152,9 +152,12 @@ class SitemapsModule extends Module
         return new SitemapsSettings();
     }
 
-    public function getSettings(): SitemapsSettings|BaseConfig
+    public function getSettings(): SitemapsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, SitemapsSettings::class);
+        /** @var SitemapsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, SitemapsSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

@@ -154,9 +154,12 @@ class SentEmailModule extends Module
         return new SentEmailSettings();
     }
 
-    public function getSettings(): SentEmailSettings|BaseConfig
+    public function getSettings(): SentEmailSettings
     {
-        return SettingsHelper::getSettingsConfig($this, SentEmailSettings::class);
+        /** @var SentEmailSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, SentEmailSettings::class);
+
+        return $settings;
     }
 
     public function getCpUrlRules(): array

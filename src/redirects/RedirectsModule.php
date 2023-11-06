@@ -168,9 +168,12 @@ class RedirectsModule extends Module
         return new RedirectsSettings();
     }
 
-    public function getSettings(): RedirectsSettings|BaseConfig
+    public function getSettings(): RedirectsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, RedirectsSettings::class);
+        /** @var RedirectsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, RedirectsSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

@@ -258,9 +258,12 @@ class FormsModule extends Module
         return new FormsSettings();
     }
 
-    public function getSettings(): FormsSettings|BaseConfig
+    public function getSettings(): FormsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, FormsSettings::class);
+        /** @var FormsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, FormsSettings::class);
+
+        return $settings;
     }
 
     public function getUserPermissions(): array

@@ -200,9 +200,12 @@ class DataStudioModule extends Module
         return new DataStudioSettings();
     }
 
-    public function getSettings(): DataStudioSettings|BaseConfig
+    public function getSettings(): DataStudioSettings
     {
-        return SettingsHelper::getSettingsConfig($this, DataStudioSettings::class);
+        /** @var DataStudioSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, DataStudioSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSettingsNavItems(): array

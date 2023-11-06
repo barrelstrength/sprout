@@ -228,9 +228,12 @@ class MailerModule extends Module
         return new MailerSettings();
     }
 
-    public function getSettings(): MailerSettings|BaseConfig
+    public function getSettings(): MailerSettings
     {
-        return SettingsHelper::getSettingsConfig($this, MailerSettings::class);
+        /** @var MailerSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, MailerSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array
