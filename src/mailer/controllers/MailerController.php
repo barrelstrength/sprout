@@ -55,7 +55,6 @@ class MailerController extends Controller
         $mailers[$mailer->uid] = $mailer;
 
         if (!$mailer->validate() || !MailerHelper::saveMailers($mailers)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save mailer.'));
 
             Craft::$app->getUrlManager()->setRouteParams([

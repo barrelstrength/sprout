@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\GoogleCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\HoneypotCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\JavascriptCaptcha;
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\events\OnBeforeValidateSubmissionEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;

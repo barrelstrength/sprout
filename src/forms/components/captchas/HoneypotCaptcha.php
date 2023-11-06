@@ -89,6 +89,3 @@ class HoneypotCaptcha extends Captcha
         return $settings['honeypotScreenReaderMessage'] ?? Craft::t('sprout-module-forms', 'Leave this field blank');
     }
 }
-
-
-

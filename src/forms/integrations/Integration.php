@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\forms\integrations;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\formfields\NumberFormField;
-use BarrelStrength\Sprout\forms\components\formfields\OptInFormField;
 use BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField;
 use BarrelStrength\Sprout\forms\formfields\FormField;
 use BarrelStrength\Sprout\forms\FormsModule;

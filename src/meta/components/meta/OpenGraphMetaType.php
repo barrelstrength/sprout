@@ -423,7 +423,6 @@ class OpenGraphMetaType extends MetaType
         // If the value that exists is not a URL, we need to process it
         if (isset($tagData['og:image']) &&
             0 !== mb_strpos($tagData['og:image'], 'http')) {
-
             [
                 $tagData['og:image'],
                 $tagData['og:image:width'],

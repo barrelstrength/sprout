@@ -25,4 +25,3 @@ class FormFieldHelper
         return $context;
     }
 }
-

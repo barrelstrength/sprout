@@ -25,7 +25,6 @@ class m230217_000001_update_submission_datasource_settings extends Migration
             ->all();
 
         foreach ($dataSets as $dataSet) {
-
             if (!$newSettings = Json::decode($dataSet['settings'])) {
                 continue;
             }

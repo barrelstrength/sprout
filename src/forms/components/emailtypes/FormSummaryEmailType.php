@@ -66,6 +66,3 @@ class FormSummaryEmailType extends EmailType
         return $fieldLayout;
     }
 }
-
-
-

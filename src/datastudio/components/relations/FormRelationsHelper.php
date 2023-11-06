@@ -117,4 +117,3 @@ class FormRelationsHelper implements RelationsTableInterface
         return $rows;
     }
 }
-

@@ -10,7 +10,7 @@ trait EditionTrait
     /**
      * The edition that this module has been granted
      */
-    static public string $edition = Edition::LITE;
+    public static string $edition = Edition::LITE;
 
     /**
      * Check if a module can be upgraded using !$module::isPro()

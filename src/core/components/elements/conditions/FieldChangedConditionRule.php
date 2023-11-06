@@ -8,8 +8,7 @@ use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use yii\db\QueryInterface;
 
-class
-FieldChangedConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
+class FieldChangedConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {

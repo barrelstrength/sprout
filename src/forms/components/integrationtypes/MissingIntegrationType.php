@@ -16,4 +16,3 @@ class MissingIntegrationType extends Integration implements MissingComponentInte
         return Craft::t('sprout-module-forms', 'Missing Integration');
     }
 }
-

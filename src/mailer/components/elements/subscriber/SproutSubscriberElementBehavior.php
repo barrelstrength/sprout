@@ -69,7 +69,6 @@ class SproutSubscriberElementBehavior extends Behavior
 
             $transaction->commit();
         } catch (Throwable $throwable) {
-
             $transaction->rollBack();
 
             throw $throwable;

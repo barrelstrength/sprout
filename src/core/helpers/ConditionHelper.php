@@ -27,4 +27,3 @@ class ConditionHelper
         $event->conditionRuleTypes[] = TwigExpressionConditionRule::class;
     }
 }
-

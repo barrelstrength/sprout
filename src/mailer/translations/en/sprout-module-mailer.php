@@ -194,5 +194,5 @@ return [
     'Create custom mailer settings to refine email type workflows. The Craft Email Settings will be used by default.' => 'Create custom mailer settings to refine email type workflows. The Craft Email Settings will be used by default.',
     'Create additional configurations to customize mailer settings when editing email types. The default Craft Mailer Settings will be used.' => 'Create additional configurations to customize mailer settings when editing email types. The default Craft Mailer Settings will be used.',
     'Create custom mailer settings to refine email workflows. The Craft <a href="{url}">Email Settings</a> will be used by default.' => 'Create custom mailer settings to refine email workflows. The Craft <a href="{url}">Email Settings</a> will be used by default.',
-    'Craft .' => 'Craft .'
+    'Craft .' => 'Craft .',
 ];

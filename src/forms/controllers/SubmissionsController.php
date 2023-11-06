@@ -11,12 +11,10 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\FormsSettings;
 use Craft;
 use craft\base\ElementInterface;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\web\Controller as BaseController;
 use yii\base\Exception;
 use yii\helpers\Markdown;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SubmissionsController extends BaseController
@@ -171,7 +169,6 @@ class SubmissionsController extends BaseController
         $successMessage = Craft::$app->getView()->renderObjectTemplate($successMessageTemplate, $submission);
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {
-
             return $this->asJson([
                 'success' => true,
                 'message' => Markdown::process($successMessage),
@@ -263,7 +260,6 @@ class SubmissionsController extends BaseController
 
         // Handle CP requests in a CP-friendly way
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-
             Craft::$app->getSession()->setError(Craft::t('sprout-module-forms', 'Couldn’t save submission.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -275,7 +271,6 @@ class SubmissionsController extends BaseController
 
         // Respond to ajax requests with JSON
         if (Craft::$app->getRequest()->getAcceptsJson()) {
-
             $errorMessageTemplate = $submission->getForm()->messageOnError ?? '';
             $errorMessage = Craft::$app->getView()->renderObjectTemplate($errorMessageTemplate, $submission);
 

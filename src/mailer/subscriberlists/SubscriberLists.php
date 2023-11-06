@@ -49,7 +49,6 @@ class SubscriberLists extends Component
 
             $transaction->commit();
         } catch (Throwable $throwable) {
-
             $transaction->rollBack();
 
             throw $throwable;

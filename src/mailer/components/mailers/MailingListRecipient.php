@@ -77,7 +77,6 @@ class MailingListRecipient extends Model
         $recipientsArray = array_map('trim', explode(',', $recipients));
 
         $recipients = array_map(static function($recipient) {
-
             $mailingListRecipient = new MailingListRecipient();
 
             try {

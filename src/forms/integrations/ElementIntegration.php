@@ -54,4 +54,3 @@ abstract class ElementIntegration extends Integration
         return [];
     }
 }
-

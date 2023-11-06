@@ -14,4 +14,3 @@ abstract class SystemMailerInstructionsSettings extends MailerInstructionsSettin
         return $email->subjectLine;
     }
 }
-

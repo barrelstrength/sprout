@@ -55,7 +55,6 @@ class CpNavHelper
 
         // Add our module nav items to the plugins and stuff
         foreach ($sproutNavGroupsInfo as $sproutNavGroupInfo) {
-
             if (!isset($sproutNavGroupInfo['navItems'])) {
                 continue;
             }

@@ -16,7 +16,6 @@ use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;

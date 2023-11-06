@@ -15,7 +15,6 @@ use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\sentemail\components\elements\SentEmailElement;
 use BarrelStrength\Sprout\sentemail\sentemail\SentEmails;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;

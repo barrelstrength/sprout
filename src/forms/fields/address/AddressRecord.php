@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\forms\fields\address;
 
-use BarrelStrength\Sprout\forms\db\SproutTable;
 use craft\db\ActiveRecord;
 use craft\gql\types\DateTime;
 

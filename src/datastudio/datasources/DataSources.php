@@ -2,19 +2,14 @@
 
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
-use BarrelStrength\Sprout\core\components\events\ModifyRelationsTableQueryEvent;
-use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceOrderHistoryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CommerceProductRevenueDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplateQueryDataSource;
 use BarrelStrength\Sprout\datastudio\components\datasources\UsersDataSource;
-use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
-use craft\helpers\Cp;
-use craft\helpers\Template;
 use yii\base\Component;
 
 class DataSources extends Component

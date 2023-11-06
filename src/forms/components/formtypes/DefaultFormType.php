@@ -25,7 +25,6 @@ class DefaultFormType extends FormType
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-
     }
 
     public function createFieldLayout(): ?FieldLayout
@@ -105,6 +104,3 @@ class DefaultFormType extends FormType
         return $this->_fieldLayout = $fieldLayout;
     }
 }
-
-
-

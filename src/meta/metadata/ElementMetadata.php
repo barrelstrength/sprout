@@ -84,7 +84,6 @@ class ElementMetadata extends Component
 
         $metaFieldHandles = [];
         foreach ($targetSettings as $targetSetting) {
-
             $handles = $this->getFieldHandles($targetSetting['value']);
 
             if (is_array($handles)) {

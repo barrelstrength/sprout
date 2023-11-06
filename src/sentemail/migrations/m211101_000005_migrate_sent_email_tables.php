@@ -55,7 +55,6 @@ class m211101_000005_migrate_sent_email_tables extends Migration
                 ->all();
 
             foreach ($rows as $key => $row) {
-
                 $rows[$key]['sent'] = $rows[$key]['status'] === 'sent';
                 unset($rows[$key]['status']);
 

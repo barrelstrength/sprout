@@ -158,7 +158,6 @@ class SitemapMetadata extends Component
             ->all();
 
         foreach ($siteIds as $siteId) {
-
             if (isset($sitemapMetadataRecords[$siteId])) {
                 $sitemapMetadataRecord = $sitemapMetadataRecords[$siteId];
             } else {

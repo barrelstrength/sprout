@@ -14,7 +14,6 @@ class ContentQuerySitemapMetadataHelper
         foreach ($sites as $site) {
             if ($contentQuerySitemapMetadata = self::getContentQueryXmlSitemapMetadata($site)) {
                 foreach ($contentQuerySitemapMetadata as $contentQuery) {
-
                     $currentConditionRules = Json::decodeIfJson($contentQuery['settings']);
                     $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
                     $currentCondition->elementType = $contentQuery['type'];

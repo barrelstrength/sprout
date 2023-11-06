@@ -51,7 +51,6 @@ class CustomPagesSitemapMetadataHelper
             ->all();
 
         foreach ($sites as $site) {
-
             foreach ($sitemapMetadata as $sitemapMetadataGroup) {
                 if ($site->id !== (int)$sitemapMetadataGroup['siteId']) {
                     continue;

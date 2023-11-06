@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\forms\submissions;
 use BarrelStrength\Sprout\forms\captchas\Captcha;
 use BarrelStrength\Sprout\forms\components\events\OnBeforeValidateSubmissionEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\SproutForms\SproutForms;
 use Craft;
 
 class SubmissionHelper
@@ -32,4 +31,3 @@ class SubmissionHelper
         }
     }
 }
-

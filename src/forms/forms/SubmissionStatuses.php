@@ -207,7 +207,6 @@ class SubmissionStatuses extends Component
         }
 
         foreach ($submissionElements as $submissionElement) {
-
             $success = Craft::$app->db->createCommand()->update(
                 SproutTable::FORM_SUBMISSIONS,
                 ['statusId' => $spam->id],

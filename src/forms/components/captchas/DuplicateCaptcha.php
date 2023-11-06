@@ -63,6 +63,3 @@ class DuplicateCaptcha extends Captcha
         return true;
     }
 }
-
-
-

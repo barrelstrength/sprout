@@ -109,7 +109,6 @@ class PageNotFoundHelper
         $siteIds = $siteId === null ? Craft::$app->getSites()->getAllSiteIds() : [$siteId];
 
         foreach ($siteIds as $currentSiteId) {
-
             $query = RedirectElement::find()
                 ->where(['statusCode' => StatusCode::PAGE_NOT_FOUND])
                 ->andWhere(['siteId' => $currentSiteId]);
@@ -129,7 +128,6 @@ class PageNotFoundHelper
             $idsToDelete = array_slice($ids, $redirectSettings->total404Redirects - $limitAdjustment);
 
             if (!empty($idsToDelete)) {
-
                 $batchSize = 25;
 
                 // Leave second argument blank and bust loop with break statement. Really. It's in the docs.

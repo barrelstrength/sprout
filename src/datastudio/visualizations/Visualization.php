@@ -166,7 +166,6 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
 
         $dataSeries = [];
         foreach ($dataColumns as $dataColumn) {
-
             $data = [];
 
             foreach ($this->values as $row) {
@@ -197,7 +196,6 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
 
         $dataSeries = [];
         foreach ($dataColumns as $dataColumn) {
-
             $data = [];
 
             foreach ($this->values as $row) {

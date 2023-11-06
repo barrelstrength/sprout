@@ -83,7 +83,6 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-
     }
 
     public function createFieldLayout(): ?FieldLayout

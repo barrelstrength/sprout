@@ -517,5 +517,5 @@ return [
     'formq' => 'formq',
     'New Data Set' => 'New Data Set',
     '_forms/form-type/overrides' => '_forms/form-type/overrides',
-    'Prevent a form from being submitted if a user does not have JavaScript enabled' => 'Prevent a form from being submitted if a user does not have JavaScript enabled'
+    'Prevent a form from being submitted if a user does not have JavaScript enabled' => 'Prevent a form from being submitted if a user does not have JavaScript enabled',
 ];

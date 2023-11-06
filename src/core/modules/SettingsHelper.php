@@ -97,7 +97,6 @@ class SettingsHelper
         $settingsRecord = null;
         try {
             foreach ($settings as $name => $setting) {
-
                 $settingsRecord = SettingsRecord::find()
                     ->select('*')
                     ->where([
@@ -121,7 +120,7 @@ class SettingsHelper
                 }
             }
         } catch (Exception $exception) {
-            throw new $exception;
+            throw new $exception();
         }
 
         return $settingsRecord;

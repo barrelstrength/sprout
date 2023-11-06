@@ -2,8 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\migrations;
 
-use BarrelStrength\Sprout\core\db\SproutTable as SproutTableCore;
-use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use BarrelStrength\Sprout\mailer\MailerModule;

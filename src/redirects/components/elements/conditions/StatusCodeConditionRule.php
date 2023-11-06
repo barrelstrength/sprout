@@ -12,7 +12,6 @@ use yii\db\QueryInterface;
 
 class StatusCodeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
-
     public function getLabel(): string
     {
         return Craft::t('sprout-module-redirects', 'Status Code');

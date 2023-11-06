@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\meta\components\fields;
 use BarrelStrength\Sprout\meta\metadata\Metadata;
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\mysql\Schema;

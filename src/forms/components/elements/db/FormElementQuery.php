@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\forms\components\elements\db;
 
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 

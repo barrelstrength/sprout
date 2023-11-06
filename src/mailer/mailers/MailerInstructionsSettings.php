@@ -6,5 +6,4 @@ use craft\base\Model;
 
 abstract class MailerInstructionsSettings extends Model implements MailerInstructionsInterface
 {
-
 }

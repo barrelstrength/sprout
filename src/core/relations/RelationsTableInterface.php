@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\core\relations;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use craft\base\Element;
-use craft\base\ElementInterface;
 
 /**
  * @todo - Remove in Craft 5 in favor of native Element listing field

@@ -40,7 +40,7 @@ class CustomTwigTemplateQueryDataSource extends DataSource
             }
 
             $this->templateSettings[$setting] = $value;
-            unset ($config[$setting]);
+            unset($config[$setting]);
         }
 
         parent::__construct($config);
@@ -105,7 +105,6 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         // If settings template exists as setting, look for it on the front-end.
         // If not, return a nice message explain how to handle settings.
         if ($this->settingsTemplate) {
-
             if ($sproutExamplePath = $this->getSproutExampleTemplatePath($this->settingsTemplate)) {
                 // Sprout Example Templates
                 $customSettingsTemplatePath = $sproutExamplePath;

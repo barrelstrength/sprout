@@ -30,26 +30,14 @@ use BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField;
 use BarrelStrength\Sprout\forms\components\formfields\TagsFormField;
 use BarrelStrength\Sprout\forms\components\formfields\UrlFormField;
 use BarrelStrength\Sprout\forms\components\formfields\UsersFormField;
-use BarrelStrength\Sprout\forms\forms\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
-use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\FieldInterface;
-use craft\db\Query;
-use craft\db\Table;
-use craft\errors\ElementNotFoundException;
 use craft\events\RegisterComponentTypesEvent;
-use craft\fieldlayoutelements\CustomField;
 use craft\helpers\ArrayHelper;
-use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
-use craft\records\Field as FieldRecord;
-use craft\records\FieldLayoutField as FieldLayoutFieldRecord;
-use craft\records\FieldLayoutTab as FieldLayoutTabRecord;
 use yii\base\Component;
-use yii\base\Exception;
 
 /**
  * @property mixed $defaultTabName

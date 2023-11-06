@@ -68,7 +68,6 @@ class ProductSchema extends ThingSchema
         }
 
         foreach ($element->getVariants() as $variant) {
-
             $offers[$variant->id]['@type'] = 'Offer';
             $offers[$variant->id]['sku'] = $variant->sku;
             $offers[$variant->id]['price'] = $variant->price;

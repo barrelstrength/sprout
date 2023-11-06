@@ -264,5 +264,4 @@ class TwitterMetaType extends MetaType
 
         return $twitterProfileName;
     }
-
 }

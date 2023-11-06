@@ -107,7 +107,6 @@ class RedirectHelper
          * @var RedirectElement $redirect
          */
         foreach ($orderedRedirects as $redirect) {
-
             if ($redirect['matchStrategy'] === MatchStrategy::REGEX_MATCH) {
                 // Use backticks as delimiters as they are invalid characters for URLs
                 $oldUrlPattern = '`' . $redirect['oldUrl'] . '`';

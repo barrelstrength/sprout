@@ -17,7 +17,6 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\core\web\assetbundles\vite\ViteAssetBundle;
 use Craft;
 use craft\base\conditions\BaseCondition;
-use craft\config\BaseConfig;
 use craft\console\Application as ConsoleApplication;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterCpSettingsEvent;
@@ -195,9 +194,12 @@ class Sprout extends Module
         return new SproutSettings();
     }
 
-    public function getSettings(): SproutSettings|BaseConfig
+    public function getSettings(): SproutSettings
     {
-        return SettingsHelper::getSettingsConfig($this, SproutSettings::class);
+        /** @var SproutSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, SproutSettings::class);
+
+        return $settings;
     }
 
     public function getUserPermissions(): array

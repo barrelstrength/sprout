@@ -5,8 +5,6 @@ namespace BarrelStrength\Sprout\forms\controllers;
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtypes\FormType;
-use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\ElementIntegration;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use BarrelStrength\Sprout\forms\integrations\IntegrationRecord;
@@ -100,7 +98,6 @@ class FormIntegrationsController extends BaseController
         $integrationTypesConfig[$integrationType->uid] = $integrationType;
 
         if (!$integrationType->validate() || !IntegrationTypeHelper::saveIntegrationTypes($integrationTypesConfig)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Integration Type.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -174,7 +171,7 @@ class FormIntegrationsController extends BaseController
             'name' => $request->getBodyParam('name'),
             'settings' => $request->getBodyParam('settings.' . $type),
             'type' => $type,
-            'uid' => $uid
+            'uid' => $uid,
         ]);
 
         return $integrationType;

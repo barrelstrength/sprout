@@ -164,7 +164,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         }
 
         foreach ($mailingList->getRecipients() as $recipient) {
-
             try {
                 $message->setTo($recipient->getSender());
 
@@ -218,7 +217,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
                 });
 
             foreach ($approvedSenders as $approvedSenderEmail => $approvedSenderName) {
-
                 if ($approvedSenderEmail === $fromEmail &&
                     $approvedSenderName === $fromName
                 ) {
@@ -257,7 +255,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         MailingListRecipient        $recipient,
         MailerInstructionsInterface $mailerInstructionsSettings,
     ): void {
-
         $view = Craft::$app->getView();
         $emailType = $email->getEmailType();
         $emailType->addTemplateVariable('recipient', $recipient);
@@ -292,7 +289,6 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     protected function attachFilesToMessage(MessageInterface $message, array $assets): void
     {
         foreach ($assets as $asset) {
-
             $name = $asset->getFilename();
             $volume = $asset->getVolume()->getFs();
 

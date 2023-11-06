@@ -13,7 +13,6 @@ use yii\db\QueryInterface;
 
 class AudienceTypeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
-
     public function getLabel(): string
     {
         return Craft::t('sprout-module-mailer', 'Audience Types');

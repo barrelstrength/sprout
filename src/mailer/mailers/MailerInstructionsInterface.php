@@ -9,5 +9,4 @@ namespace BarrelStrength\Sprout\mailer\mailers;
  */
 interface MailerInstructionsInterface
 {
-
 }

@@ -40,5 +40,4 @@ class SubmissionRecord extends ActiveRecord
     {
         return $this->hasMany(SubmissionStatusRecord::class, ['statusId' => 'id']);
     }
-
 }

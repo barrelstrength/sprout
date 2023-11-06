@@ -113,7 +113,6 @@ class NotificationEvents extends Component
         $enabledEmailEventTypes = $this->getEnabledNotificationEventTypes();
 
         foreach ($enabledEmailEventTypes as $notificationEventType) {
-
             if ($notificationEventType instanceof ManualNotificationEvent) {
                 continue;
             }

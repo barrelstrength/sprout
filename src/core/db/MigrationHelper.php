@@ -36,7 +36,6 @@ class MigrationHelper
         $modules = [Sprout::class, ...$plugin::getSchemaDependencies()];
 
         foreach ($modules as $moduleClass) {
-
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
@@ -74,7 +73,6 @@ class MigrationHelper
         }
 
         foreach ($installedSproutPlugins as $class) {
-
             $interfaces = class_implements($class);
 
             // Only check Sprout plugins with schema
@@ -97,7 +95,6 @@ class MigrationHelper
 
         /** @var SproutModuleTrait $moduleClass */
         foreach ($modulesSafeToUninstall as $moduleClass) {
-
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
@@ -150,6 +147,6 @@ class MigrationHelper
         require_once $path;
         $class = $migrator->migrationNamespace . '\\Uninstall';
 
-        return new $class;
+        return new $class();
     }
 }

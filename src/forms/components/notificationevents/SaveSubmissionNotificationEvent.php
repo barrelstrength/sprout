@@ -67,7 +67,6 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
         $criteria->orderBy(['id' => SORT_DESC]);
 
         if (!empty($this->formIds)) {
-
             $formId = count($this->formIds) == 1 ? $this->formIds[0] : array_shift($this->formIds);
 
             $criteria->formId = $formId;

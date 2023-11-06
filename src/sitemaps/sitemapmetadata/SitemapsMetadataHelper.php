@@ -20,7 +20,7 @@ class SitemapsMetadataHelper
 
         return $query->one();
     }
-    
+
     public static function getXmlSitemapMetadataByUid($sitemapMetadataUid, Site $site): ?SitemapMetadataRecord
     {
         $query = SitemapMetadataRecord::find()

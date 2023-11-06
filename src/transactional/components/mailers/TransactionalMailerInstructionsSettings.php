@@ -29,4 +29,3 @@ class TransactionalMailerInstructionsSettings extends SystemMailerInstructionsSe
         return parent::validate($attributeNames, $clearErrors);
     }
 }
-

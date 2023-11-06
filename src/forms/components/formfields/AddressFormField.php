@@ -226,7 +226,6 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
 
         // Add the address field array from the POST data to the Address Model address
         if (is_array($value)) {
-
             if ($address instanceof AddressModel) {
                 $address->id = $value['id'] ?? null;
             } else {

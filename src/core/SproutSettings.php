@@ -75,4 +75,3 @@ class SproutSettings extends BaseConfig
         return $rules;
     }
 }
-

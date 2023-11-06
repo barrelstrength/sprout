@@ -3,23 +3,15 @@
 namespace BarrelStrength\Sprout\forms\forms;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
-use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
-use craft\db\Table;
-use craft\helpers\Db;
 use craft\models\FieldLayoutTab;
-use craft\records\FieldLayoutField;
-use Exception;
 use yii\base\Component;
-use yii\db\Transaction;
 
 class Forms extends Component
 {

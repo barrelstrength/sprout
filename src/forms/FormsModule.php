@@ -39,7 +39,6 @@ use BarrelStrength\Sprout\forms\submissions\SubmissionHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;

@@ -3,13 +3,11 @@
 namespace BarrelStrength\Sprout\forms\forms;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
-use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
+use Craft;
 use craft\helpers\Cp;
 use craft\helpers\Html;
-use craft\helpers\Template;
-use Craft;
 
 trait FormIntegrationsTrait
 {
@@ -46,7 +44,7 @@ trait FormIntegrationsTrait
         ]);
 
         $sidebarMessage = Craft::t('sprout-module-forms', 'Configure an integration to perform actions with your form data after submission.');
-        $sidebarHtml = Html::tag('div', Html::tag('p', $sidebarMessage) , [
+        $sidebarHtml = Html::tag('div', Html::tag('p', $sidebarMessage), [
             'class' => 'meta read-only',
         ]);
 

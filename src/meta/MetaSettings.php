@@ -42,4 +42,3 @@ class MetaSettings extends BaseConfig
         return $this;
     }
 }
-

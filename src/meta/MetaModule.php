@@ -19,7 +19,6 @@ use BarrelStrength\Sprout\meta\metadata\OptimizeMetadata;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\config\BaseConfig;
 use craft\elements\Address;
 use craft\events\AuthorizationCheckEvent;
 use craft\events\RegisterComponentTypesEvent;

@@ -46,15 +46,15 @@
         first: not field.allowRequired()
     }) }}
 
-{#    {% for type,fieldObject in fieldTypes %}#}
-{#        {% set isCurrent = type == className(field) %}#}
-{#        <div id="{{ type|id }}"{% if not isCurrent %} class="hidden"{% endif %}>#}
-{#            {% namespace 'types['~type~']' %}#}
-{#                {% set _field = isCurrent ? field : craft.app.fields.createField(type) %}#}
-{#                {{ _field.getSettingsHtml()|raw }}#}
-{#            {% endnamespace %}#}
-{#        </div>#}
-{#    {% endfor %}#}
+    {#    {% for type,fieldObject in fieldTypes %} #}
+    {#        {% set isCurrent = type == className(field) %} #}
+    {#        <div id="{{ type|id }}"{% if not isCurrent %} class="hidden"{% endif %}> #}
+    {#            {% namespace 'types['~type~']' %} #}
+    {#                {% set _field = isCurrent ? field : craft.app.fields.createField(type) %} #}
+    {#                {{ _field.getSettingsHtml()|raw }} #}
+    {#            {% endnamespace %} #}
+    {#        </div> #}
+    {#    {% endfor %} #}
 </div>
 
 <div id="conditions" class="hidden">

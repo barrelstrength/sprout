@@ -103,7 +103,6 @@ class m211101_000007_migrate_forms_tables extends Migration
         ];
 
         if ($this->getDb()->tableExists(self::OLD_FORMS_TABLE)) {
-
             $rows = (new Query())
                 ->select($cols)
                 ->from([self::OLD_FORMS_TABLE])

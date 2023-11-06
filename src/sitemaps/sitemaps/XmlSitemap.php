@@ -68,7 +68,6 @@ class XmlSitemap extends Component
             }
 
             foreach ($sitemapSites as $sitemapSite) {
-
                 if ($sitemapMetadata->sourceKey === SitemapKey::CONTENT_QUERY) {
                     $elementQuery = ContentQuerySitemapMetadataHelper::getElementQuery($sitemapMetadata);
                 } else {

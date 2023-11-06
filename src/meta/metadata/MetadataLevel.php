@@ -33,5 +33,4 @@ abstract class MetadataLevel
      * Priority: 0, Highest Priority
      */
     public const TemplateMetadata = 'template';
-
 }

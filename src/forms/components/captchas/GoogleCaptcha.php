@@ -69,7 +69,7 @@ class GoogleCaptcha extends Captcha
             'captcha' => $this,
             'config' => $config,
             'settings' => $settings,
-            'languageOptions' => $languageOptions
+            'languageOptions' => $languageOptions,
         ]);
     }
 
@@ -87,10 +87,10 @@ class GoogleCaptcha extends Captcha
 
         $languageId = $this->getMatchedLanguageId() ?? $settings['language'];
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/captchas/GoogleRecaptcha/'.$settings['recaptchaType'], [
+        $html = Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/captchas/GoogleRecaptcha/' . $settings['recaptchaType'], [
             'form' => $this->form,
             'settings' => $settings,
-            'languageId' => $languageId
+            'languageId' => $languageId,
         ]);
 
         Craft::$app->getView()->setTemplateMode($oldTemplateMode);
@@ -152,11 +152,11 @@ class GoogleCaptcha extends Captcha
             $client = Craft::createGuzzleClient([
                 'base_uri' => 'https://www.google.com/recaptcha/api/siteverify',
                 'timeout' => 120,
-                'connect_timeout' => 120
+                'connect_timeout' => 120,
             ]);
 
             $response = $client->request('POST', 'siteverify', [
-                'query' => $params
+                'query' => $params,
             ]);
 
             $responseObject = Json::decode($response->getBody()->getContents());
@@ -170,8 +170,8 @@ class GoogleCaptcha extends Captcha
         return $responseObject;
     }
 
-    public function getMatchedLanguageId() {
-
+    public function getMatchedLanguageId()
+    {
         $currentLanguageId = Craft::$app->locale->getLanguageID();
 
         // 700+ languages supported
@@ -281,20 +281,17 @@ class GoogleCaptcha extends Captcha
             'Ukrainian' => 'uk',
             'Urdu' => 'ur',
             'Vietnamese' => 'vi',
-            'Zulu' => 'zu'
+            'Zulu' => 'zu',
         ];
 
         $languageOptions = [];
         foreach ($languages as $languageName => $languageCode) {
             $languageOptions[] = [
                 'label' => $languageName,
-                'value' => $languageCode
+                'value' => $languageCode,
             ];
         }
 
         return $languageOptions;
     }
 }
-
-
-

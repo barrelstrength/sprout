@@ -61,7 +61,6 @@ class m211101_000005_migrate_redirects_tables extends Migration
                 ->all();
 
             foreach ($rows as $key => $row) {
-
                 $now = Db::prepareDateForDb(DateTimeHelper::now());
 
                 // Create a row in the content table for each element to support custom fields

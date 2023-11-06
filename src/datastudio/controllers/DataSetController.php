@@ -14,12 +14,9 @@ use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use http\Exception\InvalidArgumentException;
-use Twig\Markup;
-use yii\helpers\Markdown;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -228,7 +225,6 @@ class DataSetController extends Controller
         }
 
         if (!Craft::$app->getElements()->saveElement($dataSet)) {
-
             Craft::$app->getSession()->setError(Craft::t('sprout-base-reports', 'Could not update report.'));
 
             // Send the report back to the template

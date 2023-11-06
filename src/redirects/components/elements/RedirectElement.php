@@ -228,7 +228,6 @@ class RedirectElement extends Element
         $statusCodes = StatusCode::options();
 
         foreach ($statusCodes as $code => $statusCode) {
-
             $key = 'statusCode:' . $code;
 
             // Hide 404 Redirect tab if disabled

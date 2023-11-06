@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\forms\forms;
 use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
-use BarrelStrength\Sprout\forms\formfields\FormField;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\ElementInterface;
@@ -110,4 +109,3 @@ class FormsVariable
         return $query;
     }
 }
-

@@ -31,7 +31,6 @@ class CustomTemplatesFormType extends FormType
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-
     }
 
     public function createFieldLayout(): ?FieldLayout
@@ -41,6 +40,3 @@ class CustomTemplatesFormType extends FormType
         ]);
     }
 }
-
-
-

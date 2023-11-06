@@ -37,4 +37,3 @@ class RenderingOptionsHelper
         return $fieldRenderingOptions;
     }
 }
-

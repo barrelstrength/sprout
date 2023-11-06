@@ -55,5 +55,5 @@ return [
     'When a user logs in' => 'When a user logs in',
     'Delete email types' => 'Delete email types',
     'Create email types' => 'Create email types',
-    'Craft Default Mailer' => 'Craft Default Mailer'
+    'Craft Default Mailer' => 'Craft Default Mailer',
 ];

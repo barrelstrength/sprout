@@ -29,4 +29,3 @@ interface SproutPluginMigrationInterface
      */
     public function getMigrator(): SproutPluginMigrator|MigrationManager;
 }
-

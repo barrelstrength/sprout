@@ -2,8 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
-use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
@@ -70,14 +68,12 @@ class m211101_000006_migrate_notifications_tables extends Migration
         ];
 
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
-
             $rows = (new Query())
                 ->select($oldEmailCols)
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
                 ->all();
 
             foreach ($rows as $key => $value) {
-
                 $rows[$key]['type'] = self::TRANSACTIONAL_EMAIL_TYPE;
 
                 $eventId = $rows[$key]['eventId'];
@@ -164,7 +160,6 @@ class m211101_000006_migrate_notifications_tables extends Migration
                 //if ($sectionIds === '*') { }
 
                 if (!empty($sectionIds) && $sectionIds !== '*' && count($sectionIds)) {
-
                     $sectionUids = (new Query())
                         ->select(['uid'])
                         ->from([Table::SECTIONS])

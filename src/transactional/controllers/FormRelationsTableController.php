@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\transactional\controllers;
 
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\transactional\components\relations\FormRelationsHelper;
 use Craft;
 use craft\errors\ElementNotFoundException;

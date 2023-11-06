@@ -190,7 +190,6 @@ class EmailDropdownFormField extends CraftDropdownField implements FormFieldInte
         $emailString = $this->options[$value]->value ?? null;
 
         if ($emailString) {
-
             $emailAddresses = StringHelper::split($emailString);
             $emailAddresses = array_unique($emailAddresses);
 

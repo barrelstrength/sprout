@@ -22,7 +22,6 @@ use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;

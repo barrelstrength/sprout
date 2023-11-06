@@ -36,10 +36,9 @@ class ReplyToField extends BaseNativeField
 
         $mailerInstructionsSettings = $element->getMailerInstructions();
 
-        $mailSettings =  App::mailSettings();
+        $mailSettings = App::mailSettings();
 
         if ($mailer->senderEditBehavior === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
-
             $this->tip = Craft::t('sprout-module-mailer', 'Reply-To is set in the Craft Email Settings.');
 
             return Craft::$app->getView()->renderTemplate('_includes/forms/text', [

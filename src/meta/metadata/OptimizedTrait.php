@@ -193,5 +193,4 @@ trait OptimizedTrait
     {
         $this->canonical = $value;
     }
-
 }

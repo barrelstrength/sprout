@@ -71,4 +71,3 @@ class CustomEndpointIntegrationType extends Integration
         return true;
     }
 }
-

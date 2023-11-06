@@ -6,13 +6,13 @@ use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\datastudio\db\SproutTable;
+use Craft;
 use craft\db\Query;
 use craft\helpers\Html;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use Twig\Markup;
-use Craft;
 
 class DataSetHelper
 {
@@ -25,7 +25,6 @@ class DataSetHelper
 
         if ($rows) {
             foreach ($rows as $row) {
-
                 $model = new DataSetElement();
                 $model->setAttributes($row, false);
                 $dataSets[] = $model;
@@ -62,7 +61,7 @@ class DataSetHelper
         ]);
 
         $labelHtml = Html::button($label, [
-            'class' => 'btn menubtn add icon '. $styleClass,
+            'class' => 'btn menubtn add icon ' . $styleClass,
         ]);
 
         $menuListHtml = Html::ul($newDataSetOptions, [

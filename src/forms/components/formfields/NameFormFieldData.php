@@ -29,7 +29,6 @@ class NameFormFieldData extends Model
 
     public function getFriendlyName(): string
     {
-
         return trim($this->firstName);
     }
 

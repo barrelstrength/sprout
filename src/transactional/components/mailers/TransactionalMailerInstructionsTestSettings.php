@@ -19,4 +19,3 @@ class TransactionalMailerInstructionsTestSettings extends SystemMailerInstructio
         return $emailVariantSettings->getAdditionalTemplateVariables();
     }
 }
-

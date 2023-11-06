@@ -9,8 +9,7 @@ use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;
 use yii\db\QueryInterface;
 
-class
-RevisionConditionRule extends BaseLightswitchConditionRule implements ElementConditionRuleInterface
+class RevisionConditionRule extends BaseLightswitchConditionRule implements ElementConditionRuleInterface
 {
     public function getLabel(): string
     {

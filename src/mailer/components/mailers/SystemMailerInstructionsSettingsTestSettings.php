@@ -17,4 +17,3 @@ abstract class SystemMailerInstructionsSettingsTestSettings extends MailerInstru
         return $prefix . ' ' . $email->subjectLine;
     }
 }
-

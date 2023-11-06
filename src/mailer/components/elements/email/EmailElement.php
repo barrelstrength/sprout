@@ -606,7 +606,6 @@ class EmailElement extends Element implements EmailPreviewInterface
 
                 // Validate actual emails
                 if (!$validator->isValid(trim($recipient), $multipleValidations)) {
-
                     $this->addError($attribute, Craft::t('sprout-module-mailer',
                         'Email is invalid: ' . $recipient));
                 }
@@ -627,7 +626,6 @@ class EmailElement extends Element implements EmailPreviewInterface
     protected function statusFieldHtml(): string
     {
         if ($this->getEmailVariant()->canBeDisabled()) {
-
             $statusField = Cp::lightswitchFieldHtml([
                 'id' => 'enabled',
                 'label' => Craft::t('app', 'Enabled'),

@@ -33,7 +33,6 @@ class m211101_000004_update_user_permissions extends Migration
 
             // Update Permission Names in db
             foreach ($permissionSet as $oldPermissionName => $newPermissionName) {
-
                 $lowerCasePermissionName = strtolower($oldPermissionName);
                 $permissionId = $permissions[$lowerCasePermissionName] ?? null;
 

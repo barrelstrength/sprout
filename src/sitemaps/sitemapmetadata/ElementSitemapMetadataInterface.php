@@ -5,8 +5,7 @@ namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 use craft\elements\db\ElementQuery;
 use craft\models\Site;
 
-interface
-ElementSitemapMetadataInterface
+interface ElementSitemapMetadataInterface
 {
     public static function getSourceDetails(Site $site): array;
 

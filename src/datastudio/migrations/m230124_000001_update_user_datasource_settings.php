@@ -25,7 +25,6 @@ class m230124_000001_update_user_datasource_settings extends Migration
             ->all();
 
         foreach ($userDataSets as $userDataSet) {
-
             if (!$newSettings = Json::decode($userDataSet['settings'])) {
                 continue;
             }

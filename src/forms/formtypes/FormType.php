@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\forms\formtypes;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
-use Craft;
 use craft\base\SavableComponent;
 use craft\models\FieldLayout;
 

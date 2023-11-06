@@ -50,7 +50,7 @@ class FormRelationsHelper implements RelationsTableInterface
 
         // Insert tab before the Settings tab
         $index = array_search('SPROUT-UID-FORMS-SETTINGS-TAB', array_column($event->tabs, 'uid'), true);
-        array_splice( $event->tabs, $index, 0, [$notificationsTab]);
+        array_splice($event->tabs, $index, 0, [$notificationsTab]);
     }
 
     public static function getRelationsTableField(Element $element): RelationsTableField
@@ -164,4 +164,3 @@ class FormRelationsHelper implements RelationsTableInterface
         return $rows;
     }
 }
-

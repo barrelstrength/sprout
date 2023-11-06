@@ -160,4 +160,3 @@ class RedirectsSettings extends BaseConfig
         ]);
     }
 }
-

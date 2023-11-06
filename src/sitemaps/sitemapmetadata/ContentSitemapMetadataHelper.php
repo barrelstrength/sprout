@@ -28,7 +28,6 @@ class ContentSitemapMetadataHelper
         $contentSitemapMetadata = self::getContentSitemapMetadata($firstSiteInGroup);
 
         foreach ($elementsWithUris as $elementWithUri) {
-
             foreach ($contentSitemapMetadata as $sitemapMetadata) {
                 if (!$sitemapMetadata->enabled) {
                     continue;

@@ -26,7 +26,6 @@ use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
-use craft\config\BaseConfig;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;

@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use BarrelStrength\Sprout\mailer\audience\AudienceHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\AssetQuery;
@@ -31,7 +30,7 @@ trait SystemMailerInstructionsTrait
      * The sender replyTo email, if different than the sender email
      */
     public ?string $replyToEmail = null;
-    
+
     /**
      * A comma, delimited list of recipients (To email)
      */
@@ -212,7 +211,6 @@ trait SystemMailerInstructionsTrait
     {
         $rules = parent::defineRules();
 
-
         // Set Scenarios to Mailer Instructions Scenarios: Craft, EditableDefaults, ApprovedSenderList
         $rules[] = ['fromName', 'required', 'on' => SystemMailer::SENDER_BEHAVIOR_CUSTOM];
 
@@ -225,11 +223,13 @@ trait SystemMailerInstructionsTrait
         $rules[] = ['replyToEmail', 'validateApprovedReplyTo', 'when' => fn() => $this->replyToEmail !== null];
 
         $rules[] = ['recipients', 'validateRecipients'];
-        $rules[] = ['recipients', 'required',
+        $rules[] = [
+            'recipients', 'required',
             'when' => fn() => $this->audienceIds === null,
             'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless an Audience is selected.'),
         ];
-        $rules[] = ['audienceIds', 'required',
+        $rules[] = [
+            'audienceIds', 'required',
             'when' => fn() => $this->recipients === null,
             'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless a recipient is selected in the "To Field".'),
         ];
@@ -252,6 +252,7 @@ trait SystemMailerInstructionsTrait
             $this->addError('sender', 'Sender is not in list of approved senders.');
         }
     }
+
     public function validateApprovedReplyTo(): void
     {
         $mailer = $this->getMailer();

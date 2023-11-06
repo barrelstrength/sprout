@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
-use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
@@ -60,7 +59,6 @@ class FormTypesController extends Controller
         $formTypesConfig[$formType->uid] = $formType;
 
         if (!$formType->validate() || !FormTypeHelper::saveFormTypes($formTypesConfig)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Form Type.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
