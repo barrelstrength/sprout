@@ -238,9 +238,7 @@ class FormElement extends Element
             empty($this->name) ? [$settingsTab] : [],
             [$formBuilderTab],
             $formTypeTabs,
-            $formType->enableNotificationsTab && isset($notificationsTab) ? [$notificationsTab] : [],
-            $formType->enableIntegrationsTab && isset($integrationsTab) ? [$integrationsTab] : [],
-            $formType->enableReportsTab && isset($reportsTab) ? [$reportsTab] : [],
+            $formType->enableIntegrationsTab ? [$integrationsTab] : [],
             !empty($this->name) ? [$settingsTab] : [],
         );
 

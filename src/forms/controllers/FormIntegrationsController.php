@@ -204,7 +204,7 @@ class FormIntegrationsController extends BaseController
         if (!FormsModule::getInstance()->formIntegrations->saveIntegration($integration)) {
             Craft::error('Unable to save integration.', __METHOD__);
 
-            return $this->returnJson(false);
+            return $this->returnJson(false, $integration);
         }
 
         Craft::info('Integration Saved', __METHOD__);
