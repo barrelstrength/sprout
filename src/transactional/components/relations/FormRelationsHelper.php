@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
@@ -22,7 +23,7 @@ use yii\db\Expression;
 
 class FormRelationsHelper implements RelationsTableInterface
 {
-    public static function addNotificationEventsRelationsTab(CreateFieldLayoutFormEvent $event): void
+    public static function addNotificationEventsRelationsTab(RegisterFormTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -32,25 +33,29 @@ class FormRelationsHelper implements RelationsTableInterface
 
         $formType = $element->getFormType();
 
+        //if (!$formType->genericTabSettings) { // and it knows to search for genericTabSettings->enableNotificationTab
         if (!$formType->enableNotificationsTab) {
             return;
         }
 
-        $fieldLayout = $event->sender;
+        $fieldLayout = $event->fieldLayout;
 
         Craft::$app->getView()->registerJs('new NotificationEventsRelationsTable(' . $element->id . ', ' . $element->siteId . ');');
 
         $notificationsTab = new FieldLayoutTab();
         $notificationsTab->layout = $fieldLayout;
-        $notificationsTab->name = Craft::t('sprout-module-forms', 'Notifications');
+        $notificationsTab->name = Craft::t('sprout-module-transactional', 'Notifications');
         $notificationsTab->uid = 'SPROUT-UID-FORMS-NOTIFICATIONS-TAB';
+        $notificationsTab->sortOrder = 50;
         $notificationsTab->setElements([
             self::getRelationsTableField($element),
         ]);
 
+        $event->tabs[] = $notificationsTab;
+
         // Insert tab before the Settings tab
-        $index = array_search('SPROUT-UID-FORMS-SETTINGS-TAB', array_column($event->tabs, 'uid'), true);
-        array_splice($event->tabs, $index, 0, [$notificationsTab]);
+        //$index = array_search('SPROUT-UID-FORMS-SETTINGS-TAB', array_column($event->tabs, 'uid'), true);
+        //array_splice($event->tabs, $index, 0, [$notificationsTab]);
     }
 
     public static function getRelationsTableField(Element $element): RelationsTableField
@@ -61,7 +66,7 @@ class FormRelationsHelper implements RelationsTableInterface
 
         $optionValues = [
             [
-                'label' => Craft::t('sprout-module-forms', 'New Email Type...'),
+                'label' => Craft::t('sprout-module-transactional', 'New Email Type...'),
                 'value' => '',
             ],
         ];
@@ -77,7 +82,7 @@ class FormRelationsHelper implements RelationsTableInterface
             'value' => '',
         ]);
 
-        $sidebarMessage = Craft::t('sprout-module-forms', 'This page lists any transactional email that are known to be related to the events triggered by this form.');
+        $sidebarMessage = Craft::t('sprout-module-transactional', 'This page lists any transactional email that are known to be related to the events triggered by this form.');
         $sidebarHtml = Html::tag('div', Html::tag('p', $sidebarMessage), [
             'class' => 'meta read-only',
         ]);

@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
 use Craft;
 use craft\base\Element;
 use craft\events\CreateFieldLayoutFormEvent;
@@ -18,7 +19,7 @@ use yii\db\Expression;
 
 class FormRelationsHelper implements RelationsTableInterface
 {
-    public static function addDataSourceRelationsTab(CreateFieldLayoutFormEvent $event): void
+    public static function addDataSourceRelationsTab(RegisterFormTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -32,21 +33,20 @@ class FormRelationsHelper implements RelationsTableInterface
             return;
         }
 
-        $fieldLayout = $event->sender;
+        $fieldLayout = $event->fieldLayout;
 
         Craft::$app->getView()->registerJs('new DataSourceRelationsTable(' . $element->id . ', ' . $element->siteId . ');');
 
         $reportsTab = new FieldLayoutTab();
         $reportsTab->layout = $fieldLayout;
-        $reportsTab->name = Craft::t('sprout-module-forms', 'Reports');
+        $reportsTab->name = Craft::t('sprout-module-data-studio', 'Reports');
         $reportsTab->uid = 'SPROUT-UID-FORMS-REPORTS-TAB';
+        $reportsTab->sortOrder = 70;
         $reportsTab->setElements([
             self::getRelationsTableField($element),
         ]);
 
-        // Insert tab before the Settings tab
-        $index = array_search('SPROUT-UID-FORMS-SETTINGS-TAB', array_column($event->tabs, 'uid'), true);
-        array_splice($event->tabs, $index, 0, [$reportsTab]);
+        $event->tabs[] = $reportsTab;
     }
 
     public static function getRelationsTableField(Element $element): RelationsTableField
@@ -59,7 +59,7 @@ class FormRelationsHelper implements RelationsTableInterface
 
         $optionValues = [
             [
-                'label' => Craft::t('sprout-module-forms', 'New Data Set...'),
+                'label' => Craft::t('sprout-module-data-studio', 'New Data Set...'),
                 'value' => '',
             ],
         ];
@@ -75,7 +75,7 @@ class FormRelationsHelper implements RelationsTableInterface
             'value' => '',
         ]);
 
-        $sidebarMessage = Craft::t('sprout-module-forms', 'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.');
+        $sidebarMessage = Craft::t('sprout-module-data-studio', 'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.');
         $sidebarHtml = Html::tag('div', Html::tag('p', $sidebarMessage), [
             'class' => 'meta read-only',
         ]);

@@ -20,6 +20,7 @@ use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -188,8 +189,8 @@ class DataStudioModule extends Module
             });
 
         Event::on(
-            FieldLayout::class,
-            FieldLayout::EVENT_CREATE_FORM,
+            FormElement::class,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_ELEMENT_TABS,
             [FormRelationsHelper::class, 'addDataSourceRelationsTab']
         );
     }
