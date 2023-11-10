@@ -7,6 +7,7 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
 use BarrelStrength\Sprout\forms\components\formfields\MissingFormField;
 use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
@@ -58,6 +59,8 @@ use yii\web\Response;
 class FormElement extends Element
 {
     use FormIntegrationsTrait;
+
+    public const INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS = 'registerInternalSproutFormFeatureTabs';
 
     public ?string $name = null;
 
@@ -179,15 +182,22 @@ class FormElement extends Element
         $formType = $this->getFormType();
         $config = FormsModule::getInstance()->getSettings();
 
-        $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
-
         $formBuilderTab = new FieldLayoutTab();
         $formBuilderTab->layout = $fieldLayout;
         $formBuilderTab->name = Craft::t('sprout-module-forms', 'Layout');
         $formBuilderTab->uid = 'SPROUT-UID-FORMS-LAYOUT-TAB';
+        $formBuilderTab->sortOrder = 1;
         $formBuilderTab->setElements([
             new FormBuilderField(),
         ]);
+
+        // Add sortOrder to customized form type tabs
+        $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
+        $formTypeTabSortCount = 20;
+        foreach ($formTypeTabs as $index => $tab) {
+            $formTypeTabs[$index]->layout = $fieldLayout;
+            $formTypeTabs[$index]->sortOrder = $formTypeTabSortCount++;
+        }
 
         if ($formType->enableIntegrationsTab) {
             Craft::$app->getView()->registerJs('new IntegrationsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
@@ -196,6 +206,7 @@ class FormElement extends Element
             $integrationsTab->layout = $fieldLayout;
             $integrationsTab->name = Craft::t('sprout-module-forms', 'Workflows');
             $integrationsTab->uid = 'SPROUT-UID-FORMS-INTEGRATIONS-TAB';
+            $integrationsTab->sortOrder = 60;
             $integrationsTab->setElements([
                 $this->getIntegrationRelationsTableField(),
             ]);
@@ -205,6 +216,7 @@ class FormElement extends Element
         $settingsTab->layout = $fieldLayout;
         $settingsTab->name = Craft::t('sprout-module-forms', 'Settings');
         $settingsTab->uid = 'SPROUT-UID-FORMS-SETTINGS-TAB';
+        $settingsTab->sortOrder = 100;
         $settingsTab->setElements([
             new TextField([
                 'label' => Craft::t('sprout-module-forms', 'Name'),
@@ -232,14 +244,29 @@ class FormElement extends Element
             Craft::$app->getView()->registerJs("new Craft.HandleGenerator('#name', '#handle');");
         }
 
-        $tabs = array_merge(
-            empty($this->name) ? [$settingsTab] : [],
+        $defaultTabs = array_merge(
             [$formBuilderTab],
             $formTypeTabs,
             $formType->enableIntegrationsTab ? [$integrationsTab] : [],
-            !empty($this->name) ? [$settingsTab] : [],
+            [$settingsTab],
         );
 
+        // Custom INTERNAL_ Event lets other modules add tabs
+        $formTabsEvent = new RegisterFormTabsEvent([
+            'element' => $this,
+            'fieldLayout' => $fieldLayout,
+            'tabs' => $defaultTabs,
+        ]);
+
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS, $formTabsEvent);
+
+        // Reorder tabs by their sortOrder property
+        $tabs = $formTabsEvent->tabs;
+        usort($tabs, static function($a, $b) {
+            return $a->sortOrder <=> $b->sortOrder;
+        });
+
+        // Craft overwrites the sort order based on order of tabs
         $fieldLayout->setTabs($tabs);
 
         return $this->_fieldLayout = $fieldLayout;

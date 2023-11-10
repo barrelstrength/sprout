@@ -139,7 +139,7 @@ class TransactionalModule extends Module
 
         Event::on(
             FormElement::class,
-            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_ELEMENT_TABS,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
             [FormRelationsHelper::class, 'addNotificationEventsRelationsTab']
         );
     }
