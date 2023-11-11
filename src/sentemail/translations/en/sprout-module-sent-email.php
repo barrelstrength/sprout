@@ -54,4 +54,5 @@ return [
     'Original Email Info' => 'Original Email Info',
     'Info' => 'Info',
     'Failed' => 'Failed',
+    'ID' => 'ID'
 ];
