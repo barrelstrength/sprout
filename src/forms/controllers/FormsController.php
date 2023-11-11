@@ -16,6 +16,7 @@ use Craft;
 use craft\base\Element;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
+use craft\helpers\StringHelper;
 use craft\helpers\Template;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
@@ -67,60 +68,32 @@ class FormsController extends BaseController
     //    return $this->runAction('save-form', ['duplicate' => true]);
     //}
 
-    //public function actionSaveForm(bool $duplicate = false): ?Response
-    //{
-    //    $this->requirePostRequest();
-    //    $this->requirePermission(FormsModule::p('editForms'));
-    //
-    //    $request = Craft::$app->getRequest();
-    //
-    //    $form = $this->getFormModel();
-    //    $oldTitleFormat = $form->titleFormat;
-    //    $duplicateForm = null;
-    //
-    //    // If we're duplicating the form, swap $form with the duplicate
-    //
-    //    if ($duplicate) {
-    //        $duplicateForm = FormsModule::getInstance()->forms->createNewForm(
-    //            $request->getBodyParam('name'),
-    //            $request->getBodyParam('handle')
-    //        );
-    //
-    //        if ($duplicateForm !== null) {
-    //            $form->id = $duplicateForm->getId();
-    //            $form->setFieldLayoutId($duplicateForm->getFieldLayoutId());
-    //            $form->uid = $duplicateForm->uid;
-    //        } else {
-    //            throw new Exception('Error creating Form');
-    //        }
-    //    }
-    //
-    //    $this->populateFormModel($form);
-    //    $currentTitleFormat = $form->titleFormat;
-    //    $this->prepareFieldLayout($form, $duplicate, $duplicateForm);
-    //
-    //    // Save it
-    //    if (!FormsModule::getInstance()->forms->saveForm($form, $duplicate)) {
-    //
-    //        Craft::$app->getSession()->setError(Craft::t('sprout-module-forms', 'Couldn’t save form.'));
-    //
-    //        Craft::$app->getUrlManager()->setRouteParams([
-    //            'form' => $form,
-    //        ]);
-    //
-    //        return null;
-    //    }
+    public function actionNewForm(): Response
+    {
+        $site = Cp::requestedSite();
 
-    //    if ($oldTitleFormat !== $currentTitleFormat) {
-    //        FormsModule::getInstance()->submissions->resaveElements($form->getId());
-    //    }
-    //
-    //    Craft::$app->getSession()->setNotice(Craft::t('sprout-module-forms', 'Form saved.'));
-    //
-    //    $_POST['redirect'] = str_replace('{id}', $form->getId(), $_POST['redirect']);
-    //
-    //    return $this->redirectToPostedUrl($form);
-    //}
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
+        if (!FormsModule::getInstance()->forms->canCreateForm()) {
+            throw new WrongEditionException('Please upgrade to Sprout Forms Pro Edition to create unlimited forms.');
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+        $form = Craft::createObject(FormElement::class);
+
+        if (!$form->canSave($user)) {
+            throw new ForbiddenHttpException('User not authorized to create a form.');
+        }
+
+        $formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
+        $formType = FormTypeHelper::getFormTypeByUid($formTypeUid);
+
+        return $this->renderTemplate('sprout-module-forms/forms/_new', [
+            'formType' => $formType,
+        ]);
+    }
 
     public function actionCreateForm(): Response
     {
@@ -144,6 +117,8 @@ class FormsController extends BaseController
         $form->name = '';
         $form->handle = '';
         $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
+        $form->name = Craft::$app->getRequest()->getRequiredParam('name');
+        $form->handle = StringHelper::toHandle($form->name) . '_' . StringHelper::randomString(6);
         $form->formTypeUid = Craft::$app->getRequest()->getRequiredParam('formTypeUid');
 
         $form->setScenario(Element::SCENARIO_ESSENTIALS);
@@ -154,10 +129,7 @@ class FormsController extends BaseController
         $contentTableName = FormContentTableHelper::getContentTable($form->id);
         FormContentTableHelper::createContentTable($contentTableName);
 
-        $totalTabs = count($form->getFieldLayout()?->getTabs());
-        $settingsTabAnchor = '#tab0' . $totalTabs . '--settings';
-
-        return $this->redirect($form->getCpEditUrl() . $settingsTabAnchor);
+        return $this->redirect($form->getCpEditUrl());
     }
 
     public function actionGetSubmissionFieldLayout(): Response

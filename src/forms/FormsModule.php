@@ -377,6 +377,8 @@ class FormsModule extends Module
             'sprout/forms/forms' =>
                 'sprout-module-forms/forms/forms-index-template',
             'sprout/forms/forms/new' =>
+                'sprout-module-forms/forms/new-form',
+            'sprout/forms/forms/create' =>
                 'sprout-module-forms/forms/create-form',
             'sprout/forms/forms/edit/<elementId:\d+>' =>
                 'elements/edit',
