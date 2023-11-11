@@ -8,9 +8,7 @@ use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
-use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use Craft;
-use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\web\assets\userpermissions\UserPermissionsAsset;

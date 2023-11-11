@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\datastudio\controllers;
 
+use BarrelStrength\Sprout\datastudio\components\formfeatures\DataStudioTabFormFeature;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use Craft;
 use craft\web\Controller;
@@ -21,7 +22,7 @@ class FormRelationsTableController extends Controller
 
         return $this->asJson([
             'success' => true,
-            'html' => $element->getDataSourceRelationsTableField()->formHtml(),
+            'html' => DataStudioTabFormFeature::getRelationsTableField($element)->formHtml(),
         ]);
     }
 }
