@@ -327,9 +327,6 @@ export const FormBuilder = (formId) => ({
         console.log('dropOnLayoutTabBody');
         let self = this;
 
-        // @todo - implement
-        this.$dispatch('form-field-update', { 'formFieldName': 'FieldNameTest' });
-
         e.target.classList.remove('no-pointer-events');
 
         let type = e.dataTransfer.getData('sprout/field-type');

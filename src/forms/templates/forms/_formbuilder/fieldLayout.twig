@@ -23,7 +23,6 @@
     x-ref="formBuilder"
     class="sprout-form-builder"
     data-source-fields='{{ form.getSourceFields()|json_encode|raw }}'
-    x-bind:data-integrations-form-field-metadata="integrationsFormFieldMetadata"
 >
 
     <input id="field-layout-settings" type="hidden" name="submissionFieldLayout" x-bind:value="fieldLayoutInputValue">

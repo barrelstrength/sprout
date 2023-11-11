@@ -55,10 +55,8 @@ class IntegrationsRelationsTable {
     createSlideout(integrationUid, integrationTypeUid) {
         let self = this;
 
-        let onPageIntegrationsFormFieldMetadata = document.querySelector('.sprout-form-builder').dataset.integrationsFormFieldMetadata;
-
-        let integrationsFormFieldMetadata = onPageIntegrationsFormFieldMetadata
-            ? JSON.parse(onPageIntegrationsFormFieldMetadata)
+        let integrationsFormFieldMetadata = formBuilder.integrationsFormFieldMetadata
+            ? JSON.parse(formBuilder.integrationsFormFieldMetadata)
             : [];
 
         Craft.sendActionRequest('POST', 'sprout-module-forms/forms/edit-integration-slideout', {
