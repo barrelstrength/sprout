@@ -1,0 +1,65 @@
+{% extends "sprout-module-forms/_layouts/base" %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Create a new form"|t('sprout-module-forms') %}
+{% set bodyClass = 'sprout-new-form' %}
+
+{% set crumbs = [
+    {
+        label: "Forms"|t('sprout-module-forms'),
+        url: cpUrl('sprout/forms/forms'),
+    }
+] %}
+
+{% block content %}
+
+    <div class="sprout-new-form-content">
+
+        <header class="flex">
+            <p class="small light">{{ "{name}"|t('sprout-module-forms', {
+                    name: formType.name,
+                }) }}</p>
+            <h2>{{ "Give your form a name"|t('sprout-module-forms') }}</h2>
+        </header>
+
+        <section>
+            <form id="form-name-form" method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                {{ actionInput('sprout-module-forms/forms/create-form') }}
+
+                {{ forms.textField({
+                    label: "Name"|t('sprout-module-forms'),
+                    instructions: "What this form will be called in the control panel."|t('sprout-module-forms'),
+                    id: 'name-field',
+                    name: 'name',
+                    value: '',
+                    autofocus: true,
+                    required: true,
+                }) }}
+
+                {{ hiddenInput('formTypeUid', formType.uid) }}
+
+                <hr>
+
+                <div class="buttons flex">
+                    <button type="submit" class="btn submit add icon" id="add-fields-btn">
+                        {{ "Add fields"|t('sprout-module-forms') }}
+                    </button>
+                </div>
+            </form>
+        </section>
+        {% set html %}
+
+
+
+        {% endset %}
+
+    </div>
+{% endblock %}
+
+{% css %}
+    #header-container {
+    display: none;
+    }
+{% endcss %}

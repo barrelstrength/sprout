@@ -1,5 +1,9 @@
 @import "node_modules/craftcms-sass/_mixins.scss";
 
+#form-builder-layout .sprout-mediathumb svg {
+    fill: #607d9f;
+}
+
 .sprout-forms.examples .field > .warning {
     font-size: 1em;
 }
@@ -220,4 +224,30 @@ $detailsWidth: 350px;
     padding: var(--m);
     padding-top: var(--xl);
     padding-bottom: var(--xl);
+}
+
+
+body.sprout-new-form #main-content:not(.has-sidebar):not(.has-details) #content-container {
+    margin: var(--xl) auto auto;
+    max-width: 450px;
+}
+#content .sprout-new-form-content header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+}
+#content .sprout-new-form-content header h2 {
+    font-size: 24px;
+    font-weight: 400;
+    margin-top: 0;
+}
+#content .sprout-new-form-content header p {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+#content .sprout-new-form-content .buttons .btn {
+    margin-left: auto;
 }
