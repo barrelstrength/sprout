@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection DuplicatedCode */
-
 namespace BarrelStrength\Sprout\transactional\migrations;
 
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
