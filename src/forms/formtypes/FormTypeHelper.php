@@ -85,10 +85,7 @@ class FormTypeHelper
             'name' => $formTypeSettings['name'] ?? null,
             'formTemplate' => $formTypeSettings['formTemplate'] ?? null,
             'formTemplateOverrideFolder' => $formTypeSettings['formTemplateOverrideFolder'] ?? null,
-            'enableNotificationsTab' => $formTypeSettings['enableNotificationsTab'] ?? null,
-            'enableReportsTab' => $formTypeSettings['enableReportsTab'] ?? null,
-            'enableIntegrationsTab' => $formTypeSettings['enableIntegrationsTab'] ?? null,
-            'enabledIntegrationTypes' => $formTypeSettings['enabledIntegrationTypes'] ?? null,
+            'featureSettings' => $formTypeSettings['featureSettings'] ?? null,
             'enabledFormFieldTypes' => $formTypeSettings['enabledFormFieldTypes'] ?? null,
             'uid' => $uid ?? StringHelper::UUID(),
         ]);

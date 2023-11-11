@@ -16,13 +16,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
 
     public ?string $formTemplateOverrideFolder = null;
 
-    public bool $enableNotificationsTab = true;
-
-    public bool $enableReportsTab = true;
-
-    public bool $enableIntegrationsTab = true;
-
-    public array $enabledIntegrationTypes = [];
+    public array $featureSettings = [];
 
     public ?string $defaultEmailTypeUid = null;
 
@@ -121,10 +115,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface
             'name' => $this->name,
             'formTemplate' => $this->formTemplate,
             'formTemplateOverrideFolder' => $this->formTemplateOverrideFolder,
-            'enableNotificationsTab' => $this->enableNotificationsTab,
-            'enableReportsTab' => $this->enableReportsTab,
-            'enableIntegrationsTab' => $this->enableIntegrationsTab,
-            'enabledIntegrationTypes' => $this->enabledIntegrationTypes,
+            'featureSettings' => $this->featureSettings,
             'enabledFormFieldTypes' => $this->enabledFormFieldTypes,
         ];
 

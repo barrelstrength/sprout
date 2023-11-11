@@ -7,7 +7,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use craft\models\FieldLayout;
 use yii\base\Event;
 
-class RegisterFormTabsEvent extends Event
+class RegisterFormFeatureTabsEvent extends Event
 {
     public FormElement $element;
 

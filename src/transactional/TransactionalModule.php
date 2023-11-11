@@ -10,6 +10,7 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
@@ -23,7 +24,6 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
-use craft\models\FieldLayout;
 use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\UrlManager;
@@ -141,6 +141,12 @@ class TransactionalModule extends Module
             FormElement::class,
             FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
             [FormRelationsHelper::class, 'addNotificationEventsRelationsTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS,
+            [FormRelationsHelper::class, 'addNotificationEventsFormTypeSettings']
         );
     }
 

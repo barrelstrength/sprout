@@ -4,18 +4,23 @@ namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use Craft;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use craft\web\assets\userpermissions\UserPermissionsAsset;
 use craft\web\Controller;
 use yii\web\Response;
 
 class FormTypesController extends Controller
 {
+    public const INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS = 'registerInternalSproutFormFeatureTabs';
+
     public function actionFormTypesIndexTemplate(): Response
     {
         $formTypeTypes = FormsModule::getInstance()->formTypes->getFormTypeTypes();
@@ -42,9 +47,28 @@ class FormTypesController extends Controller
 
         $integrationTypes = IntegrationTypeHelper::getIntegrationTypes();
 
+        $integrationSettings = [];
+        foreach ($integrationTypes as $uid => $integrationType) {
+            $integrationSettings[$uid] = $integrationType->name;
+        }
+        $featureSettings['enableIntegrations'] = [
+            'label' => Craft::t('sprout-module-forms', 'Enable Integrations'),
+            'settings' => $integrationSettings,
+        ];
+
+        $formSettingsEvent = new RegisterFormFeatureSettingsEvent([
+            'formType' => $formType,
+            'featureSettings' => $featureSettings,
+        ]);
+
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS, $formSettingsEvent);
+
+        Craft::$app->getView()->registerAssetBundle(UserPermissionsAsset::class);
+
         return $this->renderTemplate('sprout-module-forms/_settings/form-types/edit.twig', [
             'formType' => $formType,
             'integrationTypes' => $integrationTypes,
+            'featureSettings' => $formSettingsEvent->featureSettings,
         ]);
     }
 
@@ -132,10 +156,7 @@ class FormTypesController extends Controller
         $formType->setFieldLayout($fieldLayout);
 
         $formType->formTemplateOverrideFolder = Craft::$app->request->getBodyParam('formTemplateOverrideFolder');
-        $formType->enableNotificationsTab = Craft::$app->request->getBodyParam('enableNotificationsTab');
-        $formType->enableReportsTab = Craft::$app->request->getBodyParam('enableReportsTab');
-        $formType->enableIntegrationsTab = Craft::$app->request->getBodyParam('enableIntegrationsTab');
-        $formType->enabledIntegrationTypes = array_filter($integrationTypes);
+        $formType->featureSettings = Craft::$app->request->getBodyParam('featureSettings');
         $formType->enabledFormFieldTypes = Craft::$app->request->getBodyParam('enabledFormFieldTypes');
 
         if (!$formType::isEditable()) {

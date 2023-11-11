@@ -7,7 +7,8 @@ use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureTabsEvent;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
@@ -23,7 +24,14 @@ use yii\db\Expression;
 
 class FormRelationsHelper implements RelationsTableInterface
 {
-    public static function addNotificationEventsRelationsTab(RegisterFormTabsEvent $event): void
+    public static function addNotificationEventsFormTypeSettings(RegisterFormFeatureSettingsEvent $event): void
+    {
+        $event->featureSettings['enableNotifications'] = [
+            'label' => Craft::t('sprout-module-transactional', 'Enable Notifications'),
+        ];
+    }
+
+    public static function addNotificationEventsRelationsTab(RegisterFormFeatureTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -32,9 +40,10 @@ class FormRelationsHelper implements RelationsTableInterface
         }
 
         $formType = $element->getFormType();
+        $featureSettings = $formType->featureSettings['enableNotifications'] ?? [];
+        $enableTab = $featureSettings['enabled'] ?? false;
 
-        //if (!$formType->genericTabSettings) { // and it knows to search for genericTabSettings->enableNotificationTab
-        if (!$formType->enableNotificationsTab) {
+        if (!$enableTab) {
             return;
         }
 

@@ -21,6 +21,7 @@ use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
 use Craft;
 use craft\events\DefineFieldLayoutFieldsEvent;
@@ -192,6 +193,12 @@ class DataStudioModule extends Module
             FormElement::class,
             FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
             [FormRelationsHelper::class, 'addDataSourceRelationsTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS,
+            [FormRelationsHelper::class, 'addDataSourceFormTypeSettings']
         );
     }
 

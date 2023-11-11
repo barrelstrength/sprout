@@ -7,7 +7,7 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\forms\components\elements\conditions\FormCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\FormElementQuery;
 use BarrelStrength\Sprout\forms\components\elements\fieldlayoutelements\FormBuilderField;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureTabsEvent;
 use BarrelStrength\Sprout\forms\components\formfields\MissingFormField;
 use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
@@ -199,7 +199,10 @@ class FormElement extends Element
             $formTypeTabs[$index]->sortOrder = $formTypeTabSortCount++;
         }
 
-        if ($formType->enableIntegrationsTab) {
+        $integrationFeatureSettings = $formType->featureSettings['enableIntegrations'] ?? [];
+        $enableIntegrationsTab = $integrationFeatureSettings['enabled'] ?? false;
+
+        if ($enableIntegrationsTab) {
             Craft::$app->getView()->registerJs('new IntegrationsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
 
             $integrationsTab = new FieldLayoutTab();
@@ -247,12 +250,12 @@ class FormElement extends Element
         $defaultTabs = array_merge(
             [$formBuilderTab],
             $formTypeTabs,
-            $formType->enableIntegrationsTab ? [$integrationsTab] : [],
+            $enableIntegrationsTab ? [$integrationsTab] : [],
             [$settingsTab],
         );
 
         // Custom INTERNAL_ Event lets other modules add tabs
-        $formTabsEvent = new RegisterFormTabsEvent([
+        $formTabsEvent = new RegisterFormFeatureTabsEvent([
             'element' => $this,
             'fieldLayout' => $fieldLayout,
             'tabs' => $defaultTabs,

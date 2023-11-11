@@ -8,7 +8,8 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormTabsEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
+use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureTabsEvent;
 use Craft;
 use craft\base\Element;
 use craft\events\CreateFieldLayoutFormEvent;
@@ -19,7 +20,15 @@ use yii\db\Expression;
 
 class FormRelationsHelper implements RelationsTableInterface
 {
-    public static function addDataSourceRelationsTab(RegisterFormTabsEvent $event): void
+    public static function addDataSourceFormTypeSettings(RegisterFormFeatureSettingsEvent $event): void
+    {
+        $event->featureSettings['enableReports'] = [
+            'label' => Craft::t('sprout-module-data-studio', 'Enable Reports'),
+            'settings' => Html::tag('div', 'Reports HTML'),
+        ];
+    }
+
+    public static function addDataSourceRelationsTab(RegisterFormFeatureTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -28,8 +37,10 @@ class FormRelationsHelper implements RelationsTableInterface
         }
 
         $formType = $element->getFormType();
+        $featureSettings = $formType->featureSettings['enableReports'] ?? [];
+        $enableTab = $featureSettings['enabled'] ?? false;
 
-        if (!$formType->enableReportsTab) {
+        if (!$enableTab) {
             return;
         }
 
