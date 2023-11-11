@@ -244,8 +244,8 @@ class m211101_000007_migrate_forms_tables extends Migration
             }
 
             // Establish our old table and new table names
-            $oldContentTable = "{{%sproutformscontent_{$formHandle}}}";
-            $newContentTable = "{{%sprout_formcontent_{$formHandle}}}";
+            $oldContentTable = "{{%sproutformscontent_$formHandle}}";
+            $newContentTable = "{{%sprout_formcontent_$formHandle}}";
 
             // If the new table already exists, carry on
             if ($this->db->tableExists($newContentTable)) {
