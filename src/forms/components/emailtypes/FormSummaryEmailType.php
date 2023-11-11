@@ -13,8 +13,6 @@ use craft\models\FieldLayoutTab;
 
 class FormSummaryEmailType extends EmailType
 {
-    public bool $displayPreheaderText = false;
-
     public ?string $htmlEmailTemplate = '@Sprout/TemplateRoot/emails/submission/email.twig';
 
     public static function displayName(): string

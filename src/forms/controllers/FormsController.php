@@ -138,7 +138,7 @@ class FormsController extends BaseController
         $form = Craft::createObject(FormElement::class);
 
         if (!$form->canSave($user)) {
-            throw new ForbiddenHttpException('User not authorized to save this report.');
+            throw new ForbiddenHttpException('User not authorized to create a form.');
         }
 
         $form->name = '';

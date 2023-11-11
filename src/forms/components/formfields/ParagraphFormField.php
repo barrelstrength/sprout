@@ -21,8 +21,6 @@ class ParagraphFormField extends CraftPlainText implements FormFieldInterface
 
     public ?string $placeholder = '';
 
-    public int $initialRows = 4;
-
     public ?int $charLimit = null;
 
     public ?string $columnType = Schema::TYPE_TEXT;

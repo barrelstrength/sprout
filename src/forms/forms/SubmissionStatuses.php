@@ -214,7 +214,7 @@ class SubmissionStatuses extends Component
             )->execute();
 
             if (!$success) {
-                Craft::error("Unable to mark submission as spam. Submission ID: {$submissionElement->id}", __METHOD__);
+                Craft::error("Unable to mark submission as spam. Submission ID: $submissionElement->id", __METHOD__);
             }
         }
 
@@ -237,7 +237,7 @@ class SubmissionStatuses extends Component
             )->execute();
 
             if (!$success) {
-                Craft::error("Unable to change submission status. Submission ID: {$submissionElement->id}", __METHOD__);
+                Craft::error("Unable to change submission status. Submission ID: $submissionElement->id", __METHOD__);
             }
         }
 

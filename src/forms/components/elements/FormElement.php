@@ -189,7 +189,7 @@ class FormElement extends Element
         ]);
 
         // Add sortOrder to customized form type tabs
-        $formTypeTabs = $formType?->getFieldLayout()?->getTabs() ?? [];
+        $formTypeTabs = $formType->getFieldLayout()?->getTabs() ?? [];
         $formTypeTabSortCount = 20;
         foreach ($formTypeTabs as $index => $tab) {
             $formTypeTabs[$index]->layout = $fieldLayout;
@@ -204,7 +204,7 @@ class FormElement extends Element
         $settingsTab->setElements([
             new TextField([
                 'label' => Craft::t('sprout-module-forms', 'Name'),
-                'instructions' => Craft::t('sprout-module-forms', 'What this form will be called in the CP.'),
+                'instructions' => Craft::t('sprout-module-forms', 'What this form will be called in the control panel.'),
                 'attribute' => 'name',
                 'autofocus' => true,
                 'required' => true,

@@ -22,12 +22,6 @@ class DateFormField extends CraftDate implements FormFieldInterface
 
     public string $cssClasses = '';
 
-    public bool $showDate = true;
-
-    public bool $showTime = false;
-
-    public int $minuteIncrement = 30;
-
     // YYYY-MM-DD
     public ?string $minimumDate = null;
 

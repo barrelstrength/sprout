@@ -20,15 +20,6 @@ class NumberFormField extends CraftNumber implements FormFieldInterface
 
     public string $cssClasses = '';
 
-    public int|float|null $min = 0;
-
-    public int|float|null $max = null;
-
-    /**
-     * The number of digits allowed after the decimal point
-     */
-    public int $decimals = 0;
-
     /**
      * The size of the field
      */
