@@ -362,7 +362,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             }
         }
 
-        foreach ($emailWithCount as $email => $count) {
+        foreach ($emailWithCount as $count) {
             if ($count > 1) {
                 $this->addError('approvedSenders', 'Sender email addresses must be unique.');
             }
@@ -381,7 +381,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             }
         }
 
-        foreach ($emailWithCount as $email => $count) {
+        foreach ($emailWithCount as $count) {
             if ($count > 1) {
                 $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }
