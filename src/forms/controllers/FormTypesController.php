@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
+use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
@@ -19,7 +19,7 @@ use yii\web\Response;
 
 class FormTypesController extends Controller
 {
-    public const INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS = 'registerInternalSproutFormFeatureTabs';
+    public const INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS = 'defineInternalSproutFormFeatureSettings';
 
     public function actionFormTypesIndexTemplate(): Response
     {
@@ -45,29 +45,17 @@ class FormTypesController extends Controller
             $formType = new $type();
         }
 
-        $integrationTypes = IntegrationTypeHelper::getIntegrationTypes();
-
-        $integrationSettings = [];
-        foreach ($integrationTypes as $uid => $integrationType) {
-            $integrationSettings[$uid] = $integrationType->name;
-        }
-        $featureSettings['enableIntegrations'] = [
-            'label' => Craft::t('sprout-module-forms', 'Enable Integrations'),
-            'settings' => $integrationSettings,
-        ];
-
-        $formSettingsEvent = new RegisterFormFeatureSettingsEvent([
+        $formSettingsEvent = new DefineFormFeatureSettingsEvent([
             'formType' => $formType,
-            'featureSettings' => $featureSettings,
+            'featureSettings' => [],
         ]);
 
-        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS, $formSettingsEvent);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS, $formSettingsEvent);
 
         Craft::$app->getView()->registerAssetBundle(UserPermissionsAsset::class);
 
         return $this->renderTemplate('sprout-module-forms/_settings/form-types/edit.twig', [
             'formType' => $formType,
-            'integrationTypes' => $integrationTypes,
             'featureSettings' => $formSettingsEvent->featureSettings,
         ]);
     }

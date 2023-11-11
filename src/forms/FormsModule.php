@@ -21,7 +21,9 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
+use BarrelStrength\Sprout\forms\components\formfeatures\WorkflowTabFormFeature;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
 use BarrelStrength\Sprout\forms\controllers\SubmissionsController;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
@@ -248,6 +250,18 @@ class FormsModule extends Module
             DataSources::class,
             DataSources::EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES,
             [FormsHelper::class, 'registerDataSourceRelationsTypes']);
+
+        Event::on(
+            FormElement::class,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
+            [WorkflowTabFormFeature::class, 'registerWorkflowTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [WorkflowTabFormFeature::class, 'defineFormTypeSettings']
+        );
 
         $this->registerProjectConfigEventListeners();
     }

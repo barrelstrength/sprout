@@ -7,7 +7,7 @@ use BarrelStrength\Sprout\forms\formtypes\FormType;
 use craft\models\FieldLayout;
 use yii\base\Event;
 
-class RegisterFormFeatureSettingsEvent extends Event
+class DefineFormFeatureSettingsEvent extends Event
 {
     public FormType $formType;
 

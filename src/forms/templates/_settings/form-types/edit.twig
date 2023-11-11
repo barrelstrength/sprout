@@ -122,12 +122,12 @@
                                 value: true,
                                 checked: featureSettings['enabled'] ?? false,
                                 name: 'enabled',
-                                toggle: hasSettings ? toggleId : null,
+                                toggle: hasSettings ? toggleId|id : null,
                             }) }}
                         </li>
                         {% if hasSettings %}
                             <li>
-                                <ul id="{{ toggleId }}" class="hidden">
+                                <ul id="{{ toggleId|id }}" class="hidden">
                                     {% for uid, integrationTypeName in settings.settings %}
                                         <li>
                                             {{ forms.checkboxField({

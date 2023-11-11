@@ -1,13 +1,13 @@
 <?php
 
-namespace BarrelStrength\Sprout\transactional\components\relations;
+namespace BarrelStrength\Sprout\transactional\components\formfeatures;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureTabsEvent;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
@@ -16,22 +16,21 @@ use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEm
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Element;
-use craft\events\CreateFieldLayoutFormEvent;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\models\FieldLayoutTab;
 use yii\db\Expression;
 
-class FormRelationsHelper implements RelationsTableInterface
+class TransactionalFormFeature implements RelationsTableInterface
 {
-    public static function addNotificationEventsFormTypeSettings(RegisterFormFeatureSettingsEvent $event): void
+    public static function defineFormTypeSettings(DefineFormFeatureSettingsEvent $event): void
     {
-        $event->featureSettings['enableNotifications'] = [
+        $event->featureSettings[self::class] = [
             'label' => Craft::t('sprout-module-transactional', 'Enable Notifications'),
         ];
     }
 
-    public static function addNotificationEventsRelationsTab(RegisterFormFeatureTabsEvent $event): void
+    public static function registerTransactionalTab(RegisterFormFeatureTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -40,7 +39,7 @@ class FormRelationsHelper implements RelationsTableInterface
         }
 
         $formType = $element->getFormType();
-        $featureSettings = $formType->featureSettings['enableNotifications'] ?? [];
+        $featureSettings = $formType->featureSettings[self::class] ?? [];
         $enableTab = $featureSettings['enabled'] ?? false;
 
         if (!$enableTab) {

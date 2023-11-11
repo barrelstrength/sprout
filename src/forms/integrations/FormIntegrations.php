@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\forms\integrations;
 
-use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnAfterIntegrationSubmitEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
@@ -14,6 +13,7 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\submissions\SubmissionIntegrationStatus;
 use Craft;
 use craft\base\Component;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\errors\MissingComponentException;
 use craft\events\RegisterComponentTypesEvent;
@@ -372,7 +372,7 @@ class FormIntegrations extends Component
         }
     }
 
-    public function getIntegrationsRelationsRows(FormElement $form): array
+    public function getIntegrationsRelationsRows(ElementInterface $form): array
     {
         $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($form->id);
 

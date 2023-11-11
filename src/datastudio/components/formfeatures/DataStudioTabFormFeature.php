@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\datastudio\components\relations;
+namespace BarrelStrength\Sprout\datastudio\components\formfeatures;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
@@ -8,27 +8,25 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureSettingsEvent;
+use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\components\events\RegisterFormFeatureTabsEvent;
 use Craft;
 use craft\base\Element;
-use craft\events\CreateFieldLayoutFormEvent;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\models\FieldLayoutTab;
 use yii\db\Expression;
 
-class FormRelationsHelper implements RelationsTableInterface
+class DataStudioTabFormFeature implements RelationsTableInterface
 {
-    public static function addDataSourceFormTypeSettings(RegisterFormFeatureSettingsEvent $event): void
+    public static function defineFormTypeSettings(DefineFormFeatureSettingsEvent $event): void
     {
-        $event->featureSettings['enableReports'] = [
+        $event->featureSettings[self::class] = [
             'label' => Craft::t('sprout-module-data-studio', 'Enable Reports'),
-            'settings' => Html::tag('div', 'Reports HTML'),
         ];
     }
 
-    public static function addDataSourceRelationsTab(RegisterFormFeatureTabsEvent $event): void
+    public static function registerDataStudioTab(RegisterFormFeatureTabsEvent $event): void
     {
         $element = $event->element ?? null;
 
@@ -37,7 +35,7 @@ class FormRelationsHelper implements RelationsTableInterface
         }
 
         $formType = $element->getFormType();
-        $featureSettings = $formType->featureSettings['enableReports'] ?? [];
+        $featureSettings = $formType->featureSettings[self::class] ?? [];
         $enableTab = $featureSettings['enabled'] ?? false;
 
         if (!$enableTab) {

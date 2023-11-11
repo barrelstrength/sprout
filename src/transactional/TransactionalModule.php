@@ -16,8 +16,8 @@ use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
+use BarrelStrength\Sprout\transactional\components\formfeatures\TransactionalFormFeature;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
-use BarrelStrength\Sprout\transactional\components\relations\FormRelationsHelper;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
@@ -140,13 +140,13 @@ class TransactionalModule extends Module
         Event::on(
             FormElement::class,
             FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
-            [FormRelationsHelper::class, 'addNotificationEventsRelationsTab']
+            [TransactionalFormFeature::class, 'registerTransactionalTab']
         );
 
         Event::on(
             FormTypesController::class,
-            FormTypesController::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS,
-            [FormRelationsHelper::class, 'addNotificationEventsFormTypeSettings']
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [TransactionalFormFeature::class, 'defineFormTypeSettings']
         );
     }
 

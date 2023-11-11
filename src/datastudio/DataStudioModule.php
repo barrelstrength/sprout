@@ -14,7 +14,7 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\components\audiences\DataSetAudienceType;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
-use BarrelStrength\Sprout\datastudio\components\relations\FormRelationsHelper;
+use BarrelStrength\Sprout\datastudio\components\formfeatures\DataStudioTabFormFeature;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSource;
@@ -192,13 +192,13 @@ class DataStudioModule extends Module
         Event::on(
             FormElement::class,
             FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
-            [FormRelationsHelper::class, 'addDataSourceRelationsTab']
+            [DataStudioTabFormFeature::class, 'registerDataStudioTab']
         );
 
         Event::on(
             FormTypesController::class,
-            FormTypesController::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_SETTINGS,
-            [FormRelationsHelper::class, 'addDataSourceFormTypeSettings']
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [DataStudioTabFormFeature::class, 'defineFormTypeSettings']
         );
     }
 

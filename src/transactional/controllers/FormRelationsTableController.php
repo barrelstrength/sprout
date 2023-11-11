@@ -2,7 +2,7 @@
 
 namespace BarrelStrength\Sprout\transactional\controllers;
 
-use BarrelStrength\Sprout\transactional\components\relations\FormRelationsHelper;
+use BarrelStrength\Sprout\transactional\components\formfeatures\TransactionalFormFeature;
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\web\Controller;
@@ -25,7 +25,7 @@ class FormRelationsTableController extends Controller
 
         return $this->asJson([
             'success' => true,
-            'html' => FormRelationsHelper::getRelationsTableField($element)->formHtml(),
+            'html' => TransactionalFormFeature::getRelationsTableField($element)->formHtml(),
         ]);
     }
 }

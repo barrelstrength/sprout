@@ -13,7 +13,6 @@ use BarrelStrength\Sprout\forms\components\formtypes\DefaultFormType;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
-use BarrelStrength\Sprout\forms\forms\FormIntegrationsTrait;
 use BarrelStrength\Sprout\forms\forms\FormRecord;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
@@ -58,8 +57,6 @@ use yii\web\Response;
  */
 class FormElement extends Element
 {
-    use FormIntegrationsTrait;
-
     public const INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS = 'registerInternalSproutFormFeatureTabs';
 
     public ?string $name = null;
@@ -199,22 +196,6 @@ class FormElement extends Element
             $formTypeTabs[$index]->sortOrder = $formTypeTabSortCount++;
         }
 
-        $integrationFeatureSettings = $formType->featureSettings['enableIntegrations'] ?? [];
-        $enableIntegrationsTab = $integrationFeatureSettings['enabled'] ?? false;
-
-        if ($enableIntegrationsTab) {
-            Craft::$app->getView()->registerJs('new IntegrationsRelationsTable(' . $this->id . ', ' . $this->siteId . ');');
-
-            $integrationsTab = new FieldLayoutTab();
-            $integrationsTab->layout = $fieldLayout;
-            $integrationsTab->name = Craft::t('sprout-module-forms', 'Workflows');
-            $integrationsTab->uid = 'SPROUT-UID-FORMS-INTEGRATIONS-TAB';
-            $integrationsTab->sortOrder = 60;
-            $integrationsTab->setElements([
-                $this->getIntegrationRelationsTableField(),
-            ]);
-        }
-
         $settingsTab = new FieldLayoutTab();
         $settingsTab->layout = $fieldLayout;
         $settingsTab->name = Craft::t('sprout-module-forms', 'Settings');
@@ -250,7 +231,6 @@ class FormElement extends Element
         $defaultTabs = array_merge(
             [$formBuilderTab],
             $formTypeTabs,
-            $enableIntegrationsTab ? [$integrationsTab] : [],
             [$settingsTab],
         );
 
