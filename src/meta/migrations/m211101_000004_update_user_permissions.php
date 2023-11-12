@@ -27,7 +27,7 @@ class m211101_000004_update_user_permissions extends Migration
             ->indexBy('name')
             ->column();
 
-        foreach ($permissionMap as $moduleId => $permissionSet) {
+        foreach ($permissionMap as $permissionSet) {
 
             // Update Permission Names in db
             foreach ($permissionSet as $oldPermissionName => $newPermissionName) {
