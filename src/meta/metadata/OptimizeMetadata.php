@@ -272,10 +272,8 @@ class OptimizeMetadata extends Component
 
     /**
      * Return a comma delimited string of robots meta settings
-     *
-     * @param array|string|null $robots
      */
-    public function prepareRobotsMetadataValue($robots = null): ?string
+    public function prepareRobotsMetadataValue(array|string|null $robots = null): ?string
     {
         if ($robots === null) {
             return null;

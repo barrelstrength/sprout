@@ -57,7 +57,7 @@ abstract class Schema
     public ?Metadata $prioritizedMetadataModel = null;
 
     /**
-     * Defines our Schema's `@type` property
+     * Defines the Schema's `type` property
      */
     public string $type;
 
@@ -494,7 +494,7 @@ abstract class Schema
         $string = mb_convert_encoding($string, 'UTF-32', 'UTF-8');
         $t = unpack('N*', $string);
         $t = array_map(static function($n) {
-            return "&#{$n};";
+            return "&#$n;";
         }, $t);
 
         return implode('', $t);

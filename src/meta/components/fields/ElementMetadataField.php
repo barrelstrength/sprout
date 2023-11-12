@@ -138,7 +138,7 @@ class ElementMetadataField extends Field
 
         $fieldId = 'fields-' . $name . '-field';
 
-        $name = "meta[metadata][{$name}]";
+        $name = "meta[metadata][$name]";
 
         $settings = $this->getAttributes();
 
