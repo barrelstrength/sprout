@@ -89,8 +89,8 @@ class NotificationEvents extends Component
 
         uasort($types, static function($a, $b): int {
             /**
-             * @var $a NotificationEvent
-             * @var $b NotificationEvent
+             * @var NotificationEvent $a
+             * @var NotificationEvent $b
              */
             return $a::displayName() <=> $b::displayName();
         });

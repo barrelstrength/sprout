@@ -97,8 +97,8 @@ class SchemaMetadata extends Component
 
         uasort($this->schemas, static function($a, $b): int {
             /**
-             * @var $a Schema
-             * @var $b Schema
+             * @var Schema $a
+             * @var Schema $b
              */
             return $a->getName() <=> $b->getName();
         });
