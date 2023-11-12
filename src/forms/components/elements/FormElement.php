@@ -352,10 +352,7 @@ class FormElement extends Element
         return Craft::createObject(FormCondition::class, [static::class]);
     }
 
-    /**
-     * @return FormElementQuery The newly created [[FormQuery]] instance.
-     */
-    public static function find(): ElementQueryInterface
+    public static function find(): FormElementQuery
     {
         return new FormElementQuery(static::class);
     }

@@ -35,7 +35,7 @@ class TransactionalEmailElement extends EmailElement
         return Craft::createObject(TransactionalEmailCondition::class, [static::class]);
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): TransactionalEmailElementQuery
     {
         return new TransactionalEmailElementQuery(EmailElement::class);
     }

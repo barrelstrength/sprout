@@ -29,14 +29,6 @@ class TransactionalEmailVariant extends EmailVariant
     public ?string $eventId = null;
 
     /**
-     * Enable or disable file attachments when notification emails are sent.
-     *
-     * If disabled, files will still be stored in Craft after form submission.
-     * This only determines if they should also be attached and sent via email.
-     */
-    public bool $enableFileAttachments = false;
-
-    /**
      * Statement that gets evaluated to true/false to determine this event will be fired
      *
      * No value is considered 'Always Send'

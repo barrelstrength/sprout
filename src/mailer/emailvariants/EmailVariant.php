@@ -79,6 +79,14 @@ abstract class EmailVariant extends SavableComponent
     }
 
     /**
+     * Email variants can enable file attachments. Any specific logic to do so must be handled by the variant.
+     *
+     * If disabled, files will still be stored in Craft after form submission.
+     * This only determines if they should also be attached and sent via email.
+     */
+    public bool $enableFileAttachments = false;
+
+    /**
      * Show or hide the Element Editor Status Enabled setting for this Email Variant
      */
     public function canBeDisabled(): bool

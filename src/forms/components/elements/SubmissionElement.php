@@ -108,10 +108,7 @@ class SubmissionElement extends Element
         return $statusArray;
     }
 
-    /**
-     * @return SubmissionElementQuery The newly created [[SubmissionElementQuery]] instance.
-     */
-    public static function find(): ElementQueryInterface
+    public static function find(): SubmissionElementQuery
     {
         return new SubmissionElementQuery(static::class);
     }
