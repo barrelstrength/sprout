@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\transactional\components\elements\conditions;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementQuery;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\TransactionalModule;

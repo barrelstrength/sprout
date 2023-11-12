@@ -75,21 +75,6 @@ abstract class NotificationEvent extends SavableComponent
     }
 
     /**
-     * Returns a rendered html string to use for capturing user input
-     *
-     * @example
-     * <h3>Select Sections</h3>
-     * <p>Please select what Sections should trigger the save entry event</p>
-     * <input type="checkbox" id="sectionIds[]" value="1">
-     * <input type="checkbox" id="sectionsIds[]" value="2">
-     *
-     */
-    public function getSettingsHtml(): ?string
-    {
-        return '';
-    }
-
-    /**
      * A tip that displays below the event when selected to help users
      * understand what the event does and how to use it in email templates.
      */

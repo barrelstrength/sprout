@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\transactional\components\formfeatures;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\RelationsTableField;
 use BarrelStrength\Sprout\core\relations\RelationsTableInterface;
+use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionFormConditionRule;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent;
@@ -14,7 +15,6 @@ use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Element;
@@ -139,14 +139,17 @@ class TransactionalFormFeature implements RelationsTableInterface
             /** @var ElementEventInterface $notificationEvent */
             $notificationEvent = $emailVariantSettings->getNotificationEvent($email, $submissionEvent);
 
+            $condition = $notificationEvent->condition;
+            $rules = $condition->getConditionRules();
+
             // If we have no rules, all forms will match
-            if (!$rules = $notificationEvent->conditionRules['conditionRules'] ?? null) {
+            if (empty($rules)) {
                 $relatedEmails[] = $email;
                 continue;
             }
 
             foreach ($rules as $key => $rule) {
-                if ($rule['class'] !== 'BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionFormConditionRule') {
+                if ($rule['class'] !== SubmissionFormConditionRule::class) {
                     unset($rules[$key]);
                 }
             }
@@ -159,7 +162,8 @@ class TransactionalFormFeature implements RelationsTableInterface
 
             // If we have a rule, we should now have a single FormConditionRule and can match against it
             // Assign the single rule back to the conditionRules attribute
-            $notificationEvent->conditionRules['conditionRules'] = $rules;
+            $condition->setConditionRules($rules);
+            $notificationEvent->condition = $condition;
 
             if (!$notificationEvent->matchNotificationEvent($submissionEvent)) {
                 continue;

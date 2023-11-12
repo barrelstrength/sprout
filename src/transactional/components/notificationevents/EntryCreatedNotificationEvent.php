@@ -6,12 +6,10 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
-use craft\elements\conditions\ElementCondition;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
 use craft\helpers\ElementHelper;
-use craft\helpers\Json;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
 
@@ -66,18 +64,12 @@ class EntryCreatedNotificationEvent extends NotificationEvent implements Element
 
     /**
      * @return array
-     * @throws InvalidConfigException
      */
     public function getMockEventVariables(): array
     {
         $entry = null;
 
-        if ($this->conditionRules) {
-            $conditionRules = Json::decodeIfJson($this->conditionRules);
-            /** @var ElementCondition $condition */
-            $condition = Craft::$app->conditions->createCondition($conditionRules);
-            $condition->elementType = Entry::class;
-
+        if ($condition = $this->condition) {
             $query = $condition->elementType::find();
             $condition->modifyQuery($query);
             $entry = $query->one();

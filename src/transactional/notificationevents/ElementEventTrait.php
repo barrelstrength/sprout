@@ -3,14 +3,32 @@
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use Craft;
+use craft\base\conditions\ConditionInterface;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementCondition;
 use craft\helpers\Cp;
+use craft\helpers\Json;
 use yii\base\Event;
 
+/**
+ * @mixin NotificationEvent
+ */
 trait ElementEventTrait
 {
-    public ?array $conditionRules = null;
+    public ConditionInterface|ElementCondition|null $condition = null;
+
+    public function setAttributes($values, $safeOnly = true): void
+    {
+        if (isset($values['conditionRules'])) {
+            $conditionRules = Json::decodeIfJson($values['conditionRules']);
+            $condition = Craft::$app->conditions->createCondition($conditionRules);
+            $condition->elementType = static::getEventClassName();
+
+            $this->condition = $condition;
+
+            unset($values['conditionRules']);
+        }
+    }
 
     public function getExclusiveQueryParams(): array
     {
@@ -19,11 +37,7 @@ trait ElementEventTrait
 
     public function getSettingsHtml(): ?string
     {
-        /** @var ElementCondition $condition */
-        $condition = !empty($this->conditionRules)
-            ? Craft::$app->conditions->createCondition($this->conditionRules)
-            : Craft::createObject(static::conditionType());
-        $condition->elementType = static::elementType();
+        $condition = $this->condition ?? Craft::createObject(static::conditionType());
         $condition->sortable = true;
         $condition->mainTag = 'div';
         $condition->name = 'conditionRules';
@@ -55,14 +69,10 @@ trait ElementEventTrait
      */
     protected function matchElement(ElementInterface $element): bool
     {
-        if ($this->conditionRules === null) {
+        if ($this->condition === null) {
             return true;
         }
 
-        $condition = Craft::$app->conditions->createCondition($this->conditionRules);
-        /** @var ElementCondition $condition */
-        $condition->elementType = $element::class;
-
-        return $condition->matchElement($element);
+        return $this->condition->matchElement($element);
     }
 }
