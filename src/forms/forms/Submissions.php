@@ -144,10 +144,6 @@ class Submissions extends Component
         return true;
     }
 
-    /**
-     *
-     * @return mixed
-     */
     public function isSaveDataEnabled(FormElement $form, bool $isSpam = false): bool
     {
         $formType = $form->getFormType();
@@ -155,7 +151,7 @@ class Submissions extends Component
 
         if ($saveData) {
             // Allow Form to override global saveData setting
-            $saveData = (bool)(int)$form->saveData;
+            $saveData = (bool)$form->saveData;
         }
 
         // Let the SPAM setting determine if we save data if we are:

@@ -130,7 +130,7 @@ class Forms extends Component
     /**
      * Returns a form model if one is found in the database by id
      */
-    public function getFormById(int $formId, int $siteId = null): ElementInterface|FormElement|null
+    public function getFormById(int $formId, int $siteId = null): FormElement|null
     {
         $query = FormElement::find();
         $query->id($formId);
@@ -142,7 +142,7 @@ class Forms extends Component
     /**
      * Returns a form model if one is found in the database by handle
      */
-    public function getFormByHandle(string $handle, int $siteId = null): ElementInterface|FormElement|null
+    public function getFormByHandle(string $handle, int $siteId = null): FormElement|null
     {
         $query = FormElement::find();
         $query->handle($handle);
@@ -237,41 +237,41 @@ class Forms extends Component
         return true;
     }
 
-    public function getTabsForFieldLayout(FormElement $form): array
-    {
-        $tabs = [];
-
-        $fieldLayout = $form->getFieldLayout();
-        $fieldLayoutTabs = $fieldLayout->getTabs();
-        if (empty($fieldLayoutTabs)) {
-            $fieldLayoutTabs[] = new FieldLayoutTab([
-                'name' => FormsModule::getInstance()->formFields->getDefaultTabName(),
-                'sortOrder' => 1,
-            ]);
-            $fieldLayout->setTabs($fieldLayoutTabs);
-            Craft::$app->getFields()->saveLayout($fieldLayout);
-        }
-
-        foreach ($fieldLayoutTabs as $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
-
-            if ($form->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    /** @var Field $field */
-                    if ($hasErrors = $form->hasErrors($field->handle . '.*')) {
-                        break;
-                    }
-                }
-            }
-
-            $tabs[$tab->id] = [
-                'label' => Craft::t('sprout-module-forms', $tab->name),
-                'url' => '#sproutforms-tab-' . $tab->id,
-                'class' => $hasErrors ? 'error' : null,
-            ];
-        }
-
-        return $tabs;
-    }
+    //public function getTabsForFieldLayout(FormElement $form): array
+    //{
+    //    $tabs = [];
+    //
+    //    $fieldLayout = $form->getFieldLayout();
+    //    $fieldLayoutTabs = $fieldLayout->getTabs();
+    //    if (empty($fieldLayoutTabs)) {
+    //        $fieldLayoutTabs[] = new FieldLayoutTab([
+    //            'name' => FormsModule::getInstance()->formFields->getDefaultTabName(),
+    //            'sortOrder' => 1,
+    //        ]);
+    //        $fieldLayout->setTabs($fieldLayoutTabs);
+    //        Craft::$app->getFields()->saveLayout($fieldLayout);
+    //    }
+    //
+    //    foreach ($fieldLayoutTabs as $tab) {
+    //        // Do any of the fields on this tab have errors?
+    //        $hasErrors = false;
+    //
+    //        if ($form->hasErrors()) {
+    //            foreach ($tab->getFields() as $field) {
+    //                /** @var Field $field */
+    //                if ($hasErrors = $form->hasErrors($field->handle . '.*')) {
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //
+    //        $tabs[$tab->id] = [
+    //            'label' => Craft::t('sprout-module-forms', $tab->name),
+    //            'url' => '#sproutforms-tab-' . $tab->id,
+    //            'class' => $hasErrors ? 'error' : null,
+    //        ];
+    //    }
+    //
+    //    return $tabs;
+    //}
 }

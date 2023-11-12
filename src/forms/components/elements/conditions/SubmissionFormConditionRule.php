@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements\conditions;
 
+use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
+use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -36,12 +38,13 @@ class SubmissionFormConditionRule extends BaseMultiSelectConditionRule implement
 
     public function modifyQuery(QueryInterface $query): void
     {
-        /** @var ElementQueryInterface $query */
+        /** @var SubmissionElementQuery $query */
         $query->formId($this->paramValue());
     }
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var SubmissionElement $element */
         if (in_array($element->formId, $this->getValues(), false)) {
             return true;
         }

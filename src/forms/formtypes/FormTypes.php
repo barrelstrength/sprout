@@ -11,6 +11,9 @@ class FormTypes extends Component
 {
     public const EVENT_REGISTER_FORM_TYPES = 'registerSproutFormTypes';
 
+    /**
+     * @return FormType[]
+     */
     public function getFormTypeTypes(): array
     {
         $formTypes[] = DefaultFormType::class;

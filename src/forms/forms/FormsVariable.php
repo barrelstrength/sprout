@@ -57,7 +57,7 @@ class FormsVariable
         if ($submissionId = Craft::$app->getSession()->get('lastSubmissionId')) {
             $submission = FormsModule::getInstance()->submissions->getSubmissionById($submissionId);
 
-            if (!$submission instanceof ElementInterface) {
+            if (!$submission instanceof SubmissionElement) {
                 return null;
             }
 

@@ -19,7 +19,7 @@ class SubmissionElementQuery extends ElementQuery
 
     public string $userAgent = '';
 
-    public ?int $formId = null;
+    public int|array|null $formId = null;
 
     public string $formHandle = '';
 
@@ -56,7 +56,7 @@ class SubmissionElementQuery extends ElementQuery
      *
      * @return static self reference
      */
-    public function formId(int $value): SubmissionElementQuery
+    public function formId(int|array|null $value): SubmissionElementQuery
     {
         $this->formId = $value;
 

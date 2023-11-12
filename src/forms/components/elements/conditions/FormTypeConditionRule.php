@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\forms\components\elements\conditions;
 
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -40,6 +41,7 @@ class FormTypeConditionRule extends BaseMultiSelectConditionRule implements Elem
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var FormElement $element */
         return in_array($element->formTypeUid, $this->getValues(), true);
     }
 }

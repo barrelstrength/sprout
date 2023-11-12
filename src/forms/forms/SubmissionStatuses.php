@@ -19,6 +19,7 @@ class SubmissionStatuses extends Component
      */
     public function getAllSubmissionStatuses(): array
     {
+        /** @var SubmissionStatusRecord[] $results */
         $results = SubmissionStatusRecord::find()
             ->orderBy(['sortOrder' => 'asc'])
             ->all();
@@ -34,6 +35,7 @@ class SubmissionStatuses extends Component
 
     public function getSubmissionStatusById($submissionStatusId): SubmissionStatus
     {
+        /** @var SubmissionStatusRecord|null $submissionStatus */
         $submissionStatus = SubmissionStatusRecord::find()
             ->where(['id' => $submissionStatusId])
             ->one();
@@ -49,6 +51,7 @@ class SubmissionStatuses extends Component
 
     public function getSubmissionStatusByHandle($submissionStatusHandle): SubmissionStatus
     {
+        /** @var SubmissionStatusRecord|null $submissionStatus */
         $submissionStatus = SubmissionStatusRecord::find()
             ->where(['handle' => $submissionStatusHandle])
             ->one();

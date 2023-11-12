@@ -6,12 +6,12 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use craft\db\ActiveRecord;
 
 /**
- * @property $id
- * @property $submissionId
- * @property $integrationId
- * @property $message
- * @property $success
- * @property $status
+ * @property int $id
+ * @property int $submissionId
+ * @property int $integrationId
+ * @property string $message
+ * @property bool $success
+ * @property string $status
  */
 class IntegrationLogRecord extends ActiveRecord
 {

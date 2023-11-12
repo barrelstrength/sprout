@@ -7,14 +7,13 @@ use BarrelStrength\Sprout\forms\integrations\Integration as IntegrationApi;
 use craft\db\ActiveRecord;
 
 /**
- * @property $id
- * @property $formId
- * @property $name
- * @property $type
- * @property $sendRule
- * @property $settings
- * @property null|IntegrationApi $integrationApi
- * @property $enabled
+ * @property int $id
+ * @property int $formId
+ * @property string $name
+ * @property string $type
+ * @property string $sendRule
+ * @property array $settings
+ * @property bool $enabled
  */
 class IntegrationRecord extends ActiveRecord
 {

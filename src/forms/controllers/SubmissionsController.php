@@ -227,7 +227,7 @@ class SubmissionsController extends BaseController
     /**
      * Fetch or create a SubmissionElement class
      */
-    private function getSubmissionModel(): SubmissionElement|ElementInterface
+    private function getSubmissionModel(): SubmissionElement
     {
         $submissionId = null;
         $request = Craft::$app->getRequest();

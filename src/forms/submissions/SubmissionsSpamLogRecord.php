@@ -6,9 +6,9 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use craft\db\ActiveRecord;
 
 /**
- * @property $submissionId
- * @property $type
- * @property $errors
+ * @property int $submissionId
+ * @property string $type
+ * @property string $errors
  */
 class SubmissionsSpamLogRecord extends ActiveRecord
 {
