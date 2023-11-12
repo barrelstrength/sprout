@@ -2,12 +2,14 @@
 
 namespace BarrelStrength\Sprout\sitemaps;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\helpers\RegexHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -30,7 +32,7 @@ use yii\base\Module;
  * @property SitemapMetadata $sitemaps
  * @property XmlSitemap $xmlSitemap
  */
-class SitemapsModule extends Module
+class SitemapsModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;

@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\core\controllers\web;
 
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
-use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use Craft;
 use craft\web\Controller;
 use craft\web\twig\variables\Cp as CpVariable;
@@ -25,7 +25,7 @@ class SettingsController extends Controller
         $moduleId = Craft::$app->getRequest()->getBodyParam('moduleId');
         $settings = Craft::$app->getRequest()->getBodyParam('settings');
 
-        /** @var SproutModuleTrait $module */
+        /** @var SproutModuleInterface $module */
         $module = Craft::$app->getModule($moduleId);
 
         if (!$module) {

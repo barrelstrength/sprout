@@ -2,10 +2,12 @@
 
 namespace BarrelStrength\Sprout\forms;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
@@ -68,7 +70,7 @@ use yii\base\Module;
  * @property Addresses $addressField
  * @property AddressFormatter $addressFormatter
  */
-class FormsModule extends Module
+class FormsModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;

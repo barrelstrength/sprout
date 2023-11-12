@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\helpers\ConditionHelper;
 use BarrelStrength\Sprout\core\helpers\PhoneHelper;
@@ -9,6 +10,7 @@ use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
 use BarrelStrength\Sprout\core\modules\Settings as SettingsService;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\twig\SproutExtension;
@@ -38,7 +40,7 @@ use yii\base\Module;
  * @property ModulesService $coreModules
  * @property VitePluginService $vite
  */
-class Sprout extends Module
+class Sprout extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use MigrationTrait;

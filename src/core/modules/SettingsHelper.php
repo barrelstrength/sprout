@@ -28,11 +28,10 @@ class SettingsHelper
      * ideally we can ditch this method and migrate to use a native
      * Craft method if/when they better support third-party modules
      */
-    public static function getSettingsConfig(Module $module, string $settingsClass): BaseConfig
+    public static function getSettingsConfig(SproutModuleInterface $module, string $settingsClass): BaseConfig
     {
         $configClass = $settingsClass;
 
-        /** @var SproutModuleTrait $module */
         $envPrefix = $module::getEnvPrefix();
 
         $projectConfigService = Craft::$app->getProjectConfig();
@@ -97,6 +96,7 @@ class SettingsHelper
         $settingsRecord = null;
         try {
             foreach ($settings as $name => $setting) {
+                /** @var SettingsRecord $settingsRecord */
                 $settingsRecord = SettingsRecord::find()
                     ->select('*')
                     ->where([

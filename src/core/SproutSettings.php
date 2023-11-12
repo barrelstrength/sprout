@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core;
 
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use Craft;
 use craft\config\BaseConfig;
@@ -56,10 +57,10 @@ class SproutSettings extends BaseConfig
             ];
         }
 
-        uksort($cpSettingsRows, static function($a, $b): int {
+        uksort($cpSettingsRows, static function($a, $b) {
             /**
-             * @var $a SproutModuleTrait
-             * @var $b SproutModuleTrait
+             * @var SproutModuleInterface $a
+             * @var SproutModuleInterface $b
              */
             return $a::getDisplayName() <=> $b::getDisplayName();
         });

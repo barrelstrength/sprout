@@ -7,7 +7,9 @@ use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\SproutSettings;
 use Craft;
+use craft\config\BaseConfig;
 use craft\helpers\StringHelper;
+use yii\base\Module;
 
 trait SproutModuleTrait
 {
@@ -71,6 +73,11 @@ trait SproutModuleTrait
     public static function getEnvPrefix(): string
     {
         return strtoupper(StringHelper::toSnakeCase(static::getModuleId())) . '_';
+    }
+
+    public function createSettingsModel(): ?BaseConfig
+    {
+        return null;
     }
 
     /**

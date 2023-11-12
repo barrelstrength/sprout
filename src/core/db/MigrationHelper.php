@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\core\db;
 
 use BarrelStrength\Sprout\core\migrations\Uninstall;
-use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\SproutSettings;
 use Craft;
@@ -93,14 +93,19 @@ class MigrationHelper
 
         $modulesSafeToUninstall = array_diff($plugin::getSchemaDependencies(), $requiredModules);
 
-        /** @var SproutModuleTrait $moduleClass */
+        /** @var SproutModuleInterface $moduleClass */
         foreach ($modulesSafeToUninstall as $moduleClass) {
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
 
-            /** @var MigrationManager $migrator */
-            $migrator = $moduleClass::getInstance()->getMigrator();
+            $module = $moduleClass::getInstance();
+
+            if (!$module instanceof MigrationInterface) {
+                continue;
+            }
+
+            $migrator = $module->getMigrator();
 
             if (($migration = self::createUninstallMigration($migrator)) !== null) {
                 try {

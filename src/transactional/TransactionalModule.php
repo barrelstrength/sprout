@@ -2,8 +2,10 @@
 
 namespace BarrelStrength\Sprout\transactional;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
@@ -34,7 +36,7 @@ use yii\base\Module;
 /**
  * @property NotificationEvents $notificationEvents
  */
-class TransactionalModule extends Module
+class TransactionalModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;

@@ -2,11 +2,13 @@
 
 namespace BarrelStrength\Sprout\datastudio;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -44,7 +46,7 @@ use yii\base\Module;
  * @property DataSources $dataSources
  * @property Visualizations $visualizations
  */
-class DataStudioModule extends Module
+class DataStudioModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;

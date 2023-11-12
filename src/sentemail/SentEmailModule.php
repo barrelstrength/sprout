@@ -2,11 +2,13 @@
 
 namespace BarrelStrength\Sprout\sentemail;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -31,7 +33,7 @@ use yii\mail\BaseMailer;
 /**
  * @property SentEmails $sentEmails
  */
-class SentEmailModule extends Module
+class SentEmailModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;

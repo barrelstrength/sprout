@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core\twig;
 
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
@@ -62,7 +63,7 @@ class SproutVariable extends ServiceLocator
      * Example:
      * sprout.modules.[moduleShortName]
      */
-    public function registerModule(Module $module): void
+    public function registerModule(SproutModuleInterface $module): void
     {
         $this->modules[StringHelper::toCamelCase($module::getShortName())] = $module;
     }

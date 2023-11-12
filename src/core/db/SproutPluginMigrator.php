@@ -2,9 +2,8 @@
 
 namespace BarrelStrength\Sprout\core\db;
 
-use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use Craft;
-use craft\base\Plugin;
 use craft\db\MigrationManager;
 use ReflectionClass;
 
@@ -13,7 +12,7 @@ class SproutPluginMigrator extends MigrationManager
     /**
      * Adds the schemaDependencies property to the MigrationManager class
      *
-     * @var SproutModuleTrait[]|MigrationTrait[]
+     * @var SproutModuleInterface[]
      */
     public array $schemaDependencies = [];
 
@@ -23,7 +22,7 @@ class SproutPluginMigrator extends MigrationManager
      * Note: This migrator will never need to run any migrations for the
      * plugin itself but is necessary to run Sprout module migrations
      */
-    public static function make(Plugin $plugin): SproutPluginMigrator
+    public static function make(SproutPluginMigrationInterface $plugin): SproutPluginMigrator
     {
         $ref = new ReflectionClass($plugin);
         $ns = $ref->getNamespaceName();
@@ -49,14 +48,23 @@ class SproutPluginMigrator extends MigrationManager
         parent::up();
 
         // Loop through Sprout modules
+        /** @var SproutModuleInterface $moduleClass */
         foreach ($this->schemaDependencies as $moduleClass) {
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
 
             ob_start();
-            $migrator = $moduleClass::getInstance()->getMigrator();
+
+            $module = $moduleClass::getInstance();
+
+            if (!$module instanceof MigrationInterface) {
+                continue;
+            }
+
+            $migrator = $module->getMigrator();
             $migrator->up();
+
             ob_end_clean();
         }
     }
