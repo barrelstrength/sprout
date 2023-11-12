@@ -60,6 +60,7 @@ trait ElementEventTrait
         }
 
         $condition = Craft::$app->conditions->createCondition($this->conditionRules);
+        /** @var ElementCondition $condition */
         $condition->elementType = $element::class;
 
         return $condition->matchElement($element);

@@ -15,10 +15,12 @@ use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
+use craft\base\ElementInterface;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\helpers\App;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
+use InvalidArgumentException;
 use yii\base\Event;
 
 class TransactionalEmailVariant extends EmailVariant
@@ -134,8 +136,12 @@ class TransactionalEmailVariant extends EmailVariant
     /**
      * Returns a Notification Event
      */
-    public function getNotificationEvent(EmailElement $email, Event $event = null): NotificationEvent
+    public function getNotificationEvent(ElementInterface $email, Event $event = null): NotificationEvent
     {
+        if (!$email instanceof EmailElement) {
+            throw new InvalidArgumentException('Element must be an instance of ' . EmailElement::class);
+        }
+
         if ($this->_notificationEvent !== null) {
             return $this->_notificationEvent;
         }

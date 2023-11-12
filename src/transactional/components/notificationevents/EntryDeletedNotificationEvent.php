@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
+use craft\elements\conditions\ElementCondition;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\helpers\ElementHelper;
@@ -64,6 +65,7 @@ class EntryDeletedNotificationEvent extends NotificationEvent implements Element
 
         if ($this->conditionRules) {
             $conditionRules = Json::decodeIfJson($this->conditionRules);
+            /** @var ElementCondition $condition */
             $condition = Craft::$app->conditions->createCondition($conditionRules);
             $condition->elementType = Entry::class;
 

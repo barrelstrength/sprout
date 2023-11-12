@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
+use craft\elements\conditions\ElementCondition;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
 use craft\events\UserEvent;
@@ -13,6 +14,9 @@ use craft\helpers\Json;
 use craft\services\Users;
 use yii\base\Event;
 
+/**
+ * @property UserEvent $event
+ */
 class UserActivatedNotificationEvent extends NotificationEvent implements ElementEventInterface
 {
     use ElementEventTrait;
@@ -65,6 +69,7 @@ class UserActivatedNotificationEvent extends NotificationEvent implements Elemen
 
         if ($this->conditionRules) {
             $conditionRules = Json::decodeIfJson($this->conditionRules);
+            /** @var ElementCondition $condition */
             $condition = Craft::$app->conditions->createCondition($conditionRules);
             $condition->elementType = User::class;
 

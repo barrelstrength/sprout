@@ -177,6 +177,7 @@ class NotificationEvents extends Component
     {
         $currentSite = Craft::$app->getSites()->getCurrentSite();
 
+        /** @var TransactionalEmailElement[] $enabledNotificationEmails */
         $enabledNotificationEmails = TransactionalEmailElement::find()
             ->status(Element::STATUS_ENABLED)
             ->siteId($currentSite->id)

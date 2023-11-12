@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
@@ -30,6 +31,8 @@ class FileAttachmentsField extends BaseNativeField
             throw new InvalidArgumentException('File Attachments field can only be used in Email field layouts.');
         }
 
+        // @todo - Assumes specific Email Variant. Delegate responsibility of defining this field to the Email Variant class.
+        /** @var TransactionalEmailVariant $emailVariantSettings */
         $emailVariantSettings = $element->getEmailVariant();
         $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
 
