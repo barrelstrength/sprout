@@ -42,7 +42,7 @@ class PageNotFoundHelper
         $redirect->newUrl = '/';
         $redirect->statusCode = StatusCode::PAGE_NOT_FOUND;
         $redirect->matchStrategy = MatchStrategy::EXACT_MATCH;
-        $redirect->enabled = 0;
+        $redirect->enabled = false;
         $redirect->count = 0;
         $redirect->siteId = $site->id;
         $redirect->lastRemoteIpAddress = $settings->trackRemoteIp ? $request->getRemoteIp() : null;

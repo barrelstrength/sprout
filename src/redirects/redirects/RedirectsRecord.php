@@ -13,7 +13,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $oldUrl
  * @property string $newUrl
  * @property int $statusCode
- * @property bool $matchStrategy
+ * @property string $matchStrategy
  * @property ActiveQueryInterface $element
  * @property int $count
  * @property string $lastRemoteIpAddress
