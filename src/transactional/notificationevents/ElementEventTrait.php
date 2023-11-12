@@ -3,11 +3,8 @@
 namespace BarrelStrength\Sprout\transactional\notificationevents;
 
 use Craft;
-use craft\base\conditions\ConditionInterface;
 use craft\base\ElementInterface;
-use craft\elements\conditions\ElementCondition;
 use craft\helpers\Cp;
-use craft\helpers\Json;
 use yii\base\Event;
 
 /**
@@ -15,21 +12,6 @@ use yii\base\Event;
  */
 trait ElementEventTrait
 {
-    public ConditionInterface|ElementCondition|null $condition = null;
-
-    public function setAttributes($values, $safeOnly = true): void
-    {
-        if (isset($values['conditionRules'])) {
-            $conditionRules = Json::decodeIfJson($values['conditionRules']);
-            $condition = Craft::$app->conditions->createCondition($conditionRules);
-            $condition->elementType = static::getEventClassName();
-
-            $this->condition = $condition;
-
-            unset($values['conditionRules']);
-        }
-    }
-
     public function getExclusiveQueryParams(): array
     {
         return [];

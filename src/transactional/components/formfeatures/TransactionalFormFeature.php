@@ -18,6 +18,7 @@ use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Element;
+use craft\elements\conditions\ElementCondition;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\models\FieldLayoutTab;

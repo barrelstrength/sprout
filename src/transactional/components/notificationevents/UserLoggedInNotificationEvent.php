@@ -2,9 +2,7 @@
 
 namespace BarrelStrength\Sprout\transactional\components\notificationevents;
 
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
+use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User as UserElement;
@@ -15,10 +13,8 @@ use yii\web\UserEvent;
 /**
  * @property UserEvent $event
  */
-class UserLoggedInNotificationEvent extends NotificationEvent implements ElementEventInterface
+class UserLoggedInNotificationEvent extends BaseElementNotificationEvent
 {
-    use ElementEventTrait;
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-transactional', 'When a user logs in');

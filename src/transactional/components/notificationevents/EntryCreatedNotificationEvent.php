@@ -2,24 +2,19 @@
 
 namespace BarrelStrength\Sprout\transactional\components\notificationevents;
 
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
+use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificationEvent;
 use Craft;
 use craft\elements\conditions\entries\EntryCondition;
 use craft\elements\Entry;
 use craft\events\ModelEvent;
 use craft\helpers\ElementHelper;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 
 /**
  * @property ModelEvent $event
  */
-class EntryCreatedNotificationEvent extends NotificationEvent implements ElementEventInterface
+class EntryCreatedNotificationEvent extends BaseElementNotificationEvent
 {
-    use ElementEventTrait;
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-transactional', 'When an entry is created');
