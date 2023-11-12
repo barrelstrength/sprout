@@ -5,24 +5,25 @@ namespace BarrelStrength\Sprout\sentemail\sentemail;
 use BarrelStrength\Sprout\sentemail\db\SproutTable;
 use craft\base\Element;
 use craft\db\ActiveRecord;
+use DateTime;
 use yii\db\ActiveQueryInterface;
 
 /**
- * @property $id int
- * @property $title string
- * @property $subjectLine string
- * @property $fromEmail string
- * @property $fromName string
- * @property $toEmail string
- * @property $textBody string
- * @property $htmlBody string
- * @property $info string
- * @property $originSiteId int
- * @property $originSiteContext string
- * @property $sent bool
- * @property $status string
- * @property $dateCreated DateTime
- * @property $dateUpdated DateTime
+ * @property int $id
+ * @property string $title
+ * @property string $subjectLine
+ * @property string $fromEmail
+ * @property string $fromName
+ * @property string $toEmail
+ * @property string $textBody
+ * @property string $htmlBody
+ * @property array $info
+ * @property int $originSiteId
+ * @property string $originSiteContext
+ * @property bool $sent
+ * @property string $status
+ * @property DateTime|null $dateCreated
+ * @property DateTime|null $dateUpdated
  */
 class SentEmailRecord extends ActiveRecord
 {

@@ -15,6 +15,7 @@ use craft\mail\transportadapters\BaseTransportAdapter;
 use Exception;
 use yii\mail\MailEvent;
 use yii\mail\MessageInterface;
+use yii\symfonymailer\Message;
 
 class SentEmails extends Component
 {
@@ -40,6 +41,7 @@ class SentEmails extends Component
 
     public function logSentEmail(MessageInterface $message, string $status): void
     {
+        /** @var Message $message */
         $fromData = $message->getFrom();
 
         $sentEmail = new SentEmailElement();
