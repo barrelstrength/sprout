@@ -75,6 +75,7 @@ class ContentSitemapMetadataHelper
     {
         $sourceDetails = self::getSourceDetails($site);
 
+        /** @var SitemapMetadataRecord[] $sitemapMetadataRecords */
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['[[siteId]]' => $site->id])
             ->andWhere([
@@ -135,6 +136,7 @@ class ContentSitemapMetadataHelper
 
     public static function getSourceDetails(Site $site): array
     {
+        /** @var ElementSitemapMetadataInterface[] $sitemapMetadataTypes */
         $sitemapMetadataTypes = SitemapsModule::getInstance()->sitemaps->getSitemapMetadataTypes();
 
         $sourceDetails = [];

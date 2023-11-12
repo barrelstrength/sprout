@@ -15,9 +15,9 @@ use craft\helpers\UrlHelper;
  * @property int $siteId
  * @property string $sourceKey
  * @property string $sitemapKey
- * @property int enabled
- * @property string $type
- * @property string $uri
+ * @property bool $enabled
+ * @property string|null $type
+ * @property string|null $uri
  * @property int $priority
  * @property string $changeFrequency
  * @property string $description

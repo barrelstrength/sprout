@@ -8,6 +8,7 @@ use Craft;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\db\ElementQuery;
+use craft\elements\db\EntryQuery;
 use craft\elements\Entry;
 use craft\models\Site;
 
@@ -42,6 +43,7 @@ class EntrySitemapMetadata implements ElementSitemapMetadataInterface
             ->where(['uid' => $sitemapMetadata->sourceKey])
             ->scalar();
 
+        /** @var EntryQuery $query */
         return $query->sectionId($sectionId);
     }
 }
