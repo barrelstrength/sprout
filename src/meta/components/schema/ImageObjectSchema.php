@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\meta\components\schema;
 
+use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
+use BarrelStrength\Sprout\meta\metadata\MetaType;
 use BarrelStrength\Sprout\meta\schema\Schema;
 use craft\base\Element;
 
@@ -43,6 +45,7 @@ class ImageObjectSchema extends Schema
             $openGraphMetaType = $prioritizedMetadataModel->getMetaTypes('openGraph');
 
             if (!empty($openGraphMetaType)) {
+                /** @var OpenGraphMetaType $openGraphMetaType */
                 if ($openGraphMetaType->getOgImage()) {
                     $this->addUrl('url', $openGraphMetaType->getOgImage());
                 }

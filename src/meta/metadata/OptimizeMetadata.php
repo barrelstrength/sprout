@@ -224,9 +224,6 @@ class OptimizeMetadata extends Component
         return $schema;
     }
 
-    /**
-     * @return mixed|null
-     */
     public function getMainEntityStructuredData(Element $element): ?Schema
     {
         $schema = null;

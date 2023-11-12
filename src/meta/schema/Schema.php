@@ -20,9 +20,6 @@ use craft\helpers\Template as TemplateHelper;
 use craft\helpers\UrlHelper;
 use DateTime;
 
-/**
- * Class Schema
- */
 abstract class Schema
 {
     /**
