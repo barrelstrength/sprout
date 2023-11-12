@@ -3,12 +3,13 @@
 namespace BarrelStrength\Sprout\datastudio\components\elements\conditions;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
+use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\components\elements\DataSetElementQuery;
 use BarrelStrength\Sprout\datastudio\DataStudioModule;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
-use craft\elements\db\ElementQueryInterface;
 use yii\db\QueryInterface;
 
 class DataSourcesConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
@@ -32,12 +33,13 @@ class DataSourcesConditionRule extends BaseMultiSelectConditionRule implements E
 
     public function modifyQuery(QueryInterface $query): void
     {
-        /** @var ElementQueryInterface $query */
+        /** @var DataSetElementQuery $query */
         $query->type($this->paramValue());
     }
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var DataSetElement $element */
         return $this->matchValue($element->type);
     }
 }

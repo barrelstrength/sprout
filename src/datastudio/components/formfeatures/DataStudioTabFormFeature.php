@@ -99,6 +99,10 @@ class DataStudioTabFormFeature implements RelationsTableInterface
 
     public static function getDataSourceRelations(Element $element): array
     {
+        if (!$element instanceof FormElement) {
+            return [];
+        }
+
         $dataSourceTypes = DataStudioModule::getInstance()->dataSources->getDataSourceRelationsTypes();
 
         $query = DataSetElement::find()
@@ -114,6 +118,7 @@ class DataStudioTabFormFeature implements RelationsTableInterface
         $query->andWhere(['=', $expression, $element->id]);
 
         $rows = array_map(static function($element) {
+            /** @var DataSetElement $element */
             return [
                 'elementId' => $element->id,
                 'name' => $element->name,

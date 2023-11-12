@@ -6,7 +6,6 @@ use craft\base\SavableComponent;
 use craft\helpers\Html;
 
 /**
- *
  * @property array $timeSeries
  * @property array $settings
  * @property string $decimals
@@ -80,34 +79,34 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
     /**
      * Returns the label column
      */
-    public function getLabelColumn(): string
+    public function getLabelColumn(): ?string
     {
         if ($this->settings && array_key_exists('labelColumn', $this->settings)) {
             return $this->settings['labelColumn'];
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Returns the aggregate setting
      */
-    public function getAggregate(): string
+    public function getAggregate(): ?string
     {
         if ($this->settings && array_key_exists('aggregate', $this->settings)) {
             return $this->settings['aggregate'];
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Returns the decimals setting
      */
-    public function getDecimals(): string
+    public function getDecimals(): int|float
     {
         if ($this->settings && array_key_exists('decimals', $this->settings)) {
-            return $this->settings['decimals'];
+            return (float)$this->settings['decimals'];
         }
 
         return 0;

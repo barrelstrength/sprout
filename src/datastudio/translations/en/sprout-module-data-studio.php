@@ -138,5 +138,8 @@ return [
     'ID' => 'ID',
     'New Data Set' => 'New Data Set',
     'Date Created' => 'Date Created',
-    'Sprout Module | Data Studio' => 'Sprout Module | Data Studio'
+    'Sprout Module | Data Studio' => 'Sprout Module | Data Studio',
+    'What this form will be called in the control panel' => 'What this form will be called in the control panel',
+    'The name you' => 'The name you',
+    'What this form will be called in the control panel.' => 'What this form will be called in the control panel.'
 ];

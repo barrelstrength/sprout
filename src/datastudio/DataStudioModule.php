@@ -19,7 +19,6 @@ use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
 use BarrelStrength\Sprout\datastudio\components\formfeatures\DataStudioTabFormFeature;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
-use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
@@ -288,7 +287,6 @@ class DataStudioModule extends Module implements SproutModuleInterface, Migratio
 
         $permissions = [];
 
-        /** @var DataSource $class */
         foreach ($dataSources as $class) {
             $permissions[self::p('viewReports:' . $class)] = [
                 'label' => Craft::t('sprout-module-data-studio', 'View reports: "{dataSet}"', [

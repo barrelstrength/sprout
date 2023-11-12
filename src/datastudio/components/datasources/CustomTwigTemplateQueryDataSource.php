@@ -178,9 +178,7 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         if (empty($labels) && (is_countable($rows) ? count($rows) : 0)) {
             $headerRow = [];
 
-            /**
-             * @var $firstRowColumns array
-             */
+            /** @var array $firstRowColumns */
             $firstRowColumns = array_shift($rows);
 
             if (is_countable($firstRowColumns) ? count($firstRowColumns) : 0) {
