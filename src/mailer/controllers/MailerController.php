@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
+use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
@@ -122,9 +123,15 @@ class MailerController extends Controller
             throw new ElementNotFoundException('Email not found.');
         }
 
+        $mailer = $email->getMailer();
+
+        if (!$mailer instanceof MailerSendTestInterface) {
+            throw new ElementNotFoundException('Incorrect mailer type.');
+        }
+        \Craft::dd($email->getMailerInstructions());
         return $this->asJson([
             'success' => true,
-            'html' => $email->getMailer()->getSendTestModalHtml($email),
+            'html' => $mailer->getSendTestModalHtml($email),
         ]);
     }
 

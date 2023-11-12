@@ -17,6 +17,7 @@ class EmailTypeHelper
         /** @var FieldLayout $fieldLayout */
         $fieldLayout = $event->sender;
 
+        /** @var EmailTypeInterface[] $emailTypeTypes */
         $emailTypeTypes = MailerModule::getInstance()->emailTypes->getEmailTypeTypes();
 
         foreach ($emailTypeTypes as $emailTypeType) {

@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
+use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsSettings;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\base\Element;
@@ -36,7 +37,6 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use http\Exception\InvalidArgumentException;
-use yii\base\Model;
 use yii\web\Response;
 
 /**
@@ -142,7 +142,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         return true;
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): EmailElementQuery
     {
         return new EmailElementQuery(static::class);
     }
@@ -696,10 +696,10 @@ class EmailElement extends Element implements EmailPreviewInterface
     {
         $mailer = $this->getMailer();
 
-        /** @var Model $mailerInstructionsSettings */
+        /** @var MailerInstructionsSettings $mailerInstructionsSettings */
         $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
         $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
-        $mailerInstructionsSettings->mailer = $mailer;
+        $mailerInstructionsSettings->setMailer($mailer);
 
         if (!$mailerInstructionsSettings->validate()) {
             // Adding the error to the Element makes sure the Mailer tab is highlighted with errors

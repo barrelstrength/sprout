@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+
 /**
  * Tests can be sent via 'sprout-module-mailer/mailer/send-test'
  */
@@ -17,8 +19,6 @@ interface MailerSendTestInterface
      * get assigned to the `mailerInstructionsSettings` model:
      *
      * {% namespace 'mailerInstructionsSettings' %}
-     *
-     * @return string
      */
-    public function getSendTestModalHtml(): string;
+    public function getSendTestModalHtml(EmailElement $email = null): string;
 }

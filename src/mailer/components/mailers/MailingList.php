@@ -45,7 +45,7 @@ class MailingList extends Model
     /**
      * Adds a MailingListRecipient model to the recipients or invalidRecipients array
      *
-     * @var MailingListRecipient[] $recipients
+     * @param MailingListRecipient[] $recipients
      */
     public function addRecipients(array $recipients = []): void
     {

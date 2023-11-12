@@ -139,6 +139,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public function send(EmailElement $email, MailerInstructionsInterface $mailerInstructionsSettings): void
     {
         // Get any variables defined by Email Variant to make available to building mailing list recipients
+
+        /** @var SystemMailerInstructionsInterface $mailerInstructionsSettings */
         $templateVariables = $mailerInstructionsSettings->getAdditionalTemplateVariables($email);
         $mailingList = $mailerInstructionsSettings->getMailingList($email, $templateVariables);
 
@@ -309,9 +311,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
     protected function getLocalAssetFilePath(Asset $asset): string
     {
-        /**
-         * @var $volume Local
-         */
+        /** @var Local $volume */
         $volume = $asset->getVolume();
 
         $path = $volume->getRootPath() . DIRECTORY_SEPARATOR . $asset->getPath();

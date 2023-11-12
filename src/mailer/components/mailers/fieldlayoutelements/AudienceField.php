@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsInterface;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
@@ -33,6 +34,7 @@ class AudienceField extends BaseNativeField
             throw new MissingComponentException('Email Element must exist before rendering edit page.');
         }
 
+        /** @var SystemMailerInstructionsInterface $mailerInstructionsSettings */
         $mailerInstructionsSettings = $element->getMailerInstructions();
 
         $audiences = $mailerInstructionsSettings->getAudiences();

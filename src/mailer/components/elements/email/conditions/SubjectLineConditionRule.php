@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email\conditions;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElementQuery;
 use Craft;
 use craft\base\ElementInterface;
 use craft\elements\conditions\TitleConditionRule;
@@ -21,11 +23,13 @@ class SubjectLineConditionRule extends TitleConditionRule
 
     public function modifyQuery(ElementQueryInterface $query): void
     {
+        /** @var EmailElementQuery $query */
         $query->subjectLine($this->paramValue());
     }
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var EmailElement $element */
         return $this->matchValue($element->subjectLine);
     }
 }

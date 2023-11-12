@@ -41,18 +41,6 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
-    protected ?SystemMailer $mailer = null;
-
-    public function setMailer(?SystemMailer $mailer): void
-    {
-        $this->mailer = $mailer;
-    }
-
-    public function getMailer(): ?SystemMailer
-    {
-        return $this->mailer;
-    }
-
     public function getSenderAsString(): ?string
     {
         if (!$this->fromName || !$this->fromEmail) {
@@ -91,7 +79,7 @@ trait SystemMailerInstructionsTrait
         return App::parseEnv($this->fromEmail);
     }
 
-    public function getReplyToEmail(): string|array
+    public function getReplyToEmail(): mixed
     {
         if (!$this->replyToEmail) {
             return App::parseEnv($this->fromEmail);
@@ -239,6 +227,7 @@ trait SystemMailerInstructionsTrait
 
     public function validateApprovedSender(): void
     {
+        /** @var SystemMailer $mailer */
         $mailer = $this->getMailer();
 
         if (!$mailer) {
@@ -255,6 +244,7 @@ trait SystemMailerInstructionsTrait
 
     public function validateApprovedReplyTo(): void
     {
+        /** @var SystemMailer $mailer */
         $mailer = $this->getMailer();
 
         if (!$mailer) {

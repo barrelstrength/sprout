@@ -5,7 +5,7 @@ namespace BarrelStrength\Sprout\mailer\components\elements\email;
 use BarrelStrength\Sprout\mailer\db\SproutTable;
 use craft\base\Element;
 use craft\db\ActiveRecord;
-use craft\gql\types\DateTime;
+use DateTime;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -14,11 +14,11 @@ use yii\db\ActiveQueryInterface;
  * @property string $preheaderText
  * @property string $defaultMessage
  * @property string $emailTypeUid
- * @property string $mailerInstructionsSettings
+ * @property array $mailerInstructionsSettings
  * @property string $emailVariantType
- * @property string $emailVariantSettings
- * @property DateTime $dateCreated
- * @property DateTime $dateUpdated
+ * @property array $emailVariantSettings
+ * @property DateTime|null $dateCreated
+ * @property DateTime|null $dateUpdated
  * @property string $uid
  *
  * @property ActiveQueryInterface $element

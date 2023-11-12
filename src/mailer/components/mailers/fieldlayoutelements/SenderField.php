@@ -3,6 +3,8 @@
 namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsSettings;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
@@ -25,9 +27,13 @@ class SenderField extends BaseNativeField
 
         $senderOptions = [];
 
+        /** @var SystemMailer $mailer */
         $mailer = $element->getMailer();
+
+        /** @var SystemMailerInstructionsSettings $mailerInstructionsSettings */
         $mailerInstructionsSettings = $element->getMailerInstructions();
 
+        /** @todo several attributes assume specific mailer. Delegate defining new SenderField() to mailer? */
         foreach ((array)$mailer->approvedSenders as $approvedSender) {
             if (!$approvedSender['fromEmail']) {
                 continue;

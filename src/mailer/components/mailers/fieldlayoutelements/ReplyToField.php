@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsSettings;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
@@ -32,12 +33,15 @@ class ReplyToField extends BaseNativeField
             'value' => '',
         ];
 
+        /** @var SystemMailer $mailer */
         $mailer = $element->getMailer();
 
+        /** @var SystemMailerInstructionsSettings $mailerInstructionsSettings */
         $mailerInstructionsSettings = $element->getMailerInstructions();
 
         $mailSettings = App::mailSettings();
 
+        /** @todo several attributes assume specific mailer. Delegate defining new ReplyToField() to mailer? */
         if ($mailer->senderEditBehavior === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
             $this->tip = Craft::t('sprout-module-mailer', 'Reply-To is set in the Craft Email Settings.');
 

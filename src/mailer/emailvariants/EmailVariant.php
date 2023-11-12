@@ -109,4 +109,9 @@ abstract class EmailVariant extends SavableComponent
     {
         return false;
     }
+
+    public function prepareEmailVariantSettingsForDb(array $settings): array
+    {
+        return $settings;
+    }
 }
