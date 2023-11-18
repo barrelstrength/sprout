@@ -45,11 +45,6 @@ class SchemaMetadata extends Component
      */
     protected array $schemas = [];
 
-    /**
-     * @var array|null
-     */
-    public static ?array $schemaImageCache = null;
-
     public function getSchemasTypes(): array
     {
         $schemas = [

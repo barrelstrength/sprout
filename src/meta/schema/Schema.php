@@ -45,8 +45,10 @@ abstract class Schema
 
     /**
      * The Matched Element or Primary Element of the schema
-     *
-     * @todo - review data type, 'array' is needed for images
+     * Each schema implementation can decide what this means.
+     * It is often an Element but can also be an array in the
+     * case of images because they are saved as an array for
+     * global metadata and
      */
     public Element|array|null $element = null;
 
@@ -307,6 +309,8 @@ abstract class Schema
     /**
      * Add an image to our Structured Data array as a ImageObjectSchema.
      * If the property is not a valid URL or Asset ID, don't add it.
+     *
+     * @todo - optimize so any given image is only processed once per page load
      */
     public function addImage($propertyName, $imageId = null): void
     {

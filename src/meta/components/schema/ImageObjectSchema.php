@@ -3,9 +3,7 @@
 namespace BarrelStrength\Sprout\meta\components\schema;
 
 use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
-use BarrelStrength\Sprout\meta\metadata\MetaType;
 use BarrelStrength\Sprout\meta\schema\Schema;
-use craft\base\Element;
 
 class ImageObjectSchema extends Schema
 {
@@ -28,7 +26,7 @@ class ImageObjectSchema extends Schema
     {
         $image = $this->element;
 
-        if (!$image instanceof Element) {
+        if (!$image || !is_array($image)) {
             return;
         }
 
