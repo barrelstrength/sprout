@@ -7,7 +7,7 @@ use Craft;
 
 class WebsiteIdentityOrganizationSchema extends Schema
 {
-    public string $type = 'Organization';
+    public ?string $type = 'Organization';
 
     public function getName(): string
     {
