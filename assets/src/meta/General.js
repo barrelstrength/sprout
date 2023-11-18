@@ -72,7 +72,7 @@ class SproutMetaMetadataField {
             let fieldHandle = this.metaBadgeInfo[key]['handle'];
             let badgeClass = this.metaBadgeInfo[key]['badgeClass'];
 
-            let metaButton = $('div.' + badgeClass).html();
+            let metaButton = document.querySelector('div.' + badgeClass).innerHTML;
 
             let metaLabelId = '#fields-' + fieldHandle + '-label';
             let metaInputId = '#fields-' + fieldHandle + '-field input';
@@ -108,6 +108,7 @@ class SproutMetaMetadataField {
     }
 
     appendMetaBadge(targetLabelId, metaButton) {
+        console.log('appendMetaBadge', targetLabelId, metaButton);
         if ($(targetLabelId).find('.sprout-info').length === 0) {
             $(targetLabelId).append(metaButton).removeClass('hidden');
         }
