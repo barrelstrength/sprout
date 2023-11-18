@@ -16,7 +16,6 @@ use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
 use craft\base\Element;
 use craft\elements\Address;
-use craft\helpers\Template as TemplateHelper;
 use craft\helpers\UrlHelper;
 use DateTime;
 use yii\helpers\Json;
