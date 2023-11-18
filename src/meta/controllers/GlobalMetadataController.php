@@ -90,8 +90,7 @@ class GlobalMetadataController extends Controller
 
         // Adjust Founding Date post data
         if (isset($postData['identity']['foundingDate'])) {
-            $identity['foundingDate'] = DateTimeHelper::toDateTime($postData['identity']['foundingDate']);
-            $postData['identity'] = $identity;
+            $postData['identity']['foundingDate'] = DateTimeHelper::toDateTime($postData['identity']['foundingDate']);
         }
 
         // Adjust Schema Organization post data
