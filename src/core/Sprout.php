@@ -107,10 +107,11 @@ class Sprout extends Module implements SproutModuleInterface, MigrationInterface
             'vite' => [
                 'class' => VitePluginService::class,
                 'assetClass' => ViteAssetBundle::class,
+                'errorEntry' => 'core/ErrorPage.js',
                 'useDevServer' => App::env('SPROUT_VITE_USE_DEV_SERVER'),
+                'devServerInternal' => App::env('SPROUT_VITE_DEV_SERVER_INTERNAL'),
                 'devServerPublic' => App::env('SPROUT_VITE_DEV_SERVER_PUBLIC'),
                 'serverPublic' => App::env('SPROUT_VITE_SERVER_PUBLIC'),
-                'errorEntry' => 'core/ErrorPage.js',
             ],
         ]);
 
@@ -230,5 +231,23 @@ class Sprout extends Module implements SproutModuleInterface, MigrationInterface
             'sprout/settings/preview/<configFile:(.*)>' =>
                 'sprout-module-core/settings/preview-config-settings-file',
         ];
+    }
+
+    public static function beginProfile($token): void
+    {
+        if (!App::devMode()) {
+            return;
+        }
+
+        Craft::beginProfile($token, __METHOD__);
+    }
+
+    public static function endProfile($token): void
+    {
+        if (!App::devMode()) {
+            return;
+        }
+
+        Craft::endProfile($token, __METHOD__);
     }
 }
