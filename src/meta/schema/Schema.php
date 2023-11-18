@@ -19,6 +19,7 @@ use craft\elements\Address;
 use craft\helpers\Template as TemplateHelper;
 use craft\helpers\UrlHelper;
 use DateTime;
+use yii\helpers\Json;
 
 abstract class Schema
 {
@@ -142,15 +143,8 @@ abstract class Schema
         }
 
         if ($this->addContext) {
-            // Return the JSON-LD script tag and full context
-            $output = json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-
-            $output = '
-<script type="application/ld+json">
-' . $output . '
-</script>';
-
-            return TemplateHelper::raw($output);
+            // Return the JSON-LD object, the script tag will be added when output
+            return Json::encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         }
 
         // If context has already been established, just return the data
