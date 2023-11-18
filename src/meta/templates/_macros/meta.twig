@@ -37,3 +37,9 @@
         </div>
     </span>
 {% endmacro %}
+
+{% macro hiddenInfoIcon(params, targetId) %}
+    <span class="hidden" data-additional-info="{{ targetId }}">
+        {{ _self.infoIcon(params) }}
+    </span>
+{% endmacro %}

@@ -185,5 +185,5 @@ return [
     'Select the field to use for your basic, Open Graph, and Twitter Card meta tag descriptions.' => 'Select the field to use for your basic, Open Graph, and Twitter Card meta tag descriptions.',
     'Select the Assets field to use for your basic, Open Graph, and Twitter Card meta tag feature image.' => 'Select the Assets field to use for your basic, Open Graph, and Twitter Card meta tag feature image.',
     'Meta Title' => 'Meta Title',
-    'SEO' => 'SEO'
+    'SEO' => 'SEO',
 ];

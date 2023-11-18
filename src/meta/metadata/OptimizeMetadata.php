@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\meta\metadata;
 
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
 use BarrelStrength\Sprout\meta\components\schema\WebsiteIdentityOrganizationSchema;
 use BarrelStrength\Sprout\meta\components\schema\WebsiteIdentityPersonSchema;
@@ -13,35 +14,37 @@ use BarrelStrength\Sprout\meta\schema\Schema;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
-use craft\models\Site;
 use yii\base\Component;
+use yii\web\View;
 
 class OptimizeMetadata extends Component
 {
-    public Globals $globals;
+    public ?Globals $globals = null;
 
     /**
      * The Element that contains the Element Metadata field for the metadata
      *
      * @var ElementInterface|Element|null
      */
-    public ElementInterface|Element|null $element;
+    public ElementInterface|Element|null $element = null;
 
     /**
      * The first Element Metadata field Metadata from the context
      */
-    public ElementMetadataField $elementMetadataField;
+    public ?ElementMetadataField $elementMetadataField = null;
 
     /**
      * Represents the raw and final versions of the metadata being processed
      */
-    public Metadata $prioritizedMetadataModel;
+    public ?Metadata $prioritizedMetadataModel = null;
 
     /**
      * Any values provided via {% do sprout.modules.meta.meta({}) %} that will take
      * priority over metadata defined in globals or field settings
      */
     public array $templateMetadata = [];
+
+    private ?array $_metadata = null;
 
     /**
      * Add values to the master $this->templateMetadata array
@@ -53,12 +56,6 @@ class OptimizeMetadata extends Component
         foreach ($meta as $key => $value) {
             $this->templateMetadata[$key] = $value;
         }
-    }
-
-    public function getMatchedSite(): Site
-    {
-        return Craft::$app->getSites()->currentSite
-            ?? Craft::$app->getSites()->primarySite;
     }
 
     /**
@@ -75,23 +72,70 @@ class OptimizeMetadata extends Component
         }
     }
 
-    /**
-     * Get all metadata (Meta Tags and Structured Data) for the page
-     */
-    public function getMetadataViaContext(&$context): array|string
+    public function registerMetadata($site): void
     {
-        $site = $this->getMatchedSite();
-        $this->setMatchedElement($site->id);
+        $metadata = $this->getMetadata($site);
 
-        return $this->getMetadata($site, true, $context);
+        // Renders <title> and <meta> tags at end of <head>
+        foreach ($metadata['meta'] as $metaTagTypes) {
+            foreach ($metaTagTypes as $name => $content) {
+                if ($name === 'title') {
+                    Craft::$app->getView()->title = $content;
+                    continue;
+                }
+                Craft::$app->getView()->registerMetaTag([
+                    'name' => $name,
+                    'content' => $content,
+                ]);
+            }
+        }
+
+        // Renders JSON-LD Schema as <script> tag at end of <body>
+        foreach ($metadata['schema'] as $schema) {
+            Craft::$app->getView()->registerScript($schema->getSchema(), View::POS_END, [
+                'type' => 'application/ld+json',
+            ]);
+        }
     }
 
-    public function getMetadata($site = null, bool $render = true, &$context = null): array|string
+    public function renderMetadataHtml($site): ?string
     {
+        $metadata = $this->getMetadata($site);
+
+        $settings = MetaModule::getInstance()->getSettings();
+
+        if (!$settings->enableRenderMetadata) {
+            return null;
+        }
+
+        return $this->renderMetadata($metadata);
+    }
+
+    public function renderSchemaHtml($site): ?string
+    {
+        $metadata = $this->getMetadata($site);
+
+        $settings = MetaModule::getInstance()->getSettings();
+
+        if (!$settings->enableRenderMetadata) {
+            return null;
+        }
+
+        return $this->renderSchema($metadata);
+    }
+
+    public function getMetadata($site = null): array|string
+    {
+        Sprout::beginProfile('OptimizeMetadata::getMetadata');
+
+        if ($this->_metadata !== null) {
+            return $this->_metadata;
+        }
+
+        $this->setMatchedElement($site->id);
+
         $this->globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata($site);
         $this->prioritizedMetadataModel = $this->getPrioritizedMetadataModel();
-
-        $output = null;
 
         $metadata = [
             'globals' => $this->globals,
@@ -99,23 +143,9 @@ class OptimizeMetadata extends Component
             'schema' => $this->getStructuredData($this->element),
         ];
 
-        if (!$render) {
-            return $metadata;
-        }
+        Sprout::endProfile('OptimizeMetadata::getMetadata');
 
-        $settings = MetaModule::getInstance()->getSettings();
-
-        // Output metadata
-        if ($settings->enableRenderMetadata) {
-            $output = $this->renderMetadata($metadata);
-        }
-
-        // Add metadata variable to Twig context
-        if ($settings->useMetadataVariable && $context) {
-            $context[$settings->metadataVariableName] = $metadata;
-        }
-
-        return $output;
+        return $metadata;
     }
 
     public function getPrioritizedMetadataModel(): Metadata
@@ -259,6 +289,23 @@ class OptimizeMetadata extends Component
         $frontEndMetadataTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/metadata.twig');
 
         $output = Craft::$app->view->renderTemplate($frontEndMetadataTemplate, [
+            'metadata' => $metadata,
+        ]);
+
+        Craft::$app->view->setTemplatesPath(Craft::$app->path->getSiteTemplatesPath());
+
+        return $output;
+    }
+
+    public function renderSchema($metadata): string
+    {
+        $metaTemplatesPath = Craft::getAlias('@BarrelStrength/Sprout/templates');
+
+        Craft::$app->view->setTemplatesPath($metaTemplatesPath);
+
+        $frontEndSchemaTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/schema.twig');
+
+        $output = Craft::$app->view->renderTemplate($frontEndSchemaTemplate, [
             'metadata' => $metadata,
         ]);
 

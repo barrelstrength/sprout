@@ -18,11 +18,17 @@ use DateTimeZone;
 
 class GlobalMetadata extends Component
 {
+    public ?Globals $_globalMetadata = null;
+
     /**
      * Get Global Metadata values
      */
     public function getGlobalMetadata(Site $site = null): Globals
     {
+        if ($this->_globalMetadata !== null) {
+            return $this->_globalMetadata;
+        }
+
         $siteId = $site->id ?? null;
 
         $query = (new Query())
@@ -45,7 +51,9 @@ class GlobalMetadata extends Component
         $results['robots'] = isset($results['robots']) ? Json::decode($results['robots']) : null;
         $results['settings'] = isset($results['settings']) ? Json::decode($results['settings']) : null;
 
-        return new Globals($results);
+        $this->_globalMetadata = new Globals($results);
+
+        return $this->_globalMetadata;
     }
 
     public function saveGlobalMetadata(string $globalColumn, Globals $globals): bool

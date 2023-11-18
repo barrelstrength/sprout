@@ -14,13 +14,21 @@ use yii\base\Component;
 
 class ElementMetadata extends Component
 {
+    public ?array $_rawMetadata = null;
+
     /**
      * Returns the metadata for an Element's Element Metadata as a Metadata model
      */
     public function getRawMetadataFromElement(Element $element = null): array
     {
+        if ($this->_rawMetadata !== null) {
+            return $this->_rawMetadata;
+        }
+
         if ($element === null) {
-            return [];
+            $this->_rawMetadata = [];
+
+            return $this->_rawMetadata;
         }
 
         $fieldHandle = $this->getElementMetadataFieldHandle($element);
@@ -30,11 +38,11 @@ class ElementMetadata extends Component
             $metadata = $element->{$fieldHandle};
 
             if ($metadata) {
-                return $metadata->getRawData();
+                $this->_rawMetadata = $metadata->getRawData();
             }
         }
 
-        return [];
+        return $this->_rawMetadata ?? [];
     }
 
     /**

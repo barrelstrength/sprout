@@ -34,31 +34,4 @@
         warning: sproutConfigWarning(module, 'enableRenderMetadata')
     }) }}
 
-    {{ forms.lightswitchField({
-        label: "Enable custom metadata variable"|t('sprout-module-meta') ~ isProBadge,
-        instructions: "Make a global `metadata` variable available to all of your templates. The `metadata` variable will contain page-specific Prioritized Metadata and Structured Data, and all of your Globals. Ensure the {% sproutseo 'optimize' %} tag is in your template to generate the `metadata` variable. If you plan to handle the `metadata` variable on your own, you may also want to disable the 'Automatically render metadata' setting above, to ensure you don't output your metadata twice."|t('sprout-module-meta'),
-        name: 'useMetadataVariable',
-        toggle: 'settings-enablemetadatavariable',
-        on: not isPro ? false : settings.useMetadataVariable,
-        onLabel: "Enable"|t('sprout-module-meta'),
-        offLabel: "Disable"|t('sprout-module-meta'),
-        disabled: not isPro,
-        warning: sproutConfigWarning(module, 'useMetadataVariable')
-    }) }}
-
-    <div id="settings-enablemetadatavariable"
-        class="{% if not settings.useMetadataVariable %} hidden {% endif %}">
-
-        {{ forms.textField({
-            label: "Custom metadata variable name"|t('sprout-module-meta'),
-            instructions: "Give your global `metadata` variable a name. You will use this variable name to access your metadata in your templates."|t('sprout-module-meta'),
-            name: 'metadataVariableName',
-            placeholder: 'metadata',
-            value: settings.metadataVariableName,
-            errors: '',
-            warning: sproutConfigWarning(module, 'metadataVariableName')
-        }) }}
-
-    </div>
-
 {% endblock %}

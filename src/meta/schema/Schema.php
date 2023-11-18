@@ -41,12 +41,14 @@ abstract class Schema
     /**
      * The Global Metadata values available to use when building the Structured Data
      */
-    public Globals $globals;
+    public ?Globals $globals = null;
 
     /**
      * The Matched Element or Primary Element of the schema
+     *
+     * @todo - review data type, 'array' is needed for images
      */
-    public ?Element $element = null;
+    public Element|array|null $element = null;
 
     /**
      * The result after we optimize data from Globals and Element Metadata
@@ -56,7 +58,7 @@ abstract class Schema
     /**
      * Defines the Schema's `type` property
      */
-    public string $type;
+    public ?string $type = null;
 
     public function __toString()
     {

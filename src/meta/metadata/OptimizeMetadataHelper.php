@@ -12,6 +12,21 @@ use yii\base\Exception;
 
 class OptimizeMetadataHelper
 {
+    public static function handleRenderMetadata(): void
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
+        if (!Craft::$app->getRequest()->getIsSiteRequest()) {
+            return;
+        }
+
+        $site = Craft::$app->getSites()->getCurrentSite();
+
+        MetaModule::getInstance()->optimizeMetadata->registerMetadata($site);
+    }
+
     public static function getCanonical($value = null): ?string
     {
         if ($value) {
@@ -26,7 +41,7 @@ class OptimizeMetadataHelper
         $url = null;
 
         // If not, then process what we have to try to extract the URL
-        if (0 !== mb_strpos($id, 'http')) {
+        if (mb_strpos($id, 'http') !== 0) {
             if (!is_numeric($id)) {
                 throw new Exception('Meta Image override value "' . $id . '" must be an absolute url.');
             }

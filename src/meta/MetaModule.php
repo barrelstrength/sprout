@@ -18,6 +18,7 @@ use BarrelStrength\Sprout\meta\globals\GlobalMetadata;
 use BarrelStrength\Sprout\meta\metadata\ElementMetadata;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\metadata\OptimizeMetadata;
+use BarrelStrength\Sprout\meta\metadata\OptimizeMetadataHelper;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
@@ -36,6 +37,7 @@ use craft\web\UrlManager;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\Module;
+use yii\base\View as BaseView;
 
 /**
  * @property OptimizeMetadata $optimizeMetadata
@@ -167,6 +169,11 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
             static function(SiteEvent $event): void {
                 MetaModule::getInstance()->globalMetadata->handleDefaultSiteMetadata($event);
             });
+
+        Event::on(
+            View::class,
+            BaseView::EVENT_END_PAGE,
+            [OptimizeMetadataHelper::class, 'handleRenderMetadata']);
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $checkAuth = static function(AuthorizationCheckEvent $event) {
