@@ -50,7 +50,8 @@ class WebsiteIdentityOrganizationSchema extends Schema
         }
 
         // Add Corporate Contacts
-        $contacts = $this->globals['contacts'];
+        $contacts = $this->globals['contacts'] ?? null;
+
         $this->addContactPoints($contacts);
 
         if (isset($schema['organizationSubTypes'][0]) && $schema['organizationSubTypes'][0] == 'LocalBusiness') {

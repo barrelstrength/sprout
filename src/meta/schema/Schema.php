@@ -369,23 +369,25 @@ abstract class Schema
      *
      * @param mixed[] $contacts
      */
-    public function addContactPoints(array $contacts): void
+    public function addContactPoints(array $contacts = null): void
     {
-        if ($contacts) {
-            $contactPoints = [];
-
-            $contactPointSchema = new ContactPointSchema();
-
-            foreach ($contacts as $contact) {
-                $schema = $contactPointSchema;
-
-                $schema->contact = $contact;
-
-                $contactPoints[] = $schema->getSchema();
-            }
-
-            $this->structuredData['contactPoint'] = $contactPoints;
+        if (!$contacts) {
+            return;
         }
+
+        $contactPoints = [];
+
+        $contactPointSchema = new ContactPointSchema();
+
+        foreach ($contacts as $contact) {
+            $schema = $contactPointSchema;
+
+            $schema->contact = $contact;
+
+            $contactPoints[] = $schema->getSchema();
+        }
+
+        $this->structuredData['contactPoint'] = $contactPoints;
     }
 
     /**
