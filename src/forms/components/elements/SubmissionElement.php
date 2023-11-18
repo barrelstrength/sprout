@@ -19,7 +19,6 @@ use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Delete;
 use craft\elements\conditions\ElementConditionInterface;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;

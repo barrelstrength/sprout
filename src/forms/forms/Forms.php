@@ -7,10 +7,8 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use Craft;
-use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
-use craft\models\FieldLayoutTab;
 use yii\base\Component;
 
 class Forms extends Component

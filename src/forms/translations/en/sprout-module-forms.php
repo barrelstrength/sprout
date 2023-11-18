@@ -592,5 +592,5 @@ return [
     'Create Form' => 'Create Form',
     'Add fields' => 'Add fields',
     'Give your form a name' => 'Give your form a name',
-    'Build form' => 'Build form'
+    'Build form' => 'Build form',
 ];

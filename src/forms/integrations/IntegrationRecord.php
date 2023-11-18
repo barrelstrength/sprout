@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\forms\integrations;
 
 use BarrelStrength\Sprout\forms\db\SproutTable;
-use BarrelStrength\Sprout\forms\integrations\Integration as IntegrationApi;
 use craft\db\ActiveRecord;
 
 /**

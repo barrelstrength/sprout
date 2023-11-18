@@ -32,7 +32,6 @@ use craft\db\Table;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\conditions\ElementConditionInterface;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
 use craft\fieldlayoutelements\TextField;

@@ -7,9 +7,6 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificationEvent;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
 use yii\base\Event;
 
