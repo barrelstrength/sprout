@@ -475,8 +475,6 @@
 {% endblock %}
 
 {% js on ready %}
-    Craft.SproutFields.initFields($("#content"));
-
     new SproutMetaWebsiteIdentity({
     items: {{ organizationItems|json_encode|raw }},
     websiteIdentity: {{ websiteIdentity|json_encode|raw }},
