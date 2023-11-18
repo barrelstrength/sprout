@@ -174,7 +174,7 @@ abstract class Schema
      *
      * @return mixed|null
      */
-    public function getMockData()
+    public function getMockData(): ?array
     {
         return null;
     }
@@ -201,7 +201,7 @@ abstract class Schema
      */
     public function addText(string $propertyName, string $string): void
     {
-        if (is_string($string) && $string !== '') {
+        if ($string !== '') {
             $this->structuredData[$propertyName] = $string;
         }
     }
@@ -212,9 +212,7 @@ abstract class Schema
      */
     public function addBoolean(string $propertyName, bool $bool): void
     {
-        if (is_bool($bool)) {
-            $this->structuredData[$propertyName] = $bool;
-        }
+        $this->structuredData[$propertyName] = $bool;
     }
 
     /**
@@ -223,9 +221,7 @@ abstract class Schema
      */
     public function addNumber(string $propertyName, float|int $number): void
     {
-        if (is_int($number) || is_float($number)) {
-            $this->structuredData[$propertyName] = $number;
-        }
+        $this->structuredData[$propertyName] = $number;
     }
 
     /**
