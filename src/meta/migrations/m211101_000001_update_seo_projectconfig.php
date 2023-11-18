@@ -10,7 +10,6 @@ class m211101_000001_update_seo_projectconfig extends Migration
     public const SPROUT_KEY = 'sprout';
     public const MODULE_ID = 'sprout-module-meta';
     public const OLD_CONFIG_KEY = 'plugins.sprout-seo.settings';
-    public const SETTING_METADATA_VARIABLE = 'metadata';
 
     public function safeUp(): void
     {
@@ -19,8 +18,6 @@ class m211101_000001_update_seo_projectconfig extends Migration
         $defaultSettings = [
             'enableRenderMetadata' => true,
             'maxMetaDescriptionLength' => 160,
-            'metadataVariableName' => self::SETTING_METADATA_VARIABLE,
-            'useMetadataVariable' => false,
         ];
 
         $oldConfig = Craft::$app->getProjectConfig()->get(self::OLD_CONFIG_KEY) ?? [];
@@ -43,12 +40,12 @@ class m211101_000001_update_seo_projectconfig extends Migration
             $newConfig['enableRenderMetadata'] = false;
         }
 
-        if ($newConfig['useMetadataVariable'] === '1') {
-            $newConfig['useMetadataVariable'] = true;
+        if (isset($newConfig['metadataVariableName'])) {
+            unset($newConfig['metadataVariableName']);
         }
 
-        if ($newConfig['useMetadataVariable'] === '') {
-            $newConfig['useMetadataVariable'] = false;
+        if (isset($newConfig['useMetadataVariable'])) {
+            unset($newConfig['useMetadataVariable']);
         }
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newConfig,
