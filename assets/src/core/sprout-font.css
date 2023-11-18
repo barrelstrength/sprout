@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'sprout';
+  src:
+    /* Requires resolve.alias in vite.config.js {find: '@', replacement: path.resolve(__dirname, './assets/public')},
+    https://nystudio107.com/blog/using-vite-js-next-generation-frontend-tooling-with-craft-cms#vite-processed-assets */
+    url('@/fonts/sprout.ttf?rallvz') format('truetype'),
+    url('@/fonts/sprout.woff?rallvz') format('woff'),
+    url('@/fonts/sprout.svg?rallvz#sprout') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.sprout-icon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'sprout' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.info.sprout-icon-meta:before {
+  /* !important because Craft outputs font-family on :before selector */
+  font-family: 'sprout' !important;
+  content: "\6d" !important;
+}

@@ -1,4 +1,8 @@
 {
+  "../public/fonts/sprout.svg": {
+    "file": "assets/sprout-8239cd1a.svg",
+    "src": "../public/fonts/sprout.svg"
+  },
   "_module.esm-e3630760.js": {
     "file": "assets/module.esm-e3630760.js"
   },
@@ -24,14 +28,17 @@
     "src": "core/SproutAlpine.js"
   },
   "core/SproutCp.css": {
-    "file": "assets/SproutCp-6b73f5bc.css",
+    "file": "assets/SproutCp-a4c6acf5.css",
     "src": "core/SproutCp.css"
   },
   "core/SproutCp.js": {
-    "css": [
-      "assets/SproutCp-6b73f5bc.css"
+    "assets": [
+      "assets/sprout-8239cd1a.svg"
     ],
-    "file": "assets/cp-e547b1e4.js",
+    "css": [
+      "assets/SproutCp-a4c6acf5.css"
+    ],
+    "file": "assets/cp-22a7b3b7.js",
     "isEntry": true,
     "src": "core/SproutCp.js"
   },
@@ -60,7 +67,7 @@
     "css": [
       "assets/AddressField-a479678c.css"
     ],
-    "file": "assets/addressField-33571193.js",
+    "file": "assets/addressField-c5a66b02.js",
     "isEntry": true,
     "src": "fields/AddressField.js"
   },
@@ -72,7 +79,7 @@
     "css": [
       "assets/EmailField-dc32b53a.css"
     ],
-    "file": "assets/emailField-681df128.js",
+    "file": "assets/emailField-b0a45f50.js",
     "isEntry": true,
     "src": "fields/EmailField.js"
   },
@@ -84,12 +91,12 @@
     "css": [
       "assets/PhoneField-82a02dac.css"
     ],
-    "file": "assets/phoneField-3f5ae47e.js",
+    "file": "assets/phoneField-bb6f10b1.js",
     "isEntry": true,
     "src": "fields/PhoneField.js"
   },
   "fields/RegularExpressionField.js": {
-    "file": "assets/regularExpressionField-34363369.js",
+    "file": "assets/regularExpressionField-83d70a99.js",
     "isEntry": true,
     "src": "fields/RegularExpressionField.js"
   },
@@ -101,7 +108,7 @@
     "css": [
       "assets/UrlField-3217ffac.css"
     ],
-    "file": "assets/urlField-1427c196.js",
+    "file": "assets/urlField-abc2dabe.js",
     "isEntry": true,
     "src": "fields/UrlField.js"
   },
@@ -176,14 +183,14 @@
     "src": "mailer/EmailTypesSettings.js"
   },
   "meta/Meta.css": {
-    "file": "assets/Meta-0704b2ba.css",
+    "file": "assets/Meta-deacc20c.css",
     "src": "meta/Meta.css"
   },
   "meta/Meta.js": {
     "css": [
-      "assets/Meta-0704b2ba.css"
+      "assets/Meta-deacc20c.css"
     ],
-    "file": "assets/meta-175ef914.js",
+    "file": "assets/meta-65dc26f0.js",
     "imports": [
       "fields/AddressField.js",
       "fields/EmailField.js",

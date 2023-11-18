@@ -1,4 +1,5 @@
 import ViteRestart from 'vite-plugin-restart';
+import * as path from 'path';
 
 // https://vitejs.dev/config/
 export default ({command}) => ({
@@ -67,8 +68,17 @@ export default ({command}) => ({
             ],
         }),
     ],
+
+    resolve: {
+        alias: [
+            {find: '@', replacement: path.resolve(__dirname, './assets/public')},
+        ],
+        preserveSymlinks: true,
+    },
     server: {
         host: '0.0.0.0',
+        /* .com/core/fonts/... in production, dev... */
+        origin: 'https://demo.projectmothership.com.ddev.site:3002', // https://nystudio107.com/blog/using-vite-js-next-generation-frontend-tooling-with-craft-cms#vite-processed-assets
         port: 39999, // DDEV Internal Port
         strictPort: true,
         hmr: {
