@@ -62,7 +62,7 @@ Craft.Sprout.EditAddressModal = Garnish.Modal.extend(
             let addressId = this.$addressForm.find('.sprout-address-id').val();
             let fieldId = this.$addressForm.find('.sprout-address-field-id').val();
 
-            Craft.postActionRequest('sprout-module-fields/fields-address/update-address-form-html', {
+            Craft.postActionRequest('sprout-module-forms/fields-address/update-address-form-html', {
                 addressId: addressId,
                 fieldId: fieldId,
                 countryCode: countryCode,

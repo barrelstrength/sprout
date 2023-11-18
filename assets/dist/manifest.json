@@ -19,6 +19,10 @@
     "isEntry": true,
     "src": "core/SproutAdminTable.js"
   },
+  "core/SproutCp.css": {
+    "file": "assets/SproutCp-a4c6acf5.css",
+    "src": "core/SproutCp.css"
+  },
   "core/SproutAlpine.js": {
     "file": "assets/alpine-898b374c.js",
     "imports": [
@@ -26,10 +30,6 @@
     ],
     "isEntry": true,
     "src": "core/SproutAlpine.js"
-  },
-  "core/SproutCp.css": {
-    "file": "assets/SproutCp-a4c6acf5.css",
-    "src": "core/SproutCp.css"
   },
   "core/SproutCp.js": {
     "assets": [
