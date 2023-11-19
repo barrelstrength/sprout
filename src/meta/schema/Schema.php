@@ -171,8 +171,6 @@ abstract class Schema
 
     /**
      * Allow our schema to define what a generic or fake object will look like
-     *
-     * @return mixed|null
      */
     public function getMockData(): ?array
     {
@@ -199,11 +197,13 @@ abstract class Schema
      * Add a string to our Structured Data array.
      * If the property is not a string, don't add it.
      */
-    public function addText(string $propertyName, string $string): void
+    public function addText(string $propertyName, string $string = null): void
     {
-        if ($string !== '') {
-            $this->structuredData[$propertyName] = $string;
+        if ($string === '') {
+            return;
         }
+
+        $this->structuredData[$propertyName] = $string;
     }
 
     /**

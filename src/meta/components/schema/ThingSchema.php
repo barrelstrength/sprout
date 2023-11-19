@@ -24,6 +24,7 @@ class ThingSchema extends Schema
     public function addProperties(): void
     {
         $metadata = $this->prioritizedMetadataModel;
+
         if ($this->isMainEntity) {
             $this->addMainEntityOfPage();
         }

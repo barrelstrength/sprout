@@ -39,7 +39,10 @@ class Globals extends Model
     {
         if (isset($this->identity['locationAddressId'])) {
             $elementId = $this->identity['locationAddressId'];
-            $this->addressModel = Craft::$app->getElements()->getElementById($elementId);
+
+            /** @var Address $address */
+            $address = Craft::$app->getElements()->getElementById($elementId);
+            $this->addressModel = $address;
         } else {
             $address = new Address();
             $address->title = Craft::t('sprout-module-meta', 'Address');

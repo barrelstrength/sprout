@@ -43,11 +43,7 @@ trait OptimizedTrait
             default => Craft::$app->getView()->renderObjectTemplate($optimizedTitleFieldSetting, $element),
         };
 
-        if ($title) {
-            return $title ?: null;
-        }
-
-        return null;
+        return $title ?: null;
     }
 
     public function setOptimizedTitle($value): void

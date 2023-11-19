@@ -30,6 +30,7 @@ class RobotsMetaType extends MetaType
     public function getCanonical(): ?string
     {
         if ($this->canonical || $this->metadata->getRawDataOnly()) {
+
             return $this->canonical;
         }
 

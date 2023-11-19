@@ -335,10 +335,7 @@ class OpenGraphMetaType extends MetaType
         $this->ogLocale = $value;
     }
 
-    /**
-     * @return DateTime|string|null
-     */
-    public function getOgDateUpdated()
+    public function getOgDateUpdated(): DateTimeInterface|string|null
     {
         if ($this->getOgType() !== 'article' || $this->metadata->getRawDataOnly()) {
             return null;
