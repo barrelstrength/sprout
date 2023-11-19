@@ -313,7 +313,7 @@ abstract class Schema
             $image = [
                 'url' => $imageId,
             ];
-            $openGraphMeta = $meta->getMetaTypes('openGraph');
+            $openGraphMeta = $meta->getMetaType('openGraph');
             if ($openGraphMeta instanceof OpenGraphMetaType) {
                 $image['width'] = $openGraphMeta->getOgImageWidth();
                 $image['height'] = $openGraphMeta->getOgImageHeight();
@@ -471,12 +471,12 @@ abstract class Schema
     {
         $meta = $this->prioritizedMetadataModel;
 
-        /**
-         * the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data
-         *
-         * @var RobotsMetaType $robots
-         */
-        $robots = $meta->getMetaTypes('robots');
+        /** the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data */
+        $robots = $meta->getMetaType('robots');
+
+        if (!$robots instanceof RobotsMetaType) {
+            return;
+        }
 
         $mainEntity = new MainEntityOfPageSchema();
         $mainEntity->type = 'WebPage';

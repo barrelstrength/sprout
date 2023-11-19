@@ -39,23 +39,26 @@ class ImageObjectSchema extends Schema
 
         $prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
-        if ($prioritizedMetadataModel) {
-            $openGraphMetaType = $prioritizedMetadataModel->getMetaTypes('openGraph');
+        if (!$prioritizedMetadataModel) {
+            return;
+        }
 
-            if (!empty($openGraphMetaType)) {
-                /** @var OpenGraphMetaType $openGraphMetaType */
-                if ($openGraphMetaType->getOgImage()) {
-                    $this->addUrl('url', $openGraphMetaType->getOgImage());
-                }
+        $openGraphMetaType = $prioritizedMetadataModel->getMetaType('openGraph');
 
-                if ($openGraphMetaType->getOgImageHeight()) {
-                    $this->addNumber('height', $openGraphMetaType->getOgImageHeight());
-                }
+        if (!$openGraphMetaType instanceof OpenGraphMetaType) {
+            return;
+        }
 
-                if ($openGraphMetaType->getOgImageWidth()) {
-                    $this->addNumber('width', $openGraphMetaType->getOgImageWidth());
-                }
-            }
+        if ($openGraphMetaType->getOgImage()) {
+            $this->addUrl('url', $openGraphMetaType->getOgImage());
+        }
+
+        if ($openGraphMetaType->getOgImageHeight()) {
+            $this->addNumber('height', $openGraphMetaType->getOgImageHeight());
+        }
+
+        if ($openGraphMetaType->getOgImageWidth()) {
+            $this->addNumber('width', $openGraphMetaType->getOgImageWidth());
         }
     }
 }

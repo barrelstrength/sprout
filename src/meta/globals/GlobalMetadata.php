@@ -179,9 +179,9 @@ class GlobalMetadata extends Component
             ]),
         ];
 
-        //        if (!isset($options[$settings[$handle]])) {
-        //            $options[$settings[$handle]] = $settings[$handle];
-        //        }
+        if (!isset($options[$settings[$handle]])) {
+            $options[$settings[$handle]] = $settings[$handle];
+        }
 
         $options[] = [
             'value' => 'custom',

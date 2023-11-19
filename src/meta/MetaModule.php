@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
+use BarrelStrength\Sprout\meta\globals\AddressHelper;
 use BarrelStrength\Sprout\meta\globals\GlobalMetadata;
 use BarrelStrength\Sprout\meta\metadata\ElementMetadata;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
@@ -22,8 +23,6 @@ use BarrelStrength\Sprout\meta\metadata\OptimizeMetadataHelper;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\elements\Address;
-use craft\events\AuthorizationCheckEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -175,27 +174,7 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
             BaseView::EVENT_END_PAGE,
             [OptimizeMetadataHelper::class, 'handleRenderMetadata']);
 
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $checkAuth = static function(AuthorizationCheckEvent $event) {
-                /** @var Address $address */
-                $address = $event->sender;
-                $canonicalId = $address->getCanonicalId();
-
-                $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata();
-
-                if (
-                    $canonicalId &&
-                    $canonicalId === $globals->addressModel->id &&
-                    $event->user->can(MetaModule::p('editGlobals'))
-                ) {
-                    $event->authorized = true;
-                    $event->handled = true;
-                }
-            };
-
-            Event::on(Address::class, Address::EVENT_AUTHORIZE_VIEW, $checkAuth);
-            Event::on(Address::class, Address::EVENT_AUTHORIZE_SAVE, $checkAuth);
-        }
+        AddressHelper::registerEditAddressAuthorizationEvents();
     }
 
     public function createSettingsModel(): MetaSettings
@@ -281,18 +260,4 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
             ],
         ];
     }
-
-    //    public function getTwigVariables(): array
-    //    {
-    //        return [
-    //            'meta' => MetaVariable::class,
-    //        ];
-    //    }
-    //
-    //    protected function getFieldTypes(): array
-    //    {
-    //        return [
-    //            ElementMetadataField::class,
-    //        ];
-    //    }
 }

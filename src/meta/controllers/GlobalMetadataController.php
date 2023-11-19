@@ -80,7 +80,6 @@ class GlobalMetadataController extends Controller
 
     public function actionSaveGlobalMetadata(): ?Response
     {
-        $identity = [];
         $this->requirePostRequest();
 
         $postData = Craft::$app->getRequest()->getBodyParam('meta.globals');

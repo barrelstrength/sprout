@@ -44,7 +44,7 @@ trait MetaImageTrait
     public function prepareAssetMetaData($image, $transform = null, bool $urlOnly = true)
     {
         // If it's an URL, use it.
-        if (0 === mb_strpos($image, 'http')) {
+        if (mb_strpos($image, 'http') === 0) {
             return $image;
         }
 

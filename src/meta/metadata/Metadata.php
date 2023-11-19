@@ -124,18 +124,6 @@ class Metadata extends Model
         $this->setSchemaOverrideTypeId($schemaOverrideTypeId);
     }
 
-    /**
-     * @return MetaType|MetaType[]
-     */
-    public function getMetaTypes(string $handle = null): array|MetaType
-    {
-        if ($handle) {
-            return $this->metaTypes[$handle] ?? [];
-        }
-
-        return $this->metaTypes;
-    }
-
     protected function setMetaTypes(array &$config = []): void
     {
         $metaTypes = [
@@ -149,6 +137,19 @@ class Metadata extends Model
         foreach ($metaTypes as $metaType) {
             $this->populateMetaType($config, $metaType);
         }
+    }
+
+    /**
+     * @return MetaType[]
+     */
+    public function getMetaTypes(): array
+    {
+        return $this->metaTypes;
+    }
+
+    public function getMetaType(string $handle): ?MetaType
+    {
+        return $this->metaTypes[$handle] ?? null;
     }
 
     /**

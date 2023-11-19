@@ -127,7 +127,7 @@ trait OptimizedTrait
             $keywords = $this->optimizedKeywords ?? null;
         } elseif (is_numeric($optimizedKeywordsFieldSetting) == true) {
             $bigKeywords = OptimizeMetadataHelper::getSelectedFieldForOptimizedMetadata($optimizedKeywordsFieldSetting);
-            $keywords = null;
+
             if ($bigKeywords) {
                 $textRankApi = new TextRankFacade();
 

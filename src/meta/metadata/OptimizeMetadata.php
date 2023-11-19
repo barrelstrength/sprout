@@ -264,6 +264,11 @@ class OptimizeMetadata extends Component
         }
 
         $schema = MetaModule::getInstance()->schemaMetadata->getSchemaByUniqueKey($schemaTypeId);
+
+        if (!$schema) {
+            return null;
+        }
+
         $schema->addContext = true;
         $schema->isMainEntity = true;
 
@@ -391,7 +396,7 @@ class OptimizeMetadata extends Component
     /**
      * Return pre-defined transform settings or the selected transform handle
      */
-    public function getSelectedTransform($transformHandle)
+    public function getSelectedTransform($transformHandle): ?array
     {
         $defaultTransforms = [
             'sprout-socialSquare' => [
