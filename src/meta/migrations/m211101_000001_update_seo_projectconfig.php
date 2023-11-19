@@ -40,14 +40,6 @@ class m211101_000001_update_seo_projectconfig extends Migration
             $newConfig['enableRenderMetadata'] = false;
         }
 
-        if (isset($newConfig['metadataVariableName'])) {
-            unset($newConfig['metadataVariableName']);
-        }
-
-        if (isset($newConfig['useMetadataVariable'])) {
-            unset($newConfig['useMetadataVariable']);
-        }
-
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newConfig,
             'Update Sprout Settings for: ' . $moduleSettingsKey
         );
