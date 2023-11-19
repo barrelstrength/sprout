@@ -11,7 +11,7 @@ class MetadataVariable
     /**
      * Sets SEO metadata in templates
      *
-     * @param array $meta Array of supported meta values
+     * @param array<string, mixed> $meta Array of supported meta values
      */
     public function meta(array $meta = []): void
     {
@@ -31,11 +31,6 @@ class MetadataVariable
         }
 
         return $divider;
-    }
-
-    public function getGlobalMetadata(Site $site = null): Globals
-    {
-        return MetaModule::getInstance()->globalMetadata->getGlobalMetadata($site);
     }
 
     public function getContacts(Site $currentSite = null): array

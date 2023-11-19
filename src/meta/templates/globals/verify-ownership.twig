@@ -5,6 +5,10 @@
 
 {% block content %}
 
+    {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+    {{ hiddenInput('globalColumn', 'ownership') }}
+    {{ hiddenInput('siteId', globals.siteId) }}
+
     {{ forms.editableTableField({
         label: "Verify Ownership"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
             label: "Verify Ownership"|t('sprout-module-meta'),
@@ -19,7 +23,7 @@
         id: 'sites',
         name: 'meta[globals][ownership]',
         cols: {
-            service: {
+            metaTagName: {
                 type: 'autosuggest',
                 heading: "Meta Tag Name"|t('sprout-module-meta'),
                 info: ""|t('sprout-module-meta'),
@@ -46,12 +50,7 @@
                 code: true,
             },
         }|filter,
-        rows: [
-            {
-                metaTagName: 'meta-tag-name',
-                metaTagContent: 'VERIFICATION_CODE'
-            }
-        ],
+        rows: globals.ownership ?? [],
         errors: []|unique,
         allowAdd: true,
         allowReorder: true,

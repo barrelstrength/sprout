@@ -94,6 +94,21 @@ class OptimizeMetadata extends Component
             }
         }
 
+        /** @var Globals $globals */
+        $globals = $metadata['globals'];
+        $ownershipTags = $globals->getOwnership();
+
+        foreach ($ownershipTags as $ownershipTag) {
+            if (!$ownershipTag['metaTagName'] || !$ownershipTag['metaTagContent']) {
+                continue;
+            }
+            Craft::$app->getView()->registerMetaTag([
+                'name' => $ownershipTag['metaTagName'],
+                'property' => $ownershipTag['metaTagName'],
+                'content' => $ownershipTag['metaTagContent'],
+            ]);
+        }
+
         // Renders JSON-LD Schema as <script> tag at end of <body>
         foreach ($metadata['schema'] as $schema) {
             Craft::$app->getView()->registerScript($schema->getSchema(), View::POS_END, [

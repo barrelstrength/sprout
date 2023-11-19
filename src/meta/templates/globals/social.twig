@@ -5,6 +5,10 @@
 
 {% block content %}
 
+    {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+    {{ hiddenInput('globalColumn', 'social') }}
+    {{ hiddenInput('siteId', globals.siteId) }}
+
     {{ forms.editableTableField({
         label: "Social Profiles"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
             label: "Social Profiles"|t('sprout-module-meta'),
@@ -16,13 +20,13 @@
         }),
         instructions: "Manage Social Profiles for your website. <a href='https://developers.google.com/search/docs/data-types/social-profile' target='_blank'>Social Profile</a> metadata is automatically detected and displayed in the Google Knowledge panel."|t('sprout-module-meta'),
         id: 'sites',
-        name: 'meta[globals][contacts]',
+        name: 'meta[globals][social]',
         cols: {
             url: {
                 type: 'autosuggest',
                 heading: "Social Profile URL"|t('sprout-module-meta'),
-                info: ""|t('sprout-module-meta'),
-                placeholder: 'https://universalprofile.cloud/ABC'|t('sprout-module-meta'),
+                info: "The URL that represents your social profile"|t('sprout-module-meta'),
+                placeholder: 'https://www.website.com/ProfileName'|t('sprout-module-meta'),
                 code: true,
                 suggestions: [
                     {
@@ -42,12 +46,15 @@
                     }
                 ]
             },
+            profileName: {
+                type: 'singleline',
+                heading: "Profile Name"|t('sprout-module-meta'),
+                info: "The name of the person or organization the social profile represents."|t('sprout-module-meta'),
+                placeholder: 'Profile Name'|t('sprout-module-meta'),
+                code: true,
+            },
         }|filter,
-        rows: [
-            {
-                url: '',
-            }
-        ],
+        rows: globals.social ?? [],
         errors: []|unique,
         allowAdd: true,
         allowReorder: true,

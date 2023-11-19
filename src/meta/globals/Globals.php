@@ -23,7 +23,7 @@ class Globals extends Model
 
     public ?array $social = null;
 
-    public ?string $robots = null;
+    public ?array $robots = null;
 
     public ?array $settings = null;
 
@@ -55,8 +55,9 @@ class Globals extends Model
 
     /**
      * Factory to return schema of any type
+     * Most settings return an array, but robots returns a string
      */
-    public function getGlobalByKey(string $target = null): ?array
+    public function getGlobalByKey(string $target = null): array|string|null
     {
         if (!$target) {
             return null;
@@ -157,7 +158,12 @@ class Globals extends Model
         return $this->ownership;
     }
 
-    public function getRobots(): ?string
+    public function getRobots(): ?array
+    {
+        return $this->robots;
+    }
+
+    public function getRobots2(): ?string
     {
         $robots = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($this->robots);
 

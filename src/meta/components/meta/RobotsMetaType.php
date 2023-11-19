@@ -83,4 +83,15 @@ class RobotsMetaType extends MetaType
     {
         return MetaModule::getInstance()->optimizeMetadata->elementMetadataField->showRobots;
     }
+
+    public function getMetaTagData(): array
+    {
+        $tagData = parent::getMetaTagData();
+
+        if (is_array($tagData['robots'])) {
+            $tagData['robots'] = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($tagData['robots']);
+        }
+
+        return $tagData;
+    }
 }

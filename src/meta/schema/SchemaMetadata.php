@@ -175,7 +175,6 @@ class SchemaMetadata extends Component
     /**
      * Prepare an array of the optimized Meta
      *
-     *
      * @param mixed[] $schemas
      *
      * @return array[][]

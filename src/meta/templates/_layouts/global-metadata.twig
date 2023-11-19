@@ -47,12 +47,15 @@
 {% set docTitle = navItems[selectedTabHandle].title~' - '~title %}
 
 {% block actionButton %}
-
     {% if sprout.modules.meta.isUpgradable() %}
         <div class="buttons">
             {{ sproutCp.upgradeToProButton(module) }}
         </div>
     {% endif %}
+
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="Save"/>
+    </div>
 {% endblock %}
 
 {% block sidebar %}

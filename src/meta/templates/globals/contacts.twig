@@ -8,6 +8,10 @@
 
 {% block content %}
 
+    {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+    {{ hiddenInput('globalColumn', 'contacts') }}
+    {{ hiddenInput('siteId', globals.siteId) }}
+
     {{ forms.editableTableField({
         label: "Contacts"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
             label: "Contacts"|t('sprout-module-meta'),
@@ -51,12 +55,7 @@
                 code: true,
             },
         }|filter,
-        rows: [
-            {
-                contactType: '',
-                telephone: ''
-            }
-        ],
+        rows: globals.contacts ?? [],
         errors: []|unique,
         allowAdd: true,
         allowReorder: true,
