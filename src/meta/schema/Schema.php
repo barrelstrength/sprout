@@ -470,9 +470,12 @@ abstract class Schema
     {
         $meta = $this->prioritizedMetadataModel;
 
+        // the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data
+        $robots = $meta->getMetaTypes('robots');
+
         $mainEntity = new MainEntityOfPageSchema();
         $mainEntity->type = 'WebPage';
-        $mainEntity->id = $meta->getCanonical();
+        $mainEntity->id = $robots->getCanonical();
 
         $mainEntity->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
