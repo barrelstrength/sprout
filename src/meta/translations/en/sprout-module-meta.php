@@ -186,4 +186,22 @@ return [
     'Select the Assets field to use for your basic, Open Graph, and Twitter Card meta tag feature image.' => 'Select the Assets field to use for your basic, Open Graph, and Twitter Card meta tag feature image.',
     'Meta Title' => 'Meta Title',
     'SEO' => 'SEO',
+    'https://www.website.com/ProfileName' => 'https://www.website.com/ProfileName',
+    'Select the default Twitter Card Type for content using the Element Metadata field. Learn more about <a href="https://dev.twitter.com/docs/cards"
+            target="_blank">How Twitter Cards work</a>.' => 'Select the default Twitter Card Type for content using the Element Metadata field. Learn more about <a href="https://dev.twitter.com/docs/cards"
+            target="_blank">How Twitter Cards work</a>.',
+    'Profile Name' => 'Profile Name',
+    'The name of the person or organization the social profile represents.' => 'The name of the person or organization the social profile represents.',
+    'Select the default Open Graph Type for content using the Element Metadata field. Learn more about <a href="https://developers.facebook
+            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>' => 'Select the default Open Graph Type for content using the Element Metadata field. Learn more about <a href="https://developers.facebook
+            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>',
+    'The Social Profile URL to associate with your website' => 'The Social Profile URL to associate with your website',
+    'The URL that represents your social profile' => 'The URL that represents your social profile',
+    'Select your default Open Graph Type for individual entries using the Element Metadata field. Learn more about <a href="https://developers.facebook
+            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>' => 'Select your default Open Graph Type for individual entries using the Element Metadata field. Learn more about <a href="https://developers.facebook
+            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>',
+    'Select the default Twitter Card Type for content using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards"
+            target="_blank">How Twitter Cards work</a>.' => 'Select the default Twitter Card Type for content using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards"
+            target="_blank">How Twitter Cards work</a>.',
+    'Select your default Twitter Card Type for individual entries using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards" target="_blank">How Twitter Cards work</a>.' => 'Select your default Twitter Card Type for individual entries using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards" target="_blank">How Twitter Cards work</a>.'
 ];

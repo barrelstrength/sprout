@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
 use craft\base\Model;
 use craft\elements\Address;
-use craft\helpers\Json;
 use DateTime;
 
 class Globals extends Model

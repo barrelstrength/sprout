@@ -19,7 +19,7 @@ trait OptimizedTrait
 
     protected ?string $optimizedDescription = null;
 
-    protected array|int|null $optimizedImage = null;
+    protected ?array $optimizedImage = null;
 
     protected ?string $optimizedKeywords = null;
 

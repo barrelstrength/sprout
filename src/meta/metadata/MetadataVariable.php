@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\meta\metadata;
 
-use BarrelStrength\Sprout\meta\globals\Globals;
 use BarrelStrength\Sprout\meta\MetaModule;
 use craft\models\Site;
 

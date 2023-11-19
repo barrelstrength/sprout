@@ -11,7 +11,6 @@ use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class GlobalMetadataController extends Controller

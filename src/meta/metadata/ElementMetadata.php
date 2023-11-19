@@ -47,11 +47,7 @@ class ElementMetadata extends Component
         $fieldLayout = $element->getFieldLayout();
         $fields = $fieldLayout->getCustomFields();
 
-        /**
-         * Get our ElementMetadata Field
-         *
-         * @var Field $field
-         */
+        /**  @var Field $field */
         foreach ($fields as $field) {
             if (($field::class == ElementMetadataField::class) && isset($element->{$field->handle})) {
                 return $field->handle;
