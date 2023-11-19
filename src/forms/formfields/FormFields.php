@@ -48,7 +48,7 @@ class FormFields extends Component
     public const EVENT_REGISTER_FORM_FIELDS = 'registerSproutFormFields';
 
     /**
-     * @var FormFieldTrait[]
+     * @var FormFieldInterface[]
      */
     protected ?array $_formFields = null;
 
@@ -66,7 +66,6 @@ class FormFields extends Component
 
         $this->trigger(self::EVENT_REGISTER_FORM_FIELDS, $event);
 
-        /** @var FormFieldTrait $instance */
         foreach ($event->types as $type) {
             $this->_formFields[$type] = $type;
         }
@@ -79,13 +78,10 @@ class FormFields extends Component
      */
     public function getDuplicateLayout(FormElement $form, FieldLayout $postFieldLayout): ?FieldLayout
     {
-        if (!$form || !$postFieldLayout) {
-            return null;
-        }
-
-        $oldTabs = $postFieldLayout->getTabs();
         $tabs = [];
         $fields = [];
+
+        $oldTabs = $postFieldLayout->getTabs();
 
         foreach ($oldTabs as $oldTab) {
             /** @var Field[] $fieldLayoutFields */
@@ -130,6 +126,9 @@ class FormFields extends Component
         return $fieldLayout;
     }
 
+    /**
+     * @return string[]
+     */
     public function getDefaultFormFieldTypes(): array
     {
         $fields = [];

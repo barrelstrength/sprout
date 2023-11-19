@@ -10,6 +10,9 @@ use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificati
 use Craft;
 use yii\base\Event;
 
+/**
+ * @property OnSaveSubmissionEvent $event
+ */
 class SaveSubmissionNotificationEvent extends BaseElementNotificationEvent
 {
     public static function displayName(): string
@@ -50,7 +53,7 @@ class SaveSubmissionNotificationEvent extends BaseElementNotificationEvent
     public function getEventVariables(): array
     {
         return [
-            'submission' => $this?->event?->submission,
+            'submission' => $this->event->submission,
         ];
     }
 

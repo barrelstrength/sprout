@@ -652,8 +652,10 @@ class FormElement extends Element
         Craft::$app->content->fieldContext = $this->getSubmissionFieldContext();
         Craft::$app->content->contentTable = $this->getSubmissionContentTable();
 
-        /** @var FormFieldInterface $oldField */
-        if ($oldField = $fieldsService->getFieldByUid($field->uid)) {
+        /** @var Field $oldField */
+        $oldField = $fieldsService->getFieldByUid($field->uid);
+
+        if ($oldField) {
             // existing field
             $field->id = $oldField->id;
             $field->handle = $oldField->handle;
@@ -778,15 +780,15 @@ class FormElement extends Element
      */
     public function getFields(): array
     {
-        if ($this->_fields === null) {
+        if (!empty($this->_fields)) {
             $this->_fields = [];
+        }
 
-            /** @var FormFieldInterface[] $fields */
-            $fields = $this->getFieldLayout()?->getCustomFields();
+        /** @var Field[] $fields */
+        $fields = $this->getFieldLayout()?->getCustomFields();
 
-            foreach ($fields as $field) {
-                $this->_fields[$field->handle] = $field;
-            }
+        foreach ($fields as $field) {
+            $this->_fields[$field->handle] = $field;
         }
 
         return $this->_fields;

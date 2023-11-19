@@ -6,8 +6,10 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\formfields\NumberFormField;
 use BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField;
 use BarrelStrength\Sprout\forms\formfields\FormField;
+use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
+use craft\base\Field;
 use craft\base\SavableComponent;
 use craft\fields\Date as CraftDate;
 use craft\fields\Dropdown as CraftDropdown;
@@ -88,7 +90,7 @@ abstract class Integration extends SavableComponent implements IntegrationInterf
         $sourceFormFields = [];
 
         foreach ($sourceFormFieldsData as $sourceFormFieldData) {
-            /** @var FormField $fieldInstance */
+            /** @var Field $fieldInstance */
             $fieldInstance = new $sourceFormFieldData['type']();
             $fieldInstance->name = $sourceFormFieldData['name'];
             $fieldInstance->handle = $sourceFormFieldData['handle'];
