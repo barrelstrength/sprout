@@ -55,21 +55,16 @@ class Globals extends Model
 
     /**
      * Factory to return schema of any type
-     *
      */
-    public function getGlobalByKey(string $target, string $format = 'array'): array|string|null
+    public function getGlobalByKey(string $target = null): ?array
     {
         if (!$target) {
-            return '';
+            return null;
         }
 
         $targetMethod = 'get' . ucfirst($target);
 
         $schema = $this->{$targetMethod}();
-
-        if ($schema && $format === 'json') {
-            return Json::encode($schema);
-        }
 
         return $schema;
     }

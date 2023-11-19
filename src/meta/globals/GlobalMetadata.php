@@ -59,7 +59,8 @@ class GlobalMetadata extends Component
     public function saveGlobalMetadata(string $globalColumn, Globals $globals): bool
     {
         $values = [];
-        $values[$globalColumn] = $globals->getGlobalByKey($globalColumn, 'json');
+        $globalMetadataArray = $globals->getGlobalByKey($globalColumn);
+        $values[$globalColumn] = $globalMetadataArray ? Json::encode($globalMetadataArray) : null;
         $values['siteId'] = $globals->siteId;
 
         $globalMetadataRecordExists = (new Query())

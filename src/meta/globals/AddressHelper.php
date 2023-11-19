@@ -6,11 +6,17 @@ use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
 use craft\elements\Address;
 use craft\events\AuthorizationCheckEvent;
+use craft\helpers\Cp;
+use craft\models\Site;
 use craft\services\Elements;
 use yii\base\Event;
+use yii\web\ForbiddenHttpException;
 
 class AddressHelper
 {
+    /**
+     * Ensures a user editing the Global Metadata address is authorized to do so
+     */
     public static function registerEditAddressAuthorizationEvents(): void
     {
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
@@ -19,10 +25,18 @@ class AddressHelper
 
         $checkAuth = static function(AuthorizationCheckEvent $event) {
 
+            $site = Cp::requestedSite();
+
+            if (!$site instanceof Site) {
+                throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+            }
+
+            // Get Site ID from CP request because we might have a new address without a Site ID in the db
+            $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata($site);
+
             /** @var Address $address */
             $address = $event->sender;
             $canonicalId = $address->getCanonicalId();
-            $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata();
 
             if (
                 $canonicalId &&
