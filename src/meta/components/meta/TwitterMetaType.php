@@ -172,7 +172,7 @@ class TwitterMetaType extends MetaType
         return MetaModule::getInstance()->optimizeMetadata->globals->getIdentity()['image'] ?? null;
     }
 
-    public function setTwitterImage(?string $value): void
+    public function setTwitterImage(array|string|null $value): void
     {
         $this->twitterImage = is_array($value) ? $value[0] ?? null : $value;
     }

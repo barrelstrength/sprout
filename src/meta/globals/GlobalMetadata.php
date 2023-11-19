@@ -94,7 +94,7 @@ class GlobalMetadata extends Component
 
         $transforms = Craft::$app->getImageTransforms()->getAllTransforms();
 
-        if (is_countable($transforms) ? count($transforms) : 0) {
+        if ($transforms) {
             $options[] = ['optgroup' => Craft::t('sprout-module-meta', 'Custom Transforms')];
 
             foreach ($transforms as $transform) {

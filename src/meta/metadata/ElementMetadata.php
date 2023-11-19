@@ -19,27 +19,16 @@ class ElementMetadata extends Component
     /**
      * Returns the metadata for an Element's Element Metadata as a Metadata model
      */
-    public function getRawMetadataFromElement(Element $element = null): array
+    public function getRawMetadataFromElement(Element $element): array
     {
         if ($this->_rawMetadata !== null) {
             return $this->_rawMetadata;
         }
 
-        if ($element === null) {
-            $this->_rawMetadata = [];
-
-            return $this->_rawMetadata;
-        }
-
         $fieldHandle = $this->getElementMetadataFieldHandle($element);
 
-        if (isset($element->{$fieldHandle})) {
-            /** @var Metadata $metadata */
-            $metadata = $element->{$fieldHandle};
-
-            if ($metadata) {
-                $this->_rawMetadata = $metadata->getRawData();
-            }
+        if ($metadata = $element->{$fieldHandle} ?? null) {
+            $this->_rawMetadata = $metadata->getRawData();
         }
 
         return $this->_rawMetadata ?? [];

@@ -19,7 +19,7 @@ trait OptimizedTrait
 
     protected ?string $optimizedDescription = null;
 
-    protected ?int $optimizedImage = null;
+    protected array|int|null $optimizedImage = null;
 
     protected ?string $optimizedKeywords = null;
 
@@ -123,9 +123,9 @@ trait OptimizedTrait
 
         $optimizedKeywordsFieldSetting = $elementMetadataField->optimizedKeywordsField ?? '';
 
-        if (true == ($optimizedKeywordsFieldSetting === '')) {
+        if (($optimizedKeywordsFieldSetting === '') == true) {
             $keywords = $this->optimizedKeywords ?? null;
-        } elseif (true == is_numeric($optimizedKeywordsFieldSetting)) {
+        } elseif (is_numeric($optimizedKeywordsFieldSetting) == true) {
             $bigKeywords = OptimizeMetadataHelper::getSelectedFieldForOptimizedMetadata($optimizedKeywordsFieldSetting);
             $keywords = null;
             if ($bigKeywords) {

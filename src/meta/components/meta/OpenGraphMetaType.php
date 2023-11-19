@@ -266,7 +266,7 @@ class OpenGraphMetaType extends MetaType
         return MetaModule::getInstance()->optimizeMetadata->globals->getIdentity()['image'] ?? null;
     }
 
-    public function setOgImage(?string $value): void
+    public function setOgImage(string|array|null $value): void
     {
         $this->ogImage = is_array($value) ? $value[0] ?? null : $value;
     }
@@ -419,7 +419,7 @@ class OpenGraphMetaType extends MetaType
 
         // If the value that exists is not a URL, we need to process it
         if (isset($tagData['og:image']) &&
-            0 !== mb_strpos($tagData['og:image'], 'http')) {
+            mb_strpos($tagData['og:image'], 'http') !== 0) {
             [
                 $tagData['og:image'],
                 $tagData['og:image:width'],

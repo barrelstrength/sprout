@@ -63,13 +63,17 @@ class OptimizeMetadata extends Component
      */
     public function setMatchedElement(int $siteId = null): void
     {
-        $this->element = null;
         $path = Craft::$app->getRequest()->getPathInfo();
-        /** @var Element $element */
+
         $element = Craft::$app->elements->getElementByUri($path, $siteId, true);
-        if ($element && ($element->uri !== null)) {
+
+        if ($element && $element->uri !== null) {
             $this->element = $element;
+
+            return;
         }
+
+        $this->element = null;
     }
 
     public function registerMetadata($site): void
@@ -156,10 +160,8 @@ class OptimizeMetadata extends Component
             $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($this->element);
         }
 
-        $isPro = MetaModule::isPro();
-
         // Only allow Template Overrides if using Pro Edition
-        if ($isPro && $this->templateMetadata) {
+        if (MetaModule::isPro() && $this->templateMetadata) {
             /**
              * If an Element ID is provided as an Override, get our Metadata from the Element Metadata Field
              * associated with that Element ID This adds support for using Element Metadata fields on non URL-enabled
@@ -167,13 +169,12 @@ class OptimizeMetadata extends Component
              *
              * Non URL-Enabled Elements don't resave metadata on their own. That will need to be done manually.
              */
-            if (isset($this->templateMetadata['elementId'])) {
-                /** @var Element $elementOverride */
-                $elementOverride = Craft::$app->elements->getElementById($this->templateMetadata['elementId']);
+            if ($elementId = $this->templateMetadata['elementId'] ?? null) {
+                $element = Craft::$app->elements->getElementById($elementId);
 
                 // Overwrite the Element Attributes if the template override Element ID returns an element
-                if ($elementOverride) {
-                    $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($elementOverride);
+                if ($element) {
+                    $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($element);
                 }
             }
 
@@ -256,23 +257,19 @@ class OptimizeMetadata extends Component
 
     public function getMainEntityStructuredData(Element $element): ?Schema
     {
-        $schema = null;
-
         $schemaTypeId = $this->prioritizedMetadataModel->getSchemaTypeId();
 
         if (!$schemaTypeId) {
             return null;
         }
 
-        if ($schemaTypeId && $element !== null) {
-            $schema = MetaModule::getInstance()->schemaMetadata->getSchemaByUniqueKey($schemaTypeId);
-            $schema->addContext = true;
-            $schema->isMainEntity = true;
+        $schema = MetaModule::getInstance()->schemaMetadata->getSchemaByUniqueKey($schemaTypeId);
+        $schema->addContext = true;
+        $schema->isMainEntity = true;
 
-            $schema->globals = $this->globals;
-            $schema->element = $element;
-            $schema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
-        }
+        $schema->globals = $this->globals;
+        $schema->element = $element;
+        $schema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
         return $schema;
     }

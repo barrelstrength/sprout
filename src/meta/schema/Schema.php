@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\meta\schema;
 
 use BarrelStrength\Sprout\forms\components\formfields\PhoneFormFieldData;
 use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
+use BarrelStrength\Sprout\meta\components\meta\RobotsMetaType;
 use BarrelStrength\Sprout\meta\components\schema\ContactPointSchema;
 use BarrelStrength\Sprout\meta\components\schema\GeoSchema;
 use BarrelStrength\Sprout\meta\components\schema\ImageObjectSchema;
@@ -330,17 +331,17 @@ abstract class Schema
                 'width' => $imageAsset->getWidth($transform),
                 'height' => $imageAsset->getHeight($transform),
             ];
-        } else {
+        }
+
+        if (!isset($image)) {
             return;
         }
 
-        if (is_countable($image) ? count($image) : 0) {
-            $imageObjectSchema = new ImageObjectSchema();
-            $imageObjectSchema->element = $image;
-            $imageObjectSchema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
+        $imageObjectSchema = new ImageObjectSchema();
+        $imageObjectSchema->element = $image;
+        $imageObjectSchema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
-            $this->structuredData[$propertyName] = $imageObjectSchema->getSchema();
-        }
+        $this->structuredData[$propertyName] = $imageObjectSchema->getSchema();
     }
 
     /**
@@ -470,7 +471,11 @@ abstract class Schema
     {
         $meta = $this->prioritizedMetadataModel;
 
-        // the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data
+        /**
+         * the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data
+         *
+         * @var RobotsMetaType $robots
+         */
         $robots = $meta->getMetaTypes('robots');
 
         $mainEntity = new MainEntityOfPageSchema();

@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\meta\metadata;
 
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
-use craft\base\Field;
 use craft\elements\Asset;
 use craft\fields\Assets;
 use craft\helpers\UrlHelper;
@@ -38,61 +37,52 @@ class OptimizeMetadataHelper
 
     public static function getAssetUrl($id, $transform = null): ?string
     {
-        $url = null;
-
         // If not, then process what we have to try to extract the URL
-        if (mb_strpos($id, 'http') !== 0) {
-            if (!is_numeric($id)) {
-                throw new Exception('Meta Image override value "' . $id . '" must be an absolute url.');
-            }
-
-            /**
-             * @var Asset $asset
-             */
-            $asset = Craft::$app->elements->getElementById($id);
-
-            if ($asset !== null) {
-                $transform = MetaModule::getInstance()->optimizeMetadata->getSelectedTransform($transform);
-
-                $imageUrl = $asset->getUrl($transform);
-
-                // check to see if Asset already has full Site Url in folder Url
-                if (str_contains($imageUrl, 'http')) {
-                    $url = $asset->getUrl();
-                } else {
-                    $protocol = Craft::$app->request->getIsSecureConnection() ? 'https' : 'http';
-                    $url = UrlHelper::urlWithScheme($imageUrl, $protocol);
-                }
-            } else {
-                // If our selected asset was deleted, make sure it is null
-                $url = null;
-            }
+        if (mb_strpos($id, 'http') === 0) {
+            return null;
         }
 
-        return $url;
+        if (!is_numeric($id)) {
+            throw new Exception('Meta Image override value "' . $id . '" must be an absolute url.');
+        }
+
+        $asset = Craft::$app->elements->getElementById($id);
+
+        if (!$asset instanceof Asset) {
+            return null;
+        }
+
+        $transform = MetaModule::getInstance()->optimizeMetadata->getSelectedTransform($transform);
+
+        $imageUrl = $asset->getUrl($transform);
+
+        // check to see if Asset already has full Site Url in folder Url
+        if (str_contains($imageUrl, 'http')) {
+            return $asset->getUrl();
+        }
+
+        $protocol = Craft::$app->request->getIsSecureConnection() ? 'https' : 'http';
+
+        return UrlHelper::urlWithScheme($imageUrl, $protocol);
     }
 
-    public static function getSelectedFieldForOptimizedMetadata($fieldId)
+    public static function getSelectedFieldForOptimizedMetadata(int $fieldId)
     {
-        $value = null;
+        $field = Craft::$app->fields->getFieldById($fieldId);
+
+        if (!$field) {
+            return null;
+        }
 
         $element = MetaModule::getInstance()->optimizeMetadata->element;
+        $value = $element->{$field->handle} ?? null;
 
-        if (is_numeric($fieldId)) {
-            /**
-             * @var Field $field
-             */
-            $field = Craft::$app->fields->getFieldById($fieldId);
+        if (!$value) {
+            return null;
+        }
 
-            // Does the field exist on the element?
-            if ($field && isset($element->{$field->handle})) {
-                $elementValue = $element->{$field->handle};
-                if ($field instanceof Assets) {
-                    $value = isset($elementValue[0]) ? $elementValue[0]->id : null;
-                } else {
-                    $value = $elementValue;
-                }
-            }
+        if ($field instanceof Assets) {
+            return isset($value[0]) ? $value[0]->id : null;
         }
 
         return $value;
