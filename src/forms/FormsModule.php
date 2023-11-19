@@ -411,11 +411,11 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
 
             // Settings: Integration Types
             'sprout/settings/forms/integrations/new' =>
-                'sprout-module-forms/form-integrations/edit',
+                'sprout-module-forms/form-integration-settings/edit',
             'sprout/settings/forms/integrations/edit/<integrationTypeUid:.*>' =>
-                'sprout-module-forms/form-integrations/edit',
+                'sprout-module-forms/form-integration-settings/edit',
             'sprout/settings/forms/integrations' =>
-                'sprout-module-forms/form-integrations/form-integrations-index-template',
+                'sprout-module-forms/form-integration-settings/form-integrations-index-template',
 
             // Settings
             'sprout/settings/general' => [

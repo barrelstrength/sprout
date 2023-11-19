@@ -41,7 +41,7 @@ class SproutFormsIntegration {
             'integrationId': integrationId,
         };
 
-        Craft.postActionRequest('sprout-module-forms/form-integrations/get-source-form-fields', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-forms/form-integration-settings/get-source-form-fields', data, $.proxy(function(response, textStatus) {
             const statusSuccess = (textStatus === 'success');
             if (statusSuccess && response.success) {
                 const rows = response.sourceFormFields;
@@ -75,7 +75,7 @@ class SproutFormsIntegration {
 
         const self = this;
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/form-integrations/get-target-integration-fields', {
+        Craft.sendActionRequest('POST', 'sprout-module-forms/form-integration-settings/get-target-integration-fields', {
             data: formData,
         }).then((response) => {
             const statusSuccess = (textStatus === 'success');

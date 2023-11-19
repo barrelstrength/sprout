@@ -55,11 +55,13 @@ class IntegrationsRelationsTable {
     createSlideout(integrationUid, integrationTypeUid) {
         let self = this;
 
-        let integrationsFormFieldMetadata = formBuilder.integrationsFormFieldMetadata
+        console.log('createSlideout', window.formBuilder.integrationsFormFieldMetadata);
+
+        let integrationsFormFieldMetadata = formBuilder.integrationsFormFieldMetadata.length > 0
             ? JSON.parse(formBuilder.integrationsFormFieldMetadata)
             : [];
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/edit-integration-slideout', {
+        Craft.sendActionRequest('POST', 'sprout-module-forms/form-integrations/edit-integration-slideout', {
                 data: {
                     formId: self.formId,
                     integrationUid: integrationUid,
@@ -81,7 +83,7 @@ class IntegrationsRelationsTable {
                     const slideout = new Craft.Slideout(response.data.html, {
                         containerElement: 'form',
                         containerAttributes: {
-                            action: 'sprout-module-forms/form-integrations/save-integration',
+                            action: 'sprout-module-forms/form-integration-settings/save-integration',
                             method: 'post',
                             novalidate: '',
                             class: 'fld-element-settings',
@@ -108,7 +110,7 @@ class IntegrationsRelationsTable {
     replaceTable() {
         let self = this;
 
-        Craft.sendActionRequest('POST', 'sprout-module-forms/forms/edit-integration-slideout', {
+        Craft.sendActionRequest('POST', 'sprout-module-forms/form-integrations/edit-integration-slideout', {
                 data: {
                     elementId: self.elementId,
                 },

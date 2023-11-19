@@ -361,7 +361,7 @@ if (typeof Craft.SproutForms === typeof undefined) {
                 const inputId = this.$container.find('input[name="integrationId"]');
                 const id = inputId.length ? inputId.val() : false;
 
-                Craft.postActionRequest('sprout-module-forms/form-integrations/save-integration', data, $.proxy(function(response, textStatus) {
+                Craft.postActionRequest('sprout-module-forms/form-integration-settings/save-integration', data, $.proxy(function(response, textStatus) {
                     this.$saveSpinner.addClass('hidden');
 
                     const statusSuccess = (textStatus === 'success');
@@ -418,7 +418,7 @@ if (typeof Craft.SproutForms === typeof undefined) {
                     'formId': formId,
                 };
 
-                Craft.postActionRequest('sprout-module-forms/form-integrations/edit-integration', data, $.proxy(function(response, textStatus) {
+                Craft.postActionRequest('sprout-module-forms/form-integration-settings/edit-integration', data, $.proxy(function(response, textStatus) {
                     this.$loadSpinner.addClass('hidden');
 
                     const statusSuccess = (textStatus === 'success');

@@ -160,7 +160,7 @@
     "css": [
       "assets/Forms-339400c2.css"
     ],
-    "file": "assets/forms-cc70750e.js",
+    "file": "assets/forms-0f0c063c.js",
     "imports": [
       "_module.esm-e3630760.js"
     ],
@@ -168,7 +168,7 @@
     "src": "forms/Forms.js"
   },
   "forms/IntegrationTypesSettings.js": {
-    "file": "assets/integrationTypes-ea257b4d.js",
+    "file": "assets/integrationTypes-e43c2b07.js",
     "isEntry": true,
     "src": "forms/IntegrationTypesSettings.js"
   },

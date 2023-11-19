@@ -65,7 +65,7 @@ if (typeof Craft.SproutForms === typeof undefined) {
 
             const data = {integrationId: integrationId, enabled: enabled, formId: formId};
 
-            Craft.postActionRequest('sprout-module-forms/form-integrations/enable-integration', data, $.proxy(function(response, textStatus) {
+            Craft.postActionRequest('sprout-module-forms/form-integration-settings/enable-integration', data, $.proxy(function(response, textStatus) {
                 if (textStatus === 'success' && response.success) {
                     Craft.cp.displayNotice(Craft.t('sprout', 'Integration updated.'));
                 } else {
@@ -116,7 +116,7 @@ if (typeof Craft.SproutForms === typeof undefined) {
                 sendRule: '*',
             };
 
-            Craft.postActionRequest('sprout-module-forms/form-integrations/save-integration', data, $.proxy(function(response, textStatus) {
+            Craft.postActionRequest('sprout-module-forms/form-integration-settings/save-integration', data, $.proxy(function(response, textStatus) {
                 if (textStatus === 'success') {
                     const integration = response.integration;
 
