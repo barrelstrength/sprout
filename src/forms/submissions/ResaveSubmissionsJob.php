@@ -11,7 +11,7 @@ use craft\errors\ElementNotFoundException;
 use craft\queue\BaseJob;
 use Exception;
 
-class ResaveFormSubmissions extends BaseJob
+class ResaveSubmissionsJob extends BaseJob
 {
     /**
      * The Form ID of the submissions to be saved

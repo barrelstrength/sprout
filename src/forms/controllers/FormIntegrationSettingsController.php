@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\integrations\ElementIntegration;
 use BarrelStrength\Sprout\forms\integrations\Integration;
-use BarrelStrength\Sprout\forms\integrations\IntegrationRecord;
 use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use Craft;
 use craft\helpers\Json;

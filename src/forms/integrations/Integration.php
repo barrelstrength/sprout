@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\formfields\NumberFormField;
 use BarrelStrength\Sprout\forms\components\formfields\SingleLineFormField;
 use BarrelStrength\Sprout\forms\formfields\FormField;
-use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\base\Field;

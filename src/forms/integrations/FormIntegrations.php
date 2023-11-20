@@ -10,7 +10,6 @@ use BarrelStrength\Sprout\forms\components\integrationtypes\EntryElementIntegrat
 use BarrelStrength\Sprout\forms\components\integrationtypes\MissingIntegrationType;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\submissions\SubmissionIntegrationStatus;
 use Craft;
 use craft\base\Component;
 use craft\base\ElementInterface;
@@ -284,7 +283,7 @@ class FormIntegrations extends Component
                     'integrationId' => $integration->id,
                     'submissionId' => $submissionId,
                     'success' => false,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_PENDING_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_PENDING_STATUS,
                     'message' => 'Pending',
                 ], false);
 
@@ -315,7 +314,7 @@ class FormIntegrations extends Component
 
                 $integrationLog->setAttributes([
                     'success' => true,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_NOT_SENT_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_NOT_SENT_STATUS,
                     'message' => $integrationNotSentMessage,
                 ], false);
 
@@ -331,7 +330,7 @@ class FormIntegrations extends Component
                     if ($result) {
                         $integrationLog->setAttributes([
                             'success' => true,
-                            'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
+                            'status' => IntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
                             'message' => $integration->getSuccessMessage(),
                         ], false);
 
@@ -357,7 +356,7 @@ class FormIntegrations extends Component
                 $integrationLog->setAttributes([
                     'success' => false,
                     'message' => $errorMessages,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
                 ], false);
 
                 $integrationLog = FormsModule::getInstance()->formIntegrations->logIntegration($integrationLog

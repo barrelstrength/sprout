@@ -10,7 +10,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnBeforeSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\submissions\ResaveFormSubmissions;
+use BarrelStrength\Sprout\forms\submissions\ResaveSubmissionsJob;
 use BarrelStrength\Sprout\forms\submissions\SubmissionRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionsSpamLogRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionStatus;
@@ -227,7 +227,7 @@ class Submissions extends Component
 
     public function resaveElements($formId): void
     {
-        Craft::$app->getQueue()->push(new ResaveFormSubmissions([
+        Craft::$app->getQueue()->push(new ResaveSubmissionsJob([
             'formId' => $formId,
         ]));
     }

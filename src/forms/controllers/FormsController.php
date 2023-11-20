@@ -4,11 +4,11 @@ namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
+use BarrelStrength\Sprout\forms\formfields\CustomFormField;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
-use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
 use craft\elements\conditions\users\UserCondition;
@@ -386,14 +386,14 @@ class FormsController extends BaseController
 
     public static function swapPlaceholders($str, $sourceKey): ?string
     {
-        $random = (string)floor(random_int(0,1) * 1000000);
+        $random = (string)floor(random_int(0, 1) * 1000000);
         $defaultId = 'condition' . $random;
 
         //return str
         //    . replace(/__ID__ /g, defaultId)
         //    .replace(/__SOURCE_KEY__(?=-)/g, Craft . formatInputId('"' + sourceKey + '"'))
         //    .replace(/__SOURCE_KEY__ / g, sourceKey);
-        $formatInputId = Html::id('"'.$sourceKey.'"');
+        $formatInputId = Html::id('"' . $sourceKey . '"');
         $str = str_replace('__ID__', $defaultId, $str);
         $str = preg_replace('/__SOURCE_KEY__(?=-)/', $formatInputId, $str);
         $str = str_replace('__SOURCE_KEY__', $sourceKey, $str);

@@ -1,6 +1,6 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\submissions;
+namespace BarrelStrength\Sprout\forms\formfields;
 
 use craft\fieldlayoutelements\CustomField;
 

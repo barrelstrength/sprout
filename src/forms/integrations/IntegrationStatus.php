@@ -1,8 +1,8 @@
 <?php
 
-namespace BarrelStrength\Sprout\forms\submissions;
+namespace BarrelStrength\Sprout\forms\integrations;
 
-abstract class SubmissionIntegrationStatus
+abstract class IntegrationStatus
 {
     public const SUBMISSION_INTEGRATION_PENDING_STATUS = 'pending';
 

@@ -8,12 +8,12 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\integrations\Integration;
 use BarrelStrength\Sprout\forms\integrations\IntegrationRecord;
 use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
+use Craft;
 use craft\helpers\Cp;
 use craft\helpers\Template;
 use craft\web\assets\conditionbuilder\ConditionBuilderAsset;
 use craft\web\Controller as BaseController;
 use yii\web\Response;
-use Craft;
 
 class FormIntegrationsController extends BaseController
 {
