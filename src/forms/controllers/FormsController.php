@@ -41,24 +41,6 @@ class FormsController extends BaseController
         ]);
     }
 
-    public function actionEditSettingsTemplate(int $formId = null, $subNavKey = null): Response
-    {
-        $this->requirePermission(FormsModule::p('editForms'));
-
-        $form = FormsModule::getInstance()->forms->getFormById($formId);
-
-        $config = FormsModule::getInstance()->getSettings();
-
-        return $this->renderTemplate('sprout-module-forms/forms/_settings/' . $subNavKey, [
-            'form' => $form,
-            'settings' => FormsModule::getInstance()->getSettings(),
-            'rules' => FormsModule::getInstance()->formRules->getRulesByFormId($formId),
-            'ruleOptions' => FormsModule::getInstance()->formRules->getRuleOptions(),
-            'integrations' => FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($formId),
-            'config' => $config,
-        ]);
-    }
-
     //public function actionDuplicateForm()
     //{
     //    $this->requirePermission(FormsModule::p('editForms'));

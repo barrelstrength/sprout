@@ -385,9 +385,6 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
             'sprout/forms/forms/edit/<elementId:\d+>' =>
                 'elements/edit',
 
-            'sprout/forms/forms/edit/<formId:\d+>/settings/<subNavKey:[^\/]+>' =>
-                'sprout-module-forms/forms/edit-settings-template',
-
             'sprout/forms/submissions' =>
                 'sprout-module-forms/submissions/submissions-index-template',
             'sprout/forms/submissions/edit/<elementId:\d+>' =>
