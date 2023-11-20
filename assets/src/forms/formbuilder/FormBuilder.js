@@ -796,10 +796,10 @@ export const FormBuilder = (formId) => ({
     editFormField(layoutElement) {
 
         // Testing CP Screen Slideout
-        // this.editFormFieldViaCpScreen(layoutElement);
+        this.editFormFieldViaCpScreen(layoutElement);
 
         // Testing DIY Slideout
-        this.editFormFieldViaSettingsHtml(layoutElement);
+        // this.editFormFieldViaSettingsHtml(layoutElement);
     },
 
     editFormFieldViaCpScreen(layoutElement) {
@@ -812,13 +812,19 @@ export const FormBuilder = (formId) => ({
             layoutElement: layoutElement,
         };
 
-        new Craft.CpScreenSlideout('sprout-module-forms/forms/edit-form-field-slideout-via-cp-screen', {
+        let slideout = new Craft.CpScreenSlideout('sprout-module-forms/forms/edit-form-field-slideout-via-cp-screen', {
             hasTabs: true,
             tabManager: '',
             params: {
                 formId: this.formId,
                 layoutElement: layoutElement,
             },
+        });
+
+        // let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
+
+        slideout.on('close', () => {
+            console.log('waaa');
         });
     },
 

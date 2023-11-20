@@ -2,22 +2,20 @@
 
 namespace BarrelStrength\Sprout\forms\controllers;
 
-use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
-use BarrelStrength\Sprout\forms\integrations\Integration;
-use BarrelStrength\Sprout\forms\integrations\IntegrationTypeHelper;
 use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use BarrelStrength\Sprout\forms\submissions\CustomFormField;
 use Craft;
 use craft\base\Element;
+use craft\elements\conditions\users\UserCondition;
 use craft\errors\WrongEditionException;
 use craft\helpers\Cp;
+use craft\helpers\Html;
 use craft\helpers\StringHelper;
-use craft\helpers\Template;
 use craft\models\FieldLayoutTab;
 use craft\models\Site;
 use craft\web\assets\conditionbuilder\ConditionBuilderAsset;
@@ -327,16 +325,52 @@ class FormsController extends BaseController
 
         $view = Craft::$app->getView();
         $view->startJsBuffer();
+
+        // Render Field Settings
+        // Render Condition Builders
+        // Render JS for condition builders
+        // we used to do this in the JS after the response but asCpScreen doesn't
+        // allow this in the same way. So we have to try to do it in the buffer.
+
         $settingsHtml = $fieldLayoutElement->getSettingsHtml();
+
+        // Just get the Field Settings, without Condition builder stuff
+        $field = $fieldLayoutElement->getField();
+        $settingsHtml = $field->getSettingsHtml();
+
+        Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
+
+        /** @var UserCondition $userCondition */
+        $userCondition = !empty($fieldLayoutElement->userCondition)
+            ? Craft::$app->conditions->createCondition($fieldLayoutElement->userCondition)
+            : Craft::createObject(UserCondition::class);
+        $userCondition->elementType = SubmissionElement::class;
+        $userCondition->sortable = true;
+        $userCondition->mainTag = 'div';
+        $userCondition->name = 'userConditionRules';
+        $userCondition->id = 'userConditionRules';
+
+        $conditionHtml = self::swapPlaceholders($userCondition->getBuilderHtml(), $layoutElementConfig['fieldUid']);
+
+        //let settingsHtml = self.swapPlaceholders(response.data.settingsHtml, response.data.fieldUid);
 
         // @featureRequest
         // Setting fieldUid throws an error if the field is just created in the layout
         // and isn't yet created in the DB, so we work around that by not setting it here
         //$fieldLayoutElement->fieldUid = $layoutElementConfig['fieldUid'];
 
-        $requiredSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
+        //$requiredSettingsHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideout', [
+        //    'fieldLayoutElement' => $fieldLayoutElement,
+        //    'field' => $field,
+        //]);
+
+        $contentHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldContent.twig', [
+            'field' => FormBuilderHelper::getFieldData($layoutElementConfig['fieldUid']),
             'fieldLayoutElement' => $fieldLayoutElement,
-            'field' => $field,
+            'fieldUid' => $layoutElementConfig['fieldUid'],
+            //'requiredSettingsHtml' => $requiredSettingsHtml,
+            'settingsHtml' => $settingsHtml,
+            'conditionHtml' => $conditionHtml,
         ]);
 
         $fieldSettingsJs = $view->clearJsBuffer();
@@ -363,13 +397,26 @@ class FormsController extends BaseController
         return $this->asCpScreen()
             ->tabs($tabs)
             ->contentTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldSlideoutCpScreen.twig', [
-                'field' => FormBuilderHelper::getFieldData($layoutElementConfig['fieldUid']),
-                'fieldLayoutElement' => $fieldLayoutElement,
-                'fieldUid' => $layoutElementConfig['fieldUid'],
-                'requiredSettingsHtml' => $requiredSettingsHtml,
-                'settingsHtml' => $settingsHtml,
+                'contentHtml' => $contentHtml,
                 'fieldSettingsJs' => $fieldSettingsJs,
             ]);
+    }
+
+    public static function swapPlaceholders($str, $sourceKey): ?string
+    {
+        $random = (string)floor(random_int(0,1) * 1000000);
+        $defaultId = 'condition' . $random;
+
+        //return str
+        //    . replace(/__ID__ /g, defaultId)
+        //    .replace(/__SOURCE_KEY__(?=-)/g, Craft . formatInputId('"' + sourceKey + '"'))
+        //    .replace(/__SOURCE_KEY__ / g, sourceKey);
+        $formatInputId = Html::id('"'.$sourceKey.'"');
+        $str = str_replace('__ID__', $defaultId, $str);
+        $str = preg_replace('/__SOURCE_KEY__(?=-)/', $formatInputId, $str);
+        $str = str_replace('__SOURCE_KEY__', $sourceKey, $str);
+
+        return $str;
     }
 
     public function actionGetFormFieldObject(): Response
