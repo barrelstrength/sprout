@@ -14,7 +14,7 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
-use BarrelStrength\Sprout\forms\captchas\FormCaptchas;
+use BarrelStrength\Sprout\forms\captchas\Captchas;
 use BarrelStrength\Sprout\forms\components\datasources\IntegrationLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
@@ -65,7 +65,7 @@ use yii\base\Module;
  * @property FrontEndFields $frontEndFields
  * @property FormIntegrations $formIntegrations
  * @property FormTypes $formTypes
- * @property FormCaptchas $formCaptchas
+ * @property Captchas $captchas
  *
  * @property Addresses $addressField
  * @property AddressFormatter $addressFormatter
@@ -121,7 +121,7 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
             'frontEndFields' => FrontEndFields::class,
             'formIntegrations' => FormIntegrations::class,
             'formTypes' => FormTypes::class,
-            'formCaptchas' => FormCaptchas::class,
+            'captchas' => Captchas::class,
 
             // Fields
             'addressField' => Addresses::class,
@@ -241,7 +241,7 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
         Event::on(
             SubmissionsController::class,
             SubmissionsController::EVENT_BEFORE_VALIDATE,
-            [SubmissionHelper::class, 'validateCaptchas']);
+            [Captchas::class, 'handleValidateCaptchas']);
 
         Event::on(
             NotificationEvents::class,

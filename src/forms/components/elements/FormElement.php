@@ -915,7 +915,7 @@ class FormElement extends Element
             return null;
         }
 
-        $captchas = FormsModule::getInstance()->formCaptchas->getAllEnabledCaptchas();
+        $captchas = FormsModule::getInstance()->captchas->getAllEnabledCaptchas();
         $captchaHtml = '';
 
         foreach ($captchas as $captcha) {

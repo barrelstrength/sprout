@@ -8,8 +8,6 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use craft\base\Model;
 
 /**
- * Class Captcha
- *
  * @property null $settings
  * @property string $captchaSettingsHtml
  * @property string $name

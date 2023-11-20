@@ -12,7 +12,7 @@ use Craft;
 use craft\events\RegisterComponentTypesEvent;
 use yii\base\Component;
 
-class FormCaptchas extends Component
+class Captchas extends Component
 {
     public const EVENT_REGISTER_CAPTCHAS = 'registerSproutCaptchas';
 
@@ -49,7 +49,7 @@ class FormCaptchas extends Component
         return $captchas;
     }
 
-    public function handleFormCaptchasEvent(OnBeforeValidateSubmissionEvent $event): void
+    public static function handleValidateCaptchas(OnBeforeValidateSubmissionEvent $event): void
     {
         if (!Craft::$app->getRequest()->getIsSiteRequest()) {
             return;
@@ -63,7 +63,7 @@ class FormCaptchas extends Component
         }
 
         /** @var Captcha[] $captchas */
-        $captchas = FormsModule::getInstance()->formCaptchas->getAllEnabledCaptchas();
+        $captchas = FormsModule::getInstance()->captchas->getAllEnabledCaptchas();
 
         foreach ($captchas as $captcha) {
             $captcha->verifySubmission($event);
