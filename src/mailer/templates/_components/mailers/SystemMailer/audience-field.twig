@@ -13,5 +13,6 @@
     selectionLabel: "Add Audience"|t('sprout-module-mailer'),
     sources: '*',
     elements: audiences,
+    errors: element.getErrors('mailerInstructionsSettings.audienceIds') ?? null,
     disabled: not audiencesExist
 }) }}

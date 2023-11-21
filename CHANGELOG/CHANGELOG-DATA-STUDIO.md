@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.5 - 2023-11-05
+
+### Fixed
+
+- Fixed translation categories in Audience Type integration
+
 ## 4.1.1 - 2023-09-14
 
 ### Fixed

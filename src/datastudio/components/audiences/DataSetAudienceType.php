@@ -21,7 +21,7 @@ class DataSetAudienceType extends AudienceType
 
     public static function displayName(): string
     {
-        return Craft::t('sprout-module-mailer', 'Data Set List');
+        return Craft::t('sprout-module-data-studio', 'Data Set List');
     }
 
     public function getColumnAttributeHtml(): string
@@ -33,7 +33,7 @@ class DataSetAudienceType extends AudienceType
         $resultsUrl = UrlHelper::cpUrl('sprout/data-studio/view/' . $dataSet->id);
 
         return '<a href="' . $resultsUrl . '" class="go">' .
-            Craft::t('sprout-module-mailer', 'Data Set') . '</a>';
+            Craft::t('sprout-module-data-studio', 'Data Set') . '</a>';
     }
 
     public function getSettingsHtml(): ?string

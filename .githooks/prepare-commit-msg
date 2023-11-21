@@ -79,10 +79,15 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
         then
             ## create a new variable that removes the matched category from the TRANSLATION_CATEGORIES array and makes the array a string
             TRANSLATION_CATEGORIES_STRING=$(printf "|%s" "${TRANSLATION_CATEGORIES[@]/$CATEGORY/}" | tr -d '[:space:]')
-            ## remove pipe from beginning of string
-            TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING:1}
+            # remove the matched category from the TRANSLATION_CATEGORIES_STRING string
+            TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING//$CATEGORY/}
             ## replace any double pipes with single pipe
             TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING//||/|}
+
+            ## remove pipe from beginning of string, if it exists (it will for the first item in our category list)
+            if [[ "$CATEGORY_FOLDER" == "datastudio" ]]; then
+                TRANSLATION_CATEGORIES_STRING=${TRANSLATION_CATEGORIES_STRING:1}
+            fi
 
             if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "(Craft(::|\.)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING))|(\|( *)t\('sprout-module-($TRANSLATION_CATEGORIES_STRING))";
             then

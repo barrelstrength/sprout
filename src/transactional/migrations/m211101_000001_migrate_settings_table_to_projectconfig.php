@@ -154,7 +154,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                     ? (int)$email['fieldLayoutId']
                     : null;
 
-                $fieldLayout = [];
+                $fieldLayout = null;
 
                 if ($fieldLayoutId) {
                     $oldTabs = (new Query())
@@ -208,7 +208,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
                         'htmlEmailTemplate' => $email['emailTemplateId'],
                     ]);
                 }
-
 
                 // Set all emailTemplateId to the new Email Type UID.
                 // This will be migrated in another migration and correct after the migration is complete.

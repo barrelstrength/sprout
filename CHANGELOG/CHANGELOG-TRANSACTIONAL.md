@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.5 - 2023-11-05
+
+### Changed
+
+- Improved migration logic around custom email template field layouts
+- Updated Notification Event tip behavior
+
 ## 4.2.2 - 2023-09-15
 
 ### Removed

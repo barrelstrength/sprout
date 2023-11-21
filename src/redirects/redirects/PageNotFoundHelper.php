@@ -149,9 +149,7 @@ class PageNotFoundHelper
                     if (empty($loopedIdsToDelete)) {
                         break;
                     }
-
-                    // Create a job for this batch
-                    $excludedIds ??= [];
+                    
                     // Call the delete redirects job, give it some delay so we don't demand
                     // all the server resources. This is most important if anybody changes the
                     // Redirect Limit setting in a massive way

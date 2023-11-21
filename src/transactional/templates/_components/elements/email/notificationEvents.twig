@@ -2,7 +2,7 @@
 
 {% set selectedNotificationEvent = className(notificationEvent) %}
 
-<div x-data="NotificationEventTip('{{ selectedNotificationEvent|e('js') }}')">
+<div>
     {{ forms.selectField({
         id: "notificationEvent",
         name: "emailVariantSettings[eventId]",
@@ -13,9 +13,6 @@
         required: true,
         toggle: true,
         targetPrefix: 'notification-event-',
-        inputAttributes: {
-            'x-on:change': 'selectedNotificationEvent = $event.target.value'
-        }
     }) }}
 
     {% for type, event in events %}
@@ -29,21 +26,17 @@
                     {% endif %}
                 {% endnamespace %}
             </div>
+
+
         {% endif %}
 
         {% if event.settings is not empty %}
             {% set eventTipHtml = event.getTipHtml() %}
 
-            {% if currentUser.admin and eventTipHtml %}
-                <template x-teleport="#sprout-notification-event-tip">
-
-                    <fieldset
-                        x-show="selectedNotificationEvent === '{{ className(event)|e('js') }}'"
-                        class="sprout-sidebar-info meta"
-                        style="margin-top:0;margin-bottom:18px!important;">
-                        {{ eventTipHtml|markdown }}
-                    </fieldset>
-                </template>
+            {% if eventTipHtml %}
+                <div id="notification-event-tip-{{ className(event)|id }}" class="field pane notification-event-tip hidden">
+                    {{ eventTipHtml|markdown }}
+                </div>
             {% endif %}
         {% endif %}
     {% endfor %}
@@ -55,4 +48,3 @@
         'craft\\web\\assets\\cp\\CpAsset'
     ]
 }) %}
-{% do sprout.modules.core.vite.register('transactional/NotificationEvents.js', false) %}
