@@ -96,7 +96,6 @@ class SettingsHelper
         $settingsRecord = null;
         try {
             foreach ($settings as $name => $setting) {
-                /** @var SettingsRecord $settingsRecord */
                 $settingsRecord = SettingsRecord::find()
                     ->select('*')
                     ->where([
@@ -106,7 +105,7 @@ class SettingsHelper
                     ])
                     ->one();
 
-                if (!$settingsRecord) {
+                if (!$settingsRecord instanceof SettingsRecord) {
                     $settingsRecord = new SettingsRecord();
                     $settingsRecord->siteId = $siteId;
                     $settingsRecord->moduleId = $moduleId;

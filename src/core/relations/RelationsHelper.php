@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\core\relations;
 
 use Craft;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\commerce\elements\Product;
 use craft\elements\Asset;
 use craft\elements\Category;
@@ -23,7 +24,7 @@ class RelationsHelper
      * that allows a user or code request getting relations to define
      * which elements should be included in the response
      */
-    public static function getSourceElementRelations(Element $element, array $excludeSourceElementTypes = [], array $onlySourceElementTypes = []): array
+    public static function getSourceElementRelations(ElementInterface $element, array $excludeSourceElementTypes = [], array $onlySourceElementTypes = []): array
     {
         $relations = [];
 
