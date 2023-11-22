@@ -2,11 +2,14 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
+use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
+use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\events\DefineFieldLayoutElementsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\helpers\ProjectConfig;
+use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 
 class MailerHelper
@@ -69,11 +72,7 @@ class MailerHelper
         $mailerConfigs = ProjectConfig::unpackAssociativeArray($settings->mailers);
 
         foreach ($mailerConfigs as $uid => $config) {
-            $type = $config['type'];
-            unset($config['type']);
-
-            $mailers[$uid] = new $type($config);
-            $mailers[$uid]->uid = $uid;
+            $mailers[$uid] = self::getMailerModel($config, $uid);
         }
 
         return $mailers ?? [];
@@ -84,6 +83,29 @@ class MailerHelper
         $mailers = self::getMailers();
 
         return $mailers[$uid] ?? null;
+    }
+
+    public static function getMailerModel(array $mailerConfig, string $uid = null): ?Mailer
+    {
+        $type = $mailerConfig['type'];
+
+        $config = [];
+
+        if (isset($mailerConfig['fieldLayouts']) && is_array($mailerConfig['fieldLayouts'])) {
+            $config = reset($mailerConfig['fieldLayouts']);
+        }
+
+        $config['type'] = $type;
+
+        $fieldLayout = FieldLayout::createFromConfig($config);
+        $mailer = new $type(array_merge([
+            'name' => $mailerConfig['name'],
+            'uid' => $uid ?? StringHelper::UUID(),
+        ], $mailerConfig['settings'] ?? []));
+
+        $mailer->setFieldLayout($fieldLayout);
+
+        return $mailer;
     }
 
     public static function saveMailers(array $mailers): bool

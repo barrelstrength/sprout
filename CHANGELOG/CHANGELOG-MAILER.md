@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.6 - UNRELEASED
+
+### Fixed
+
+- Fixed dynamic recipient validation when editing an Email Element
+- Fixed issue where sender and reply to values were not being populated for Craft sender behavior
+- Fixed retrieval of Mailer Settings in settings area
+
 ## 4.1.5 - 2023-11-05
 
 ### Changed
