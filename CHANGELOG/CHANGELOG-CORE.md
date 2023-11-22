@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.6 - UNRELEASED
+
+### Removed
+
+- Removed `BarrelStrength\Sprout\core\components\elements\conditions\DraftConditionRule`
+- Removed `BarrelStrength\Sprout\core\components\elements\conditions\RevisionConditionRule`
+
 ## 4.1.2 - 2023-09-15
 
 ### Fixed
