@@ -396,7 +396,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     {
         if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT) {
             $mailSettings = App::mailSettings();
-            $settings['sender'] = $mailSettings->fromName . ' <' . $mailSettings->fromEmail . '>';
+            $settings['fromName'] = $mailSettings->fromName;
+            $settings['fromEmail'] = $mailSettings->fromEmail;
             $settings['replyToEmail'] = $mailSettings->replyToEmail ?? $mailSettings->fromEmail;
         }
 

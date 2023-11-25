@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
+use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsSettings;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\base\Element;
@@ -265,15 +266,26 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailer = $mailer;
     }
 
-    public function getMailerInstructions(): MailerInstructionsInterface
+    /**
+     * Default behavior will grab the Mailer Instructions Settings from the Email Element
+     * or, if we are sending a test, we can pass in a test configuration of the Mailer Instructions Settings
+     */
+    public function getMailerInstructions(array $mailerInstructionsTestSettings = null): MailerInstructionsInterface
     {
         if ($this->_mailerInstructionsSettingsModel !== null) {
             return $this->_mailerInstructionsSettingsModel;
         }
 
         $mailer = $this->getMailer();
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($this->mailerInstructionsSettings);
+
+        if ($mailerInstructionsTestSettings !== null) {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsTestSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($mailerInstructionsTestSettings);
+        } else {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($this->mailerInstructionsSettings);
+        }
+
         $mailerInstructionsSettings->setAttributes($preparedMailerInstructionsSettings, false);
 
         $this->_mailerInstructionsSettingsModel = $mailerInstructionsSettings;
@@ -698,12 +710,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function validateMailerInstructionsSettings(): void
     {
-        $mailer = $this->getMailer();
-
-        /** @var Model $mailerInstructionsSettings */
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
-        $mailerInstructionsSettings->mailer = $mailer;
+        /** @var MailerInstructionsSettings $mailerInstructionsSettings */
+        $mailerInstructionsSettings = $this->getMailerInstructions();
 
         if (!$mailerInstructionsSettings->validate()) {
             // Adding the error to the Element makes sure the Mailer tab is highlighted with errors

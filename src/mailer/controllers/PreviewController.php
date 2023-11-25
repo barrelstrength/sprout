@@ -93,9 +93,7 @@ class PreviewController extends Controller
             'email' => $currentUser->email,
         ]);
 
-        // @todo - Can we abstract how we call SystemMailer::_buildMessage() so we can do the same here?
-        $mailer = $email->getMailer();
-        $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
+        $mailerInstructionsTestSettings = $email->getMailerInstructions();
         $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
 
         $emailType = $email->getEmailType();
