@@ -9,5 +9,7 @@ namespace BarrelStrength\Sprout\mailer\mailers;
  */
 interface MailerInstructionsInterface
 {
+    public function setMailer(?Mailer $mailer): void;
 
+    public function getMailer(): ?Mailer;
 }

@@ -42,18 +42,6 @@ trait SystemMailerInstructionsTrait
      */
     public ?array $audienceIds = null;
 
-    protected ?SystemMailer $mailer = null;
-
-    public function setMailer(?SystemMailer $mailer): void
-    {
-        $this->mailer = $mailer;
-    }
-
-    public function getMailer(): ?SystemMailer
-    {
-        return $this->mailer;
-    }
-
     public function getSenderAsString(): ?string
     {
         if (!$this->fromName || !$this->fromEmail) {
