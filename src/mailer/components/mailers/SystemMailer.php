@@ -119,7 +119,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         return $html;
     }
 
-    public function getSendTestModalHtml(EmailElement $email = null): string
+    public function getSendTestModalHtml(EmailElement $email): string
     {
         $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
 
