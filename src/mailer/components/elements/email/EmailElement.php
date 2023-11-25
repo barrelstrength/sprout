@@ -253,7 +253,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailVariant = $this->getEmailVariant();
 
-        if ($emailType->mailerUid === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
+        if ($emailType->mailerUid === MailerHelper::CRAFT_MAILER_SETTINGS) {
             return $emailVariant::getDefaultMailer();
         }
 
