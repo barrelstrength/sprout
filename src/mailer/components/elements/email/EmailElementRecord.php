@@ -13,10 +13,10 @@ use yii\db\ActiveQueryInterface;
  * @property string $subjectLine
  * @property string $preheaderText
  * @property string $defaultMessage
- * @property string $emailTypeUid
- * @property string $mailerInstructionsSettings
  * @property string $emailVariantType
  * @property string $emailVariantSettings
+ * @property string $mailerInstructionsSettings
+ * @property string $emailTypeUid
  * @property DateTime $dateCreated
  * @property DateTime $dateUpdated
  * @property string $uid
