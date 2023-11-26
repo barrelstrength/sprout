@@ -88,6 +88,7 @@ class MailerHelper
     public static function getMailerModel(array $mailerConfig, string $uid = null): ?Mailer
     {
         $type = $mailerConfig['type'];
+        unset($mailerConfig['type']);
 
         $config = [];
 
@@ -101,7 +102,7 @@ class MailerHelper
         $mailer = new $type(array_merge([
             'name' => $mailerConfig['name'],
             'uid' => $uid ?? StringHelper::UUID(),
-        ], $mailerConfig['settings'] ?? []));
+        ], $mailerConfig));
 
         $mailer->setFieldLayout($fieldLayout);
 
