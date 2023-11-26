@@ -121,7 +121,7 @@ class SentEmails extends Component
         } else {
             $sentEmail->sent = false;
             $sentEmailDetails->deliveryStatus = Craft::t('sprout-module-sent-email', 'Error');
-            $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Craft unable to send email.');
+            $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Craft unable to send email. Check logs for more info.');
         }
 
         // SENDER INFO
