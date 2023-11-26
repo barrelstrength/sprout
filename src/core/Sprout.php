@@ -19,8 +19,10 @@ use Craft;
 use craft\base\conditions\BaseCondition;
 use craft\config\BaseConfig;
 use craft\console\Application as ConsoleApplication;
+use craft\console\controllers\MigrateController;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterCpSettingsEvent;
+use craft\events\RegisterMigratorEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -188,6 +190,17 @@ class Sprout extends Module
             BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
             [ConditionHelper::class, 'registerConditionRuleTypes']
         );
+
+        Craft::$app->onInit(function() {
+            $modules = self::getInstance()->coreModules->getAvailableModules();
+
+            foreach ($modules as $module) {
+                if ($module::hasMigrations()) {
+                    $instance = new $module($module);
+                    $instance->registerMigrationTrack();
+                }
+            }
+        });
     }
 
     public function createSettingsModel(): SproutSettings
