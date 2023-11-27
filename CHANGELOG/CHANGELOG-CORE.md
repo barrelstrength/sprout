@@ -6,7 +6,7 @@
 
 - Updated sidebar nav logic to default to URL of first nav item if only a single subnav item is found
 
-## 4.1.6 - UNRELEASED
+## 4.1.6 - 2023-11-27
 
 ### Removed
 

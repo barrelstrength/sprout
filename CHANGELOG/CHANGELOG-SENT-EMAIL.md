@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.1.6 - UNRELEASED
+## 4.1.6 - 2023-11-27
 
 ### Added
 
