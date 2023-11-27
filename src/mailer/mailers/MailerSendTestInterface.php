@@ -20,5 +20,5 @@ interface MailerSendTestInterface
      *
      * {% namespace 'mailerInstructionsSettings' %}
      */
-    public function getSendTestModalHtml(EmailElement $email = null): string;
+    public function getSendTestModalHtml(EmailElement $email): string;
 }

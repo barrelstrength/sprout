@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderT
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
@@ -253,7 +252,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailVariant = $this->getEmailVariant();
 
-        if ($emailType->mailerUid === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
+        if ($emailType->mailerUid === MailerHelper::CRAFT_MAILER_SETTINGS) {
             return $emailVariant::getDefaultMailer();
         }
 
@@ -265,15 +264,28 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailer = $mailer;
     }
 
-    public function getMailerInstructions(): MailerInstructionsInterface
+    /**
+     * Default behavior will grab the Mailer Instructions Settings from the Email Element
+     * or, if we are sending a test, we can pass in a test configuration of the Mailer Instructions Settings
+     */
+    public function getMailerInstructions(array $mailerInstructionsTestSettings = null): MailerInstructionsInterface
     {
         if ($this->_mailerInstructionsSettingsModel !== null) {
             return $this->_mailerInstructionsSettingsModel;
         }
 
         $mailer = $this->getMailer();
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
+
+        if ($mailerInstructionsTestSettings !== null) {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsTestSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($mailerInstructionsTestSettings);
+        } else {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($this->mailerInstructionsSettings);
+        }
+
+        $mailerInstructionsSettings->setAttributes($preparedMailerInstructionsSettings, false);
+        $mailerInstructionsSettings->setMailer($mailer);
 
         $this->_mailerInstructionsSettingsModel = $mailerInstructionsSettings;
 
@@ -422,7 +434,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         //    return $this->_fieldLayout;
         //}
 
-        $twigExpressionMessage = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
+        $twigExpressionMessage = Craft::t('sprout-module-mailer', 'This can use Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
 
         $fieldLayout = new FieldLayout([
             'type' => static::class,
@@ -694,12 +706,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function validateMailerInstructionsSettings(): void
     {
-        $mailer = $this->getMailer();
-
         /** @var MailerInstructionsSettings $mailerInstructionsSettings */
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
-        $mailerInstructionsSettings->setMailer($mailer);
+        $mailerInstructionsSettings = $this->getMailerInstructions();
 
         if (!$mailerInstructionsSettings->validate()) {
             // Adding the error to the Element makes sure the Mailer tab is highlighted with errors

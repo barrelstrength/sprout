@@ -14,6 +14,10 @@ use craft\base\Model;
  */
 interface MailerInstructionsInterface
 {
+    public function setMailer(?Mailer $mailer): void;
+
+    public function getMailer(): ?Mailer;
+
     /**
      * Gives the Mailer instructions a chance to modify the subject line
      */

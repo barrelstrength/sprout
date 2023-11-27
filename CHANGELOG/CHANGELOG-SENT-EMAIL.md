@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.6 - UNRELEASED
+
+### Added
+
+- Added support for capturing Sent Emails that fail while rendering templates
+
 ## 4.1.0 - 2023-09-05
 
 ### Added

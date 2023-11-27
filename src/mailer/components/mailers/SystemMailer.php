@@ -26,6 +26,7 @@ use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
 use Exception;
 use yii\base\ErrorException;
+use yii\mail\MailEvent;
 use yii\mail\MessageInterface;
 
 abstract class SystemMailer extends Mailer implements MailerSendTestInterface
@@ -35,6 +36,8 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
     public const SENDER_BEHAVIOR_CUSTOM = 'custom';
 
     public const SENDER_BEHAVIOR_CURATED = 'curated';
+
+    public const INTERNAL_SPROUT_EVENT_SYSTEM_MAILER_SEND_EXCEPTION = 'onInternalSproutSystemMailerSendException';
 
     public string $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;
 
@@ -120,7 +123,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
         return $html;
     }
 
-    public function getSendTestModalHtml(EmailElement $email = null): string
+    public function getSendTestModalHtml(EmailElement $email): string
     {
         $testToEmailAddress = Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
 
@@ -132,6 +135,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
 
         return Craft::$app->getView()->renderTemplate('sprout-module-mailer/_components/mailers/SystemMailer/send-test-fields.twig', [
             'email' => $email,
+            'mailerInstructionsSettings' => $email->getMailerInstructions(),
             'warningMessage' => $warningMessage ?? '',
         ]);
     }
@@ -185,6 +189,32 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             } catch (Exception $e) {
                 $recipient->addError($e->getMessage());
                 $mailingList->markAsFailed($recipient);
+
+                Craft::error(
+                    sprintf('Unable to send email: %s', $e->getMessage()),
+                    __METHOD__
+                );
+
+                // Make sure we have a subject line to use for the Sent Email Element
+                // title even if _buildMessage fails above
+                try {
+                    $message->setSubject($email->subjectLine);
+                } catch (Exception $e) {
+
+                    Craft::error(
+                        sprintf('Unable to parse subject line: %s', $e->getMessage()),
+                        __METHOD__
+                    );
+
+                    $message->setSubject('**Invalid Subject Line. See logs.**');
+                }
+
+                $event = new MailEvent([
+                    'message' => $message,
+                    'isSuccessful' => false,
+                ]);
+
+                $this->trigger(self::INTERNAL_SPROUT_EVENT_SYSTEM_MAILER_SEND_EXCEPTION, $event);
             }
         }
 
@@ -386,6 +416,18 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
                 $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }
         }
+    }
+
+    public function prepareMailerInstructionSettingsForEmail(array $settings): array
+    {
+        if ($this->senderEditBehavior === self::SENDER_BEHAVIOR_CRAFT) {
+            $mailSettings = App::mailSettings();
+            $settings['fromName'] = $mailSettings->fromName;
+            $settings['fromEmail'] = $mailSettings->fromEmail;
+            $settings['replyToEmail'] = $mailSettings->replyToEmail ?? $mailSettings->fromEmail;
+        }
+
+        return $settings;
     }
 
     public function prepareMailerInstructionSettingsForDb(array $settings): array

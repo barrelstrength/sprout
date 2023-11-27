@@ -128,7 +128,7 @@ class MailerController extends Controller
         if (!$mailer instanceof MailerSendTestInterface) {
             throw new ElementNotFoundException('Incorrect mailer type.');
         }
-        \Craft::dd($email->getMailerInstructions());
+
         return $this->asJson([
             'success' => true,
             'html' => $mailer->getSendTestModalHtml($email),
@@ -142,14 +142,12 @@ class MailerController extends Controller
 
         $request = Craft::$app->getRequest();
         $emailId = $request->getRequiredBodyParam('emailId');
-        $settings = $request->getRequiredBodyParam('mailerInstructionsSettings');
+        $mailerInstructionsSettings = $request->getRequiredBodyParam('mailerInstructionsSettings');
 
         /** @var EmailElement $email */
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
 
-        $mailer = $email->getMailer();
-        $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
-        $mailerInstructionsTestSettings->setAttributes($settings, false);
+        $mailerInstructionsTestSettings = $email->getMailerInstructions($mailerInstructionsSettings);
 
         if (!$mailerInstructionsTestSettings->validate()) {
             return $this->asJson([
@@ -157,6 +155,8 @@ class MailerController extends Controller
                 'errors' => $mailerInstructionsTestSettings->getErrors(),
             ]);
         }
+
+        $mailer = $email->getMailer();
 
         try {
             $mailer->send($email, $mailerInstructionsTestSettings);
@@ -179,14 +179,16 @@ class MailerController extends Controller
 
         $request = Craft::$app->getRequest();
         $emailId = $request->getRequiredBodyParam('emailId');
-        $settings = $request->getRequiredBodyParam('mailerInstructionsSettings');
+        $mailerInstructionsSettings = $request->getRequiredBodyParam('mailerInstructionsSettings');
 
         /** @var EmailElement $email */
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
 
-        $mailer = $email->getMailer();
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($settings, false);
+        if ($mailerInstructionsSettings) {
+            $email->mailerInstructionsSettings = $mailerInstructionsSettings;
+        }
+
+        $mailerInstructionsSettings = $email->getMailerInstructions();
 
         if (!$mailerInstructionsSettings->validate()) {
             return $this->asJson([
@@ -194,6 +196,8 @@ class MailerController extends Controller
                 'errors' => $mailerInstructionsSettings->getErrors(),
             ]);
         }
+
+        $mailer = $email->getMailer();
 
         try {
             $mailer->send($email, $mailerInstructionsSettings);

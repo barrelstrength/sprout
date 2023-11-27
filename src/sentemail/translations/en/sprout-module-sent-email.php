@@ -54,5 +54,6 @@ return [
     'Original Email Info' => 'Original Email Info',
     'Info' => 'Info',
     'Failed' => 'Failed',
-    'ID' => 'ID'
+    'ID' => 'ID',
+    'Craft unable to send email. Check logs for more info.' => 'Craft unable to send email. Check logs for more info.'
 ];

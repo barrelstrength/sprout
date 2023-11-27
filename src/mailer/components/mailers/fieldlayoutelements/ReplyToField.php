@@ -76,11 +76,18 @@ class ReplyToField extends BaseNativeField
             return $selectField;
         }
 
+        // custom
+        if (!$element->subjectLine) {
+            $replyToEmail = $mailerInstructionsSettings->replyToEmail ?? $mailer->defaultReplyToEmail;
+        } else {
+            $replyToEmail = $mailerInstructionsSettings->replyToEmail;
+        }
+
         return Craft::$app->getView()->renderTemplate('_includes/forms/text', [
             'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',
             'type' => 'email',
-            'value' => $mailerInstructionsSettings->replyToEmail,
-            'placeholder' => $mailerInstructionsSettings->sender['fromEmail'] ?? null,
+            'value' => $replyToEmail,
+            'placeholder' => $mailerInstructionsSettings->fromEmail,
         ]);
     }
 

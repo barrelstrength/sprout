@@ -13,6 +13,7 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\sentemail\components\elements\SentEmailElement;
 use BarrelStrength\Sprout\sentemail\sentemail\SentEmails;
@@ -145,9 +146,13 @@ class SentEmailModule extends Module implements SproutModuleInterface, Migration
 
         Event::on(
             BaseMailer::class,
-            BaseMailer::EVENT_AFTER_SEND, [
-            $this->sentEmails, 'handleLogSentEmail',
-        ]);
+            BaseMailer::EVENT_AFTER_SEND,
+            [$this->sentEmails, 'handleLogSentEmail']);
+
+        Event::on(
+            SystemMailer::class,
+            SystemMailer::INTERNAL_SPROUT_EVENT_SYSTEM_MAILER_SEND_EXCEPTION,
+            [$this->sentEmails, 'handleLogSentEmail']);
     }
 
     public function createSettingsModel(): SentEmailSettings

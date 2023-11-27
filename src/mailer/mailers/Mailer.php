@@ -112,6 +112,11 @@ abstract class Mailer extends SavableComponent implements MailerInterface
         return $config;
     }
 
+    public function prepareMailerInstructionSettingsForEmail(array $settings): array
+    {
+        return $settings;
+    }
+
     public function prepareMailerInstructionSettingsForDb(array $settings): array
     {
         return $settings;
