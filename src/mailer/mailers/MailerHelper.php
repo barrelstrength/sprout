@@ -85,26 +85,15 @@ class MailerHelper
         return $mailers[$uid] ?? null;
     }
 
-    public static function getMailerModel(array $mailerConfig, string $uid = null): ?Mailer
+    public static function getMailerModel(array $config, string $uid = null): ?Mailer
     {
-        $type = $mailerConfig['type'];
-        unset($mailerConfig['type']);
+        $type = $config['type'];
+        unset($config['type']);
 
-        $config = [];
-
-        if (isset($mailerConfig['fieldLayouts']) && is_array($mailerConfig['fieldLayouts'])) {
-            $config = reset($mailerConfig['fieldLayouts']);
-        }
-
-        $config['type'] = $type;
-
-        $fieldLayout = FieldLayout::createFromConfig($config);
         $mailer = new $type(array_merge([
-            'name' => $mailerConfig['name'],
+            'name' => $config['name'],
             'uid' => $uid ?? StringHelper::UUID(),
-        ], $mailerConfig));
-
-        $mailer->setFieldLayout($fieldLayout);
+        ], $config));
 
         return $mailer;
     }
