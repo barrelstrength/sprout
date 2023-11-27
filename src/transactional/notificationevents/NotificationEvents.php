@@ -18,7 +18,6 @@ use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
-use craft\elements\Entry;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Json;
 use yii\base\Event;
@@ -36,6 +35,8 @@ class NotificationEvents extends Component
     public const INTERNAL_SPROUT_EVENT_REGISTER_NOTIFICATION_EVENTS = 'registerInternalSproutNotificationEvents';
 
     public const EVENT_REGISTER_NOTIFICATION_EVENTS = 'registerSproutNotificationEvents';
+
+    public const EVENT_REGISTER_NOTIFICATION_EVENT_RELATIONS_TYPES = 'registerSproutNotificationEventRelationsTypes';
 
     private ?array $_notificationEventsTypes = null;
 
@@ -88,8 +89,8 @@ class NotificationEvents extends Component
 
         uasort($types, static function($a, $b): int {
             /**
-             * @var $a NotificationEvent
-             * @var $b NotificationEvent
+             * @var NotificationEvent $a
+             * @var NotificationEvent $b
              */
             return $a::displayName() <=> $b::displayName();
         });
@@ -112,7 +113,6 @@ class NotificationEvents extends Component
         $enabledEmailEventTypes = $this->getEnabledNotificationEventTypes();
 
         foreach ($enabledEmailEventTypes as $notificationEventType) {
-
             if ($notificationEventType instanceof ManualNotificationEvent) {
                 continue;
             }
@@ -177,6 +177,7 @@ class NotificationEvents extends Component
     {
         $currentSite = Craft::$app->getSites()->getCurrentSite();
 
+        /** @var TransactionalEmailElement[] $enabledNotificationEmails */
         $enabledNotificationEmails = TransactionalEmailElement::find()
             ->status(Element::STATUS_ENABLED)
             ->siteId($currentSite->id)
@@ -193,6 +194,17 @@ class NotificationEvents extends Component
             });
 
         return $matchedNotificationEmails;
+    }
+
+    public function getNotificationEventRelationsTypes(): array
+    {
+        $event = new RegisterComponentTypesEvent([
+            'types' => [],
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_NOTIFICATION_EVENT_RELATIONS_TYPES, $event);
+
+        return $event->types;
     }
 
     private function isNotificationEventContext(): bool

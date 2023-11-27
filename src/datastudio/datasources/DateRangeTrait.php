@@ -3,16 +3,15 @@
 namespace BarrelStrength\Sprout\datastudio\datasources;
 
 use craft\validators\DateTimeValidator;
-use DateTime;
 use DateTimeInterface;
 
 trait DateRangeTrait
 {
     public string $dateRange = DateRangeHelper::RANGE_CUSTOM;
 
-    public ?DateTime $startDate = null;
+    public ?DateTimeInterface $startDate = null;
 
-    public ?DateTime $endDate = null;
+    public ?DateTimeInterface $endDate = null;
 
     public function getStartDate(): ?DateTimeInterface
     {

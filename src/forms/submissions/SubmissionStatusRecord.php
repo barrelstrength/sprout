@@ -6,10 +6,10 @@ use BarrelStrength\Sprout\forms\db\SproutTable;
 use craft\db\ActiveRecord;
 
 /**
- * @property int $id     ID
+ * @property int $id
  * @property string $cpEditUrl
- * @property string $name   Name
- * @property string $handle Handle
+ * @property string $name
+ * @property string $handle
  * @property string $color
  * @property int $sortOrder
  * @property bool $isDefault

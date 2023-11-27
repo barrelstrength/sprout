@@ -34,7 +34,7 @@ class m211101_000002_update_field_settings extends Migration
 
     public function removeRetiredFieldTypes(): void
     {
-        // @todo
+        // @todo = review
         $notesFieldIds = (new Query())
             ->select(['id'])
             ->from('{{%fields}}')

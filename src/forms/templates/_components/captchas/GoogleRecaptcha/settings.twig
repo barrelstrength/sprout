@@ -1,0 +1,127 @@
+{% import "_includes/forms" as forms %}
+
+{% macro configWarning(setting) -%}
+    {{ "This is being overridden by the {setting} config setting."|t('sprout-module-forms', {
+        setting: setting
+    })|raw }}
+{%- endmacro %}
+
+{% from _self import configWarning %}
+
+{% set captchaType = className(captcha) %}
+{% set recaptchaType = settings.recaptchaType ?? 'v2_checkbox' %}
+
+{{ forms.selectField({
+    label: 'Type'|t('sprout-module-forms'),
+    instructions: 'Select the type of reCAPTCHA to use. Manage your <a href="{url}">Google reCAPTCHA and API key settings</a>.'|t('sprout-module-forms', {
+        url: 'https://www.google.com/recaptcha/admin'
+    }),
+    id: 'recaptchaType',
+    name: 'captchaSettings['~captchaType~'][recaptchaType]',
+    required: true,
+    toggle: true,
+    targetPrefix: 'badge-settings-',
+    value: recaptchaType,
+    options: [{
+        value: "v2_checkbox",
+        label: "reCAPTCHA v2 - “I’m not a robot” Checkbox",
+    },{
+        value: "v2_invisible",
+        label: "reCAPTCHA v2 - Invisible reCAPTCHA badge",
+    }],
+    warning: config.recaptchaType is defined ? configWarning('recaptchaType')
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Site Key'|t('sprout-module-forms'),
+    id: 'siteKey',
+    name: 'captchaSettings['~captchaType~'][siteKey]',
+    suggestEnvVars: true,
+    required: true,
+    errors: null,
+    value: settings['siteKey'] ?? null,
+    warning: config.siteKey is defined ? configWarning('siteKey')
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Secret key'|t('sprout-module-forms'),
+    id: 'secretKey',
+    name: 'captchaSettings['~captchaType~'][secretKey]',
+    suggestEnvVars: true,
+    required: true,
+    value: settings['secretKey'] ?? null,
+    warning: config.secretKey is defined ? configWarning('secretKey')
+}) }}
+
+{{ forms.selectField({
+    label: "Theme"|t('sprout-module-forms'),
+    name: 'captchaSettings['~captchaType~'][theme]',
+    value: settings['theme'] ?? 'light',
+    options: [{
+        value: 'light',
+        label: 'Light',
+    }, {
+        value: 'dark',
+        label: 'Dark',
+    }],
+    warning: config.theme is defined ? configWarning('theme')
+}) }}
+
+<div id="badge-settings-v2_checkbox"{% if recaptchaType != 'v2_checkbox' %} class="hidden"{% endif %}>
+    {{ forms.selectField({
+        label: "Size"|t('sprout-module-forms'),
+        name: 'captchaSettings['~captchaType~'][size]',
+        value: settings['size'] ?? 'normal',
+        options: [{
+            value: 'normal',
+            label: 'Normal',
+        }, {
+            value: 'compact',
+            label: 'Compact',
+        }],
+        warning: config.size is defined ? configWarning('size')
+    }) }}
+</div>
+
+<div id="badge-settings-v2_invisible"{% if recaptchaType != 'v2_invisible' %} class="hidden"{% endif %}>
+    {{ forms.selectField({
+        label: "Badge Type"|t('sprout-module-forms'),
+        instructions: 'Select the type of badge to display. Select an "Inline" option to position the badge with CSS.'|t('sprout-module-forms'),
+        id: 'badge',
+        name: 'captchaSettings['~captchaType~'][badge]',
+        value: settings['badge'] ?? 'bottomright',
+        options: [{
+            value: 'bottomright',
+            label: 'Bottom-right',
+        }, {
+            value: 'bottomleft',
+            label: 'Bottom-left',
+        }, {
+            value: 'inline-badge',
+            label: 'Inline - Badge',
+        }, {
+            value: 'inline-text',
+            label: 'Inline - Text',
+        }],
+        warning: config.badge is defined ? configWarning('badge')
+    }) }}
+</div>
+
+{{ forms.selectField({
+    label: "Fallback Language"|t('sprout-module-forms'),
+    instructions: "The language to use when displaying reCAPTCHA if no matching Craft locale is found when loading the page."|t('sprout-module-forms'),
+    id: 'language',
+    name: 'captchaSettings['~captchaType~'][language]',
+    value: settings['language'] ?? 'en',
+    options: languageOptions,
+    warning: config.language is defined ? configWarning('language')
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Disable CSS',
+    instructions: 'CSS is used to display HTML5 validation. Disable CSS if you wish to manage CSS manually.',
+    name: 'captchaSettings['~captchaType~'][disableCss]',
+    on: settings['disableCss'] ?? false,
+    onLabel: "Enable"|t('sprout-module-forms'),
+    warning: config.disableCss is defined ? configWarning('disableCss')
+}) }}

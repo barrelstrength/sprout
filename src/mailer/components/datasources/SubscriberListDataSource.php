@@ -64,6 +64,7 @@ class SubscriberListDataSource extends DataSource
 
     public function getSettingsHtml(array $settings = []): ?string
     {
+        /** @var AudienceElement[] $audiences */
         $audiences = AudienceElement::find()
             ->type(SubscriberListAudienceType::class)
             ->all();

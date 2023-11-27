@@ -14,21 +14,25 @@ class SitemapsMetadataHelper
 {
     public static function getSitemapMetadataByUid($sitemapMetadataUid, Site $site): ?SitemapMetadataRecord
     {
-        $query = SitemapMetadataRecord::find()
-            ->where(['uid' => $sitemapMetadataUid])
-            ->andWhere(['siteId' => $site->id]);
-
-        return $query->one();
-    }
-    
-    public static function getXmlSitemapMetadataByUid($sitemapMetadataUid, Site $site): ?SitemapMetadataRecord
-    {
-        $query = SitemapMetadataRecord::find()
+        /** @var SitemapMetadataRecord $record */
+        $record = SitemapMetadataRecord::find()
             ->where(['uid' => $sitemapMetadataUid])
             ->andWhere(['siteId' => $site->id])
-            ->andWhere(['enabled' => true]);
+            ->one();
 
-        return $query->one();
+        return $record;
+    }
+
+    public static function getXmlSitemapMetadataByUid($sitemapMetadataUid, Site $site): ?SitemapMetadataRecord
+    {
+        /** @var SitemapMetadataRecord $record */
+        $record = SitemapMetadataRecord::find()
+            ->where(['uid' => $sitemapMetadataUid])
+            ->andWhere(['siteId' => $site->id])
+            ->andWhere(['enabled' => true])
+            ->one();
+
+        return $record;
     }
 
     public static function getPaginatedSitemapUrls(array &$sitemapIndexPages, SitemapMetadataRecord $sitemapMetadata, $totalElements): void

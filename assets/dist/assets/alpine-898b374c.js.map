@@ -1,0 +1,1 @@
+{"version":3,"file":"alpine-898b374c.js","sources":["../../src/core/SproutAlpine.js"],"sourcesContent":["import Alpine from 'alpinejs';\n\nwindow.Alpine = Alpine;\n\nAlpine.start();\n"],"names":["Alpine"],"mappings":"wCAEA,OAAO,OAASA,EAEhBA,EAAO,MAAO"}

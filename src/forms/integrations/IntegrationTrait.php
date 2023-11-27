@@ -55,4 +55,8 @@ trait IntegrationTrait
      * Statement that gets evaluated to true/false to determine this Integration will be submitted
      */
     public bool $sendRule = false;
+
+    public ?array $conditionRules = null;
+
+    public ?string $uid = null;
 }

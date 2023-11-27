@@ -86,7 +86,6 @@ class PhoneFormFieldData extends Model
         $phoneUtil = PhoneNumberUtil::getInstance();
 
         try {
-
             $phoneNumber = $phoneUtil->parse($this->phone, $this->country);
 
             if (!$phoneNumber) {

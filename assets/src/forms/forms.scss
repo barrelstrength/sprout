@@ -1,3 +1,9 @@
+@import "node_modules/craftcms-sass/_mixins.scss";
+
+#form-builder-layout .sprout-mediathumb svg {
+    fill: #607d9f;
+}
+
 .sprout-forms.examples .field > .warning {
     font-size: 1em;
 }
@@ -48,14 +54,6 @@
     position: absolute;
     right: 100%;
     top: 0;
-}
-
-.field.sproutforms-integration-row {
-    align-items: center;
-}
-
-.field.sproutforms-integration-row .heading {
-    flex: 0 0 80%;
 }
 
 .sproutforms-exampleinput-address,
@@ -182,4 +180,66 @@ table.editable tbody tr td {
 
 table.editable tbody tr td.formField .select:not(.selectize):after {
     content: "";
+}
+
+
+#form-workflow-tab {
+    flex: 0 0 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: var(--m);
+    margin-top: var(--neg-padding);
+    margin-bottom: var(--neg-padding);
+    margin-right: var(--neg-padding);
+    //border: 0;
+    //box-shadow: none;
+}
+
+$detailsWidth: 350px;
+
+#form-workflow-sidebar {
+    border-left: 1px solid $grey050;
+
+    flex: 0 0 ($detailsWidth);
+    box-sizing: border-box;
+    //border-left: 1px solid #ccc;
+    padding: var(--m);
+    padding-top: var(--xl);
+    padding-bottom: var(--xl);
+}
+
+#form-workflow-content {
+    flex: 1 1 calc(100% - #{$detailsWidth} - var(--m));
+
+    padding: var(--m);
+    padding-top: var(--xl);
+    padding-bottom: var(--xl);
+}
+
+
+body.sprout-new-form #main-content:not(.has-sidebar):not(.has-details) #content-container {
+    margin: var(--xl) auto auto;
+    max-width: 450px;
+}
+#content .sprout-new-form-content header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+}
+#content .sprout-new-form-content header h2 {
+    font-size: 24px;
+    font-weight: 400;
+    margin-top: 0;
+}
+#content .sprout-new-form-content header p {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+#content .sprout-new-form-content .buttons .btn {
+    margin-left: auto;
 }

@@ -9,6 +9,8 @@
 {% set websiteIdentity = globals.identity %}
 {% set maxDescriptionLength = sprout.modules.meta.elementMetadata.getDescriptionLength() %}
 
+{% set isMultiSite = craft.app.getIsMultiSite() %}
+
 {% set websiteIdentityTypes = [
     { label: "Organization", value: "Organization" },
     { label: "Person", value: "Person" }
@@ -40,16 +42,19 @@
         {% set redirectUrl = craft.app.request.pathInfo~'?site='~currentSite.handle %}
         {{ redirectInput(redirectUrl) }}
 
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Name"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'globals'
+        }, 'meta-name') }}
+
         {{ forms.textField({
-            label: "Name"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Name"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                openGraph: true,
-                twitterCard: true,
-                priority: 'globals'
-            }),
+            label: "Name"|t('sprout-module-meta'),
             instructions: "The preferred name of your website."|t('sprout-module-meta'),
+            id: 'meta-name',
             name: 'meta[globals][identity][name]',
             value: websiteIdentity['name'] is defined ? websiteIdentity.name : null,
             errors: '',
@@ -58,7 +63,8 @@
             showCharsLeft: true,
             required: true,
             placeholder: siteName,
-            class: 'nicetext'
+            class: 'nicetext',
+            translatable: isMultiSite,
         }) }}
 
         {% set hasAlternateName = websiteIdentity['alternateName'] is defined and websiteIdentity.alternateName %}
@@ -68,58 +74,70 @@
             name: 'hasNameField',
             toggle: 'alternate-name-container',
             reverseToggle: '#alternate-name-container',
-            checked: not hasAlternateName
+            checked: not hasAlternateName,
         }) }}
 
-        <div id="alternate-name-container"
-            class="{{ (hasAlternateName ?: 'hidden' ) }}">
+        <div id="alternate-name-container" class="{{ (hasAlternateName ?: 'hidden' ) }}">
+
+            {{ sproutMetaCp.hiddenInfoIcon({
+                label: "Alternate Name"|t('sprout-module-meta'),
+                search: true,
+                structured: true,
+                priority: 'globals'
+            }, 'meta-alternate-name') }}
+
             {{ forms.textField({
-                label: "Alternate Name"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                    label: "Alternate Name"|t('sprout-module-meta'),
-                    search: true,
-                    structured: true,
-                    priority: 'globals'
-                }),
+                label: "Alternate Name"|t('sprout-module-meta'),
                 instructions: "An alternate name you want search engines to consider (i.e. such as a legal name or nickname)."|t('sprout-module-meta'),
+                id: 'meta-alternate-name',
                 name: 'meta[globals][identity][alternateName]',
                 value: websiteIdentity['alternateName'] is defined ? websiteIdentity.alternateName : null,
                 errors: '',
                 maxlength: 60,
                 showCharsLeft: true,
-                class: 'nicetext'
+                class: 'nicetext',
+                translatable: isMultiSite,
             }) }}
         </div>
 
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Description"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'globals'
+        }, 'meta-description') }}
+
         {{ forms.textareaField({
-            label: "Description"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Description"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                openGraph: true,
-                twitterCard: true,
-                priority: 'globals'
-            }),
+            label: "Description"|t('sprout-module-meta'),
             instructions: "A description of your website."|t('sprout-module-meta'),
+            id: 'meta-description',
             name: 'meta[globals][identity][description]',
             value: websiteIdentity['description'] is defined ? websiteIdentity.description : null,
             errors: '',
             required: true,
             maxlength: maxDescriptionLength,
             showCharsLeft: true,
-            placeholder: "The official website of " ~ siteName
+            placeholder: "The official website of " ~ siteName,
+            translatable: isMultiSite,
         }) }}
 
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Image"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'globals'
+        }, 'meta-image') }}
+
         {{ forms.field({
-            label: 'Image'|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Image"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                openGraph: true,
-                twitterCard: true,
-                priority: 'globals'
-            }),
+            label: 'Image'|t('sprout-module-meta'),
             instructions: "The preferred image or profile picture for your website."|t('sprout-module-meta'),
-            required: true
+            id: 'meta-image',
+            required: true,
+            translatable: isMultiSite,
         }, forms.elementSelect({
             elements: [imageElement],
             sourceElementId: websiteIdentity['image'] is defined and imageElement ? websiteIdentity.image : null,
@@ -130,35 +148,40 @@
             addButtonLabel: 'Select Image'|t('sprout-module-meta'),
             sources: '*',
             limit: 1,
-            criteria: {kind: ['image'], siteId : null}
+            criteria: {kind: ['image'], siteId : null},
         })) }}
 
         {% set keywordsValue = websiteIdentity['keywords'] is defined ? websiteIdentity.keywords : null %}
 
-        {{ forms.textField({
-            label: "Keywords"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Keywords"|t('sprout-module-meta'),
-                search: true,
-                priority: 'globals'
-            }),
-            instructions: "The primary keywords or phrases that describe your website."|t('sprout-module-meta'),
-            id: 'keywords',
-            name: 'meta[globals][identity][keywords]',
-            value: keywordsValue,
-            errors: ''
-        }) }}
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Keywords"|t('sprout-module-meta'),
+            search: true,
+            priority: 'globals'
+        }, 'meta-keywords') }}
 
         {{ forms.textField({
-            label: "Email"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Email"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                priority: 'globals'
-            }),
+            label: "Keywords"|t('sprout-module-meta'),
+            instructions: "The primary keywords or phrases that describe your website."|t('sprout-module-meta'),
+            id: 'meta-keywords',
+            name: 'meta[globals][identity][keywords]',
+            value: keywordsValue,
+            errors: '',
+            translatable: isMultiSite,
+        }) }}
+
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Email"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }, 'meta-email') }}
+
+        {{ forms.textField({
+            label: "Email"|t('sprout-module-meta'),
             type: 'email',
             instructions: 'The preferred email address for your website.'|t('sprout-module-meta'),
             namespaceInputId: 'sprout-websiteidentity-email',
-            id: 'sprout-websiteidentity-email',
+            id: 'meta-email',
             fieldContext: 'meta',
             name: 'meta[globals][identity][email]',
             value: websiteIdentity['email'] is defined ? websiteIdentity.email : null,
@@ -166,18 +189,21 @@
             inputAttributes: {
                 data: {lpignore: 'true'},
             },
+            translatable: isMultiSite,
         }) }}
 
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Telephone"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }, 'meta-phone') }}
+
         {{ sproutFields.phoneField({
-            label: "Telephone"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Telephone"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                priority: 'globals'
-            }),
+            label: "Telephone"|t('sprout-module-meta'),
             instructions: 'The preferred telephone number for your website.'|t('sprout-module-meta'),
             namespaceInputId: 'sprout-websiteidentity-phone',
-            id: 'sprout-websiteidentity-phone',
+            id: 'meta-phone',
             fieldContext: 'sproutmeta',
             name: 'meta[globals][identity][telephone]',
             value: websiteIdentity['telephone']['phone'] is defined ? websiteIdentity.telephone.phone : null,
@@ -187,45 +213,58 @@
             },
             country: websiteIdentity['telephone']['country'] is defined ? websiteIdentity.telephone.country : 'US',
             countryId: 'phoneCountry',
-            namespaceCountryId: 'phoneCountry'
+            namespaceCountryId: 'phoneCountry',
+            translatable: isMultiSite,
         }) }}
+
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Address Field"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }, 'meta-address') }}
 
         {{ forms.field({
-            label: 'Address'|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Address Field"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                priority: 'globals'
-            }),
+            label: 'Address'|t('sprout-module-meta'),
             instructions: 'The preferred physical address for your website.'|t('sprout-module-meta'),
+            id: 'meta-address',
             fieldClass: 'sproutfields-addressfield',
-            required: false
+            required: false,
+            translatable: isMultiSite,
         }, locationField|raw) }}
 
-        {{ forms.textField({
-            label: "Latitude"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Latitude"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                priority: 'globals'
-            }),
-            instructions: 'The latitude of your address.'|t('sprout-module-meta'),
-            name: 'meta[globals][identity][latitude]',
-            value: websiteIdentity['latitude'] is defined ? websiteIdentity.latitude : null,
-            errors: ''
-        }) }}
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Latitude"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }, 'meta-latitude') }}
 
         {{ forms.textField({
-            label: "Longitude"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
-                label: "Longitude"|t('sprout-module-meta'),
-                search: true,
-                structured: true,
-                priority: 'globals'
-            }),
+            label: "Latitude"|t('sprout-module-meta'),
+            instructions: 'The latitude of your address.'|t('sprout-module-meta'),
+            id: 'meta-latitude',
+            name: 'meta[globals][identity][latitude]',
+            value: websiteIdentity['latitude'] is defined ? websiteIdentity.latitude : null,
+            errors: '',
+            translatable: isMultiSite,
+        }) }}
+
+        {{ sproutMetaCp.hiddenInfoIcon({
+            label: "Longitude"|t('sprout-module-meta'),
+            search: true,
+            structured: true,
+            priority: 'globals'
+        }, 'meta-longitude') }}
+
+        {{ forms.textField({
+            label: "Longitude"|t('sprout-module-meta'),
             instructions: 'The longitude of your address.'|t('sprout-module-meta'),
+            id: 'meta-longitude',
             name: 'meta[globals][identity][longitude]',
             value: websiteIdentity['longitude'] is defined ? websiteIdentity.longitude : null,
-            errors: ''
+            errors: '',
+            translatable: isMultiSite,
         }) }}
 
         <hr>
@@ -236,7 +275,7 @@
                         label: "Website Identity"|t('sprout-module-meta'),
                         search: true,
                         structured: true,
-                        priority: 'globals'
+                        priority: 'globals',
                     }) }}
                 </label>
                 <div class="instructions">
@@ -253,7 +292,7 @@
                         options: websiteIdentityTypes,
                         value: globals.getWebsiteIdentityType(),
                         errors: "",
-                        required: false
+                        required: false,
                     }) }}
                 </div>
 
@@ -423,12 +462,6 @@
                 placeholder: 'None, Female, Male, Custom'|t('sprout-module-meta'),
             }) }}
 
-            <hr>
-
-        </div>
-
-        <div class="buttons">
-            <input type="submit" class="btn submit" value="Save"/>
         </div>
 
     </form>
@@ -436,8 +469,6 @@
 {% endblock %}
 
 {% js on ready %}
-    Craft.SproutFields.initFields($("#content"));
-
     new SproutMetaWebsiteIdentity({
     items: {{ organizationItems|json_encode|raw }},
     websiteIdentity: {{ websiteIdentity|json_encode|raw }},

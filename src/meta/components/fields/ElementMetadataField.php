@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\meta\components\fields;
 use BarrelStrength\Sprout\meta\metadata\Metadata;
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\mysql\Schema;
@@ -139,7 +138,7 @@ class ElementMetadataField extends Field
 
         $fieldId = 'fields-' . $name . '-field';
 
-        $name = "meta[metadata][{$name}]";
+        $name = "meta[metadata][$name]";
 
         $settings = $this->getAttributes();
 
@@ -172,7 +171,6 @@ class ElementMetadataField extends Field
 
     protected function populateOptimizeServiceValues(ElementInterface $element = null): void
     {
-        /** @var Element $element */
         $site = isset($element)
             ? Craft::$app->sites->getSiteById($element->siteId)
             : Craft::$app->sites->getPrimarySite();

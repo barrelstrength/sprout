@@ -27,7 +27,6 @@ class m230124_000002_update_twig_datasource_settings extends Migration
             ->all();
 
         foreach ($twigDataSets as $twigDataSet) {
-
             if (!$newSettings = Json::decode($twigDataSet['settings'])) {
                 continue;
             }

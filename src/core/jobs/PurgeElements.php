@@ -20,7 +20,7 @@ class PurgeElements extends BaseJob
 
     public function execute($queue): void
     {
-        $totalSteps = is_countable($this->idsToDelete) ? count($this->idsToDelete) : 0;
+        $totalSteps = count($this->idsToDelete);
 
         foreach ($this->idsToDelete as $key => $id) {
             $step = $key + 1;

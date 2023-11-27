@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\conditions\TransactionalEmailCondition;
 use Craft;
 use craft\elements\conditions\ElementConditionInterface;
-use craft\elements\db\ElementQueryInterface;
 
 class TransactionalEmailElement extends EmailElement
 {
@@ -35,7 +34,7 @@ class TransactionalEmailElement extends EmailElement
         return Craft::createObject(TransactionalEmailCondition::class, [static::class]);
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): TransactionalEmailElementQuery
     {
         return new TransactionalEmailElementQuery(EmailElement::class);
     }

@@ -17,7 +17,7 @@ class SubmissionStatus extends Model
 
     public string $handle = '';
 
-    public string $color = StatusColor::BLUE;
+    public string $color = SubmissionStatusColor::BLUE;
 
     public ?int $sortOrder = null;
 

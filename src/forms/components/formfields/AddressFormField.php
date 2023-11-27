@@ -191,7 +191,7 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
                 'namespaceInputId' => $namespaceInputId,
                 'namespaceInputName' => $namespaceInputName,
                 'field' => $this,
-                'fieldId' => $addressModel->fieldId ?? $field->id ?? null,
+                'fieldId' => $addressModel->fieldId ?? $this->id ?? null,
                 'addressId' => $addressId,
                 'defaultCountryCode' => $defaultCountryCode,
                 'addressDisplayHtml' => Template::raw($addressDisplayHtml),
@@ -226,7 +226,6 @@ class AddressFormField extends Field implements FormFieldInterface, PreviewableF
 
         // Add the address field array from the POST data to the Address Model address
         if (is_array($value)) {
-
             if ($address instanceof AddressModel) {
                 $address->id = $value['id'] ?? null;
             } else {

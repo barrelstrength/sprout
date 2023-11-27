@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\forms;
 use BarrelStrength\Sprout\forms\components\captchas\DuplicateCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\HoneypotCaptcha;
 use BarrelStrength\Sprout\forms\components\captchas\JavascriptCaptcha;
+use BarrelStrength\Sprout\forms\forms\Submissions;
 use craft\config\BaseConfig;
 
 class FormsSettings extends BaseConfig
@@ -31,6 +32,8 @@ class FormsSettings extends BaseConfig
 
     public string $defaultSubmissionMethod = 'sync';
 
+    public array $integrationTypes = [];
+
     public array $formTypes = [];
 
     public ?string $formTypeUid = null;
@@ -43,7 +46,7 @@ class FormsSettings extends BaseConfig
 
     public string $spamRedirectBehavior = self::SPAM_REDIRECT_BEHAVIOR_NORMAL;
 
-    public int $spamLimit = 500;
+    public int $spamLimit = Submissions::SPAM_DEFAULT_LIMIT;
 
     public int $cleanupProbability = 1000;
 
@@ -183,4 +186,3 @@ class FormsSettings extends BaseConfig
         ];
     }
 }
-

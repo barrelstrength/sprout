@@ -21,15 +21,12 @@ class DataSources extends Component
 
     public const EVENT_REGISTER_DATA_SOURCES = 'registerSproutDataSources';
 
-    /**
-     * @var $_dataSources DataSource[]
-     */
+    public const EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES = 'registerDataSourcesRelationsTypes';
+
     private ?array $_dataSources = null;
 
     /**
      * Returns all available Data Source classes
-     *
-     * @return string[]
      */
     public function getDataSourceTypes(): array
     {
@@ -81,8 +78,8 @@ class DataSources extends Component
 
         uasort($types, static function($a, $b): int {
             /**
-             * @var $a DataSource
-             * @var $b DataSource
+             * @var DataSource $a
+             * @var DataSource $b
              */
             return $a::displayName() <=> $b::displayName();
         });
@@ -90,5 +87,16 @@ class DataSources extends Component
         $this->_dataSources = $types;
 
         return $this->_dataSources;
+    }
+
+    public function getDataSourceRelationsTypes(): array
+    {
+        $event = new RegisterComponentTypesEvent([
+            'types' => [],
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES, $event);
+
+        return $event->types;
     }
 }

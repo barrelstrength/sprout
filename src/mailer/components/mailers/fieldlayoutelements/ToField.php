@@ -30,6 +30,11 @@ class ToField extends TextField
         return Craft::t('sprout-module-mailer', 'Comma-separated list of recipients');
     }
 
+    protected function tip(?ElementInterface $element = null, bool $static = false): ?string
+    {
+        return Craft::t('sprout-module-mailer', 'This can use Twig Shortcut Syntax and reference Notification Event variables.');
+    }
+
     protected function value(?ElementInterface $element = null): mixed
     {
         if (!$element instanceof EmailElement) {

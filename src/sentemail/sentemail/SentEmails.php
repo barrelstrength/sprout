@@ -15,6 +15,7 @@ use craft\mail\transportadapters\BaseTransportAdapter;
 use Exception;
 use yii\mail\MailEvent;
 use yii\mail\MessageInterface;
+use yii\symfonymailer\Message;
 
 class SentEmails extends Component
 {
@@ -40,6 +41,7 @@ class SentEmails extends Component
 
     public function logSentEmail(MessageInterface $message, string $status): void
     {
+        /** @var Message $message */
         $fromData = $message->getFrom();
 
         $sentEmail = new SentEmailElement();
@@ -121,7 +123,7 @@ class SentEmails extends Component
         } else {
             $sentEmail->sent = false;
             $sentEmailDetails->deliveryStatus = Craft::t('sprout-module-sent-email', 'Error');
-            $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Craft unable to send email.');
+            $sentEmailDetails->message = Craft::t('sprout-module-sent-email', 'Craft unable to send email. Check logs for more info.');
         }
 
         // SENDER INFO

@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\core\controllers\web;
 
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
-use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use Craft;
 use craft\web\Controller;
 use craft\web\twig\variables\Cp as CpVariable;
@@ -25,10 +25,9 @@ class SettingsController extends Controller
         $moduleId = Craft::$app->getRequest()->getBodyParam('moduleId');
         $settings = Craft::$app->getRequest()->getBodyParam('settings');
 
-        /** @var SproutModuleTrait $module */
         $module = Craft::$app->getModule($moduleId);
 
-        if (!$module) {
+        if (!$module instanceof SproutModuleInterface) {
             throw new InvalidArgumentException('No module with the ID ' . $moduleId);
         }
 
@@ -115,9 +114,11 @@ class SettingsController extends Controller
      * stored in the Project Config in the same format that Craft stores
      * field layouts.
      */
-    private function getFieldLayoutSettings(): ?array
+    private function getFieldLayoutSettings(): array
     {
-        if (!Craft::$app->getRequest()->getBodyParam('fieldLayout')) {
+        $fieldLayoutExists = Craft::$app->getRequest()->getBodyParam('fieldLayout');
+
+        if (!$fieldLayoutExists) {
             return [];
         }
 

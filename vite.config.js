@@ -1,4 +1,5 @@
 import ViteRestart from 'vite-plugin-restart';
+import * as path from 'path';
 
 // https://vitejs.dev/config/
 export default ({command}) => ({
@@ -7,6 +8,10 @@ export default ({command}) => ({
     root: 'assets/src',
     // Relative to "root" setting folder
     publicDir: '../public',
+    // https://github.com/vitejs/vite/discussions/7920
+    esbuild: {
+        drop: ['console', 'debugger'],
+    },
     build: {
         emptyOutDir: true,
         manifest: true,
@@ -22,7 +27,6 @@ export default ({command}) => ({
                 sentEmailDetailsModal: '/sent-email/SentEmailDetailsModal.js',
                 transactionalEmail: '/transactional/NotificationEvents.js',
                 // copyPaste: '/campaigns/CopyPaste.js',
-                // forms: '/forms/Forms.js',
                 // notifications: '/notifications/Notifications.js',
                 redirects: '/redirects/Redirects.js',
                 dataStudio: '/data-studio/DataStudio.js',
@@ -35,7 +39,10 @@ export default ({command}) => ({
                 regularExpressionField: '/fields/RegularExpressionField.js',
                 urlField: '/fields/UrlField.js',
 
+                forms: '/forms/Forms.js',
                 formTypes: '/forms/FormTypesSettings.js',
+                integrationTypes: '/forms/IntegrationTypesSettings.js',
+                submissionStatusSettings: '/forms/SubmissionStatusSettings.js',
 
                 // Front End
                 DynamicCsrfInput: '/core/DynamicCsrfInput.js',
@@ -45,6 +52,9 @@ export default ({command}) => ({
                 disableSubmitButton: '/forms-frontend/DisableSubmitButton.js',
                 rules: '/forms-frontend/Rules.js',
                 submitHandler: '/forms-frontend/SubmitHandler.js',
+
+                reCaptchaCheckbox: '/forms-frontend/recaptcha_v2_checkbox.js',
+                reCaptchaInvisible: '/forms-frontend/recaptcha_v2_invisible.js',
             },
             output: {
                 sourcemap: true,
@@ -58,8 +68,17 @@ export default ({command}) => ({
             ],
         }),
     ],
+
+    resolve: {
+        alias: [
+            {find: '@', replacement: path.resolve(__dirname, './assets/public')},
+        ],
+        preserveSymlinks: true,
+    },
     server: {
         host: '0.0.0.0',
+        /* .com/core/fonts/... in production, dev... */
+        origin: 'https://demo.projectmothership.com.ddev.site:3002', // https://nystudio107.com/blog/using-vite-js-next-generation-frontend-tooling-with-craft-cms#vite-processed-assets
         port: 39999, // DDEV Internal Port
         strictPort: true,
         hmr: {

@@ -2,20 +2,18 @@
 
 namespace BarrelStrength\Sprout\transactional\components\notificationevents;
 
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
+use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificationEvent;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
 use craft\elements\User;
 use craft\events\ModelEvent;
-use craft\helpers\Json;
 use yii\base\Event;
 
-class UserUpdatedNotificationEvent extends NotificationEvent implements ElementEventInterface
+/**
+ * @property ModelEvent $event
+ */
+class UserUpdatedNotificationEvent extends BaseElementNotificationEvent
 {
-    use ElementEventTrait;
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-transactional', 'When a user is updated');
@@ -62,11 +60,7 @@ class UserUpdatedNotificationEvent extends NotificationEvent implements ElementE
     {
         $user = Craft::$app->getUser()->getIdentity();
 
-        if ($this->conditionRules) {
-            $conditionRules = Json::decodeIfJson($this->conditionRules);
-            $condition = Craft::$app->conditions->createCondition($conditionRules);
-            $condition->elementType = User::class;
-
+        if ($condition = $this->condition) {
             $query = $condition->elementType::find();
             $condition->modifyQuery($query);
 

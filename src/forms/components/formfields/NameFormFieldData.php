@@ -29,7 +29,6 @@ class NameFormFieldData extends Model
 
     public function getFriendlyName(): string
     {
-
         return trim($this->firstName);
     }
 
@@ -50,7 +49,7 @@ class NameFormFieldData extends Model
 
         $name .= $lastName;
 
-        return $name ?? '';
+        return !empty($name) ? $name : '';
     }
 
     public function getFullNameExtended(): string

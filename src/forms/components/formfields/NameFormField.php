@@ -146,7 +146,6 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
 
         // Array value from post data
         if (is_array($value) && isset($value['name'])) {
-
             $nameFormFieldData->setAttributes($value['name'], false);
 
             if ($fullNameShort = $value['name']['fullNameShort'] ?? null) {

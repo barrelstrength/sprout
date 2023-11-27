@@ -4,6 +4,8 @@ namespace BarrelStrength\Sprout\sitemaps\sitemapmetadata;
 
 use BarrelStrength\Sprout\sitemaps\sitemaps\SitemapKey;
 use Craft;
+use craft\elements\conditions\ElementCondition;
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\models\Site;
 
@@ -14,8 +16,9 @@ class ContentQuerySitemapMetadataHelper
         foreach ($sites as $site) {
             if ($contentQuerySitemapMetadata = self::getContentQueryXmlSitemapMetadata($site)) {
                 foreach ($contentQuerySitemapMetadata as $contentQuery) {
-
                     $currentConditionRules = Json::decodeIfJson($contentQuery['settings']);
+
+                    /** @var ElementCondition $currentCondition */
                     $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
                     $currentCondition->elementType = $contentQuery['type'];
 
@@ -61,9 +64,11 @@ class ContentQuerySitemapMetadataHelper
             ->all();
     }
 
-    public static function getElementQuery(SitemapMetadataRecord $sitemapMetadata)
+    public static function getElementQuery(SitemapMetadataRecord $sitemapMetadata): ElementQueryInterface
     {
         $conditionRules = Json::decodeIfJson($sitemapMetadata['settings']);
+
+        /** @var ElementCondition $condition */
         $condition = Craft::$app->conditions->createCondition($conditionRules);
         $condition->elementType = $sitemapMetadata->type;
 

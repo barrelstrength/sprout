@@ -8,6 +8,7 @@ use Craft;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\Category;
+use craft\elements\db\CategoryQuery;
 use craft\elements\db\ElementQuery;
 use craft\models\Site;
 
@@ -42,6 +43,7 @@ class CategorySitemapMetadata implements ElementSitemapMetadataInterface
             ->where(['uid' => $sitemapMetadata->sourceKey])
             ->scalar();
 
+        /** @var CategoryQuery $query */
         return $query->groupId($categoryGroupId);
     }
 }

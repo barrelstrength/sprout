@@ -14,7 +14,7 @@ abstract class ElementIntegration extends Integration
     /**
      * The ID of default Author to use when creating an Entry Element
      */
-    public int $defaultAuthorId;
+    public ?int $defaultAuthorId = null;
 
     /**
      * Whether to use the logged in user as the Author of the Entry Element
@@ -54,4 +54,3 @@ abstract class ElementIntegration extends Integration
         return [];
     }
 }
-

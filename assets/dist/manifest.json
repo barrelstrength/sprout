@@ -1,6 +1,10 @@
 {
-  "_module.esm-9a996e1c.js": {
-    "file": "assets/module.esm-9a996e1c.js"
+  "../public/fonts/sprout.svg": {
+    "file": "assets/sprout-8239cd1a.svg",
+    "src": "../public/fonts/sprout.svg"
+  },
+  "_module.esm-e3630760.js": {
+    "file": "assets/module.esm-e3630760.js"
   },
   "core/DynamicCsrfInput.js": {
     "file": "assets/DynamicCsrfInput-097d6ec0.js",
@@ -8,30 +12,33 @@
     "src": "core/DynamicCsrfInput.js"
   },
   "core/SproutAdminTable.js": {
-    "file": "assets/adminTable-dd5a7de0.js",
+    "file": "assets/adminTable-37012fcc.js",
     "imports": [
-      "_module.esm-9a996e1c.js"
+      "_module.esm-e3630760.js"
     ],
     "isEntry": true,
     "src": "core/SproutAdminTable.js"
   },
   "core/SproutAlpine.js": {
-    "file": "assets/alpine-a471ff56.js",
+    "file": "assets/alpine-898b374c.js",
     "imports": [
-      "_module.esm-9a996e1c.js"
+      "_module.esm-e3630760.js"
     ],
     "isEntry": true,
     "src": "core/SproutAlpine.js"
   },
   "core/SproutCp.css": {
-    "file": "assets/SproutCp-6b73f5bc.css",
+    "file": "assets/SproutCp-a4c6acf5.css",
     "src": "core/SproutCp.css"
   },
   "core/SproutCp.js": {
-    "css": [
-      "assets/SproutCp-6b73f5bc.css"
+    "assets": [
+      "assets/sprout-8239cd1a.svg"
     ],
-    "file": "assets/cp-e547b1e4.js",
+    "css": [
+      "assets/SproutCp-a4c6acf5.css"
+    ],
+    "file": "assets/cp-22a7b3b7.js",
     "isEntry": true,
     "src": "core/SproutCp.js"
   },
@@ -48,7 +55,7 @@
     "css": [
       "assets/DataStudio-a18bcbd3.css"
     ],
-    "file": "assets/dataStudio-ab176247.js",
+    "file": "assets/dataStudio-aa6e7078.js",
     "isEntry": true,
     "src": "data-studio/DataStudio.js"
   },
@@ -60,7 +67,7 @@
     "css": [
       "assets/AddressField-a479678c.css"
     ],
-    "file": "assets/addressField-33571193.js",
+    "file": "assets/addressField-c5a66b02.js",
     "isEntry": true,
     "src": "fields/AddressField.js"
   },
@@ -72,7 +79,7 @@
     "css": [
       "assets/EmailField-dc32b53a.css"
     ],
-    "file": "assets/emailField-681df128.js",
+    "file": "assets/emailField-b0a45f50.js",
     "isEntry": true,
     "src": "fields/EmailField.js"
   },
@@ -84,12 +91,12 @@
     "css": [
       "assets/PhoneField-82a02dac.css"
     ],
-    "file": "assets/phoneField-3e4b3562.js",
+    "file": "assets/phoneField-bb6f10b1.js",
     "isEntry": true,
     "src": "fields/PhoneField.js"
   },
   "fields/RegularExpressionField.js": {
-    "file": "assets/regularExpressionField-34363369.js",
+    "file": "assets/regularExpressionField-83d70a99.js",
     "isEntry": true,
     "src": "fields/RegularExpressionField.js"
   },
@@ -101,7 +108,7 @@
     "css": [
       "assets/UrlField-3217ffac.css"
     ],
-    "file": "assets/urlField-1427c196.js",
+    "file": "assets/urlField-abc2dabe.js",
     "isEntry": true,
     "src": "fields/UrlField.js"
   },
@@ -130,10 +137,45 @@
     "isEntry": true,
     "src": "forms-frontend/SubmitHandler.js"
   },
+  "forms-frontend/recaptcha_v2_checkbox.js": {
+    "file": "assets/reCaptchaCheckbox-3abc96a4.js",
+    "isEntry": true,
+    "src": "forms-frontend/recaptcha_v2_checkbox.js"
+  },
+  "forms-frontend/recaptcha_v2_invisible.js": {
+    "file": "assets/reCaptchaInvisible-ddc145dc.js",
+    "isEntry": true,
+    "src": "forms-frontend/recaptcha_v2_invisible.js"
+  },
   "forms/FormTypesSettings.js": {
-    "file": "assets/formTypes-d0b78584.js",
+    "file": "assets/formTypes-ae6b6445.js",
     "isEntry": true,
     "src": "forms/FormTypesSettings.js"
+  },
+  "forms/Forms.css": {
+    "file": "assets/Forms-9aa3f3c7.css",
+    "src": "forms/Forms.css"
+  },
+  "forms/Forms.js": {
+    "css": [
+      "assets/Forms-9aa3f3c7.css"
+    ],
+    "file": "assets/forms-5c198a6d.js",
+    "imports": [
+      "_module.esm-e3630760.js"
+    ],
+    "isEntry": true,
+    "src": "forms/Forms.js"
+  },
+  "forms/IntegrationTypesSettings.js": {
+    "file": "assets/integrationTypes-e43c2b07.js",
+    "isEntry": true,
+    "src": "forms/IntegrationTypesSettings.js"
+  },
+  "forms/SubmissionStatusSettings.js": {
+    "file": "assets/submissionStatusSettings-5dd799f5.js",
+    "isEntry": true,
+    "src": "forms/SubmissionStatusSettings.js"
   },
   "mailer/EmailTypesSettings.js": {
     "file": "assets/emailTypes-25710d85.js",
@@ -141,14 +183,14 @@
     "src": "mailer/EmailTypesSettings.js"
   },
   "meta/Meta.css": {
-    "file": "assets/Meta-0704b2ba.css",
+    "file": "assets/Meta-deacc20c.css",
     "src": "meta/Meta.css"
   },
   "meta/Meta.js": {
     "css": [
-      "assets/Meta-0704b2ba.css"
+      "assets/Meta-deacc20c.css"
     ],
-    "file": "assets/meta-cd13d02d.js",
+    "file": "assets/meta-339e2af8.js",
     "imports": [
       "fields/AddressField.js",
       "fields/EmailField.js",
@@ -182,9 +224,9 @@
     "css": [
       "assets/SitemapMetadata-ee93e5c4.css"
     ],
-    "file": "assets/sitemapMetadata-dc4e16a7.js",
+    "file": "assets/sitemapMetadata-cf98e616.js",
     "imports": [
-      "_module.esm-9a996e1c.js"
+      "_module.esm-e3630760.js"
     ],
     "isEntry": true,
     "src": "sitemaps/SitemapMetadata.js"

@@ -2,17 +2,17 @@
 
 namespace BarrelStrength\Sprout\redirects\components\elements\conditions;
 
+use BarrelStrength\Sprout\redirects\components\elements\db\RedirectElementQuery;
+use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
 use BarrelStrength\Sprout\redirects\redirects\StatusCode;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
 use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
-use craft\elements\db\ElementQueryInterface;
 use yii\db\QueryInterface;
 
 class StatusCodeConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {
-
     public function getLabel(): string
     {
         return Craft::t('sprout-module-redirects', 'Status Code');
@@ -34,12 +34,13 @@ class StatusCodeConditionRule extends BaseMultiSelectConditionRule implements El
 
     public function modifyQuery(QueryInterface $query): void
     {
-        /** @var ElementQueryInterface $query */
+        /** @var RedirectElementQuery $query */
         $query->statusCode($this->paramValue());
     }
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var RedirectElement $element */
         return $this->matchValue($element->statusCode);
     }
 }

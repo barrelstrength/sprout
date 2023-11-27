@@ -14,11 +14,9 @@ use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 use http\Exception\InvalidArgumentException;
-use Twig\Markup;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -39,7 +37,7 @@ class DataSetController extends Controller
         return $this->renderTemplate('sprout-module-data-studio/_datasets/index.twig', [
             'title' => DataSetElement::pluralDisplayName(),
             'elementType' => DataSetElement::class,
-            'newDataSetButtonHtml' => self::getNewDataSetButtonHtml($site),
+            'newDataSetButtonHtml' => DataSetHelper::getNewDataSetButtonHtml($site),
         ]);
     }
 
@@ -117,13 +115,15 @@ class DataSetController extends Controller
         ]);
     }
 
-    public function actionCreateDataSet(string $type): Response
+    public function actionCreateDataSet(string $type = null): Response
     {
         $site = Cp::requestedSite();
 
         if (!$site instanceof Site) {
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
+
+        $type = Craft::$app->getRequest()->getParam('type', $type);
 
         if (!$type) {
             throw new InvalidArgumentException('No Data Set Type provided.');
@@ -149,6 +149,16 @@ class DataSetController extends Controller
 
         if (!Craft::$app->getDrafts()->saveElementAsDraft($dataSet, Craft::$app->getUser()->getId(), null, null, false)) {
             throw new ServerErrorHttpException(sprintf('Unable to save data set as a draft: %s', implode(', ', $dataSet->getErrorSummary(true))));
+        }
+
+        // Supports creating a new Data Set via Slideout Editor
+        if (Craft::$app->getRequest()->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'elementId' => $dataSet->id,
+                'draftId' => $dataSet->draftId,
+                'siteId' => $dataSet->siteId,
+            ]);
         }
 
         return $this->redirect($dataSet->getCpEditUrl());
@@ -215,7 +225,6 @@ class DataSetController extends Controller
         }
 
         if (!Craft::$app->getElements()->saveElement($dataSet)) {
-
             Craft::$app->getSession()->setError(Craft::t('sprout-base-reports', 'Could not update report.'));
 
             // Send the report back to the template
@@ -245,57 +254,7 @@ class DataSetController extends Controller
         }
 
         return $this->asJson([
-            'html' => self::getNewDataSetButtonHtml($site),
+            'html' => DataSetHelper::getNewDataSetButtonHtml($site),
         ]);
-    }
-
-    public static function getNewDataSetButtonHtml(Site $site): ?Markup
-    {
-        $dataSourceTypes = DataStudioModule::getInstance()->dataSources->getDataSourceTypes();
-
-        $newDataSetOptions = [];
-
-        foreach ($dataSourceTypes as $dataSourceType) {
-            $currentUser = Craft::$app->getUser()->getIdentity();
-
-            if (!$currentUser->can(DataStudioModule::p('editDataSet:' . $dataSourceType))) {
-                continue;
-            }
-
-            $newDataSetOptions[] = [
-                'name' => $dataSourceType::displayName(),
-                'url' => UrlHelper::cpUrl('sprout/data-studio/new', [
-                    'type' => $dataSourceType,
-                    'site' => $site->handle,
-                ]),
-            ];
-        }
-
-        $label = Craft::t('sprout-module-data-studio', 'New {displayName}', [
-            'displayName' => DataSetElement::displayName(),
-        ]);
-
-        $labelHtml = Html::button($label, [
-            'class' => 'btn menubtn submit add icon',
-        ]);
-
-        $menuListHtml = Html::ul($newDataSetOptions, [
-            'item' => function($item) {
-                return Html::tag('li', Html::a($item['name'], $item['url'], [
-                    'class' => 'formsubmit sprout-dataset-new-button',
-                ]));
-            },
-        ]);
-
-        $menuHtml = Html::tag('div', $menuListHtml, [
-            'class' => 'menu',
-        ]);
-
-        $buttonHtml = Html::tag('div', $labelHtml . $menuHtml, [
-            'id' => 'sprout-new-dataset-btn',
-            'class' => 'btngroup',
-        ]);
-
-        return Template::raw($buttonHtml);
     }
 }

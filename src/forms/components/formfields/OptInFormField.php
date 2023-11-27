@@ -22,15 +22,15 @@ class OptInFormField extends Field implements FormFieldInterface, PreviewableFie
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
+    public ?string $cssClasses = null;
 
-    public string $optInMessage = '';
+    public ?string $optInMessage = null;
 
     public bool $selectedByDefault = false;
 
-    public string $optInValueWhenTrue = '';
+    public ?string $optInValueWhenTrue = null;
 
-    public string $optInValueWhenFalse = '';
+    public ?string $optInValueWhenFalse = null;
 
     public static function getGroupLabel(): string
     {

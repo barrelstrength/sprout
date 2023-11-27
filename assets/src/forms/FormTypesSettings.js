@@ -19,7 +19,7 @@ class FormTypesSettings {
                 },
             },
             {
-                name: 'formType',
+                name: 'formTypeType',
                 title: Craft.t('sprout-module-forms', 'Form Type'),
             },
         ];

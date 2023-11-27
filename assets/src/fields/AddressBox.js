@@ -125,7 +125,7 @@ if (typeof Craft.Sprout === typeof undefined) {
              * @param {string} response.addressFormHtml
              * @param {Array} response.errors
              */
-            Craft.postActionRequest('sprout-module-fields/fields-address/get-address-display-html', data, $.proxy(function(response) {
+            Craft.postActionRequest('sprout-module-forms/fields-address/get-address-display-html', data, $.proxy(function(response) {
                 if (response.result === true) {
                     this.$addressBox.find('.address-format').html(response.html);
                     self.$addressForm.empty();
@@ -244,7 +244,7 @@ if (typeof Craft.Sprout === typeof undefined) {
              * @param {JSON} response[].geo
              * @param {Array} response.errors
              */
-            Craft.postActionRequest('sprout-module-fields/fields-address/query-address-coordinates-from-google-maps', data, $.proxy(function(response) {
+            Craft.postActionRequest('sprout-module-forms/fields-address/query-address-coordinates-from-google-maps', data, $.proxy(function(response) {
                 if (response.result === true) {
                     const latitude = response.geo.latitude;
                     const longitude = response.geo.longitude;

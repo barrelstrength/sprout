@@ -23,5 +23,5 @@ interface VisualizationInterface extends SavableComponentInterface
     /**
      * Returns the column name to be used as the label series
      */
-    public function getLabelColumn(): string;
+    public function getLabelColumn(): ?string;
 }

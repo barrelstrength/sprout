@@ -2,8 +2,8 @@
 
 namespace BarrelStrength\Sprout\meta\components\schema;
 
+use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
 use BarrelStrength\Sprout\meta\schema\Schema;
-use craft\base\Element;
 
 class ImageObjectSchema extends Schema
 {
@@ -26,7 +26,7 @@ class ImageObjectSchema extends Schema
     {
         $image = $this->element;
 
-        if (!$image instanceof Element) {
+        if (!$image || !is_array($image)) {
             return;
         }
 
@@ -39,22 +39,26 @@ class ImageObjectSchema extends Schema
 
         $prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
-        if (isset($prioritizedMetadataModel)) {
-            $openGraphMetaType = $prioritizedMetadataModel->getMetaTypes('openGraph');
+        if (!$prioritizedMetadataModel) {
+            return;
+        }
 
-            if (isset($openGraphMetaType)) {
-                if ($openGraphMetaType->getOgImage()) {
-                    $this->addUrl('url', $openGraphMetaType->getOgImage());
-                }
+        $openGraphMetaType = $prioritizedMetadataModel->getMetaType('openGraph');
 
-                if ($openGraphMetaType->getOgImageHeight()) {
-                    $this->addNumber('height', $openGraphMetaType->getOgImageHeight());
-                }
+        if (!$openGraphMetaType instanceof OpenGraphMetaType) {
+            return;
+        }
 
-                if ($openGraphMetaType->getOgImageWidth()) {
-                    $this->addNumber('width', $openGraphMetaType->getOgImageWidth());
-                }
-            }
+        if ($openGraphMetaType->getOgImage()) {
+            $this->addUrl('url', $openGraphMetaType->getOgImage());
+        }
+
+        if ($openGraphMetaType->getOgImageHeight()) {
+            $this->addNumber('height', $openGraphMetaType->getOgImageHeight());
+        }
+
+        if ($openGraphMetaType->getOgImageWidth()) {
+            $this->addNumber('width', $openGraphMetaType->getOgImageWidth());
         }
     }
 }

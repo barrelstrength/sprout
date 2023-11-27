@@ -22,7 +22,7 @@ class JavascriptCaptcha extends Captcha
 
     public function getDescription(): string
     {
-        return Craft::t('sprout-module-forms', 'Prevent a form from being submmitted if a user does not have JavaScript enabled');
+        return Craft::t('sprout-module-forms', 'Prevent a form from being submitted if a user does not have JavaScript enabled');
     }
 
     public function getCaptchaHtml(): string

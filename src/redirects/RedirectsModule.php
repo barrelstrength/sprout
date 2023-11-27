@@ -2,11 +2,13 @@
 
 namespace BarrelStrength\Sprout\redirects;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -14,7 +16,6 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
 use BarrelStrength\Sprout\redirects\redirects\Redirects;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\ExceptionEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -34,7 +35,7 @@ use yii\base\Module;
 /**
  * @property Redirects $redirects
  */
-class RedirectsModule extends Module
+class RedirectsModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -168,9 +169,12 @@ class RedirectsModule extends Module
         return new RedirectsSettings();
     }
 
-    public function getSettings(): RedirectsSettings|BaseConfig
+    public function getSettings(): RedirectsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, RedirectsSettings::class);
+        /** @var RedirectsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, RedirectsSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

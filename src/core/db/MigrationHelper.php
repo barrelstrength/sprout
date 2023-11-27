@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\core\db;
 
 use BarrelStrength\Sprout\core\migrations\Uninstall;
-use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\SproutSettings;
 use Craft;
@@ -36,7 +36,6 @@ class MigrationHelper
         $modules = [Sprout::class, ...$plugin::getSchemaDependencies()];
 
         foreach ($modules as $moduleClass) {
-
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
@@ -74,7 +73,6 @@ class MigrationHelper
         }
 
         foreach ($installedSproutPlugins as $class) {
-
             $interfaces = class_implements($class);
 
             // Only check Sprout plugins with schema
@@ -95,15 +93,19 @@ class MigrationHelper
 
         $modulesSafeToUninstall = array_diff($plugin::getSchemaDependencies(), $requiredModules);
 
-        /** @var SproutModuleTrait $moduleClass */
+        /** @var SproutModuleInterface $moduleClass */
         foreach ($modulesSafeToUninstall as $moduleClass) {
-
             if (!$moduleClass::hasMigrations()) {
                 continue;
             }
 
-            /** @var MigrationManager $migrator */
-            $migrator = $moduleClass::getInstance()->getMigrator();
+            $module = $moduleClass::getInstance();
+
+            if (!$module instanceof MigrationInterface) {
+                continue;
+            }
+
+            $migrator = $module->getMigrator();
 
             if (($migration = self::createUninstallMigration($migrator)) !== null) {
                 try {
@@ -150,6 +152,6 @@ class MigrationHelper
         require_once $path;
         $class = $migrator->migrationNamespace . '\\Uninstall';
 
-        return new $class;
+        return new $class();
     }
 }

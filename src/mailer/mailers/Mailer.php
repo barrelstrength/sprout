@@ -17,6 +17,18 @@ abstract class Mailer extends SavableComponent implements MailerInterface
 
     protected ?FieldLayout $_fieldLayout = null;
 
+    public function __construct($config = [])
+    {
+        if (isset($config['settings'])) {
+            foreach ($config['settings'] as $key => $value) {
+                $this->$key = $value;
+            }
+            unset($config['settings']);
+        }
+
+        parent::__construct($config);
+    }
+
     public function __toString()
     {
         return self::displayName();
@@ -98,6 +110,11 @@ abstract class Mailer extends SavableComponent implements MailerInterface
         ];
 
         return $config;
+    }
+
+    public function prepareMailerInstructionSettingsForEmail(array $settings): array
+    {
+        return $settings;
     }
 
     public function prepareMailerInstructionSettingsForDb(array $settings): array

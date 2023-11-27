@@ -26,7 +26,6 @@ class SubmissionStatusesController extends BaseController
                 }
 
                 if ($submissionStatus->handle == SubmissionStatus::SPAM_STATUS_HANDLE) {
-
                     Craft::$app->session->setError(Craft::t('sprout-module-forms', "Spam status can't be updated"));
 
                     return $this->redirect(UrlHelper::cpUrl('sprout/settings/forms/submission-statuses'));
@@ -81,8 +80,10 @@ class SubmissionStatusesController extends BaseController
 
         $ids = Json::decode(Craft::$app->request->getRequiredBodyParam('ids'));
 
-        if ($success = FormsModule::getInstance()->submissionStatuses->reorderSubmissionStatuses($ids)) {
-            return $this->asJson(['success' => $success]);
+        if (FormsModule::getInstance()->submissionStatuses->reorderSubmissionStatuses($ids)) {
+            return $this->asJson([
+                'success' => true,
+            ]);
         }
 
         return $this->asJson(['error' => Craft::t('sprout-module-forms', "Couldn't reorder Order Statuses.")]);

@@ -8,9 +8,9 @@ use Craft;
 use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
+use craft\models\Site;
 use craft\web\Controller;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class GlobalMetadataController extends Controller
@@ -25,40 +25,27 @@ class GlobalMetadataController extends Controller
      */
     public function actionEditGlobalMetadata(string $selectedTabHandle, Globals $globals = null): Response
     {
-        $currentSite = Craft::$app->getSites()->getPrimarySite();
+        $site = Cp::requestedSite();
 
-        $siteHandle = Craft::$app->getRequest()->getQueryParam('site');
+        if (!$site instanceof Site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
 
-        if (Craft::$app->getIsMultiSite()) {
-            // Get the sites the user is allowed to edit
-            $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
+        // Get the sites the user is allowed to edit
+        $editableSiteIds = Craft::$app->getSites()->getEditableSiteIds();
 
-            if (empty($editableSiteIds)) {
-                throw new ForbiddenHttpException('User not permitted to edit content in any sites');
-            }
+        if (empty($editableSiteIds)) {
+            throw new ForbiddenHttpException('User not permitted to edit content in any sites');
+        }
 
-            // Editing a specific site?
-            if ($siteHandle !== null) {
-                $currentSite = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-                if (!$currentSite) {
-                    throw new NotFoundHttpException('Invalid site handle: ' . $siteHandle);
-                }
-
-                // Make sure the user has permission to edit that site
-                if (!in_array($currentSite->id, $editableSiteIds, false)) {
-                    throw new ForbiddenHttpException('User not permitted to edit content in this site');
-                }
-            } elseif (in_array($currentSite->id, $editableSiteIds, false)) {
-                $currentSite = Craft::$app->getSites()->currentSite;
-            } else {
-                // Use the first site they are allowed to edit
-                $currentSite = Craft::$app->getSites()->getSiteById($editableSiteIds[0]);
-            }
+        // Make sure the user has permission to edit that site
+        if (!in_array($site->id, $editableSiteIds, false)) {
+            throw new ForbiddenHttpException('User not permitted to edit content in this site');
         }
 
         if ($globals === null) {
-            $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata($currentSite);
-            $globals->siteId = $currentSite->id;
+            $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata($site);
+            $globals->siteId = $site->id;
         }
 
         $locationField = Cp::addressCardsHtml(
@@ -72,7 +59,7 @@ class GlobalMetadataController extends Controller
         return $this->renderTemplate('sprout-module-meta/globals/' . $selectedTabHandle, [
             'globals' => $globals,
             'settings' => MetaModule::getInstance()->getSettings(),
-            'currentSite' => $currentSite,
+            'currentSite' => $site,
             'selectedTabHandle' => $selectedTabHandle,
             'locationField' => $locationField,
         ]);
@@ -80,7 +67,6 @@ class GlobalMetadataController extends Controller
 
     public function actionSaveGlobalMetadata(): ?Response
     {
-        $identity = [];
         $this->requirePostRequest();
 
         $postData = Craft::$app->getRequest()->getBodyParam('meta.globals');
@@ -90,8 +76,7 @@ class GlobalMetadataController extends Controller
 
         // Adjust Founding Date post data
         if (isset($postData['identity']['foundingDate'])) {
-            $identity['foundingDate'] = DateTimeHelper::toDateTime($postData['identity']['foundingDate']);
-            $postData['identity'] = $identity;
+            $postData['identity']['foundingDate'] = DateTimeHelper::toDateTime($postData['identity']['foundingDate']);
         }
 
         // Adjust Schema Organization post data

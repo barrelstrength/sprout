@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\meta\metadata;
 
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
 use BarrelStrength\Sprout\meta\components\schema\WebsiteIdentityOrganizationSchema;
 use BarrelStrength\Sprout\meta\components\schema\WebsiteIdentityPersonSchema;
@@ -13,35 +14,37 @@ use BarrelStrength\Sprout\meta\schema\Schema;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
-use craft\models\Site;
 use yii\base\Component;
+use yii\web\View;
 
 class OptimizeMetadata extends Component
 {
-    public Globals $globals;
+    public ?Globals $globals = null;
 
     /**
      * The Element that contains the Element Metadata field for the metadata
      *
      * @var ElementInterface|Element|null
      */
-    public ElementInterface|Element|null $element;
+    public ElementInterface|Element|null $element = null;
 
     /**
      * The first Element Metadata field Metadata from the context
      */
-    public ElementMetadataField $elementMetadataField;
+    public ?ElementMetadataField $elementMetadataField = null;
 
     /**
      * Represents the raw and final versions of the metadata being processed
      */
-    public Metadata $prioritizedMetadataModel;
+    public ?Metadata $prioritizedMetadataModel = null;
 
     /**
      * Any values provided via {% do sprout.modules.meta.meta({}) %} that will take
      * priority over metadata defined in globals or field settings
      */
     public array $templateMetadata = [];
+
+    private ?array $_metadata = null;
 
     /**
      * Add values to the master $this->templateMetadata array
@@ -55,43 +58,103 @@ class OptimizeMetadata extends Component
         }
     }
 
-    public function getMatchedSite(): Site
-    {
-        return Craft::$app->getSites()->currentSite
-            ?? Craft::$app->getSites()->primarySite;
-    }
-
     /**
      * Set the element that matches the $uri
      */
     public function setMatchedElement(int $siteId = null): void
     {
-        $this->element = null;
         $path = Craft::$app->getRequest()->getPathInfo();
-        /** @var Element $element */
+
         $element = Craft::$app->elements->getElementByUri($path, $siteId, true);
-        if ($element && ($element->uri !== null)) {
+
+        if ($element && $element->uri !== null) {
             $this->element = $element;
+
+            return;
+        }
+
+        $this->element = null;
+    }
+
+    public function registerMetadata($site): void
+    {
+        $metadata = $this->getMetadata($site);
+
+        // Renders <title> and <meta> tags at end of <head>
+        foreach ($metadata['meta'] as $metaTagTypes) {
+            foreach ($metaTagTypes as $name => $content) {
+                if ($name === 'title') {
+                    Craft::$app->getView()->title = $content;
+                    continue;
+                }
+                Craft::$app->getView()->registerMetaTag([
+                    'name' => $name,
+                    'content' => $content,
+                ]);
+            }
+        }
+
+        /** @var Globals $globals */
+        $globals = $metadata['globals'];
+        $ownershipTags = $globals->getOwnership();
+
+        foreach ($ownershipTags as $ownershipTag) {
+            if (!$ownershipTag['metaTagName'] || !$ownershipTag['metaTagContent']) {
+                continue;
+            }
+            Craft::$app->getView()->registerMetaTag([
+                'name' => $ownershipTag['metaTagName'],
+                'property' => $ownershipTag['metaTagName'],
+                'content' => $ownershipTag['metaTagContent'],
+            ]);
+        }
+
+        // Renders JSON-LD Schema as <script> tag at end of <body>
+        foreach ($metadata['schema'] as $schema) {
+            Craft::$app->getView()->registerScript($schema->getSchema(), View::POS_END, [
+                'type' => 'application/ld+json',
+            ]);
         }
     }
 
-    /**
-     * Get all metadata (Meta Tags and Structured Data) for the page
-     */
-    public function getMetadataViaContext(&$context): array|string
+    public function renderMetadataHtml($site): ?string
     {
-        $site = $this->getMatchedSite();
-        $this->setMatchedElement($site->id);
+        $metadata = $this->getMetadata($site);
 
-        return $this->getMetadata($site, true, $context);
+        $settings = MetaModule::getInstance()->getSettings();
+
+        if (!$settings->enableRenderMetadata) {
+            return null;
+        }
+
+        return $this->renderMetadata($metadata);
     }
 
-    public function getMetadata($site = null, bool $render = true, &$context = null): array|string
+    public function renderSchemaHtml($site): ?string
     {
+        $metadata = $this->getMetadata($site);
+
+        $settings = MetaModule::getInstance()->getSettings();
+
+        if (!$settings->enableRenderMetadata) {
+            return null;
+        }
+
+        return $this->renderSchema($metadata);
+    }
+
+    public function getMetadata($site = null): array|string
+    {
+        Sprout::beginProfile('OptimizeMetadata::getMetadata');
+
+        if ($this->_metadata !== null) {
+            return $this->_metadata;
+        }
+
+        $this->setMatchedElement($site->id);
+
         $this->globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata($site);
         $this->prioritizedMetadataModel = $this->getPrioritizedMetadataModel();
-
-        $output = null;
 
         $metadata = [
             'globals' => $this->globals,
@@ -99,23 +162,9 @@ class OptimizeMetadata extends Component
             'schema' => $this->getStructuredData($this->element),
         ];
 
-        if (!$render) {
-            return $metadata;
-        }
+        Sprout::endProfile('OptimizeMetadata::getMetadata');
 
-        $settings = MetaModule::getInstance()->getSettings();
-
-        // Output metadata
-        if ($settings->enableRenderMetadata) {
-            $output = $this->renderMetadata($metadata);
-        }
-
-        // Add metadata variable to Twig context
-        if ($settings->useMetadataVariable && $context) {
-            $context[$settings->metadataVariableName] = $metadata;
-        }
-
-        return $output;
+        return $metadata;
     }
 
     public function getPrioritizedMetadataModel(): Metadata
@@ -126,10 +175,8 @@ class OptimizeMetadata extends Component
             $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($this->element);
         }
 
-        $isPro = MetaModule::isPro();
-
         // Only allow Template Overrides if using Pro Edition
-        if ($isPro && $this->templateMetadata) {
+        if (MetaModule::isPro() && $this->templateMetadata) {
             /**
              * If an Element ID is provided as an Override, get our Metadata from the Element Metadata Field
              * associated with that Element ID This adds support for using Element Metadata fields on non URL-enabled
@@ -137,13 +184,12 @@ class OptimizeMetadata extends Component
              *
              * Non URL-Enabled Elements don't resave metadata on their own. That will need to be done manually.
              */
-            if (isset($this->templateMetadata['elementId'])) {
-                /** @var Element $elementOverride */
-                $elementOverride = Craft::$app->elements->getElementById($this->templateMetadata['elementId']);
+            if ($elementId = $this->templateMetadata['elementId'] ?? null) {
+                $element = Craft::$app->elements->getElementById($elementId);
 
                 // Overwrite the Element Attributes if the template override Element ID returns an element
-                if ($elementOverride) {
-                    $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($elementOverride);
+                if ($element) {
+                    $elementMetadataAttributes = MetaModule::getInstance()->elementMetadata->getRawMetadataFromElement($element);
                 }
             }
 
@@ -224,28 +270,26 @@ class OptimizeMetadata extends Component
         return $schema;
     }
 
-    /**
-     * @return mixed|null
-     */
     public function getMainEntityStructuredData(Element $element): ?Schema
     {
-        $schema = null;
-
         $schemaTypeId = $this->prioritizedMetadataModel->getSchemaTypeId();
 
         if (!$schemaTypeId) {
             return null;
         }
 
-        if ($schemaTypeId && $element !== null) {
-            $schema = MetaModule::getInstance()->schemaMetadata->getSchemaByUniqueKey($schemaTypeId);
-            $schema->addContext = true;
-            $schema->isMainEntity = true;
+        $schema = MetaModule::getInstance()->schemaMetadata->getSchemaByUniqueKey($schemaTypeId);
 
-            $schema->globals = $this->globals;
-            $schema->element = $element;
-            $schema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
+        if (!$schema) {
+            return null;
         }
+
+        $schema->addContext = true;
+        $schema->isMainEntity = true;
+
+        $schema->globals = $this->globals;
+        $schema->element = $element;
+        $schema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
         return $schema;
     }
@@ -270,12 +314,27 @@ class OptimizeMetadata extends Component
         return $output;
     }
 
+    public function renderSchema($metadata): string
+    {
+        $metaTemplatesPath = Craft::getAlias('@BarrelStrength/Sprout/templates');
+
+        Craft::$app->view->setTemplatesPath($metaTemplatesPath);
+
+        $frontEndSchemaTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/schema.twig');
+
+        $output = Craft::$app->view->renderTemplate($frontEndSchemaTemplate, [
+            'metadata' => $metadata,
+        ]);
+
+        Craft::$app->view->setTemplatesPath(Craft::$app->path->getSiteTemplatesPath());
+
+        return $output;
+    }
+
     /**
      * Return a comma delimited string of robots meta settings
-     *
-     * @param array|string|null $robots
      */
-    public function prepareRobotsMetadataValue($robots = null): ?string
+    public function prepareRobotsMetadataValue(array|string|null $robots = null): ?string
     {
         if ($robots === null) {
             return null;
@@ -352,7 +411,7 @@ class OptimizeMetadata extends Component
     /**
      * Return pre-defined transform settings or the selected transform handle
      */
-    public function getSelectedTransform($transformHandle)
+    public function getSelectedTransform($transformHandle): ?array
     {
         $defaultTransforms = [
             'sprout-socialSquare' => [

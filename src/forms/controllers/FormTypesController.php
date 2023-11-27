@@ -4,17 +4,21 @@ namespace BarrelStrength\Sprout\forms\controllers;
 
 use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\events\DefineFormFeatureSettingsEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\formtypes\FormType;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use Craft;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use craft\web\assets\userpermissions\UserPermissionsAsset;
 use craft\web\Controller;
 use yii\web\Response;
 
 class FormTypesController extends Controller
 {
+    public const INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS = 'defineInternalSproutFormFeatureSettings';
+
     public function actionFormTypesIndexTemplate(): Response
     {
         $formTypeTypes = FormsModule::getInstance()->formTypes->getFormTypeTypes();
@@ -39,8 +43,18 @@ class FormTypesController extends Controller
             $formType = new $type();
         }
 
+        $formSettingsEvent = new DefineFormFeatureSettingsEvent([
+            'formType' => $formType,
+            'featureSettings' => [],
+        ]);
+
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS, $formSettingsEvent);
+
+        Craft::$app->getView()->registerAssetBundle(UserPermissionsAsset::class);
+
         return $this->renderTemplate('sprout-module-forms/_settings/form-types/edit.twig', [
             'formType' => $formType,
+            'featureSettings' => $formSettingsEvent->featureSettings,
         ]);
     }
 
@@ -55,7 +69,6 @@ class FormTypesController extends Controller
         $formTypesConfig[$formType->uid] = $formType;
 
         if (!$formType->validate() || !FormTypeHelper::saveFormTypes($formTypesConfig)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-forms', 'Could not save Form Type.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -121,15 +134,15 @@ class FormTypesController extends Controller
         $formType->name = Craft::$app->request->getBodyParam('name');
         $formType->uid = !empty($uid) ? $uid : StringHelper::UUID();
 
+        $integrationTypes = Craft::$app->request->getBodyParam('enabledIntegrationTypes');
+
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
 
         $fieldLayout->type = $type;
         $formType->setFieldLayout($fieldLayout);
 
         $formType->formTemplateOverrideFolder = Craft::$app->request->getBodyParam('formTemplateOverrideFolder');
-        $formType->enableNotificationsTab = Craft::$app->request->getBodyParam('enableNotificationsTab');
-        $formType->enableReportsTab = Craft::$app->request->getBodyParam('enableReportsTab');
-        $formType->enableIntegrationsTab = Craft::$app->request->getBodyParam('enableIntegrationsTab');
+        $formType->featureSettings = Craft::$app->request->getBodyParam('featureSettings');
         $formType->enabledFormFieldTypes = Craft::$app->request->getBodyParam('enabledFormFieldTypes');
 
         if (!$formType::isEditable()) {

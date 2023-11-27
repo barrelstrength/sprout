@@ -19,18 +19,14 @@ use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Delete;
 use craft\elements\conditions\ElementConditionInterface;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\web\CpScreenResponseBehavior;
 use yii\base\Exception;
+use yii\web\Response;
 
-/**
- *
- * @property null|array $hiddenFields
- * @property null|array $conditionalLogicResults
- */
 class SubmissionElement extends Element
 {
     public ?int $formId = null;
@@ -111,10 +107,7 @@ class SubmissionElement extends Element
         return $statusArray;
     }
 
-    /**
-     * @return SubmissionElementQuery The newly created [[SubmissionElementQuery]] instance.
-     */
-    public static function find(): ElementQueryInterface
+    public static function find(): SubmissionElementQuery
     {
         return new SubmissionElementQuery(static::class);
     }
@@ -144,7 +137,6 @@ class SubmissionElement extends Element
         foreach ($forms as $form) {
             $saveData = FormsModule::getInstance()->submissions->isSaveDataEnabled($form);
             if ($saveData) {
-
                 $sources[] = [
                     'key' => 'id:' . $form->id,
                     'label' => $form->name,
@@ -197,7 +189,7 @@ class SubmissionElement extends Element
     protected static function defineSortOptions(): array
     {
         return [
-            'name' => Craft::t('sprout-module-forms', 'Form Name'),
+            'sprout_forms.name' => Craft::t('sprout-module-forms', 'Form Name'),
             [
                 'label' => Craft::t('sprout-module-forms', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
@@ -274,7 +266,7 @@ class SubmissionElement extends Element
      */
     public function getContentTable(): string
     {
-        return FormContentTableHelper::getContentTable($this->getForm()->handle);
+        return FormContentTableHelper::getContentTable($this->getForm()->id);
     }
 
     public function cpEditUrl(): ?string
@@ -297,6 +289,12 @@ class SubmissionElement extends Element
 
     public function canView(User $user): bool
     {
+        $settings = FormsModule::getInstance()->getSettings();
+
+        if (!$settings->enableSaveData) {
+            return false;
+        }
+
         return Craft::$app->getUser()->getIdentity()->can(FormsModule::p('viewSubmissions'));
     }
 
@@ -323,6 +321,20 @@ class SubmissionElement extends Element
         return (string)$this->title;
     }
 
+    public function prepareEditScreen(Response $response, string $containerId): void
+    {
+        $crumbs = [
+            [
+                'label' => Craft::t('sprout-module-forms', 'Submissions'),
+                'url' => UrlHelper::url('sprout/forms/submissions'),
+            ],
+        ];
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->crumbs($crumbs);
+        //Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
+    }
+
     public function getFieldLayout(): ?FieldLayout
     {
         return $this->getForm()->getSubmissionFieldLayout();
@@ -333,6 +345,28 @@ class SubmissionElement extends Element
         $statusId = $this->statusId;
 
         return FormsModule::getInstance()->submissionStatuses->getSubmissionStatusById($statusId)->handle;
+    }
+
+    public function getSidebarHtml(bool $static): string
+    {
+        $html = parent::getSidebarHtml($static);
+
+        $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarIntegrations', [
+            'submission' => $this,
+        ]);
+
+        $html .= Craft::$app->getView()->renderTemplate('sprout-module-forms/submissions/_sidebarSpam', [
+            'submission' => $this,
+        ]);
+
+        return $html;
+    }
+
+    public function metadata(): array
+    {
+        return [
+            Craft::t('sprout-module-forms', 'Form Name') => $this->getForm()->name,
+        ];
     }
 
     public function afterSave(bool $isNew): void
@@ -446,7 +480,7 @@ class SubmissionElement extends Element
     public function hasCaptchaErrors(): bool
     {
         // When saving in the CP
-        if ($this->captchas === null) {
+        if (empty($this->captchas)) {
             return false;
         }
 

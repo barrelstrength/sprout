@@ -6,7 +6,6 @@ use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
 use craft\base\Model;
 use craft\elements\Address;
-use craft\helpers\Json;
 use DateTime;
 
 class Globals extends Model
@@ -23,7 +22,7 @@ class Globals extends Model
 
     public ?array $social = null;
 
-    public ?string $robots = null;
+    public ?array $robots = null;
 
     public ?array $settings = null;
 
@@ -39,7 +38,10 @@ class Globals extends Model
     {
         if (isset($this->identity['locationAddressId'])) {
             $elementId = $this->identity['locationAddressId'];
-            $this->addressModel = Craft::$app->getElements()->getElementById($elementId);
+
+            /** @var Address $address */
+            $address = Craft::$app->getElements()->getElementById($elementId);
+            $this->addressModel = $address;
         } else {
             $address = new Address();
             $address->title = Craft::t('sprout-module-meta', 'Address');
@@ -52,21 +54,17 @@ class Globals extends Model
 
     /**
      * Factory to return schema of any type
-     *
+     * Most settings return an array, but robots returns a string
      */
-    public function getGlobalByKey(string $target, string $format = 'array'): array|string|null
+    public function getGlobalByKey(string $target = null): array|string|null
     {
         if (!$target) {
-            return '';
+            return null;
         }
 
         $targetMethod = 'get' . ucfirst($target);
 
         $schema = $this->{$targetMethod}();
-
-        if ($schema && $format === 'json') {
-            return Json::encode($schema);
-        }
 
         return $schema;
     }
@@ -159,7 +157,12 @@ class Globals extends Model
         return $this->ownership;
     }
 
-    public function getRobots(): ?string
+    public function getRobots(): ?array
+    {
+        return $this->robots;
+    }
+
+    public function getRobots2(): ?string
     {
         $robots = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($this->robots);
 

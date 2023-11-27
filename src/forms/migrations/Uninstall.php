@@ -32,7 +32,7 @@ class Uninstall extends Migration
         foreach ($formIds as $formId) {
             $form = Craft::$app->getElements()->getElementById($formId);
             if ($form instanceof FormElement) {
-                FormsModule::getInstance()->forms->deleteForm($form);
+                Craft::$app->getElements()->deleteElementById($formId, FormElement::class);
             }
         }
 

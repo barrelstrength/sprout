@@ -98,7 +98,7 @@ class SentEmailController extends Controller
 
         $emailId = Craft::$app->request->getBodyParam('emailId');
 
-        /** @var $sentEmail SentEmailElement */
+        /** @var SentEmailElement $sentEmail */
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmailElement::class, $site->id);
 
         $currentUser = Craft::$app->getUser()->getIdentity();

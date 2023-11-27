@@ -19,6 +19,15 @@ class CustomEndpointIntegrationType extends Integration
         return Craft::t('sprout-module-forms', 'Custom Endpoint');
     }
 
+    public function getWorkflowSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/integrationtypes/CustomEndpoint/workflow',
+            [
+                'integration' => $this,
+            ]
+        );
+    }
+
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/integrationtypes/CustomEndpoint/settings',
@@ -62,4 +71,3 @@ class CustomEndpointIntegrationType extends Integration
         return true;
     }
 }
-

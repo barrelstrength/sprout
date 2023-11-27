@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core\twig;
 
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\SproutSettings;
@@ -82,7 +83,6 @@ class TemplateHelper
                 'value' => '',
             ];
         }
-
         foreach ($savableComponentTypes as $savableComponentType) {
             $label = $savableComponentType::displayName();
             $value = $savableComponentType;
@@ -95,10 +95,10 @@ class TemplateHelper
         return $options;
     }
 
-    public static function getConfigWarning(SproutModuleTrait|Module $module, string $setting): string
+    public static function getConfigWarning(SproutModuleInterface $sproutModule, string $setting): string
     {
-        // Get the module Settings class
-        $module = new $module($module::class);
+        $module = new $sproutModule($sproutModule::class);
+
         $settings = $module->createSettingsModel();
 
         $envConfig = App::envConfig($settings::class, $module::getEnvPrefix());

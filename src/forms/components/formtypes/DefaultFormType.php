@@ -25,7 +25,6 @@ class DefaultFormType extends FormType
 
     public static function defineNativeFields(DefineFieldLayoutFieldsEvent $event): void
     {
-
     }
 
     public function createFieldLayout(): ?FieldLayout
@@ -69,7 +68,7 @@ class DefaultFormType extends FormType
             ]),
             new TextareaField([
                 'label' => Craft::t('sprout-module-forms', 'Error Message'),
-                'instructions' => Craft::t('sprout-module-forms', "The message displayed when a form submission has errors. This message will display above the error list if 'Globally' is selected as the Error Display Method. Leave blank for no message."),
+                'instructions' => Craft::t('sprout-module-forms', 'The message displayed when a form submission has errors. Leave blank for no message.'),
                 'placeholder' => Craft::t('sprout-module-forms', 'We were unable to process your submission. Please correct any errors and submit the form again.'),
                 'attribute' => 'messageOnError',
                 'class' => 'nicetext fullwidth',
@@ -90,7 +89,7 @@ class DefaultFormType extends FormType
             ]),
             new LightswitchField([
                 'label' => Craft::t('sprout-module-forms', 'Enable Captchas'),
-                'instructions' => Craft::t('sprout-module-forms', 'Enable or disable the global captchas for this specific form.'),
+                'instructions' => Craft::t('sprout-module-forms', 'Enable the globally configured captchas for this form.'),
                 'attribute' => 'enableCaptchas',
                 'onLabel' => Craft::t('sprout-module-forms', 'Enable'),
                 'offLabel' => Craft::t('sprout-module-forms', 'Disable'),
@@ -105,6 +104,3 @@ class DefaultFormType extends FormType
         return $this->_fieldLayout = $fieldLayout;
     }
 }
-
-
-

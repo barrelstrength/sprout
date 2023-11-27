@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
+use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
@@ -55,7 +56,6 @@ class MailerController extends Controller
         $mailers[$mailer->uid] = $mailer;
 
         if (!$mailer->validate() || !MailerHelper::saveMailers($mailers)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save mailer.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -123,9 +123,15 @@ class MailerController extends Controller
             throw new ElementNotFoundException('Email not found.');
         }
 
+        $mailer = $email->getMailer();
+
+        if (!$mailer instanceof MailerSendTestInterface) {
+            throw new ElementNotFoundException('Incorrect mailer type.');
+        }
+
         return $this->asJson([
             'success' => true,
-            'html' => $email->getMailer()->getSendTestModalHtml($email),
+            'html' => $mailer->getSendTestModalHtml($email),
         ]);
     }
 
@@ -136,14 +142,12 @@ class MailerController extends Controller
 
         $request = Craft::$app->getRequest();
         $emailId = $request->getRequiredBodyParam('emailId');
-        $settings = $request->getRequiredBodyParam('mailerInstructionsSettings');
+        $mailerInstructionsSettings = $request->getRequiredBodyParam('mailerInstructionsSettings');
 
         /** @var EmailElement $email */
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
 
-        $mailer = $email->getMailer();
-        $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
-        $mailerInstructionsTestSettings->setAttributes($settings, false);
+        $mailerInstructionsTestSettings = $email->getMailerInstructions($mailerInstructionsSettings);
 
         if (!$mailerInstructionsTestSettings->validate()) {
             return $this->asJson([
@@ -151,6 +155,8 @@ class MailerController extends Controller
                 'errors' => $mailerInstructionsTestSettings->getErrors(),
             ]);
         }
+
+        $mailer = $email->getMailer();
 
         try {
             $mailer->send($email, $mailerInstructionsTestSettings);
@@ -173,14 +179,16 @@ class MailerController extends Controller
 
         $request = Craft::$app->getRequest();
         $emailId = $request->getRequiredBodyParam('emailId');
-        $settings = $request->getRequiredBodyParam('mailerInstructionsSettings');
+        $mailerInstructionsSettings = $request->getRequiredBodyParam('mailerInstructionsSettings');
 
         /** @var EmailElement $email */
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
 
-        $mailer = $email->getMailer();
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($settings, false);
+        if ($mailerInstructionsSettings) {
+            $email->mailerInstructionsSettings = $mailerInstructionsSettings;
+        }
+
+        $mailerInstructionsSettings = $email->getMailerInstructions();
 
         if (!$mailerInstructionsSettings->validate()) {
             return $this->asJson([
@@ -188,6 +196,8 @@ class MailerController extends Controller
                 'errors' => $mailerInstructionsSettings->getErrors(),
             ]);
         }
+
+        $mailer = $email->getMailer();
 
         try {
             $mailer->send($email, $mailerInstructionsSettings);

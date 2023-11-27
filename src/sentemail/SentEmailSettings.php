@@ -24,4 +24,3 @@ class SentEmailSettings extends BaseConfig
         return $this;
     }
 }
-

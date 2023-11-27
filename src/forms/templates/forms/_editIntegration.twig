@@ -1,0 +1,73 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+{% import "sprout-module-core/_macros/forms" as sproutFields %}
+
+<div id="sprout-content">
+
+    {{ hiddenInput('formId', integration.formId) }}
+
+    {% if integration.id %}
+        {{ hiddenInput('integrationId', integration.id) }}
+    {% endif %}
+
+    {{ forms.lightswitchField({
+        label: 'Enabled'|t('sprout-module-forms'),
+        name: 'enabled',
+        on: integration.enabled,
+        first: true
+    }) }}
+
+    {{ forms.textField({
+        label: 'Integration Name'|t('sprout-module-forms'),
+        id: 'field-name',
+        name: 'name',
+        value: (integration is defined ? integration.name : null),
+        errors: (integration is defined ? integration.getErrors('name') : null),
+        required: true,
+    }) }}
+
+    {% namespace 'settings['~className(integration)~']' %}
+        {{ integration.getWorkflowSettingsHtml()|raw }}
+    {% endnamespace %}
+
+    {{ conditionBuilderHtml }}
+
+    {{ forms.textField({
+        label: "Custom Rule"|t('sprout-module-forms'),
+        instructions: "Notification Email will be sent if the Custom Rule evaluates to '1', 'true', 'on', or 'yes'. If none of those conditions are met, the Event will not trigger a Notification
+        ."|t('sprout-module-forms'),
+        id: 'send-rule-custom',
+        fieldId: 'send-rule-custom',
+        fieldClass: [
+            integration.sendRule != 'custom' ? 'hidden',
+        ]|filter,
+        name: 'sendRule',
+        placeholder: "{% if object.customFieldHandle == 'send' %}true{% else %}false{% endif %}"|t('sprout-module-forms'),
+        value: integration.sendRule ?? null
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Integration Type'|t('sprout-module-forms'),
+        tip: 'This value cannot be changed. Create a new integration for a new integration type.'|t('sprout-module-forms'),
+        id: 'type',
+        name: 'selectType',
+        hasOptgroups: true,
+        options: [
+            {
+                label: integration.displayName(),
+                value: className(integration)
+            }
+        ],
+        value: className(integration)|e('html'),
+        errors: integration.getErrors('type') ?? null,
+        disabled: true
+    }) }}
+
+    {{ forms.textField({
+        id: 'type',
+        name: 'type',
+        type: 'hidden',
+        value: className(integration),
+        errors: integration.getErrors('type') ?? null
+    }) }}
+</div>

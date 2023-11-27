@@ -15,10 +15,12 @@ use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\components\notificationevents\ManualNotificationEvent;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
 use Craft;
+use craft\base\ElementInterface;
 use craft\fieldlayoutelements\HorizontalRule;
 use craft\helpers\App;
 use craft\models\FieldLayout;
 use craft\models\FieldLayoutTab;
+use InvalidArgumentException;
 use yii\base\Event;
 
 class TransactionalEmailVariant extends EmailVariant
@@ -27,14 +29,6 @@ class TransactionalEmailVariant extends EmailVariant
      * The qualified namespace of the Email Notification Event
      */
     public ?string $eventId = null;
-
-    /**
-     * Enable or disable file attachments when notification emails are sent.
-     *
-     * If disabled, files will still be stored in Craft after form submission.
-     * This only determines if they should also be attached and sent via email.
-     */
-    public bool $enableFileAttachments = false;
 
     /**
      * Statement that gets evaluated to true/false to determine this event will be fired
@@ -142,8 +136,12 @@ class TransactionalEmailVariant extends EmailVariant
     /**
      * Returns a Notification Event
      */
-    public function getNotificationEvent(EmailElement $email, Event $event = null): NotificationEvent
+    public function getNotificationEvent(ElementInterface $email, Event $event = null): NotificationEvent
     {
+        if (!$email instanceof EmailElement) {
+            throw new InvalidArgumentException('Element must be an instance of ' . EmailElement::class);
+        }
+
         if ($this->_notificationEvent !== null) {
             return $this->_notificationEvent;
         }

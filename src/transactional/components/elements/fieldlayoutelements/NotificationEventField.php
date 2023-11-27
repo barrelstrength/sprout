@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\core\helpers\ComponentHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\ElementInterface;
@@ -39,6 +40,7 @@ class NotificationEventField extends BaseNativeField
         $events = TransactionalModule::getInstance()->notificationEvents->getNotificationEventTypes();
         $eventOptions = TemplateHelper::optionsFromComponentTypes($events);
 
+        /** @var TransactionalEmailVariant $emailVariantSettings */
         $emailVariantSettings = $element->getEmailVariant();
         $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
 

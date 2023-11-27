@@ -7,8 +7,6 @@
 
 {% block content %}
 
-    <form method="post" accept-charset="UTF-8" data-saveshortcut>
-        {{ csrfInput() }}
         {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
         {{ hiddenInput('globalColumn', 'robots') }}
         {{ hiddenInput('siteId', globals.siteId) }}
@@ -19,13 +17,5 @@
         {% set robotsContext = 'globals' %}
         {% set robotsNamespace = 'meta[globals][robots]' %}
         {% include "sprout-module-meta/_components/fields/ElementMetadata/blocks/robots" %}
-
-        <hr>
-
-        <div class="buttons">
-            <input type="submit" class="btn submit" value="Save"/>
-        </div>
-
-    </form>
 
 {% endblock %}

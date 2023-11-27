@@ -7,7 +7,7 @@ use Craft;
 
 class WebsiteIdentityOrganizationSchema extends Schema
 {
-    public string $type = 'Organization';
+    public ?string $type = 'Organization';
 
     public function getName(): string
     {
@@ -50,7 +50,8 @@ class WebsiteIdentityOrganizationSchema extends Schema
         }
 
         // Add Corporate Contacts
-        $contacts = $this->globals['contacts'];
+        $contacts = $this->globals['contacts'] ?? null;
+
         $this->addContactPoints($contacts);
 
         if (isset($schema['organizationSubTypes'][0]) && $schema['organizationSubTypes'][0] == 'LocalBusiness') {

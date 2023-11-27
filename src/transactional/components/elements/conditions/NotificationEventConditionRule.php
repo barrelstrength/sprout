@@ -3,8 +3,9 @@
 namespace BarrelStrength\Sprout\transactional\components\elements\conditions;
 
 use BarrelStrength\Sprout\core\twig\TemplateHelper;
-use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElementQuery;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -44,11 +45,14 @@ class NotificationEventConditionRule extends BaseMultiSelectConditionRule implem
 
     public function matchElement(ElementInterface $element): bool
     {
-        /** @var TransactionalEmailElement $element */
+        if (!$element instanceof EmailElement) {
+            return false;
+        }
+
+        /** @var TransactionalEmailVariant $emailVariantSettings */
         $emailVariantSettings = $element->getEmailVariant();
         $notificationEvent = $emailVariantSettings->getNotificationEvent($element);
 
-        /** @var ElementInterface $element */
         return $this->matchValue($notificationEvent::class);
     }
 }

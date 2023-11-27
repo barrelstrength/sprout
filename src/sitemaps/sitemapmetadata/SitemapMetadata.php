@@ -22,9 +22,6 @@ class SitemapMetadata extends Component
 
     private array $_elementsWithUris = [];
 
-    /**
-     * @return ElementSitemapMetadataInterface[]
-     */
     public function getSitemapMetadataTypes(): array
     {
         $defaultMetadataTypes = [
@@ -151,6 +148,7 @@ class SitemapMetadata extends Component
             return;
         }
 
+        /** @var SitemapMetadataRecord[] $sitemapMetadataRecords */
         $sitemapMetadataRecords = SitemapMetadataRecord::find()
             ->where(['in', 'siteId', $siteIds])
             ->andWhere(['sourceKey' => $sitemapMetadata->sourceKey])
@@ -158,7 +156,6 @@ class SitemapMetadata extends Component
             ->all();
 
         foreach ($siteIds as $siteId) {
-
             if (isset($sitemapMetadataRecords[$siteId])) {
                 $sitemapMetadataRecord = $sitemapMetadataRecords[$siteId];
             } else {

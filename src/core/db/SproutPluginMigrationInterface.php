@@ -2,10 +2,13 @@
 
 namespace BarrelStrength\Sprout\core\db;
 
+use craft\base\Plugin;
 use craft\db\MigrationManager;
 
 /**
  * Sprout Plugins using modules with schema must implement this interface
+ *
+ * @mixin Plugin
  */
 interface SproutPluginMigrationInterface
 {
@@ -29,4 +32,3 @@ interface SproutPluginMigrationInterface
      */
     public function getMigrator(): SproutPluginMigrator|MigrationManager;
 }
-

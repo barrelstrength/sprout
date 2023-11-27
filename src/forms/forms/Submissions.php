@@ -10,7 +10,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnBeforeSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\submissions\ResaveFormSubmissions;
+use BarrelStrength\Sprout\forms\submissions\ResaveSubmissionsJob;
 use BarrelStrength\Sprout\forms\submissions\SubmissionRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionsSpamLogRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionStatus;
@@ -144,20 +144,14 @@ class Submissions extends Component
         return true;
     }
 
-    /**
-     *
-     * @return mixed
-     */
     public function isSaveDataEnabled(FormElement $form, bool $isSpam = false): bool
     {
-        $settings = FormsModule::getInstance()->getSettings();
-
-        // Get the global saveData setting
-        $saveData = $settings->enableSaveData;
+        $formType = $form->getFormType();
+        $saveData = $formType->enableSaveData;
 
         if ($saveData) {
             // Allow Form to override global saveData setting
-            $saveData = (bool)(int)$form->saveData;
+            $saveData = (bool)$form->saveData;
         }
 
         // Let the SPAM setting determine if we save data if we are:
@@ -168,8 +162,8 @@ class Submissions extends Component
             Craft::$app->getRequest()->getIsSiteRequest() &&
             $isSpam
         ) {
-
             // If we have a spam submission, use the spam saveData setting
+            $settings = FormsModule::getInstance()->getSettings();
             $saveData = $settings->saveSpamToDatabase;
         }
 
@@ -184,23 +178,17 @@ class Submissions extends Component
 
         // See Craft Garbage collection treatment of probability
         // https://docs.craftcms.com/v3/gc.html
-        /** @noinspection RandomApiMigrationInspection */
         if (!$force && random_int(0, 1_000_000) >= $probability) {
             return;
         }
 
-        // Default to 5000 if no integer is found in settings
-        $spamLimit = is_int($settings->spamLimit)
-            ? $settings->spamLimit
-            : static::SPAM_DEFAULT_LIMIT;
-
-        if ($spamLimit <= 0) {
+        if ($settings->spamLimit <= 0) {
             return;
         }
 
         $ids = SubmissionElement::find()
             ->limit(null)
-            ->offset($spamLimit)
+            ->offset($settings->spamLimit)
             ->status(SubmissionStatus::SPAM_STATUS_HANDLE)
             ->orderBy(['sprout_form_submissions.dateCreated' => SORT_DESC])
             ->ids();
@@ -239,7 +227,7 @@ class Submissions extends Component
 
     public function resaveElements($formId): void
     {
-        Craft::$app->getQueue()->push(new ResaveFormSubmissions([
+        Craft::$app->getQueue()->push(new ResaveSubmissionsJob([
             'formId' => $formId,
         ]));
     }

@@ -3,29 +3,19 @@
 namespace BarrelStrength\Sprout\forms\forms;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\integrations\Integration;
-use BarrelStrength\Sprout\forms\migrations\helpers\FormContentTableHelper;
 use Craft;
-use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
-use craft\models\FieldLayoutTab;
-use craft\records\FieldLayoutField;
-use Exception;
 use yii\base\Component;
-use yii\db\Transaction;
 
 class Forms extends Component
 {
     protected static array $fieldVariables = [];
 
     public array $activeSubmissions = [];
-
-    public ?SubmissionElement $activeCpSubmission = null;
 
     /**
      *
@@ -122,66 +112,6 @@ class Forms extends Component
     //}
 
     /**
-     * Removes a form and related records from the database
-     */
-    public function deleteForm(FormElement $form): bool
-    {
-        /** @var Transaction $transaction */
-        $transaction = Craft::$app->db->beginTransaction();
-
-        try {
-            $submissionIds = (new Query())
-                ->select(['submissions.id'])
-                ->from(['submissions' => SproutTable::FORM_SUBMISSIONS])
-                ->where([
-                    '[[submissions.formId]]' => $form->id,
-                ])
-                ->column();
-
-            foreach ($submissionIds as $submissionId) {
-                Craft::$app->getElements()->deleteElementById($submissionId, SubmissionElement::class);
-            }
-
-            $fieldIds = FieldLayoutField::find()
-                ->select(['fieldId'])
-                ->where(['layoutId' => $form->submissionFieldLayoutId])
-                ->column();
-
-            // Delete form fields
-            foreach ($fieldIds as $fieldId) {
-                Craft::$app->getFields()->deleteFieldById($fieldId);
-            }
-
-            // Delete the Field Layout
-            Craft::$app->getFields()->deleteLayoutById($form->submissionFieldLayoutId);
-
-            $contentTable = FormContentTableHelper::getContentTable($form);
-
-            // Drop the content table
-            Craft::$app->getDb()->createCommand()
-                ->dropTableIfExists($contentTable)
-                ->execute();
-
-            $success = Craft::$app->getElements()->deleteElementById($form->id, FormElement::class);
-
-            if (!$success) {
-                $transaction->rollBack();
-                Craft::error('Couldn’t delete Form', __METHOD__);
-
-                return false;
-            }
-
-            $transaction->commit();
-        } catch (Exception $exception) {
-            $transaction->rollBack();
-
-            throw $exception;
-        }
-
-        return true;
-    }
-
-    /**
      * Returns an array of models for forms found in the database
      *
      * @return FormElement[]
@@ -198,7 +128,7 @@ class Forms extends Component
     /**
      * Returns a form model if one is found in the database by id
      */
-    public function getFormById(int $formId, int $siteId = null): ElementInterface|FormElement|null
+    public function getFormById(int $formId, int $siteId = null): FormElement|null
     {
         $query = FormElement::find();
         $query->id($formId);
@@ -210,23 +140,13 @@ class Forms extends Component
     /**
      * Returns a form model if one is found in the database by handle
      */
-    public function getFormByHandle(string $handle, int $siteId = null): ElementInterface|FormElement|null
+    public function getFormByHandle(string $handle, int $siteId = null): FormElement|null
     {
         $query = FormElement::find();
         $query->handle($handle);
         $query->siteId($siteId);
 
         return $query->one();
-    }
-
-    /**
-     * Returns the value of a given field
-     */
-    public function getFieldValue($field, $value): ?FormRecord
-    {
-        return FormRecord::findOne([
-            $field => $value,
-        ]);
     }
 
     /**
@@ -300,80 +220,6 @@ class Forms extends Component
     }
 
     /**
-     * Create a secuencial string for the "name" and "handle" fields if they are already taken
-     */
-    public function getFieldAsNew($field, $value): string
-    {
-        $i = 1;
-        $band = true;
-
-        do {
-            $newField = $field == 'handle' ? $value . $i : $value . ' ' . $i;
-            $form = $this->getFieldValue($field, $newField);
-            if (!$form instanceof FormRecord) {
-                $band = false;
-            }
-
-            $i++;
-        } while ($band);
-
-        return $newField;
-    }
-
-    /**
-     * Removes forms and related records from the database given the ids
-     */
-    public function deleteForms($formElements): bool
-    {
-        foreach ($formElements as $formElement) {
-            $form = FormsModule::getInstance()->forms->getFormById($formElement->id);
-
-            if ($form !== null) {
-                FormsModule::getInstance()->forms->deleteForm($form);
-            } else {
-                Craft::error("Can't delete the form with id: {$formElement->id}", __METHOD__);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Creates a form with a empty default tab
-     */
-    public function createNewForm($name = null, $handle = null): ?FormElement
-    {
-        $form = new FormElement();
-        $name ??= 'Form';
-        $handle ??= 'form';
-
-        $settings = FormsModule::getInstance()->getSettings();
-
-        $form->name = $this->getFieldAsNew('name', $name);
-        $form->handle = $this->getFieldAsNew('handle', $handle);
-        $form->titleFormat = "{dateCreated|date('D, d M Y H:i:s')}";
-        $form->formTypeUid = FormTypeHelper::getDefaultFormType();
-        $form->saveData = $settings->enableSaveData && $settings->enableSaveDataDefaultValue;
-
-        // Set default tab
-
-        /** @var Field $field */
-        //        $field = null;
-        //        $form = FormsModule::getInstance()->formFields->addDefaultTab($form, $field);
-        //
-        //        if ($this->saveForm($form)) {
-        //            // Let's delete the default field
-        //            if ($field !== null && $field->id) {
-        //                Craft::$app->getFields()->deleteFieldById($field->id);
-        //            }
-        //
-        //            return $form;
-        //        }
-        //
-        //        return null;
-    }
-
-    /**
      * Checks if the current plugin edition allows a user to create a Form
      */
     public function canCreateForm(): bool
@@ -389,63 +235,41 @@ class Forms extends Component
         return true;
     }
 
-    public function getTabsForFieldLayout(FormElement $form): array
-    {
-        $tabs = [];
-
-        $fieldLayout = $form->getFieldLayout();
-        $fieldLayoutTabs = $fieldLayout->getTabs();
-        if (empty($fieldLayoutTabs)) {
-            $fieldLayoutTabs[] = new FieldLayoutTab([
-                'name' => FormsModule::getInstance()->formFields->getDefaultTabName(),
-                'sortOrder' => 1,
-            ]);
-            $fieldLayout->setTabs($fieldLayoutTabs);
-            Craft::$app->getFields()->saveLayout($fieldLayout);
-        }
-
-        foreach ($fieldLayoutTabs as $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
-
-            if ($form->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    /** @var Field $field */
-                    if ($hasErrors = $form->hasErrors($field->handle . '.*')) {
-                        break;
-                    }
-                }
-            }
-
-            $tabs[$tab->id] = [
-                'label' => Craft::t('sprout-module-forms', $tab->name),
-                'url' => '#sproutforms-tab-' . $tab->id,
-                'class' => $hasErrors ? 'error' : null,
-            ];
-        }
-
-        return $tabs;
-    }
-
-    //public function getFormField($formFieldHandle, $formId)
+    //public function getTabsForFieldLayout(FormElement $form): array
     //{
-    //    $form = Craft::$app->elements->getElementById($formId);
+    //    $tabs = [];
     //
-    //    if (!$form) {
-    //        throw new BadRequestHttpException('No form exists with the ID ' . $formId);
+    //    $fieldLayout = $form->getFieldLayout();
+    //    $fieldLayoutTabs = $fieldLayout->getTabs();
+    //    if (empty($fieldLayoutTabs)) {
+    //        $fieldLayoutTabs[] = new FieldLayoutTab([
+    //            'name' => FormsModule::getInstance()->formFields->getDefaultTabName(),
+    //            'sortOrder' => 1,
+    //        ]);
+    //        $fieldLayout->setTabs($fieldLayoutTabs);
+    //        Craft::$app->getFields()->saveLayout($fieldLayout);
     //    }
     //
-    //    return $form->getField($formFieldHandle);
+    //    foreach ($fieldLayoutTabs as $tab) {
+    //        // Do any of the fields on this tab have errors?
+    //        $hasErrors = false;
+    //
+    //        if ($form->hasErrors()) {
+    //            foreach ($tab->getFields() as $field) {
+    //                /** @var Field $field */
+    //                if ($hasErrors = $form->hasErrors($field->handle . '.*')) {
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //
+    //        $tabs[$tab->id] = [
+    //            'label' => Craft::t('sprout-module-forms', $tab->name),
+    //            'url' => '#sproutforms-tab-' . $tab->id,
+    //            'class' => $hasErrors ? 'error' : null,
+    //        ];
+    //    }
+    //
+    //    return $tabs;
     //}
-
-    public function handleModifyFormHook($context): ?string
-    {
-        /** @var FormElement $form */
-        $form = $context['form'] ?? null;
-        if ($form !== null && $form->enableCaptchas) {
-            return FormsModule::getInstance()->formCaptchas->getCaptchasHtml($form);
-        }
-
-        return null;
-    }
 }

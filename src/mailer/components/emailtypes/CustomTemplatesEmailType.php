@@ -34,6 +34,3 @@ class CustomTemplatesEmailType extends EmailType
         return $fieldLayout;
     }
 }
-
-
-

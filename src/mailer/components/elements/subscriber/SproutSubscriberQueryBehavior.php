@@ -12,14 +12,16 @@ use yii\base\Behavior;
  * @see BehaviorHelper::attachBehaviors() for initialization
  *
  * @property UserQuery $owner
+ *
+ * @mixin SproutSubscriberElementBehavior
  */
 class SproutSubscriberQueryBehavior extends Behavior
 {
     public ?int $sproutSubscriberListId = null;
 
-    public function sproutSubscriberListId(string $value): UserQuery
+    public function sproutSubscriberListId(int $id = null): UserQuery
     {
-        $this->sproutSubscriberListId = $value;
+        $this->sproutSubscriberListId = $id;
 
         return $this->owner;
     }

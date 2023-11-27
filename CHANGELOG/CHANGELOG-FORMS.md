@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0 - UNRELEASED
+## 4.2.0 - UNRELEASED
 
 ### Added
 
@@ -8,6 +8,8 @@
 
 ### Changed
 
+- Updated Form Element to use unified element editor
+- Updated Submission Element to use unified element editor
 - Updated `craft.sproutForms` variable to `sprout.forms`
 - Updated Project Config settings from `sprout-forms` => `sprout-module-forms`
 - Updated translation category from `sprout-forms` => `sprout-module-forms`
@@ -15,6 +17,8 @@
 - Updated `giggsey/libphonenumber-for-php` requirement v8.12.11
 - Removed Form Rules in favor of Craft Element/Field Rules API
 - Removed Craft Fields Email, URL, and others, Template Select …
+- Updated form content tables to be named using ID instead of handle
+- Updates submission layout to be stored as JSON settings column instead of separate tables
 
 ### Removed
 
@@ -28,6 +32,8 @@
 - ** Removed Sprout Url Field. Data has been migrated to native Craft URL field.
 - ** Removed Sprout Notes Field. See upgrade notes to manually update Notes to
   new Craft Field UI Elements.
+- Removed template hook `cp.sproutForms.submissions.edit.details`
+- Removed template hook `cp.sproutForms.submissions.edit.content`
 
 ### Breaking Changes
 
@@ -35,8 +41,12 @@
   upgrade notes regarding updates to the FormField::getFrontEndInputHtml()
   method signature and front-end field templates to better support error classes
   in rendering options.
+- From Templates have been updated to treat individual fields and inputs more like components
+  - Many variables are passed in as processed values at higher level templates
+  - New getFrontEndInputVariables
 - Recaptcha ⇒ Sprout Forms native? hasn’t been migrated yet…
 - Form Conditionals and Integrations have not yet been migrated
 - Notes Field ⇒ Default Craft
 - Removed Predefined Field and Predefined Date Field
+- Removed `{% hook 'sproutForms.modifyForm' %}` in favor of `{{ form.getCaptchaHtml() }}`
 

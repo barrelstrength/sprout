@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\mailer\components\elements\email\conditions;
 
+use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\conditions\BaseMultiSelectConditionRule;
@@ -23,14 +24,7 @@ class EmailTypeConditionRule extends BaseMultiSelectConditionRule implements Ele
 
     protected function options(): array
     {
-        $emailTypes = EmailTypeHelper::getEmailTypes();
-
-        return array_map(static function($emailType) {
-            return [
-                'label' => $emailType->name,
-                'value' => $emailType->uid,
-            ];
-        }, $emailTypes);
+        return EmailTypeHelper::getEmailTypesOptions();
     }
 
     public function modifyQuery(QueryInterface $query): void
@@ -40,6 +34,7 @@ class EmailTypeConditionRule extends BaseMultiSelectConditionRule implements Ele
 
     public function matchElement(ElementInterface $element): bool
     {
+        /** @var EmailElement $element */
         return in_array($element->emailTypeUid, $this->getValues(), true);
     }
 }

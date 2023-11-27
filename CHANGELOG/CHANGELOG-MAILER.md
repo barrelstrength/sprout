@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.1.6 - 2023-11-27
+
+### Added
+
+- Emails with template rendering errors will now be logged as Sent Emails Elements 
+- Added error logging for emails that throw an error while rendering templates
+- Added `BarrelStrength\Sprout\mailer\mailers\MailerInstructionsTrait`
+
+### Changed
+
+- Improved Mailer Settings behavior around configuring settings
+- Improved Reply-To Email field default settings behavior
+
+### Fixed
+
+- Fixed dynamic recipient validation when editing an Email Element
+- Fixed issue where Sender and Reply-To Email values were not being populated for Craft sender behavior
+
 ## 4.1.5 - 2023-11-05
 
 ### Changed

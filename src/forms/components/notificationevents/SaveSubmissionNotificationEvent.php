@@ -6,16 +6,15 @@ use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionConditi
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
 use BarrelStrength\Sprout\forms\forms\Submissions;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventInterface;
-use BarrelStrength\Sprout\transactional\notificationevents\ElementEventTrait;
-use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvent;
+use BarrelStrength\Sprout\transactional\notificationevents\BaseElementNotificationEvent;
 use Craft;
 use yii\base\Event;
 
-class SaveSubmissionNotificationEvent extends NotificationEvent implements ElementEventInterface
+/**
+ * @property OnSaveSubmissionEvent $event
+ */
+class SaveSubmissionNotificationEvent extends BaseElementNotificationEvent
 {
-    use ElementEventTrait;
-
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'When a form submission is saved (Sprout)');
@@ -54,7 +53,7 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
     public function getEventVariables(): array
     {
         return [
-            'submission' => $this?->event?->element,
+            'submission' => $this->event->submission,
         ];
     }
 
@@ -67,7 +66,6 @@ class SaveSubmissionNotificationEvent extends NotificationEvent implements Eleme
         $criteria->orderBy(['id' => SORT_DESC]);
 
         if (!empty($this->formIds)) {
-
             $formId = count($this->formIds) == 1 ? $this->formIds[0] : array_shift($this->formIds);
 
             $criteria->formId = $formId;

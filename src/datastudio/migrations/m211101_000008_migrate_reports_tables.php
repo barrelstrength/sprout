@@ -59,7 +59,6 @@ class m211101_000008_migrate_reports_tables extends Migration
         ];
 
         if ($this->getDb()->tableExists(self::OLD_DATASOURCES_TABLE)) {
-
             $dataSources = (new Query())
                 ->select('*')
                 ->from([self::OLD_DATASOURCES_TABLE])

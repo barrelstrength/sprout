@@ -1,6 +1,7 @@
 class SproutMetaWebsiteIdentity {
 
     constructor(props) {
+
         this.items = props.items;
         this.websiteIdentity = props.websiteIdentity;
 
@@ -8,8 +9,21 @@ class SproutMetaWebsiteIdentity {
         this.secondDropdownId = props.secondDropdownId;
         this.thirdDropdownId = props.thirdDropdownId;
 
+        this.initInfoIcons();
         this.initWebsiteIdentityField();
         this.moreWebsiteIdentityStuff();
+    }
+
+    initInfoIcons() {
+        let infoIcons = document.querySelectorAll('[data-additional-info]');
+
+        infoIcons.forEach(function(infoIcon) {
+            let targetId = infoIcon.dataset.additionalInfo;
+            let label = document.getElementById(targetId + '-label');
+
+            label.appendChild(infoIcon);
+            infoIcon.classList.toggle('hidden');
+        });
     }
 
     initWebsiteIdentityField() {

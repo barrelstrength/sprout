@@ -50,7 +50,6 @@ class m211101_000004_migrate_sitemaps_tables extends Migration
 
             // update urlEnabledSectionId to sourceKey
             foreach ($rows as &$row) {
-
                 $sourceKey = null;
 
                 if ($row['type'] === 'craft\elements\Entry') {

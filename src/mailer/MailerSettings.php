@@ -42,4 +42,3 @@ class MailerSettings extends BaseConfig
         return $this;
     }
 }
-

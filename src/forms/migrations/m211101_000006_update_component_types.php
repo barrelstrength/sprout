@@ -47,7 +47,6 @@ class m211101_000006_update_component_types extends Migration
         foreach ($components as $dbTableName => $columns) {
             foreach ($columns as $column => $types) {
                 foreach ($types as $type) {
-
                     $dbTable = '{{%' . $dbTableName . '}}';
 
                     if (!$this->db->columnExists($dbTable, $column)) {

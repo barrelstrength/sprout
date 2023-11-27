@@ -32,9 +32,7 @@ class PersonSchema extends ThingSchema
 
     public function addUserElementProperties(): void
     {
-        /**
-         * @var User $element
-         */
+        /** @var User $element */
         $element = $this->element;
 
         $name = null;

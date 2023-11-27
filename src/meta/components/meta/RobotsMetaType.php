@@ -30,6 +30,7 @@ class RobotsMetaType extends MetaType
     public function getCanonical(): ?string
     {
         if ($this->canonical || $this->metadata->getRawDataOnly()) {
+
             return $this->canonical;
         }
 
@@ -81,5 +82,16 @@ class RobotsMetaType extends MetaType
     public function showMetaDetailsTab(): bool
     {
         return MetaModule::getInstance()->optimizeMetadata->elementMetadataField->showRobots;
+    }
+
+    public function getMetaTagData(): array
+    {
+        $tagData = parent::getMetaTagData();
+
+        if (is_array($tagData['robots'])) {
+            $tagData['robots'] = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($tagData['robots']);
+        }
+
+        return $tagData;
     }
 }

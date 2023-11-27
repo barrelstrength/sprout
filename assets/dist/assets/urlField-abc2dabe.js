@@ -1,0 +1,2 @@
+typeof Craft.SproutUrlField>"u"&&(Craft.SproutUrlField={});Craft.SproutUrlField=Garnish.Base.extend({init:function(e,t,l,r,i){this.checkSproutUrlField(e,t,l,r,i)},checkSproutUrlField:function(e,t,l,r,i){let a="#"+e,d="."+t;setTimeout(function(){let o={elementId:l,fieldHandle:r,fieldContext:i,value:$(a).val()};Craft.postActionRequest("sprout-module-forms/fields/validate-url",o,function(s){s.success?($(d).addClass("fade"),$(d+" a").attr("href",o.value)):$(d).removeClass("fade")},[])},500)}});
+//# sourceMappingURL=urlField-abc2dabe.js.map

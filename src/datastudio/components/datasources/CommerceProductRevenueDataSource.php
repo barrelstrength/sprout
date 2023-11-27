@@ -107,9 +107,7 @@ class CommerceProductRevenueDataSource extends DataSource implements DateRangeIn
                 $productElement = $productId ? Craft::$app->elements->getElementById($productId) : null;
 
                 if (!$this->variants) {
-                    /**
-                     * @var $variantElement Variant
-                     */
+                    /** @var Variant $variantElement */
                     $variantElement = $variantId ? Craft::$app->elements->getElementById($variantId) : null;
 
                     if ($variantElement) {

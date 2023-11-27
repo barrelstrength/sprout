@@ -2,10 +2,8 @@
 
 namespace BarrelStrength\Sprout\mailer\migrations\helpers;
 
-use BarrelStrength\Sprout\mailer\components\emailtypes\CustomTemplatesEmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
-use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use craft\helpers\StringHelper;
 use ReflectionClass;
 

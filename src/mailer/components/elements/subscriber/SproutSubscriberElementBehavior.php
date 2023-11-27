@@ -11,6 +11,9 @@ use Throwable;
 use yii\base\Behavior;
 use yii\db\Transaction;
 
+/**
+ * @property User $owner
+ */
 class SproutSubscriberElementBehavior extends Behavior
 {
     public ?array $sproutSubscriberListIds = null;
@@ -69,7 +72,6 @@ class SproutSubscriberElementBehavior extends Behavior
 
             $transaction->commit();
         } catch (Throwable $throwable) {
-
             $transaction->rollBack();
 
             throw $throwable;
@@ -83,10 +85,13 @@ class SproutSubscriberElementBehavior extends Behavior
             ->where(['userId' => $this->owner->id])
             ->column();
 
-        return AudienceElement::find()
+        /** @var AudienceElement[] $audiences */
+        $audiences = AudienceElement::find()
             ->type(SubscriberListAudienceType::class)
             ->id($listIds)
             ->all();
+
+        return $audiences;
     }
 
     public function getSproutSubscriptions(): array

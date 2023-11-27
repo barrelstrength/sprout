@@ -1,0 +1,77 @@
+{% extends "sprout-module-core/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set currentSubNavKey = 'integrations' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <div class="btn menubtn submit add icon">
+                {{ "New Integration Type"|t('sprout-module-forms') }}
+            </div>
+            <div class="menu">
+                <ul>
+                    {% for integrationType in integrationTypeTypes %}
+                        <li>
+                            {{ tag('a', {
+                                href: cpUrl('sprout/settings/forms/integrations/new', {
+                                    type: className(integrationType),
+                                }),
+                                text: integrationType.displayName(),
+                                class: 'menu-option',
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% if integrationTypes|length %}
+    {% for integrationType in integrationTypes %}
+
+        {% set cpEditUrl = cpUrl('sprout/settings/forms/integrations/edit/' ~ integrationType.uid) %}
+
+        {% set tableData = tableData|merge([{
+            id: integrationType.uid,
+            labelHtml: {
+                url: cpEditUrl,
+                name: integrationType.name ?? integrationType.displayName()
+            },
+            integrationTypeType: integrationType.displayName,
+            title: integrationType.name|t('sprout-module-forms')|e,
+            url: cpEditUrl,
+            _showDelete: true,
+        }]) %}
+
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+
+    <div
+        id="admin-table"
+        data-table-data="{{ tableData|json_encode }}">
+    </div>
+
+    <br>
+    <div class="readable">
+        <blockquote class="tip note">
+            {{ "Integration types define the integrations that will be available to use in your forms. Configure your Form Types to limit which integrations are allowed in a particular form workflow."|t('sprout-module-forms') }}
+        </blockquote>
+    </div>
+
+{% endblock %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% do sprout.modules.core.vite.register('forms/IntegrationTypesSettings.js', false) %}
+
+ {% js on ready %}
+
+     new IntegrationTypesSettings('#admin-table');
+
+ {% endjs %}

@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection DuplicatedCode */
-
 namespace BarrelStrength\Sprout\forms\migrations;
 
 use Craft;
@@ -9,6 +7,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Db;
+use craft\helpers\Json;
 
 /**
  * This migration must come after the Reports migration as
@@ -60,7 +59,7 @@ class m211101_000007_migrate_forms_tables extends Migration
 
         $cols = [
             'id',
-            'fieldLayoutId', // submissionFieldLayout
+            'fieldLayoutId', // Convert to submissionFieldLayout config
             'name',
             'handle',
             'titleFormat',
@@ -82,7 +81,7 @@ class m211101_000007_migrate_forms_tables extends Migration
 
         $colsNew = [
             'id',
-            'submissionFieldLayoutId', // fieldLayoutId
+
             'name',
             'handle',
             'titleFormat',
@@ -99,20 +98,34 @@ class m211101_000007_migrate_forms_tables extends Migration
             'dateUpdated',
             'uid',
 
+            'submissionFieldLayout', // Convert from fieldLayoutId and remove fieldLayoutId column
             'formTypeUid',
         ];
 
         if ($this->getDb()->tableExists(self::OLD_FORMS_TABLE)) {
-
             $rows = (new Query())
                 ->select($cols)
                 ->from([self::OLD_FORMS_TABLE])
                 ->all();
 
             foreach ($rows as $key => $row) {
-                /** @todo - figure out formTempateUid */
+                if (isset($row[$key]['fieldLayoutId'])) {
+                    $layoutId = $row[$key]['fieldLayoutId'];
+                    $layout = Craft::$app->getFields()->getLayoutById($layoutId);
+
+                    if ($layout) {
+                        // @todo - review. Is this all we need to do?
+                        $row[$key]['submissionFieldLayout'] = Json::encode($layout->getConfig());
+                    }
+                }
+
+                /** @todo - figure out formTemplateUid */
                 $rows[$key]['formTemplateUid'] = 'REPLACE_ME';
-                unset($rows[$key]['formTemplateId']);
+
+                unset(
+                    $rows[$key]['fieldLayoutId'],
+                    $rows[$key]['formTemplateId'],
+                );
             }
 
             Craft::$app->getDb()->createCommand()
@@ -231,8 +244,8 @@ class m211101_000007_migrate_forms_tables extends Migration
             }
 
             // Establish our old table and new table names
-            $oldContentTable = "{{%sproutformscontent_{$formHandle}}}";
-            $newContentTable = "{{%sprout_formcontent_{$formHandle}}}";
+            $oldContentTable = "{{%sproutformscontent_$formHandle}}";
+            $newContentTable = "{{%sprout_formcontent_$formHandle}}";
 
             // If the new table already exists, carry on
             if ($this->db->tableExists($newContentTable)) {

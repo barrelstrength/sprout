@@ -55,7 +55,6 @@ class CpNavHelper
 
         // Add our module nav items to the plugins and stuff
         foreach ($sproutNavGroupsInfo as $sproutNavGroupInfo) {
-
             if (!isset($sproutNavGroupInfo['navItems'])) {
                 continue;
             }
@@ -88,6 +87,16 @@ class CpNavHelper
         foreach ($sproutNavGroups as $sproutNavGroup) {
             // No need for a subnav if we just have one item
             if (count($sproutNavGroup['subnav']) === 1) {
+                $firstSubNavItem = array_slice($sproutNavGroup['subnav'], 0, 1);
+                // reset keys so we can access via array item 0
+                $firstSubNavItem = array_values($firstSubNavItem);
+                // get subnav item URL so we don't need to redirect and figure it out.
+                $firstSubNavItemUrl = $firstSubNavItem[0]['url'] ?? null;
+
+                if ($firstSubNavItemUrl) {
+                    $sproutNavGroup['url'] = $firstSubNavItemUrl;
+                }
+
                 unset($sproutNavGroup['subnav']);
             }
 

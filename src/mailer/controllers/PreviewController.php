@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailPreviewInterface;
 use BarrelStrength\Sprout\mailer\components\mailers\MailingListRecipient;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsSettingsTestSettings;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\ElementNotFoundException;
@@ -93,15 +94,17 @@ class PreviewController extends Controller
             'email' => $currentUser->email,
         ]);
 
-        // @todo - Can we abstract how we call SystemMailer::_buildMessage() so we can do the same here?
-        $mailer = $email->getMailer();
-        $mailerInstructionsTestSettings = $mailer->createMailerInstructionsTestSettingsModel();
-        $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
+        $mailerInstructionsTestSettings = $email->getMailerInstructions();
 
         $emailType = $email->getEmailType();
 
         $emailType->addTemplateVariable('recipient', $recipient);
-        $emailType->addTemplateVariables($additionalTemplateVariables);
+
+        // @todo - assumes specific mailer instructions settings, should this be abstracted?
+        if ($mailerInstructionsTestSettings instanceof SystemMailerInstructionsSettingsTestSettings) {
+            $additionalTemplateVariables = $mailerInstructionsTestSettings->getAdditionalTemplateVariables($email);
+            $emailType->addTemplateVariables($additionalTemplateVariables);
+        }
 
         $emailType->addTemplateVariable('email', $email);
 

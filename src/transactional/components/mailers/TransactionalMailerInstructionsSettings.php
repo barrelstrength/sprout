@@ -5,11 +5,16 @@ namespace BarrelStrength\Sprout\transactional\components\mailers;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsSettings;
+use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
 
+/**
+ * @property SystemMailer $mailer
+ */
 class TransactionalMailerInstructionsSettings extends SystemMailerInstructionsSettings
 {
     public function getAdditionalTemplateVariables(EmailElement $email): array
     {
+        /** @var TransactionalEmailVariant $emailVariantSettings */
         $emailVariantSettings = $email->getEmailVariant();
         $notificationEvent = $emailVariantSettings->getNotificationEvent($email);
 
@@ -29,4 +34,3 @@ class TransactionalMailerInstructionsSettings extends SystemMailerInstructionsSe
         return parent::validate($attributeNames, $clearErrors);
     }
 }
-

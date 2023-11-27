@@ -2,18 +2,23 @@
 
 namespace BarrelStrength\Sprout\transactional;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use BarrelStrength\Sprout\mailer\mailers\Mailers;
 use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use BarrelStrength\Sprout\transactional\components\emailvariants\TransactionalEmailVariant;
+use BarrelStrength\Sprout\transactional\components\formfeatures\TransactionalFormFeature;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
@@ -31,7 +36,7 @@ use yii\base\Module;
 /**
  * @property NotificationEvents $notificationEvents
  */
-class TransactionalModule extends Module
+class TransactionalModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -132,6 +137,18 @@ class TransactionalModule extends Module
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalEmailElement::class;
             }
+        );
+
+        Event::on(
+            FormElement::class,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
+            [TransactionalFormFeature::class, 'registerTransactionalTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [TransactionalFormFeature::class, 'defineFormTypeSettings']
         );
     }
 

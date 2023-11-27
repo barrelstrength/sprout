@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\helpers\ConditionHelper;
 use BarrelStrength\Sprout\core\helpers\PhoneHelper;
@@ -9,6 +10,7 @@ use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Modules as ModulesService;
 use BarrelStrength\Sprout\core\modules\Settings as SettingsService;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\twig\SproutExtension;
@@ -17,7 +19,6 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\core\web\assetbundles\vite\ViteAssetBundle;
 use Craft;
 use craft\base\conditions\BaseCondition;
-use craft\config\BaseConfig;
 use craft\console\Application as ConsoleApplication;
 use craft\console\controllers\MigrateController;
 use craft\events\RegisterCpNavItemsEvent;
@@ -41,7 +42,7 @@ use yii\base\Module;
  * @property ModulesService $coreModules
  * @property VitePluginService $vite
  */
-class Sprout extends Module
+class Sprout extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use MigrationTrait;
@@ -108,10 +109,11 @@ class Sprout extends Module
             'vite' => [
                 'class' => VitePluginService::class,
                 'assetClass' => ViteAssetBundle::class,
+                'errorEntry' => 'core/ErrorPage.js',
                 'useDevServer' => App::env('SPROUT_VITE_USE_DEV_SERVER'),
+                'devServerInternal' => App::env('SPROUT_VITE_DEV_SERVER_INTERNAL'),
                 'devServerPublic' => App::env('SPROUT_VITE_DEV_SERVER_PUBLIC'),
                 'serverPublic' => App::env('SPROUT_VITE_SERVER_PUBLIC'),
-                'errorEntry' => 'core/ErrorPage.js',
             ],
         ]);
 
@@ -208,9 +210,12 @@ class Sprout extends Module
         return new SproutSettings();
     }
 
-    public function getSettings(): SproutSettings|BaseConfig
+    public function getSettings(): SproutSettings
     {
-        return SettingsHelper::getSettingsConfig($this, SproutSettings::class);
+        /** @var SproutSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, SproutSettings::class);
+
+        return $settings;
     }
 
     public function getUserPermissions(): array
@@ -239,5 +244,23 @@ class Sprout extends Module
             'sprout/settings/preview/<configFile:(.*)>' =>
                 'sprout-module-core/settings/preview-config-settings-file',
         ];
+    }
+
+    public static function beginProfile($token): void
+    {
+        if (!App::devMode()) {
+            return;
+        }
+
+        Craft::beginProfile($token, __METHOD__);
+    }
+
+    public static function endProfile($token): void
+    {
+        if (!App::devMode()) {
+            return;
+        }
+
+        Craft::endProfile($token, __METHOD__);
     }
 }

@@ -2,26 +2,27 @@
 
 namespace BarrelStrength\Sprout\meta;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
+use BarrelStrength\Sprout\meta\globals\AddressHelper;
 use BarrelStrength\Sprout\meta\globals\GlobalMetadata;
 use BarrelStrength\Sprout\meta\metadata\ElementMetadata;
 use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\metadata\OptimizeMetadata;
+use BarrelStrength\Sprout\meta\metadata\OptimizeMetadataHelper;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\config\BaseConfig;
-use craft\elements\Address;
-use craft\events\AuthorizationCheckEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -35,6 +36,7 @@ use craft\web\UrlManager;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\Module;
+use yii\base\View as BaseView;
 
 /**
  * @property OptimizeMetadata $optimizeMetadata
@@ -42,7 +44,7 @@ use yii\base\Module;
  * @property ElementMetadata $elementMetadata
  * @property SchemaMetadata $schemaMetadata
  */
-class MetaModule extends Module
+class MetaModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -167,27 +169,12 @@ class MetaModule extends Module
                 MetaModule::getInstance()->globalMetadata->handleDefaultSiteMetadata($event);
             });
 
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $checkAuth = static function(AuthorizationCheckEvent $event) {
-                /** @var Address $address */
-                $address = $event->sender;
-                $canonicalId = $address->getCanonicalId();
+        Event::on(
+            View::class,
+            BaseView::EVENT_END_PAGE,
+            [OptimizeMetadataHelper::class, 'handleRenderMetadata']);
 
-                $globals = MetaModule::getInstance()->globalMetadata->getGlobalMetadata();
-
-                if (
-                    $canonicalId &&
-                    $canonicalId === $globals->addressModel->id &&
-                    $event->user->can(MetaModule::p('editGlobals'))
-                ) {
-                    $event->authorized = true;
-                    $event->handled = true;
-                }
-            };
-
-            Event::on(Address::class, Address::EVENT_AUTHORIZE_VIEW, $checkAuth);
-            Event::on(Address::class, Address::EVENT_AUTHORIZE_SAVE, $checkAuth);
-        }
+        AddressHelper::registerEditAddressAuthorizationEvents();
     }
 
     public function createSettingsModel(): MetaSettings
@@ -195,9 +182,12 @@ class MetaModule extends Module
         return new MetaSettings();
     }
 
-    public function getSettings(): MetaSettings|BaseConfig
+    public function getSettings(): MetaSettings
     {
-        return SettingsHelper::getSettingsConfig($this, MetaSettings::class);
+        /** @var MetaSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, MetaSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array
@@ -270,18 +260,4 @@ class MetaModule extends Module
             ],
         ];
     }
-
-    //    public function getTwigVariables(): array
-    //    {
-    //        return [
-    //            'meta' => MetaVariable::class,
-    //        ];
-    //    }
-    //
-    //    protected function getFieldTypes(): array
-    //    {
-    //        return [
-    //            ElementMetadataField::class,
-    //        ];
-    //    }
 }

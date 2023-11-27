@@ -1,0 +1,19 @@
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+<div id="form-workflow-tab">
+
+    <div id="form-workflow-content">
+        {{ sproutCp.relationsTable(rows) }}
+
+        <div class="buttons right">
+            {{ newButtonHtml }}
+        </div>
+    </div>
+
+    {% if sidebarHtml %}
+        <div id="form-workflow-sidebar" class="sidebar">
+            {{ sidebarHtml }}
+        </div>
+    {% endif %}
+
+</div>

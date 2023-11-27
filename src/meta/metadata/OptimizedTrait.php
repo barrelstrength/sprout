@@ -19,7 +19,7 @@ trait OptimizedTrait
 
     protected ?string $optimizedDescription = null;
 
-    protected ?int $optimizedImage = null;
+    protected ?array $optimizedImage = null;
 
     protected ?string $optimizedKeywords = null;
 
@@ -43,11 +43,7 @@ trait OptimizedTrait
             default => Craft::$app->getView()->renderObjectTemplate($optimizedTitleFieldSetting, $element),
         };
 
-        if ($title) {
-            return $title ?: null;
-        }
-
-        return null;
+        return $title ?: null;
     }
 
     public function setOptimizedTitle($value): void
@@ -127,11 +123,11 @@ trait OptimizedTrait
 
         $optimizedKeywordsFieldSetting = $elementMetadataField->optimizedKeywordsField ?? '';
 
-        if (true == ($optimizedKeywordsFieldSetting === '')) {
+        if (($optimizedKeywordsFieldSetting === '') == true) {
             $keywords = $this->optimizedKeywords ?? null;
-        } elseif (true == is_numeric($optimizedKeywordsFieldSetting)) {
+        } elseif (is_numeric($optimizedKeywordsFieldSetting) == true) {
             $bigKeywords = OptimizeMetadataHelper::getSelectedFieldForOptimizedMetadata($optimizedKeywordsFieldSetting);
-            $keywords = null;
+
             if ($bigKeywords) {
                 $textRankApi = new TextRankFacade();
 
@@ -193,5 +189,4 @@ trait OptimizedTrait
     {
         $this->canonical = $value;
     }
-
 }

@@ -10,7 +10,7 @@ use yii\db\ActiveQueryInterface;
 
 /**
  * @property int $id
- * @property string $formId
+ * @property int $formId
  * @property int $statusId
  * @property string $title
  * @property string $ipAddress
@@ -40,5 +40,4 @@ class SubmissionRecord extends ActiveRecord
     {
         return $this->hasMany(SubmissionStatusRecord::class, ['statusId' => 'id']);
     }
-
 }

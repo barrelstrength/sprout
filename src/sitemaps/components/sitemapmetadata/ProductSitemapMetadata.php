@@ -5,6 +5,7 @@ namespace BarrelStrength\Sprout\sitemaps\components\sitemapmetadata;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\ElementSitemapMetadataInterface;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadataRecord;
 use craft\commerce\db\Table;
+use craft\commerce\elements\db\ProductQuery;
 use craft\commerce\elements\Product;
 use craft\commerce\Plugin as CraftCommerce;
 use craft\db\Query;
@@ -42,6 +43,7 @@ class ProductSitemapMetadata implements ElementSitemapMetadataInterface
             ->where(['uid' => $sitemapMetadata->sourceKey])
             ->scalar();
 
+        /** @var ProductQuery $query */
         return $query->typeId($productTypeId);
     }
 }

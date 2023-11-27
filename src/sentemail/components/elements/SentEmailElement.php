@@ -104,7 +104,7 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         return self::STATUS_FAILED;
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): SentEmailElementQuery
     {
         return new SentEmailElementQuery(static::class);
     }

@@ -15,6 +15,10 @@ class XmlSitemap extends Component
 {
     /**
      * Prepares sitemaps for a sitemapindex
+     *
+     * @param Site[] $sites
+     *
+     * @return string[]
      */
     public function getSitemapIndex(array $sites): array
     {
@@ -33,8 +37,16 @@ class XmlSitemap extends Component
      * - Content Sitemap: Singles
      * - Content Sitemap: Channel/Structure
      * - Content Query Sitemap
+     *
+     * @param Site[] $sitemapSites
      */
-    public function getDynamicSitemapElements($sitemapMetadataUid, $sitemapKey, $pageNumber, array $sitemapSites, Site $site): array
+    public function getDynamicSitemapElements(
+        string $sitemapMetadataUid,
+        string $sitemapKey,
+        int $pageNumber,
+        array $sitemapSites,
+        Site $site
+    ): array
     {
         $urls = [];
         $sitemapsService = SitemapsModule::getInstance()->sitemaps;
@@ -68,7 +80,6 @@ class XmlSitemap extends Component
             }
 
             foreach ($sitemapSites as $sitemapSite) {
-
                 if ($sitemapMetadata->sourceKey === SitemapKey::CONTENT_QUERY) {
                     $elementQuery = ContentQuerySitemapMetadataHelper::getElementQuery($sitemapMetadata);
                 } else {

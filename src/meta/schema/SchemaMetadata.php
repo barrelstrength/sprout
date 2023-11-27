@@ -97,8 +97,8 @@ class SchemaMetadata extends Component
 
         uasort($this->schemas, static function($a, $b): int {
             /**
-             * @var $a Schema
-             * @var $b Schema
+             * @var Schema $a
+             * @var Schema $b
              */
             return $a->getName() <=> $b->getName();
         });
@@ -174,7 +174,6 @@ class SchemaMetadata extends Component
 
     /**
      * Prepare an array of the optimized Meta
-     *
      *
      * @param mixed[] $schemas
      *

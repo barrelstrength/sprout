@@ -11,12 +11,10 @@ use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\FormsSettings;
 use Craft;
 use craft\base\ElementInterface;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\web\Controller as BaseController;
 use yii\base\Exception;
 use yii\helpers\Markdown;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SubmissionsController extends BaseController
@@ -58,85 +56,6 @@ class SubmissionsController extends BaseController
             'elementType' => SubmissionElement::class,
             'selectedSubnavItem' => 'submissions',
         ]);
-    }
-
-    /**
-     * Route Controller for Edit Submission Template
-     */
-    public function actionEditSubmissionTemplate(int $submissionId = null, SubmissionElement $submission = null): Response
-    {
-        $variables = [];
-        $this->requirePermission(FormsModule::p('viewSubmissions'));
-
-        $settings = FormsModule::getInstance()->getSettings();
-
-        if (!$settings->enableSaveData) {
-            return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('sprout/forms'));
-        }
-
-        if (FormsModule::getInstance()->forms->activeCpSubmission) {
-            $submission = FormsModule::getInstance()->forms->activeCpSubmission;
-        } else {
-            if (!$submission instanceof ElementInterface) {
-                $submission = FormsModule::getInstance()->submissions->getSubmissionById($submissionId);
-            }
-
-            if (!$submission instanceof ElementInterface) {
-                throw new NotFoundHttpException('Submission not found');
-            }
-
-            $fieldsLocation = $this->request->getParam('fieldsLocation', 'fields');
-            $submission->setFieldValuesFromRequest($fieldsLocation);
-        }
-
-        $form = FormsModule::getInstance()->forms->getFormById($submission->formId);
-
-        if (!$form instanceof ElementInterface) {
-            throw new ElementNotFoundException('No Form exists with id ' . $form->id);
-        }
-
-        $saveData = FormsModule::getInstance()->submissions->isSaveDataEnabled($form);
-
-        if (!$saveData) {
-            Craft::$app->getSession()->setError(Craft::t('sprout-module-forms', "Unable to edit submission. Enable the 'Save Data' for this form to view, edit, or delete content."));
-
-            return $this->renderTemplate('sprout-module-forms/submissions/index');
-        }
-
-        $submissionStatus = FormsModule::getInstance()->submissionStatuses->getSubmissionStatusById($submission->statusId);
-        $statuses = FormsModule::getInstance()->submissionStatuses->getAllSubmissionStatuses();
-        $submissionStatuses = [];
-
-        foreach ($statuses as $status) {
-            $submissionStatuses[$status->id] = $status->name;
-        }
-
-        $variables['form'] = $form;
-        $variables['submissionId'] = $submissionId;
-        $variables['submissionStatus'] = $submissionStatus;
-        $variables['statuses'] = $submissionStatuses;
-
-        // This is our element, so we know where to get the field values
-        $variables['submission'] = $submission;
-
-        // Get the fields for this submission
-        $fieldLayoutTabs = $submission->getFieldLayout()->getTabs();
-
-        $tabs = [];
-
-        foreach ($fieldLayoutTabs as $tab) {
-            $tabs[$tab->id]['label'] = $tab->name;
-            $tabs[$tab->id]['url'] = '#tab' . $tab->sortOrder;
-        }
-
-        $variables['tabs'] = $tabs;
-        $variables['fieldLayoutTabs'] = $fieldLayoutTabs;
-        $variables['config'] = FormsModule::getInstance()->getSettings();
-
-        $currentUser = Craft::$app->getUser()->getIdentity();
-        $variables['canEditSubmissions'] = $currentUser->can(FormsModule::p('editSubmissions'));
-
-        return $this->renderTemplate('sprout-module-forms/submissions/_edit', $variables);
     }
 
     /**
@@ -250,7 +169,6 @@ class SubmissionsController extends BaseController
         $successMessage = Craft::$app->getView()->renderObjectTemplate($successMessageTemplate, $submission);
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {
-
             return $this->asJson([
                 'success' => true,
                 'message' => Markdown::process($successMessage),
@@ -260,20 +178,6 @@ class SubmissionsController extends BaseController
         Craft::$app->getSession()->setNotice(Craft::t('sprout-module-forms', 'Submission saved.'));
 
         return $this->redirectToPostedUrl($submission);
-    }
-
-    public function actionDeleteSubmission(): Response
-    {
-        $this->requirePostRequest();
-        $this->requirePermission(FormsModule::p('editSubmissions'));
-
-        $request = Craft::$app->getRequest();
-
-        $submissionId = $request->getRequiredBodyParam('submissionId');
-
-        Craft::$app->getElements()->deleteElementById($submissionId);
-
-        return $this->redirectToPostedUrl();
     }
 
     /**
@@ -316,7 +220,6 @@ class SubmissionsController extends BaseController
 
         // Set the submission attributes, defaulting to the existing values for whatever is missing from the post data
         $fieldsLocation = $request->getBodyParam('fieldsLocation', 'fields');
-
         $submission->setFieldValuesFromRequest($fieldsLocation);
         $submission->setFieldParamNamespace($fieldsLocation);
     }
@@ -324,7 +227,7 @@ class SubmissionsController extends BaseController
     /**
      * Fetch or create a SubmissionElement class
      */
-    private function getSubmissionModel(): SubmissionElement|ElementInterface
+    private function getSubmissionModel(): SubmissionElement
     {
         $submissionId = null;
         $request = Craft::$app->getRequest();
@@ -357,12 +260,7 @@ class SubmissionsController extends BaseController
 
         // Handle CP requests in a CP-friendly way
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-
             Craft::$app->getSession()->setError(Craft::t('sprout-module-forms', 'Couldn’t save submission.'));
-
-            // Store this Submission Model in a variable in our Service layer so that
-            // we can access the error object from our actionEditSubmissionTemplate() method
-            FormsModule::getInstance()->forms->activeCpSubmission = $submission;
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'submission' => $submission,
@@ -373,7 +271,6 @@ class SubmissionsController extends BaseController
 
         // Respond to ajax requests with JSON
         if (Craft::$app->getRequest()->getAcceptsJson()) {
-
             $errorMessageTemplate = $submission->getForm()->messageOnError ?? '';
             $errorMessage = Craft::$app->getView()->renderObjectTemplate($errorMessageTemplate, $submission);
 

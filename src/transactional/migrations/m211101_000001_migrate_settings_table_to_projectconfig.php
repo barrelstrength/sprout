@@ -1,10 +1,7 @@
 <?php
 
-/** @noinspection DuplicatedCode */
-
 namespace BarrelStrength\Sprout\transactional\migrations;
 
-use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use BarrelStrength\Sprout\transactional\components\mailers\TransactionalMailer;
@@ -54,7 +51,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
         // Loop through all Notification Emails and create a Mailer using the From Name and From Email and Reply To values found
         if ($this->getDb()->tableExists(self::OLD_NOTIFICATIONS_TABLE)) {
-
             $emails = (new Query())
                 ->select(['id', 'fromName', 'fromEmail', 'replyToEmail', 'emailTemplateId', 'fieldLayoutId'])
                 ->from([self::OLD_NOTIFICATIONS_TABLE])
@@ -81,7 +77,6 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
 
             // create a single mailer for each combination of fromName, fromEmail, and replyToEmail
             foreach ($customSenders as $hash => $customSender) {
-
                 $mailSettings = App::mailSettings();
 
                 $senderEditBehavior = self::SENDER_BEHAVIOR_CUSTOM;

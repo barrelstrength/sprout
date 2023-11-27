@@ -52,8 +52,8 @@
         <input type="hidden" aria-hidden="true" name="redirect" value="{{ redirectUri|hash }}">
     {% endif %}
 
-    {% if globalErrorsEnabled and errors|length and (form.errorMessage or globalErrorListHtml) %}
-        {% set errorMessage = view.renderObjectTemplate(form.errorMessage, submission) %}
+    {% if globalErrorsEnabled and errors|length and (form.messageOnError or globalErrorListHtml) %}
+        {% set errorMessage = view.renderObjectTemplate(form.messageOnError, submission) %}
         {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
         <div data-label="{{ id }}-message-box" data-description="error-message">
             {{ errorMessage|markdown }}
@@ -61,8 +61,8 @@
         </div>
     {% endif %}
 
-    {% if lastSubmission and form.id == lastSubmission.getForm().id and form.successMessage %}
-        {% set successMessageTemplate = form.successMessage ?? '' %}
+    {% if lastSubmission and form.id == lastSubmission.getForm().id and form.messageOnSuccess %}
+        {% set successMessageTemplate = form.messageOnSuccess ?? '' %}
         {% set successMessage = view.renderObjectTemplate(successMessageTemplate, lastSubmission) %}
         {# REMOVED: id="{{ id }}-message-box" class="sproutforms-message-errors" #}
         <div data-label="{{ id }}-message-box" data-description="success-message">
@@ -81,9 +81,7 @@
         {% endfor -%}
     </div>
 
-    {# Do not remote this line when customizing templates.
-       All Captcha behavior depends on this hook. #}
-    {% hook 'sproutForms.modifyForm' %}
+    {{ form.getCaptchaHtml()|raw }}
 
     <div data-label="form-submit">
         <button type="submit">{{ form.submitButtonText is not empty ? form.submitButtonText : 'Submit'|t('site') }}</button>
@@ -108,11 +106,11 @@
 
 {% do view.registerCss('.sprout-hidden { display: none !important; }') %}
 
-{% do view.registerJsFile(sproutAssetUrl('forms-frontend/Accessibility.js')) %}
-{% do view.registerJsFile(sproutAssetUrl('forms-frontend/AddressField.js')) %}
-{% do view.registerJsFile(sproutAssetUrl('forms-frontend/DisableSubmitButton.js')) %}
-{% do view.registerJsFile(sproutAssetUrl('forms-frontend/Rules.js')) %}
-{% do view.registerJsFile(sproutAssetUrl('forms-frontend/SubmitHandler.js')) %}
+{% do sprout.modules.core.vite.register('forms-frontend/Accessibility.js') %}
+{% do sprout.modules.core.vite.register('forms-frontend/AddressField.js') %}
+{% do sprout.modules.core.vite.register('forms-frontend/DisableSubmitButton.js') %}
+{#{% do sprout.modules.core.vite.register('forms-frontend/Rules.js') %}#}
+{% do sprout.modules.core.vite.register('forms-frontend/SubmitHandler.js') %}
 
 {% js at endBody %}
     window.addEventListener('DOMContentLoaded', () => {
@@ -120,7 +118,7 @@
     new SproutFormsAddressField('{{ id }}');
     new SproutFormsCheckableInputs('{{ id }}');
     new SproutFormsDisableSubmitButton('{{ id }}');
-    new SproutFormsRules('{{ id }}');
+    {#new SproutFormsRules('{{ id }}');#}
     new SproutFormsSubmitHandler('{{ id }}');
     });
 {% endjs -%}

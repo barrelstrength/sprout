@@ -5,12 +5,14 @@ namespace BarrelStrength\Sprout\forms\integrations;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\events\OnAfterIntegrationSubmitEvent;
 use BarrelStrength\Sprout\forms\components\events\OnSaveSubmissionEvent;
+use BarrelStrength\Sprout\forms\components\integrationtypes\CustomEndpointIntegrationType;
+use BarrelStrength\Sprout\forms\components\integrationtypes\EntryElementIntegrationType;
 use BarrelStrength\Sprout\forms\components\integrationtypes\MissingIntegrationType;
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use BarrelStrength\Sprout\forms\submissions\SubmissionIntegrationStatus;
 use Craft;
 use craft\base\Component;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\errors\MissingComponentException;
 use craft\events\RegisterComponentTypesEvent;
@@ -31,8 +33,13 @@ class FormIntegrations extends Component
      */
     public function getAllIntegrationTypes(): array
     {
+        $types = [
+            CustomEndpointIntegrationType::class,
+            EntryElementIntegrationType::class,
+        ];
+
         $event = new RegisterComponentTypesEvent([
-            'types' => [],
+            'types' => $types,
         ]);
 
         $this->trigger(self::EVENT_REGISTER_INTEGRATIONS, $event);
@@ -51,6 +58,36 @@ class FormIntegrations extends Component
 
         foreach ($integrationTypes as $integrationType) {
             $integrations[] = new $integrationType();
+        }
+
+        return $integrations;
+    }
+
+    public function getIntegrationTypeProjectConfig(): array
+    {
+        return IntegrationTypeHelper::getIntegrationTypes();
+    }
+
+    public function getIntegrations(): array
+    {
+        $results = (new Query())
+            ->select([
+                'integrations.id',
+                'integrations.formId',
+                'integrations.name',
+                'integrations.type',
+                'integrations.sendRule',
+                'integrations.settings',
+                'integrations.enabled',
+            ])
+            ->from(['integrations' => SproutTable::FORM_INTEGRATIONS])
+            ->all();
+
+        $integrations = [];
+
+        foreach ($results as $result) {
+            $integration = ComponentHelper::createComponent($result, IntegrationInterface::class);
+            $integrations[] = $integration;
         }
 
         return $integrations;
@@ -107,6 +144,31 @@ class FormIntegrations extends Component
         return new $result['type']($integration);
     }
 
+    public function getIntegrationByUid($integrationUid): ?Integration
+    {
+        $result = (new Query())
+            ->select([
+                'integrations.id',
+                'integrations.formId',
+                'integrations.name',
+                'integrations.type',
+                'integrations.sendRule',
+                'integrations.settings',
+                'integrations.enabled',
+            ])
+            ->from(['integrations' => SproutTable::FORM_INTEGRATIONS])
+            ->where(['integrations.uid' => $integrationUid])
+            ->one();
+
+        if (!$result) {
+            return null;
+        }
+
+        $integration = ComponentHelper::createComponent($result, IntegrationInterface::class);
+
+        return new $result['type']($integration);
+    }
+
     public function saveIntegration(Integration $integration): bool
     {
         $integrationRecord = IntegrationRecord::findOne($integration->id);
@@ -151,27 +213,6 @@ class FormIntegrations extends Component
         }
 
         return $integration;
-    }
-
-    /**
-     * Loads the sprout modal integration via ajax.
-     */
-    public function getModalIntegrationTemplate(Integration $integration): array
-    {
-        $view = Craft::$app->getView();
-
-        $html = $view->renderTemplate('sprout-module-forms/forms/_editIntegrationModal', [
-            'integration' => $integration,
-        ]);
-
-        $js = $view->getBodyHtml();
-        $css = $view->getHeadHtml();
-
-        return [
-            'html' => $html,
-            'js' => $js,
-            'css' => $css,
-        ];
     }
 
     public function logIntegration(IntegrationLog $integrationLog): IntegrationLog
@@ -242,7 +283,7 @@ class FormIntegrations extends Component
                     'integrationId' => $integration->id,
                     'submissionId' => $submissionId,
                     'success' => false,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_PENDING_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_PENDING_STATUS,
                     'message' => 'Pending',
                 ], false);
 
@@ -273,7 +314,7 @@ class FormIntegrations extends Component
 
                 $integrationLog->setAttributes([
                     'success' => true,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_NOT_SENT_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_NOT_SENT_STATUS,
                     'message' => $integrationNotSentMessage,
                 ], false);
 
@@ -289,7 +330,7 @@ class FormIntegrations extends Component
                     if ($result) {
                         $integrationLog->setAttributes([
                             'success' => true,
-                            'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
+                            'status' => IntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
                             'message' => $integration->getSuccessMessage(),
                         ], false);
 
@@ -315,7 +356,7 @@ class FormIntegrations extends Component
                 $integrationLog->setAttributes([
                     'success' => false,
                     'message' => $errorMessages,
-                    'status' => SubmissionIntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
+                    'status' => IntegrationStatus::SUBMISSION_INTEGRATION_COMPLETED_STATUS,
                 ], false);
 
                 $integrationLog = FormsModule::getInstance()->formIntegrations->logIntegration($integrationLog
@@ -330,24 +371,21 @@ class FormIntegrations extends Component
         }
     }
 
-    public function getIntegrationOptions(): array
+    public function getIntegrationsRelationsRows(ElementInterface $form): array
     {
-        $options = [];
-        $integrations = FormsModule::getInstance()->formIntegrations->getAllIntegrations();
+        $integrations = FormsModule::getInstance()->formIntegrations->getIntegrationsByFormId($form->id);
 
-        $options[] = [
-            'label' => Craft::t('sprout-module-forms', 'Add Integration...'),
-            'value' => '',
-        ];
-
-        foreach ($integrations as $integration) {
-            $options[] = [
-                'label' => $integration::displayName(),
-                'value' => $integration::class,
+        $rows = array_map(static function($element) {
+            return [
+                'elementId' => $element->id,
+                'name' => $element->name,
+                'cpEditUrl' => $element->getCpEditUrl(),
+                'type' => $element->getDataSource()::displayName(),
+                'actionUrl' => $element->getCpEditUrl(),
             ];
-        }
+        }, $integrations);
 
-        return $options;
+        return $rows;
     }
 
     private function sendRuleIsTrue(Integration $integration, $submission): bool

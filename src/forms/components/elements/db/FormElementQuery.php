@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\forms\components\elements\db;
 
 use BarrelStrength\Sprout\forms\db\SproutTable;
 use BarrelStrength\Sprout\forms\FormsModule;
-use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 
@@ -14,12 +13,8 @@ class FormElementQuery extends ElementQuery
 
     public ?string $handle = null;
 
-    public ?string $submissionFieldLayoutId = null;
-
     public ?string $formTypeUid = null;
 
-    //    public string $oldHandle;
-    //
     //    public string $titleFormat;
     //
     //    public bool $displaySectionTitles = false;
@@ -42,7 +37,7 @@ class FormElementQuery extends ElementQuery
 
     public int $totalSubmissions = 0;
 
-    public int $numberOfFields = 0;
+    //public int $numberOfFields = 0;
 
     public function __construct(string $elementType, array $config = [])
     {
@@ -68,13 +63,6 @@ class FormElementQuery extends ElementQuery
         return $this;
     }
 
-    public function submissionFieldLayoutId(string $value): FormElementQuery
-    {
-        $this->submissionFieldLayoutId = $value;
-
-        return $this;
-    }
-
     public function formTypeUid(string $value): FormElementQuery
     {
         $this->formTypeUid = $value;
@@ -88,7 +76,7 @@ class FormElementQuery extends ElementQuery
 
         $this->query->select([
             'sprout_forms.id',
-            'sprout_forms.submissionFieldLayoutId',
+            'sprout_forms.submissionFieldLayout',
             'sprout_forms.name',
             'sprout_forms.handle',
             'sprout_forms.titleFormat',
@@ -109,16 +97,10 @@ class FormElementQuery extends ElementQuery
             $this->query->leftJoin(['submissions' => SproutTable::FORM_SUBMISSIONS], '[[submissions.formId]] = [[sprout_forms.id]]');
         }
 
-        if ($this->numberOfFields) {
-            $this->query->addSelect('COUNT(fields.id) numberOfFields');
-            $this->query->leftJoin(Table::FIELDLAYOUTFIELDS . ' fields', '[[fields.layoutId]] = [[sprout_forms.submissionFieldLayoutId]]');
-        }
-
-        if ($this->submissionFieldLayoutId) {
-            $this->subQuery->andWhere(Db::parseParam(
-                'sprout_forms.submissionFieldLayoutId', $this->submissionFieldLayoutId
-            ));
-        }
+        //if ($this->numberOfFields) {
+        //    $this->query->addSelect('COUNT(fields.id) numberOfFields');
+        //    $this->query->leftJoin(Table::FIELDLAYOUTFIELDS . ' fields', '[[fields.layoutId]] = [[sprout_forms.submissionFieldLayoutId]]');
+        //}
 
         if ($this->formTypeUid) {
             $this->subQuery->andWhere(Db::parseParam(

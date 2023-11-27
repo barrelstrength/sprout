@@ -4,6 +4,7 @@ namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
+use BarrelStrength\Sprout\mailer\components\mailers\SystemMailerInstructionsSettings;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
@@ -32,14 +33,16 @@ class ReplyToField extends BaseNativeField
             'value' => '',
         ];
 
+        /** @var SystemMailer $mailer */
         $mailer = $element->getMailer();
 
+        /** @var SystemMailerInstructionsSettings $mailerInstructionsSettings */
         $mailerInstructionsSettings = $element->getMailerInstructions();
 
-        $mailSettings =  App::mailSettings();
+        $mailSettings = App::mailSettings();
 
+        /** @todo several attributes assume specific mailer. Delegate defining new ReplyToField() to mailer? */
         if ($mailer->senderEditBehavior === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
-
             $this->tip = Craft::t('sprout-module-mailer', 'Reply-To is set in the Craft Email Settings.');
 
             return Craft::$app->getView()->renderTemplate('_includes/forms/text', [
@@ -73,11 +76,18 @@ class ReplyToField extends BaseNativeField
             return $selectField;
         }
 
+        // custom
+        if (!$element->subjectLine) {
+            $replyToEmail = $mailerInstructionsSettings->replyToEmail ?? $mailer->defaultReplyToEmail;
+        } else {
+            $replyToEmail = $mailerInstructionsSettings->replyToEmail;
+        }
+
         return Craft::$app->getView()->renderTemplate('_includes/forms/text', [
             'name' => 'mailerInstructionsSettings[' . $this->attribute() . ']',
             'type' => 'email',
-            'value' => $mailerInstructionsSettings->replyToEmail,
-            'placeholder' => $mailerInstructionsSettings->sender['fromEmail'] ?? null,
+            'value' => $replyToEmail,
+            'placeholder' => $mailerInstructionsSettings->fromEmail,
         ]);
     }
 

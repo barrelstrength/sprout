@@ -2,12 +2,14 @@
 
 namespace BarrelStrength\Sprout\sitemaps;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\helpers\RegexHelper;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -16,7 +18,6 @@ use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
 use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -31,7 +32,7 @@ use yii\base\Module;
  * @property SitemapMetadata $sitemaps
  * @property XmlSitemap $xmlSitemap
  */
-class SitemapsModule extends Module
+class SitemapsModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -152,9 +153,12 @@ class SitemapsModule extends Module
         return new SitemapsSettings();
     }
 
-    public function getSettings(): SitemapsSettings|BaseConfig
+    public function getSettings(): SitemapsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, SitemapsSettings::class);
+        /** @var SitemapsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, SitemapsSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

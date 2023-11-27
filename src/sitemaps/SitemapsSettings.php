@@ -122,4 +122,3 @@ class SitemapsSettings extends BaseConfig
         return array_map('intval', $ids);
     }
 }
-

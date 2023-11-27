@@ -2,7 +2,7 @@
     "name": "barrelstrength/sprout",
     "description": "The Sprout Framework module",
     "type": "craft-module",
-    "version": "4.1.5",
+    "version": "4.1.6",
     "license": "proprietary",
     "authors": [
         {
@@ -26,7 +26,7 @@
         "league/html-to-markdown": "^5.1",
         "php-science/textrank": "^1.2",
         "nystudio107/craft-plugin-vite": "^4.0",
-        "twig/cssinliner-extra": "^3.5"
+        "twig/cssinliner-extra": "^v3.7"
     },
     "autoload": {
         "psr-4": {

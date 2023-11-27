@@ -50,6 +50,3 @@ class EmailMessageEmailType extends EmailType
         return $fieldLayout;
     }
 }
-
-
-

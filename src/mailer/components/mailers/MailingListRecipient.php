@@ -77,7 +77,6 @@ class MailingListRecipient extends Model
         $recipientsArray = array_map('trim', explode(',', $recipients));
 
         $recipients = array_map(static function($recipient) {
-
             $mailingListRecipient = new MailingListRecipient();
 
             try {
@@ -89,7 +88,7 @@ class MailingListRecipient extends Model
                     $mailingListRecipient->email = $address->getAddress();
                 }
             } catch (Exception $e) {
-                $mailingListRecipient->addError('recipient', $e->getMessage());
+                $mailingListRecipient->addError('email', $e->getMessage());
             }
 
             return $mailingListRecipient;

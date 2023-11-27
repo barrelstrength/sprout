@@ -25,7 +25,7 @@ class SproutEmailField {
             };
 
             // Query the controller so the regex validation is all done through PHP.
-            Craft.sendActionRequest('POST', 'sprout-module-fields/fields/validate-email', {
+            Craft.sendActionRequest('POST', 'sprout-module-forms/fields/validate-email', {
                 data: data,
             }).then((response) => {
                 if (response.data.success) {

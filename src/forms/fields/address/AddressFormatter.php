@@ -359,7 +359,7 @@ class AddressFormatter
 
         $states = $this->subdivisionRepository->getList([$this->countryCode], $this->language);
 
-        if ($states && !empty($states)) {
+        if (!empty($states)) {
             return Craft::$app->view->renderTemplate($this->getBaseAddressFieldPath() . 'address/_components/select.twig', [
                     'fieldClass' => 'sprout-address-onchange-country',
                     'label' => $this->renderAddressLabel($this->addressFormat->getAdministrativeAreaType()),

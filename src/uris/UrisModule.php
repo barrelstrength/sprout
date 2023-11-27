@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\uris;
 
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -16,7 +17,7 @@ use yii\base\Module;
 /**
  * @property Links $links
  */
-class UrisModule extends Module
+class UrisModule extends Module implements SproutModuleInterface
 {
     use SproutModuleTrait;
     use TranslatableTrait;

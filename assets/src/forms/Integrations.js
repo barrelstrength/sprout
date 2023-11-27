@@ -11,26 +11,26 @@ class SproutFormsIntegration {
     constructor(settings) {
         const self = this;
 
-        this.integrationType = typeof settings.integrationType !== 'undefined'
-            ? settings.integrationType
-            : '';
-
-        // Make the sourceFormField read only
-        this.disableOptions();
-
-        // Init all empty field selects
-        this.updateAllFieldSelects();
-
-        this.updateTargetFieldsOnChange = typeof settings.updateTargetFieldsOnChange !== 'undefined'
-            ? settings.updateTargetFieldsOnChange
-            : [];
-
-        this.updateTargetFieldsOnChange.forEach(function(elementId) {
-            // Register an onChange event for all Element IDs identified by the Integration
-            $(elementId).change(function() {
-                self.updateAllFieldSelects();
-            });
-        });
+        // this.integrationType = typeof settings.integrationType !== 'undefined'
+        //     ? settings.integrationType
+        //     : '';
+        //
+        // // Make the sourceFormField read only
+        // this.disableOptions();
+        //
+        // // Init all empty field selects
+        // this.updateAllFieldSelects();
+        //
+        // this.updateTargetFieldsOnChange = typeof settings.updateTargetFieldsOnChange !== 'undefined'
+        //     ? settings.updateTargetFieldsOnChange
+        //     : [];
+        //
+        // this.updateTargetFieldsOnChange.forEach(function(elementId) {
+        //     // Register an onChange event for all Element IDs identified by the Integration
+        //     $(elementId).change(function() {
+        //         self.updateAllFieldSelects();
+        //     });
+        // });
     }
 
     disableOptions() {
@@ -41,7 +41,7 @@ class SproutFormsIntegration {
             'integrationId': integrationId,
         };
 
-        Craft.postActionRequest('sprout-module-forms/form-integrations/get-source-form-fields', data, $.proxy(function(response, textStatus) {
+        Craft.postActionRequest('sprout-module-forms/form-integration-settings/get-source-form-fields', data, $.proxy(function(response, textStatus) {
             const statusSuccess = (textStatus === 'success');
             if (statusSuccess && response.success) {
                 const rows = response.sourceFormFields;
@@ -71,11 +71,13 @@ class SproutFormsIntegration {
         const $currentRows = this.getCurrentRows('tbody .targetFields');
 
         // Hand off all our current Form data so the Integration can use it if needed
-        const data = $('#integrationId').closest('form').serialize();
+        const formData = $('#integrationId').closest('form').serialize();
 
         const self = this;
 
-        Craft.postActionRequest('sprout-module-forms/form-integrations/get-target-integration-fields', data, $.proxy(function(response, textStatus) {
+        Craft.sendActionRequest('POST', 'sprout-module-forms/form-integration-settings/get-target-integration-fields', {
+            data: formData,
+        }).then((response) => {
             const statusSuccess = (textStatus === 'success');
 
             if (statusSuccess && response.success) {
@@ -94,7 +96,7 @@ class SproutFormsIntegration {
             } else {
                 Craft.cp.displayError(Craft.t('sprout', 'Unable to get the Form fields'));
             }
-        }, this));
+        }, this);
     }
 
     getCurrentRows(className = null) {

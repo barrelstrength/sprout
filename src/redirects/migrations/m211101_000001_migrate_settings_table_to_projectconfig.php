@@ -1,6 +1,6 @@
 <?php
 
-/** @noinspection DuplicatedCode */
+/** @noinspection DuplicatedCode DuplicatedCode */
 
 namespace BarrelStrength\Sprout\redirects\migrations;
 
@@ -118,7 +118,7 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
         if ($newSettings['structureId']) {
 
             // Find existing Structure UID
-            $uid = (new Query)
+            $uid = (new Query())
                 ->select('uid')
                 ->from(Table::STRUCTURES)
                 ->where([

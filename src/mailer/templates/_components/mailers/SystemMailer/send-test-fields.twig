@@ -1,7 +1,5 @@
 {% import "_includes/forms" as forms %}
 
-{% set mailerInstructionsSettings = email.getMailerInstructions() %}
-
 <h6>{{ 'Email Details'|t('sprout-module-mailer') }}</h6>
 <table>
     <tr>
@@ -9,7 +7,7 @@
         <td>{{ email.subjectLine }}</td>
     </tr>
     <tr>
-        <th>{{ 'From Address'|t('sprout-module-mailer') }}</th>
+        <th>{{ 'Sender'|t('sprout-module-mailer') }}</th>
         <td>{{ mailerInstructionsSettings.getSenderAsString() }}</td>
     </tr>
 </table>

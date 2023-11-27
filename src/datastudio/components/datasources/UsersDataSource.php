@@ -72,7 +72,7 @@ class UsersDataSource extends DataSource
         $usersById = [];
         foreach ($users as $user) {
             $usersById[$user['id']] = $user;
-            unset ($usersById[$user['id']]['id']);
+            unset($usersById[$user['id']]['id']);
         }
 
         $query = new Query();

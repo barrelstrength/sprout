@@ -13,6 +13,7 @@ use BarrelStrength\Sprout\sitemaps\SitemapsModule;
 use BarrelStrength\Sprout\sitemaps\SitemapsSettings;
 use Craft;
 use craft\base\Element;
+use craft\elements\conditions\ElementCondition;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -84,6 +85,8 @@ class SitemapMetadataController extends Controller
 
             if ($sitemapMetadata->settings) {
                 $currentConditionRules = Json::decodeIfJson($sitemapMetadata->settings);
+
+                /** @var ElementCondition $currentCondition */
                 $currentCondition = Craft::$app->conditions->createCondition($currentConditionRules);
             } else {
                 $currentCondition = null;
@@ -104,6 +107,7 @@ class SitemapMetadataController extends Controller
                 if ($currentCondition && $currentCondition->elementType === $element::class) {
                     $condition = $currentCondition;
                 } else {
+                    /** @var ElementCondition $condition */
                     $condition = $element::createCondition();
                     $condition->elementType = $element::class;
                 }

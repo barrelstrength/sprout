@@ -19,6 +19,7 @@ class SubmissionStatuses extends Component
      */
     public function getAllSubmissionStatuses(): array
     {
+        /** @var SubmissionStatusRecord[] $results */
         $results = SubmissionStatusRecord::find()
             ->orderBy(['sortOrder' => 'asc'])
             ->all();
@@ -34,6 +35,7 @@ class SubmissionStatuses extends Component
 
     public function getSubmissionStatusById($submissionStatusId): SubmissionStatus
     {
+        /** @var SubmissionStatusRecord|null $submissionStatus */
         $submissionStatus = SubmissionStatusRecord::find()
             ->where(['id' => $submissionStatusId])
             ->one();
@@ -49,6 +51,7 @@ class SubmissionStatuses extends Component
 
     public function getSubmissionStatusByHandle($submissionStatusHandle): SubmissionStatus
     {
+        /** @var SubmissionStatusRecord|null $submissionStatus */
         $submissionStatus = SubmissionStatusRecord::find()
             ->where(['handle' => $submissionStatusHandle])
             ->one();
@@ -146,11 +149,8 @@ class SubmissionStatuses extends Component
         try {
             foreach ($submissionStatusIds as $submissionStatus => $submissionStatusId) {
                 $submissionStatusRecord = $this->getSubmissionStatusRecordById($submissionStatusId);
-
-                if ($submissionStatusRecord) {
-                    $submissionStatusRecord->sortOrder = $submissionStatus + 1;
-                    $submissionStatusRecord->save();
-                }
+                $submissionStatusRecord->sortOrder = $submissionStatus + 1;
+                $submissionStatusRecord->save();
             }
 
             $transaction->commit();
@@ -210,7 +210,6 @@ class SubmissionStatuses extends Component
         }
 
         foreach ($submissionElements as $submissionElement) {
-
             $success = Craft::$app->db->createCommand()->update(
                 SproutTable::FORM_SUBMISSIONS,
                 ['statusId' => $spam->id],
@@ -218,7 +217,7 @@ class SubmissionStatuses extends Component
             )->execute();
 
             if (!$success) {
-                Craft::error("Unable to mark submission as spam. Submission ID: {$submissionElement->id}", __METHOD__);
+                Craft::error("Unable to mark submission as spam. Submission ID: $submissionElement->id", __METHOD__);
             }
         }
 
@@ -241,7 +240,7 @@ class SubmissionStatuses extends Component
             )->execute();
 
             if (!$success) {
-                Craft::error("Unable to change submission status. Submission ID: {$submissionElement->id}", __METHOD__);
+                Craft::error("Unable to change submission status. Submission ID: $submissionElement->id", __METHOD__);
             }
         }
 
@@ -256,10 +255,8 @@ class SubmissionStatuses extends Component
             if (!$submissionStatusRecord instanceof SubmissionStatusRecord) {
                 throw new Exception('No Submission Status exists with the ID: ' . $submissionStatusId);
             }
-        } else {
-            $submissionStatusRecord = new SubmissionStatusRecord();
         }
 
-        return $submissionStatusRecord;
+        return $submissionStatusRecord ?? new SubmissionStatusRecord();
     }
 }

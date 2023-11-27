@@ -372,7 +372,6 @@ class DataSetElement extends Element
         }
 
         if ($attribute === 'download') {
-
             $linkName = Craft::t('sprout-module-data-studio', 'Export');
 
             if (!DataStudioModule::isPro()) {

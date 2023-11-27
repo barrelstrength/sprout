@@ -7,13 +7,13 @@ use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderT
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
 use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
 use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsInterface;
+use BarrelStrength\Sprout\mailer\mailers\MailerInstructionsSettings;
 use BarrelStrength\Sprout\mailer\mailers\MailerSendTestInterface;
 use Craft;
 use craft\base\Element;
@@ -36,7 +36,6 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use http\Exception\InvalidArgumentException;
-use yii\base\Model;
 use yii\web\Response;
 
 /**
@@ -142,7 +141,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         return true;
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): EmailElementQuery
     {
         return new EmailElementQuery(static::class);
     }
@@ -253,7 +252,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $emailVariant = $this->getEmailVariant();
 
-        if ($emailType->mailerUid === SystemMailer::SENDER_BEHAVIOR_CRAFT) {
+        if ($emailType->mailerUid === MailerHelper::CRAFT_MAILER_SETTINGS) {
             return $emailVariant::getDefaultMailer();
         }
 
@@ -265,15 +264,28 @@ class EmailElement extends Element implements EmailPreviewInterface
         $this->_mailer = $mailer;
     }
 
-    public function getMailerInstructions(): MailerInstructionsInterface
+    /**
+     * Default behavior will grab the Mailer Instructions Settings from the Email Element
+     * or, if we are sending a test, we can pass in a test configuration of the Mailer Instructions Settings
+     */
+    public function getMailerInstructions(array $mailerInstructionsTestSettings = null): MailerInstructionsInterface
     {
         if ($this->_mailerInstructionsSettingsModel !== null) {
             return $this->_mailerInstructionsSettingsModel;
         }
 
         $mailer = $this->getMailer();
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
+
+        if ($mailerInstructionsTestSettings !== null) {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsTestSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($mailerInstructionsTestSettings);
+        } else {
+            $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
+            $preparedMailerInstructionsSettings = $mailer->prepareMailerInstructionSettingsForEmail($this->mailerInstructionsSettings);
+        }
+
+        $mailerInstructionsSettings->setAttributes($preparedMailerInstructionsSettings, false);
+        $mailerInstructionsSettings->setMailer($mailer);
 
         $this->_mailerInstructionsSettingsModel = $mailerInstructionsSettings;
 
@@ -422,8 +434,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         //    return $this->_fieldLayout;
         //}
 
-        $twigExpressionMessage1 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event variables.');
-        $twigExpressionMessage2 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
+        $twigExpressionMessage = Craft::t('sprout-module-mailer', 'This can use Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
 
         $fieldLayout = new FieldLayout([
             'type' => static::class,
@@ -438,11 +449,11 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailTypeTabs = $emailType->getFieldLayout()?->getTabs() ?? [];
 
         // Loop through the fields of each email type tab and add a tip to the default message field
-        $emailTypeTabsWithMessages = array_map(static function(FieldLayoutTab $tab) use ($twigExpressionMessage2) {
+        $emailTypeTabsWithMessages = array_map(static function(FieldLayoutTab $tab) use ($twigExpressionMessage) {
             $newElements = [];
             foreach ($tab->elements as $element) {
                 if ($element instanceof TextareaField && $element->attribute === DefaultMessageField::FIELD_LAYOUT_ATTRIBUTE) {
-                    $element->tip = $twigExpressionMessage2;
+                    $element->tip = $twigExpressionMessage;
                 }
                 $newElements[] = $element;
             }
@@ -471,12 +482,12 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-SUBJECT-TAB-1',
             ]),
             new SubjectLineField([
-                'tip' => $twigExpressionMessage2,
+                'tip' => $twigExpressionMessage,
                 'uid' => 'SPROUT-UID-EMAIL-SUBJECT-LINE-FIELD',
             ]),
             new PreheaderTextField([
                 'elementCondition' => $elementCondition,
-                'tip' => $twigExpressionMessage2,
+                'tip' => $twigExpressionMessage,
                 'uid' => 'SPROUT-UID-EMAIL-PREHEADER-FIELD',
             ]),
             new TextField([
@@ -606,7 +617,6 @@ class EmailElement extends Element implements EmailPreviewInterface
 
                 // Validate actual emails
                 if (!$validator->isValid(trim($recipient), $multipleValidations)) {
-
                     $this->addError($attribute, Craft::t('sprout-module-mailer',
                         'Email is invalid: ' . $recipient));
                 }
@@ -627,7 +637,6 @@ class EmailElement extends Element implements EmailPreviewInterface
     protected function statusFieldHtml(): string
     {
         if ($this->getEmailVariant()->canBeDisabled()) {
-
             $statusField = Cp::lightswitchFieldHtml([
                 'id' => 'enabled',
                 'label' => Craft::t('app', 'Enabled'),
@@ -697,12 +706,8 @@ class EmailElement extends Element implements EmailPreviewInterface
 
     public function validateMailerInstructionsSettings(): void
     {
-        $mailer = $this->getMailer();
-
-        /** @var Model $mailerInstructionsSettings */
-        $mailerInstructionsSettings = $mailer->createMailerInstructionsSettingsModel();
-        $mailerInstructionsSettings->setAttributes($this->mailerInstructionsSettings, false);
-        $mailerInstructionsSettings->mailer = $mailer;
+        /** @var MailerInstructionsSettings $mailerInstructionsSettings */
+        $mailerInstructionsSettings = $this->getMailerInstructions();
 
         if (!$mailerInstructionsSettings->validate()) {
             // Adding the error to the Element makes sure the Mailer tab is highlighted with errors

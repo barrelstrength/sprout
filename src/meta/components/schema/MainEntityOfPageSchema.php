@@ -6,7 +6,7 @@ use BarrelStrength\Sprout\meta\schema\Schema;
 
 class MainEntityOfPageSchema extends Schema
 {
-    public int $id;
+    public ?string $id = null;
 
     public function getName(): string
     {

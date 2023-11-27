@@ -17,9 +17,14 @@ interface SystemMailerInstructionsInterface extends MailerInstructionsInterface
     public function getSender(): mixed;
 
     /**
-     * Gives the Mailer instructions a chance to modify the subject line
+     * Returns the Reply To address
      */
-    public function getSubjectLine(EmailElement $email): string;
+    public function getReplyToEmail(): mixed;
+
+    /**
+     * Returns any Audience Elements that should receive the email
+     */
+    public function getAudiences(): array;
 
     /**
      * Returns a Mailing List which must have a getRecipients method

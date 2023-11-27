@@ -42,7 +42,7 @@ class PageNotFoundHelper
         $redirect->newUrl = '/';
         $redirect->statusCode = StatusCode::PAGE_NOT_FOUND;
         $redirect->matchStrategy = MatchStrategy::EXACT_MATCH;
-        $redirect->enabled = 0;
+        $redirect->enabled = false;
         $redirect->count = 0;
         $redirect->siteId = $site->id;
         $redirect->lastRemoteIpAddress = $settings->trackRemoteIp ? $request->getRemoteIp() : null;
@@ -109,7 +109,6 @@ class PageNotFoundHelper
         $siteIds = $siteId === null ? Craft::$app->getSites()->getAllSiteIds() : [$siteId];
 
         foreach ($siteIds as $currentSiteId) {
-
             $query = RedirectElement::find()
                 ->where(['statusCode' => StatusCode::PAGE_NOT_FOUND])
                 ->andWhere(['siteId' => $currentSiteId]);
@@ -129,7 +128,6 @@ class PageNotFoundHelper
             $idsToDelete = array_slice($ids, $redirectSettings->total404Redirects - $limitAdjustment);
 
             if (!empty($idsToDelete)) {
-
                 $batchSize = 25;
 
                 // Leave second argument blank and bust loop with break statement. Really. It's in the docs.
@@ -149,7 +147,7 @@ class PageNotFoundHelper
                     if (empty($loopedIdsToDelete)) {
                         break;
                     }
-                    
+
                     // Call the delete redirects job, give it some delay so we don't demand
                     // all the server resources. This is most important if anybody changes the
                     // Redirect Limit setting in a massive way

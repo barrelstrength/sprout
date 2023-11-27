@@ -14,27 +14,24 @@ use yii\base\Component;
 
 class ElementMetadata extends Component
 {
+    public ?array $_rawMetadata = null;
+
     /**
      * Returns the metadata for an Element's Element Metadata as a Metadata model
      */
-    public function getRawMetadataFromElement(Element $element = null): array
+    public function getRawMetadataFromElement(Element $element): array
     {
-        if ($element === null) {
-            return [];
+        if ($this->_rawMetadata !== null) {
+            return $this->_rawMetadata;
         }
 
         $fieldHandle = $this->getElementMetadataFieldHandle($element);
 
-        if (isset($element->{$fieldHandle})) {
-            /** @var Metadata $metadata */
-            $metadata = $element->{$fieldHandle};
-
-            if ($metadata) {
-                return $metadata->getRawData();
-            }
+        if ($metadata = $element->{$fieldHandle} ?? null) {
+            $this->_rawMetadata = $metadata->getRawData();
         }
 
-        return [];
+        return $this->_rawMetadata ?? [];
     }
 
     /**
@@ -50,11 +47,7 @@ class ElementMetadata extends Component
         $fieldLayout = $element->getFieldLayout();
         $fields = $fieldLayout->getCustomFields();
 
-        /**
-         * Get our ElementMetadata Field
-         *
-         * @var Field $field
-         */
+        /**  @var Field $field */
         foreach ($fields as $field) {
             if (($field::class == ElementMetadataField::class) && isset($element->{$field->handle})) {
                 return $field->handle;
@@ -84,29 +77,16 @@ class ElementMetadata extends Component
 
         $metaFieldHandles = [];
         foreach ($targetSettings as $targetSetting) {
-
             $handles = $this->getFieldHandles($targetSetting['value']);
 
-            if (is_array($handles)) {
-                foreach ($handles as $handle) {
-                    if (isset($metaFieldHandles[$handle])) {
-                        continue;
-                    }
-
-                    $metaFieldHandles[$handle] = [
-                        'type' => $targetSetting['type'],
-                        'handle' => $handle,
-                        'badgeClass' => $targetSetting['badgeClass'],
-                    ];
-                }
-            } else {
-                if (isset($metaFieldHandles[$handles])) {
+            foreach ($handles as $handle) {
+                if (isset($metaFieldHandles[$handle])) {
                     continue;
                 }
 
-                $metaFieldHandles[$handles] = [
+                $metaFieldHandles[$handle] = [
                     'type' => $targetSetting['type'],
-                    'handle' => $handles,
+                    'handle' => $handle,
                     'badgeClass' => $targetSetting['badgeClass'],
                 ];
             }
@@ -115,7 +95,7 @@ class ElementMetadata extends Component
         return $metaFieldHandles;
     }
 
-    public function getFieldHandles($targetFieldSetting)
+    public function getFieldHandles(string $targetFieldSetting = null): array
     {
         $targetField = $targetFieldSetting ?? null;
 
@@ -131,12 +111,8 @@ class ElementMetadata extends Component
 
         $fieldHandles = array_filter(array_merge($existingFieldHandle, $customSettingFieldHandles));
 
-        if (count($fieldHandles) <= 0) {
-            if ($targetField === 'elementTitle') {
-                return 'title';
-            }
-
-            return $targetField;
+        if ((count($fieldHandles) <= 0) && $targetField === 'elementTitle') {
+            return ['title'];
         }
 
         return $fieldHandles;

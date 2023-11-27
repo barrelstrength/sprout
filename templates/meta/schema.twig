@@ -1,0 +1,7 @@
+{%- set schema  = metadata.schema %}
+
+{%- for item in schema -%}
+    {% if item %}
+        {{ item.getSchema() }}
+    {% endif %}
+{%- endfor %}

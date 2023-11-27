@@ -2,11 +2,13 @@
 
 namespace BarrelStrength\Sprout\datastudio;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -14,14 +16,15 @@ use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\components\audiences\DataSetAudienceType;
 use BarrelStrength\Sprout\datastudio\components\datasources\CustomTwigTemplates;
 use BarrelStrength\Sprout\datastudio\components\elements\DataSetElement;
+use BarrelStrength\Sprout\datastudio\components\formfeatures\DataStudioTabFormFeature;
 use BarrelStrength\Sprout\datastudio\components\widgets\NumberWidget;
 use BarrelStrength\Sprout\datastudio\datasets\TwigDataSetVariable;
-use BarrelStrength\Sprout\datastudio\datasources\DataSource;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
 use BarrelStrength\Sprout\datastudio\visualizations\Visualizations;
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
 use BarrelStrength\Sprout\mailer\audience\Audiences;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
@@ -42,7 +45,7 @@ use yii\base\Module;
  * @property DataSources $dataSources
  * @property Visualizations $visualizations
  */
-class DataStudioModule extends Module
+class DataStudioModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -171,23 +174,32 @@ class DataStudioModule extends Module
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = NumberWidget::class;
-            }
-        );
+            });
 
         Event::on(
             FieldLayout::class,
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             static function(DefineFieldLayoutFieldsEvent $event): void {
                 DataSetElement::defineNativeFields($event);
-            }
-        );
+            });
 
         Event::on(
             Audiences::class,
             Audiences::EVENT_REGISTER_AUDIENCE_TYPES,
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = DataSetAudienceType::class;
-            }
+            });
+
+        Event::on(
+            FormElement::class,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
+            [DataStudioTabFormFeature::class, 'registerDataStudioTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [DataStudioTabFormFeature::class, 'defineFormTypeSettings']
         );
     }
 
@@ -196,9 +208,12 @@ class DataStudioModule extends Module
         return new DataStudioSettings();
     }
 
-    public function getSettings(): DataStudioSettings|BaseConfig
+    public function getSettings(): DataStudioSettings
     {
-        return SettingsHelper::getSettingsConfig($this, DataStudioSettings::class);
+        /** @var DataStudioSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, DataStudioSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSettingsNavItems(): array
@@ -272,17 +287,16 @@ class DataStudioModule extends Module
 
         $permissions = [];
 
-        /** @var DataSource $class */
         foreach ($dataSources as $class) {
             $permissions[self::p('viewReports:' . $class)] = [
                 'label' => Craft::t('sprout-module-data-studio', 'View reports: "{dataSet}"', [
-                    'dataSet' => $class::displayName()
+                    'dataSet' => $class::displayName(),
                 ]),
                 'info' => Craft::t('sprout-module-data-studio', 'Includes viewing some settings, running reports, and CSV exports.'),
                 'nested' => [
                     self::p('editDataSet:' . $class) => [
                         'label' => Craft::t('sprout-module-data-studio', 'Edit data sets', [
-                            'dataSet' => $class::displayName()
+                            'dataSet' => $class::displayName(),
                         ]),
                     ],
                 ],

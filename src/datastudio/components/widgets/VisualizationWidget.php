@@ -56,7 +56,7 @@ class VisualizationWidget extends Widget
         $visualization = false;
 
         if (array_key_exists('visualization', $settings)) {
-            $visualization = new $settings['visualization']['type'];
+            $visualization = new $settings['visualization']['type']();
             $visualization->setSettings($settings['visualization']);
             $visualization->setLabels($labels);
             $visualization->setValues($values);

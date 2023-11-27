@@ -71,7 +71,6 @@ class EmailTypesController extends Controller
         $emailTypesConfig[$emailType->uid] = $emailType;
 
         if (!$emailType->validate() || !EmailTypeHelper::saveEmailTypes($emailTypesConfig)) {
-
             Craft::$app->session->setError(Craft::t('sprout-module-mailer', 'Could not save Email Variant.'));
 
             Craft::$app->getUrlManager()->setRouteParams([

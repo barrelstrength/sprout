@@ -2,10 +2,12 @@
 
 namespace BarrelStrength\Sprout\mailer;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\modules\CpNavHelper;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
@@ -26,7 +28,6 @@ use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
-use craft\config\BaseConfig;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
@@ -49,7 +50,7 @@ use yii\base\Module;
  * @property EmailTypes $emailTypes
  * @property SubscriberLists $subscriberLists
  */
-class MailerModule extends Module
+class MailerModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use MigrationTrait;
@@ -228,9 +229,12 @@ class MailerModule extends Module
         return new MailerSettings();
     }
 
-    public function getSettings(): MailerSettings|BaseConfig
+    public function getSettings(): MailerSettings
     {
-        return SettingsHelper::getSettingsConfig($this, MailerSettings::class);
+        /** @var MailerSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, MailerSettings::class);
+
+        return $settings;
     }
 
     protected function getCraftCpSidebarNavItems(): array

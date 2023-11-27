@@ -43,5 +43,4 @@ class VisualizationsSettingsField extends BaseNativeField
             'isPro' => DataStudioModule::isPro(),
         ]);
     }
-
 }

@@ -2,17 +2,19 @@
 
 namespace BarrelStrength\Sprout\forms;
 
+use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
 use BarrelStrength\Sprout\core\modules\Settings;
 use BarrelStrength\Sprout\core\modules\SettingsHelper;
+use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
-use BarrelStrength\Sprout\forms\captchas\FormCaptchas;
+use BarrelStrength\Sprout\forms\captchas\Captchas;
 use BarrelStrength\Sprout\forms\components\datasources\IntegrationLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SubmissionsDataSource;
@@ -21,22 +23,26 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
 use BarrelStrength\Sprout\forms\components\fields\FormsRelationField;
 use BarrelStrength\Sprout\forms\components\fields\SubmissionsRelationField;
+use BarrelStrength\Sprout\forms\components\formfeatures\WorkflowTabFormFeature;
 use BarrelStrength\Sprout\forms\components\notificationevents\SaveSubmissionNotificationEvent;
+use BarrelStrength\Sprout\forms\controllers\FormTypesController;
+use BarrelStrength\Sprout\forms\controllers\SubmissionsController;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\fields\address\AddressFormatter;
 use BarrelStrength\Sprout\forms\formfields\FormFields;
 use BarrelStrength\Sprout\forms\formfields\FrontEndFields;
 use BarrelStrength\Sprout\forms\forms\Forms;
+use BarrelStrength\Sprout\forms\forms\FormsHelper;
 use BarrelStrength\Sprout\forms\forms\FormsVariable;
 use BarrelStrength\Sprout\forms\forms\Submissions;
 use BarrelStrength\Sprout\forms\forms\SubmissionStatuses;
 use BarrelStrength\Sprout\forms\formtypes\FormTypeHelper;
 use BarrelStrength\Sprout\forms\formtypes\FormTypes;
 use BarrelStrength\Sprout\forms\integrations\FormIntegrations;
+use BarrelStrength\Sprout\forms\submissions\SubmissionHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\transactional\notificationevents\NotificationEvents;
 use Craft;
-use craft\config\BaseConfig;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -59,12 +65,12 @@ use yii\base\Module;
  * @property FrontEndFields $frontEndFields
  * @property FormIntegrations $formIntegrations
  * @property FormTypes $formTypes
- * @property FormCaptchas $formCaptchas
+ * @property Captchas $captchas
  *
  * @property Addresses $addressField
  * @property AddressFormatter $addressFormatter
  */
-class FormsModule extends Module
+class FormsModule extends Module implements SproutModuleInterface, MigrationInterface
 {
     use SproutModuleTrait;
     use EditionTrait;
@@ -115,7 +121,7 @@ class FormsModule extends Module
             'frontEndFields' => FrontEndFields::class,
             'formIntegrations' => FormIntegrations::class,
             'formTypes' => FormTypes::class,
-            'formCaptchas' => FormCaptchas::class,
+            'captchas' => Captchas::class,
 
             // Fields
             'addressField' => Addresses::class,
@@ -232,6 +238,33 @@ class FormsModule extends Module
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             [FormTypeHelper::class, 'defineNativeFieldsPerFormType']);
 
+        Event::on(
+            SubmissionsController::class,
+            SubmissionsController::EVENT_BEFORE_VALIDATE,
+            [Captchas::class, 'handleValidateCaptchas']);
+
+        Event::on(
+            NotificationEvents::class,
+            NotificationEvents::EVENT_REGISTER_NOTIFICATION_EVENT_RELATIONS_TYPES,
+            [FormsHelper::class, 'registerNotificationEventRelationsTypes']);
+
+        Event::on(
+            DataSources::class,
+            DataSources::EVENT_REGISTER_DATA_SOURCE_RELATIONS_TYPES,
+            [FormsHelper::class, 'registerDataSourceRelationsTypes']);
+
+        Event::on(
+            FormElement::class,
+            FormElement::INTERNAL_SPROUT_EVENT_REGISTER_FORM_FEATURE_TABS,
+            [WorkflowTabFormFeature::class, 'registerWorkflowTab']
+        );
+
+        Event::on(
+            FormTypesController::class,
+            FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
+            [WorkflowTabFormFeature::class, 'defineFormTypeSettings']
+        );
+
         $this->registerProjectConfigEventListeners();
     }
 
@@ -240,9 +273,12 @@ class FormsModule extends Module
         return new FormsSettings();
     }
 
-    public function getSettings(): FormsSettings|BaseConfig
+    public function getSettings(): FormsSettings
     {
-        return SettingsHelper::getSettingsConfig($this, FormsSettings::class);
+        /** @var FormsSettings $settings */
+        $settings = SettingsHelper::getSettingsConfig($this, FormsSettings::class);
+
+        return $settings;
     }
 
     public function getUserPermissions(): array
@@ -250,6 +286,11 @@ class FormsModule extends Module
         return [
             self::p('editForms') => [
                 'label' => Craft::t('sprout-module-forms', 'Edit Forms'),
+                'nested' => [
+                    self::p('editIntegrations') => [
+                        'label' => Craft::t('sprout-module-forms', 'Edit Integrations'),
+                    ],
+                ],
             ],
             self::p('viewSubmissions') => [
                 'label' => Craft::t('sprout-module-forms', 'View Submissions'),
@@ -314,6 +355,10 @@ class FormsModule extends Module
                 'label' => Craft::t('sprout-module-forms', 'Form Types'),
                 'url' => 'sprout/settings/forms/form-types',
             ],
+            'integrations' => [
+                'label' => Craft::t('sprout-module-forms', 'Integrations'),
+                'url' => 'sprout/settings/forms/integrations',
+            ],
             'spam-protection' => [
                 'label' => Craft::t('sprout-module-forms', 'Spam Protection'),
                 'url' => 'sprout/settings/forms/spam-protection',
@@ -334,17 +379,16 @@ class FormsModule extends Module
             'sprout/forms/forms' =>
                 'sprout-module-forms/forms/forms-index-template',
             'sprout/forms/forms/new' =>
+                'sprout-module-forms/forms/new-form',
+            'sprout/forms/forms/create' =>
                 'sprout-module-forms/forms/create-form',
             'sprout/forms/forms/edit/<elementId:\d+>' =>
                 'elements/edit',
 
-            'sprout/forms/forms/edit/<formId:\d+>/settings/<subNavKey:[^\/]+>' =>
-                'sprout-module-forms/forms/edit-settings-template',
-
             'sprout/forms/submissions' =>
                 'sprout-module-forms/submissions/submissions-index-template',
-            'sprout/forms/submissions/edit/<submissionId:\d+>' =>
-                'sprout-module-forms/submissions/edit-submission-template',
+            'sprout/forms/submissions/edit/<elementId:\d+>' =>
+                'elements/edit',
 
             // Welcome
             'sprout/welcome/forms' => [
@@ -361,6 +405,14 @@ class FormsModule extends Module
                 'sprout-module-forms/form-types/edit',
             'sprout/settings/forms/form-types' =>
                 'sprout-module-forms/form-types/form-types-index-template',
+
+            // Settings: Integration Types
+            'sprout/settings/forms/integrations/new' =>
+                'sprout-module-forms/form-integration-settings/edit',
+            'sprout/settings/forms/integrations/edit/<integrationTypeUid:.*>' =>
+                'sprout-module-forms/form-integration-settings/edit',
+            'sprout/settings/forms/integrations' =>
+                'sprout-module-forms/form-integration-settings/form-integrations-index-template',
 
             // Settings
             'sprout/settings/general' => [

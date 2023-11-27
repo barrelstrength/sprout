@@ -2,8 +2,9 @@
 
 namespace BarrelStrength\Sprout\meta\schema;
 
-use BarrelStrength\Sprout\fields\fields\phone\Phone;
+use BarrelStrength\Sprout\forms\components\formfields\PhoneFormFieldData;
 use BarrelStrength\Sprout\meta\components\meta\OpenGraphMetaType;
+use BarrelStrength\Sprout\meta\components\meta\RobotsMetaType;
 use BarrelStrength\Sprout\meta\components\schema\ContactPointSchema;
 use BarrelStrength\Sprout\meta\components\schema\GeoSchema;
 use BarrelStrength\Sprout\meta\components\schema\ImageObjectSchema;
@@ -16,13 +17,10 @@ use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
 use craft\base\Element;
 use craft\elements\Address;
-use craft\helpers\Template as TemplateHelper;
 use craft\helpers\UrlHelper;
 use DateTime;
+use yii\helpers\Json;
 
-/**
- * Class Schema
- */
 abstract class Schema
 {
     /**
@@ -44,22 +42,26 @@ abstract class Schema
     /**
      * The Global Metadata values available to use when building the Structured Data
      */
-    public Globals $globals;
+    public ?Globals $globals = null;
 
     /**
      * The Matched Element or Primary Element of the schema
+     * Each schema implementation can decide what this means.
+     * It is often an Element but can also be an array in the
+     * case of images because they are saved as an array for
+     * global metadata and
      */
-    public ?Element $element = null;
+    public Element|array|null $element = null;
 
     /**
      * The result after we optimize data from Globals and Element Metadata
      */
-    public Metadata $prioritizedMetadataModel;
+    public ?Metadata $prioritizedMetadataModel = null;
 
     /**
-     * Defines our Schema's `@type` property
+     * Defines the Schema's `type` property
      */
-    public string $type;
+    public ?string $type = null;
 
     public function __toString()
     {
@@ -141,15 +143,8 @@ abstract class Schema
         }
 
         if ($this->addContext) {
-            // Return the JSON-LD script tag and full context
-            $output = json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-
-            $output = '
-<script type="application/ld+json">
-' . $output . '
-</script>';
-
-            return TemplateHelper::raw($output);
+            // Return the JSON-LD object, the script tag will be added when output
+            return Json::encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         }
 
         // If context has already been established, just return the data
@@ -177,10 +172,8 @@ abstract class Schema
 
     /**
      * Allow our schema to define what a generic or fake object will look like
-     *
-     * @return mixed|null
      */
-    public function getMockData()
+    public function getMockData(): ?array
     {
         return null;
     }
@@ -205,11 +198,13 @@ abstract class Schema
      * Add a string to our Structured Data array.
      * If the property is not a string, don't add it.
      */
-    public function addText(string $propertyName, string $string): void
+    public function addText(string $propertyName, string $string = null): void
     {
-        if (is_string($string) && $string !== '') {
-            $this->structuredData[$propertyName] = $string;
+        if ($string === '') {
+            return;
         }
+
+        $this->structuredData[$propertyName] = $string;
     }
 
     /**
@@ -218,9 +213,7 @@ abstract class Schema
      */
     public function addBoolean(string $propertyName, bool $bool): void
     {
-        if (is_bool($bool)) {
-            $this->structuredData[$propertyName] = $bool;
-        }
+        $this->structuredData[$propertyName] = $bool;
     }
 
     /**
@@ -229,9 +222,7 @@ abstract class Schema
      */
     public function addNumber(string $propertyName, float|int $number): void
     {
-        if (is_int($number) || is_float($number)) {
-            $this->structuredData[$propertyName] = $number;
-        }
+        $this->structuredData[$propertyName] = $number;
     }
 
     /**
@@ -277,7 +268,7 @@ abstract class Schema
     public function addTelephone(string $propertyName, array $phone): void
     {
         if (isset($phone['phone'], $phone['country']) && !empty($phone['phone'])) {
-            $phoneModel = new Phone();
+            $phoneModel = new PhoneFormFieldData();
             $phoneModel->country = $phone['country'];
             $phoneModel->phone = $phone['phone'];
             $this->structuredData[$propertyName] = $phoneModel->getInternational();
@@ -308,6 +299,8 @@ abstract class Schema
     /**
      * Add an image to our Structured Data array as a ImageObjectSchema.
      * If the property is not a valid URL or Asset ID, don't add it.
+     *
+     * @todo - optimize so any given image is only processed once per page load
      */
     public function addImage($propertyName, $imageId = null): void
     {
@@ -320,7 +313,7 @@ abstract class Schema
             $image = [
                 'url' => $imageId,
             ];
-            $openGraphMeta = $meta->getMetaTypes('openGraph');
+            $openGraphMeta = $meta->getMetaType('openGraph');
             if ($openGraphMeta instanceof OpenGraphMetaType) {
                 $image['width'] = $openGraphMeta->getOgImageWidth();
                 $image['height'] = $openGraphMeta->getOgImageHeight();
@@ -338,17 +331,17 @@ abstract class Schema
                 'width' => $imageAsset->getWidth($transform),
                 'height' => $imageAsset->getHeight($transform),
             ];
-        } else {
+        }
+
+        if (!isset($image)) {
             return;
         }
 
-        if (is_countable($image) ? count($image) : 0) {
-            $imageObjectSchema = new ImageObjectSchema();
-            $imageObjectSchema->element = $image;
-            $imageObjectSchema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
+        $imageObjectSchema = new ImageObjectSchema();
+        $imageObjectSchema->element = $image;
+        $imageObjectSchema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
-            $this->structuredData[$propertyName] = $imageObjectSchema->getSchema();
-        }
+        $this->structuredData[$propertyName] = $imageObjectSchema->getSchema();
     }
 
     /**
@@ -370,23 +363,25 @@ abstract class Schema
      *
      * @param mixed[] $contacts
      */
-    public function addContactPoints(array $contacts): void
+    public function addContactPoints(array $contacts = null): void
     {
-        if ($contacts) {
-            $contactPoints = [];
-
-            $contactPointSchema = new ContactPointSchema();
-
-            foreach ($contacts as $contact) {
-                $schema = $contactPointSchema;
-
-                $schema->contact = $contact;
-
-                $contactPoints[] = $schema->getSchema();
-            }
-
-            $this->structuredData['contactPoint'] = $contactPoints;
+        if (!$contacts) {
+            return;
         }
+
+        $contactPoints = [];
+
+        $contactPointSchema = new ContactPointSchema();
+
+        foreach ($contacts as $contact) {
+            $schema = $contactPointSchema;
+
+            $schema->contact = $contact;
+
+            $contactPoints[] = $schema->getSchema();
+        }
+
+        $this->structuredData['contactPoint'] = $contactPoints;
     }
 
     /**
@@ -476,9 +471,16 @@ abstract class Schema
     {
         $meta = $this->prioritizedMetadataModel;
 
+        /** the prioritizedMetadataModel only has raw data, so we want the specific MetaType before we get our data */
+        $robots = $meta->getMetaType('robots');
+
+        if (!$robots instanceof RobotsMetaType) {
+            return;
+        }
+
         $mainEntity = new MainEntityOfPageSchema();
         $mainEntity->type = 'WebPage';
-        $mainEntity->id = $meta->getCanonical();
+        $mainEntity->id = $robots->getCanonical();
 
         $mainEntity->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
@@ -494,7 +496,7 @@ abstract class Schema
         $string = mb_convert_encoding($string, 'UTF-32', 'UTF-8');
         $t = unpack('N*', $string);
         $t = array_map(static function($n) {
-            return "&#{$n};";
+            return "&#$n;";
         }, $t);
 
         return implode('', $t);

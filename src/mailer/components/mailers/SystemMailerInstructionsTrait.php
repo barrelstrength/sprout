@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\mailer\components\mailers;
 use BarrelStrength\Sprout\mailer\audience\AudienceHelper;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\mailers\Mailer;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\AssetQuery;
@@ -31,7 +30,7 @@ trait SystemMailerInstructionsTrait
      * The sender replyTo email, if different than the sender email
      */
     public ?string $replyToEmail = null;
-    
+
     /**
      * A comma, delimited list of recipients (To email)
      */
@@ -41,18 +40,6 @@ trait SystemMailerInstructionsTrait
      * Array of Audience IDs
      */
     public ?array $audienceIds = null;
-
-    protected ?SystemMailer $mailer = null;
-
-    public function setMailer(?SystemMailer $mailer): void
-    {
-        $this->mailer = $mailer;
-    }
-
-    public function getMailer(): ?SystemMailer
-    {
-        return $this->mailer;
-    }
 
     public function getSenderAsString(): ?string
     {
@@ -92,7 +79,7 @@ trait SystemMailerInstructionsTrait
         return App::parseEnv($this->fromEmail);
     }
 
-    public function getReplyToEmail(): string|array
+    public function getReplyToEmail(): mixed
     {
         if (!$this->replyToEmail) {
             return App::parseEnv($this->fromEmail);
@@ -101,7 +88,13 @@ trait SystemMailerInstructionsTrait
         return App::parseEnv($this->replyToEmail);
     }
 
-    public function getRecipients(array $templateVariables = []): array
+    /**
+     * @param bool $parseVariables - Provide awareness to be able to
+     * skip validation for dynamic emails (e.g. {{ object.email }})
+     * which is useful when validating the element where no object is
+     * available
+     */
+    public function getRecipients(array $templateVariables = [], bool $parseVariables = true): array
     {
         $stringRecipients = $this->recipients
             ? MailingListRecipient::stringToMailingListRecipientList($this->recipients)
@@ -111,12 +104,13 @@ trait SystemMailerInstructionsTrait
             $this->audienceIds
         );
 
+        /** @var MailingListRecipient[] $potentialRecipients */
         $potentialRecipients = [...$stringRecipients, ...$audienceRecipients];
 
         $recipients = [];
 
         foreach ($potentialRecipients as $potentialRecipient) {
-            if ($potentialRecipient->isDynamicEmail()) {
+            if ($potentialRecipient->isDynamicEmail() && $parseVariables) {
                 // We only support object syntax for Email (not Name)
                 $parsedEmail = Craft::$app->getView()->renderObjectTemplate(
                     $potentialRecipient->emailTemplateString, $templateVariables
@@ -131,7 +125,7 @@ trait SystemMailerInstructionsTrait
         return $recipients;
     }
 
-    public function updateDynamicRecipient(MailingListRecipient $recipient, $email): MailingListRecipient
+    public function updateDynamicRecipient(MailingListRecipient $recipient, string $email): MailingListRecipient
     {
         try {
             $address = Address::create($email);
@@ -212,7 +206,6 @@ trait SystemMailerInstructionsTrait
     {
         $rules = parent::defineRules();
 
-
         // Set Scenarios to Mailer Instructions Scenarios: Craft, EditableDefaults, ApprovedSenderList
         $rules[] = ['fromName', 'required', 'on' => SystemMailer::SENDER_BEHAVIOR_CUSTOM];
 
@@ -225,13 +218,15 @@ trait SystemMailerInstructionsTrait
         $rules[] = ['replyToEmail', 'validateApprovedReplyTo', 'when' => fn() => $this->replyToEmail !== null];
 
         $rules[] = ['recipients', 'validateRecipients'];
-        $rules[] = ['recipients', 'required',
+        $rules[] = [
+            'recipients', 'required',
             'when' => fn() => $this->audienceIds === null,
             'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless an Audience is selected.'),
         ];
-        $rules[] = ['audienceIds', 'required',
+        $rules[] = [
+            'audienceIds', 'required',
             'when' => fn() => $this->recipients === null,
-            'message' => Craft::t('sprout-module-mailer', '{attribute} cannot be blank unless a recipient is selected in the "To Field".'),
+            'message' => Craft::t('sprout-module-mailer', 'An audience must be selected if no recipient is selected in the "To Field".'),
         ];
 
         return $rules;
@@ -239,6 +234,7 @@ trait SystemMailerInstructionsTrait
 
     public function validateApprovedSender(): void
     {
+        /** @var SystemMailer $mailer */
         $mailer = $this->getMailer();
 
         if (!$mailer) {
@@ -252,8 +248,10 @@ trait SystemMailerInstructionsTrait
             $this->addError('sender', 'Sender is not in list of approved senders.');
         }
     }
+
     public function validateApprovedReplyTo(): void
     {
+        /** @var SystemMailer $mailer */
         $mailer = $this->getMailer();
 
         if (!$mailer) {
@@ -275,9 +273,9 @@ trait SystemMailerInstructionsTrait
             return;
         }
 
-        foreach ($this->getRecipients() as $recipient) {
+        foreach ($this->getRecipients([], false) as $recipient) {
             if ($recipient->hasErrors()) {
-                $this->addError('recipient', $recipient->getFirstError('recipient'));
+                $this->addError('recipients', $recipient->getFirstError('email'));
             }
         }
     }

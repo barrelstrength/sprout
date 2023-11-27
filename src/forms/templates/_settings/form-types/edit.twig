@@ -96,7 +96,7 @@
 
         {{ forms.textField({
             label: "Form Type"|t('sprout-module-forms'),
-            tip: 'This setting is not editable.'|t('sprout-module-mailer'),
+            tip: 'This setting is not editable.'|t('sprout-module-forms'),
             value: formType.displayName(),
             disabled: true,
         }) }}
@@ -105,27 +105,46 @@
 
     <div id="features" class="hidden">
 
-        {{ forms.editableTableField({
-            label: "Features"|t('sprout-module-forms'),
-            instructions: "Select the features to display when authoring forms of this type."|t('sprout-module-forms'),
-            id: 'enabledFeatures',
-            name: 'enabledFeatures',
-            cols: {
-                enabled: {
-                    type: 'heading',
-                    thin: true
-                },
-                heading: {
-                    type: 'heading',
-                    heading: "Feature"|t('sprout-module-forms'),
-                    info: 'Customize the form features that are available and enabled.'|t('sprout-module-forms'),
-                },
-            }|filter,
-            rows: formType.getFeatureRows(),
-            fullWidth: true,
-            staticRows: true,
-            errors: settings.getErrors('modules'),
-        }) }}
+        <h3>{{ 'Features'|t('sprout-module-forms') }}</h3>
+
+        <div class="user-permissions">
+            <ul>
+                {% set featureCount = featureSettings|length %}
+                {% for name, settings in featureSettings %}
+                    {% namespace 'featureSettings['~name~']' %}
+                        {% set featureSettings = formType.featureSettings[name] ?? null %}
+                        {% set toggleId = 'sprout-feature-' ~ name %}
+                        {% set hasSettings = settings.settings is defined ? true : false %}
+
+                        <li>
+                            {{ forms.checkboxField({
+                                label: settings.label,
+                                value: true,
+                                checked: featureSettings['enabled'] ?? false,
+                                name: 'enabled',
+                                toggle: hasSettings ? toggleId|id : null,
+                            }) }}
+                        </li>
+                        {% if hasSettings %}
+                            <li>
+                                <ul id="{{ toggleId|id }}" class="hidden">
+                                    {% for uid, integrationTypeName in settings.settings %}
+                                        <li>
+                                            {{ forms.checkboxField({
+                                                label: integrationTypeName,
+                                                value: true,
+                                                checked: featureSettings['settings'][uid] ?? false,
+                                                name: 'settings['~uid~']',
+                                            }) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endnamespace %}
+                {% endfor %}
+            </ul>
+        </div>
 
         <hr>
 
@@ -134,24 +153,42 @@
             <div class="user-permissions">
                 <h3>{{ '{groupName}'|t('sprout-module-forms', { groupName: groupLabel }) }}</h3>
                 {{ tag('div', {
-                    text: 'Select All',
+                    text: 'Select All'|t('sprout-module-forms'),
                     class: 'select-all'
                 }) }}
-                <div class="checkbox-group">
+                <ul>
                     {% for formFieldType, label in formFieldTypes %}
-                        {{ forms.checkboxField({
-                            label: label,
-                            value: formFieldType,
-                            checked: formType.getFormFieldTypesByType[formFieldType] ?? false,
-                            name: 'enabledFormFieldTypes[]',
-                        }) }}
+                        <li>
+                            {{ forms.checkboxField({
+                                label: label,
+                                value: formFieldType,
+                                checked: formType.getFormFieldTypesByType[formFieldType] ?? false,
+                                name: 'enabledFormFieldTypes[]',
+                                class: 'feature-sub-checkbox',
+                            }) }}
+                        </li>
                     {% endfor %}
-                </div>
+                </ul>
             </div>
 
         {% endfor %}
 
     </div>
+
+    {# {% css %} #}
+    {#    .feature-sub-checkbox { #}
+    {#    before { #}
+    {#    border-top: 1px solid #eee; #}
+    {#    content: ""; #}
+    {#    display: block; #}
+    {#    font-size: 0; #}
+    {#    height: 0; #}
+    {#    margin-top: 8px; #}
+    {#    position: absolute; #}
+    {#    width: 10px; #}
+    {#    } #}
+    {#    } #}
+    {# {% endcss %} #}
 
     <div id="behavior" class="hidden">
 
@@ -270,46 +307,46 @@
 
 {% endblock %}
 
-{% css %}
-    .user-permissions h3 {
-    float: left;
-    padding-right: 0.5em;
-    margin: 14px 0.5em 0 !important;
-    margin-left: 0 !important;
-    border-right: 1px solid #eee;
-    }
+    {% css %}
+        .user-permissions h3 {
+        float: left;
+        padding-right: 0.5em;
+        margin: 14px 0.5em 0 !important;
+        margin-left: 0 !important;
+        border-right: 1px solid #eee;
+        }
 
-    .user-permissions ul {
-    clear: both;
-    }
+        .user-permissions ul {
+        clear: both;
+        }
 
-    .user-permissions .checkboxfield {
-    margin: 0;
-    }
+        .user-permissions .checkboxfield {
+        margin: 0;
+        }
 
-    .select-all {
-    color: var(--link-color);
-    cursor: pointer;
-    font-size: .9em;
-    margin: 13px 0;
-    display: inline-block;
-    }
-{% endcss %}
+        .select-all {
+        color: var(--link-color);
+        cursor: pointer;
+        font-size: .9em;
+        margin: 13px 0;
+        display: inline-block;
+        }
+    {% endcss %}
 
-{% js %}
-    let selectLinks = document.querySelectorAll('.select-all');
+    {% js %}
+        let selectLinks = document.querySelectorAll('.select-all');
 
-    selectLinks.forEach(function(link) {
-    link.addEventListener('click', function() {
-    // toggle all checkboxes in .checkbox-group div
-    let checkboxes = this.nextElementSibling.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function(checkbox) {
-    checkbox.checked = !checkbox.checked;
-    });
-    // toggle text of .select-all div
-    this.innerText = this.innerText === 'Select All' ? 'Deselect All' : 'Select All';
-    });
-    });
-{% endjs %}
+        selectLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+        // toggle all checkboxes in .checkbox-group div
+        let checkboxes = this.nextElementSibling.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+        checkbox.checked = !checkbox.checked;
+        });
+        // toggle text of .select-all div
+        this.innerText = this.innerText === 'Select All' ? 'Deselect All' : 'Select All';
+        });
+        });
+    {% endjs %}
 
-{# {% js "new Craft.HandleGenerator('#name', '#handle');" %} #}
+    {# {% js "new Craft.HandleGenerator('#name', '#handle');" %} #}

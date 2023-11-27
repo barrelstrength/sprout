@@ -1,0 +1,103 @@
+{% import "_includes/forms" as forms %}
+{% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
+
+<div id="form-field-general">
+    {% if field.allowRequired() %}
+        {{ forms.lightswitchField({
+            label: "Required"|t('sprout-module-forms'),
+            name: 'fieldLayoutElement[required]',
+            on: fieldLayoutElement.required,
+            first: true
+        }) }}
+    {% else %}
+        {{ hiddenInput('required', '') }}
+    {% endif %}
+
+    {{ forms.textField({
+        label: 'Name'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+            'The field label displayed to your users.'|t('sprout-module-forms')
+        ),
+        id: 'field-name',
+        name: 'name',
+        value: (field is defined ? field.name : null),
+        errors: (field is defined ? field.getErrors('name') : null),
+        required: true,
+        autofocus: true,
+        first: not field.allowRequired()
+    }) }}
+
+    {{ forms.textField({
+        label: 'Handle'|t('sprout-module-forms'),
+        name: 'handle',
+        value: field.handle,
+        errors: field.getErrors('handle'),
+        required: true,
+    }) }}
+
+    {% if field.displayInstructionsField %}
+        {{ forms.textareaField({
+            label: 'Instructions'|t('sprout-module-forms') ~ sproutCp.infoIcon(
+                'Instructions to guide your users when filling out this field.'|t('sprout-module-forms')
+            ),
+            id: 'instructions',
+            class: 'nicetext',
+            name: 'instructions',
+            value: (field is defined ? field.instructions : null),
+            errors: (field is defined ? field.getErrors('instructions') : null)
+        }) }}
+    {% endif %}
+
+    {#    {% set fieldTypes = sprout.modules.forms.formFields.getRegisteredFields() %} #}
+    {#    {% for type,fieldObject in fieldTypes %} #}
+    {#        {% set isCurrent = type == className(field) %} #}
+    {#        <div id="{{ type|id }}"{% if not isCurrent %} class="hidden"{% endif %}> #}
+    {#            {% namespace 'types['~type~']' %} #}
+    {#                {% set _field = isCurrent ? field : craft.app.fields.createField(type) %} #}
+    {#                {{ _field.getSettingsHtml()|raw }} #}
+    {#            {% endnamespace %} #}
+    {#        </div> #}
+    {#    {% endfor %} #}
+
+    {#    {{ requiredSettingsHtml|raw }} #}
+
+    {{ settingsHtml|raw }}
+</div>
+
+<div id="form-field-rules" class="hidden">
+
+    {{ conditionHtml|raw }}
+
+    {#    {{ forms.textField({ #}
+    {#        label: 'Handle'|t('sprout-module-forms'), #}
+    {#        name: 'handle', #}
+    {#        value: field.handle, #}
+    {#        errors: field.getErrors('handle'), #}
+    {#        required: true, #}
+    {#    }) }} #}
+
+    {#    {% if field.displayInstructionsField %} #}
+    {#        {{ forms.textareaField({ #}
+    {#            label: 'Instructions'|t('sprout-module-forms') ~ sproutCp.infoIcon( #}
+    {#                'Instructions to guide your users when filling out this field.'|t('sprout-module-forms') #}
+    {#            ), #}
+    {#            id: 'instructions', #}
+    {#            class: 'nicetext', #}
+    {#            name: 'instructions', #}
+    {#            value: (field is defined ? field.instructions : null), #}
+    {#            errors: (field is defined ? field.getErrors('instructions') : null) #}
+    {#        }) }} #}
+    {#    {% endif %} #}
+</div>
+
+{# {% js %} #}
+{#    {% if not field.name %} #}
+{#    new Craft.HandleGenerator('#name', '#handle'); #}
+{#    {% endif %} #}
+{# {% endjs %} #}
+
+{# <hr> #}
+
+{# {% namespace 'settings' %} #}
+{#    {{ field.getSettingsHtml()|raw }} #}
+{# {% endnamespace %} #}
+
