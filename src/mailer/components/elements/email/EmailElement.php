@@ -434,8 +434,7 @@ class EmailElement extends Element implements EmailPreviewInterface
         //    return $this->_fieldLayout;
         //}
 
-        $twigExpressionMessage1 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event variables.');
-        $twigExpressionMessage2 = Craft::t('sprout-module-mailer', 'This can use a Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
+        $twigExpressionMessage = Craft::t('sprout-module-mailer', 'This can use Twig Shortcut Syntax and reference Notification Event and Recipient variables.');
 
         $fieldLayout = new FieldLayout([
             'type' => static::class,
@@ -450,11 +449,11 @@ class EmailElement extends Element implements EmailPreviewInterface
         $emailTypeTabs = $emailType->getFieldLayout()?->getTabs() ?? [];
 
         // Loop through the fields of each email type tab and add a tip to the default message field
-        $emailTypeTabsWithMessages = array_map(static function(FieldLayoutTab $tab) use ($twigExpressionMessage2) {
+        $emailTypeTabsWithMessages = array_map(static function(FieldLayoutTab $tab) use ($twigExpressionMessage) {
             $newElements = [];
             foreach ($tab->elements as $element) {
                 if ($element instanceof TextareaField && $element->attribute === DefaultMessageField::FIELD_LAYOUT_ATTRIBUTE) {
-                    $element->tip = $twigExpressionMessage2;
+                    $element->tip = $twigExpressionMessage;
                 }
                 $newElements[] = $element;
             }
@@ -483,12 +482,12 @@ class EmailElement extends Element implements EmailPreviewInterface
                 'uid' => 'SPROUT-UID-EMAIL-HORIZONTAL-RULE-SUBJECT-TAB-1',
             ]),
             new SubjectLineField([
-                'tip' => $twigExpressionMessage2,
+                'tip' => $twigExpressionMessage,
                 'uid' => 'SPROUT-UID-EMAIL-SUBJECT-LINE-FIELD',
             ]),
             new PreheaderTextField([
                 'elementCondition' => $elementCondition,
-                'tip' => $twigExpressionMessage2,
+                'tip' => $twigExpressionMessage,
                 'uid' => 'SPROUT-UID-EMAIL-PREHEADER-FIELD',
             ]),
             new TextField([

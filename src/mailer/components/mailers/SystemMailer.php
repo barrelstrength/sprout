@@ -198,7 +198,13 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
                 try {
                     $message->setSubject($email->subjectLine);
                 } catch (Exception $e) {
-                    $message->setSubject('**Invalid Subject Line**');
+
+                    Craft::error(
+                        sprintf('Unable to parse subject line: %s', $e->getMessage()),
+                        __METHOD__
+                    );
+
+                    $message->setSubject('**Invalid Subject Line. See logs.**');
                 }
 
                 $event = new MailEvent([
@@ -389,7 +395,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             }
         }
 
-        foreach ($emailWithCount as $email => $count) {
+        foreach ($emailWithCount as $count) {
             if ($count > 1) {
                 $this->addError('approvedSenders', 'Sender email addresses must be unique.');
             }
@@ -408,7 +414,7 @@ abstract class SystemMailer extends Mailer implements MailerSendTestInterface
             }
         }
 
-        foreach ($emailWithCount as $email => $count) {
+        foreach ($emailWithCount as $count) {
             if ($count > 1) {
                 $this->addError('approvedReplyToEmails', 'Reply To email addresses must be unique.');
             }

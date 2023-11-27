@@ -173,10 +173,14 @@ class MailerController extends Controller
 
         $request = Craft::$app->getRequest();
         $emailId = $request->getRequiredBodyParam('emailId');
-        $settings = $request->getRequiredBodyParam('mailerInstructionsSettings');
+        $mailerInstructionsSettings = $request->getRequiredBodyParam('mailerInstructionsSettings');
 
         /** @var EmailElement $email */
         $email = Craft::$app->getElements()->getElementById($emailId, EmailElement::class);
+
+        if ($mailerInstructionsSettings) {
+            $email->mailerInstructionsSettings = $mailerInstructionsSettings;
+        }
 
         $mailerInstructionsSettings = $email->getMailerInstructions();
 
