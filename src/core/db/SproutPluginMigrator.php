@@ -11,6 +11,19 @@ use ReflectionClass;
 class SproutPluginMigrator extends MigrationManager
 {
     /**
+     * The default migrator runs any migrations found in the plugin.
+     * Craft's migration process needs to do this to run the plugin migrations.
+     * However, once Craft's process kicks off, the Sprout base migration
+     * disables this behavior so that the plugin also runs Sprout module migrations
+     * and we don't get stuck in an infinite loop.
+     *
+     * This is necessary because Craft migration commands only trigger plugin track
+     * migrations, and Sprout plugins need to trigger Sprout module migrations while
+     * also supporting commands like migrate/all for deployment workflows.
+     */
+    public bool $runParentMigrations = true;
+
+    /**
      * Adds the schemaDependencies property to the MigrationManager class
      *
      * @var SproutModuleTrait[]|MigrationTrait[]
@@ -45,8 +58,9 @@ class SproutPluginMigrator extends MigrationManager
      */
     public function up(int $limit = 0): void
     {
-        // Run an migrations found in the plugin, as usual
-        parent::up();
+        if ($this->runParentMigrations === true) {
+            parent::up();
+        }
 
         // Loop through Sprout modules
         foreach ($this->schemaDependencies as $moduleClass) {
