@@ -2,8 +2,8 @@
 
 namespace BarrelStrength\Sprout\mailer\migrations;
 
-use craft\db\Migration;
 use Craft;
+use craft\db\Migration;
 use craft\helpers\ProjectConfig;
 
 class m230910_000000_remove_mailer_field_layout_settings extends Migration
