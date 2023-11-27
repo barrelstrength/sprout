@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\core\helpers;
 
 use BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule;
-use craft\elements\Entry;
 use craft\events\RegisterConditionRuleTypesEvent;
 
 class ConditionHelper

@@ -7,7 +7,6 @@ use BarrelStrength\Sprout\mailer\components\elements\email\conditions\PreheaderT
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\PreheaderTextField;
 use BarrelStrength\Sprout\mailer\components\elements\email\fieldlayoutelements\SubjectLineField;
 use BarrelStrength\Sprout\mailer\components\emailtypes\fieldlayoutfields\DefaultMessageField;
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailvariants\EmailVariant;
@@ -37,7 +36,6 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use http\Exception\InvalidArgumentException;
-use yii\base\Model;
 use yii\web\Response;
 
 /**
@@ -288,7 +286,7 @@ class EmailElement extends Element implements EmailPreviewInterface
 
         $mailerInstructionsSettings->setAttributes($preparedMailerInstructionsSettings, false);
         $mailerInstructionsSettings->setMailer($mailer);
-        
+
         $this->_mailerInstructionsSettingsModel = $mailerInstructionsSettings;
 
         return $this->_mailerInstructionsSettingsModel;

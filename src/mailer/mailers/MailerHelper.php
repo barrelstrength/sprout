@@ -2,8 +2,6 @@
 
 namespace BarrelStrength\Sprout\mailer\mailers;
 
-use BarrelStrength\Sprout\mailer\emailtypes\EmailType;
-use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\events\DefineFieldLayoutElementsEvent;

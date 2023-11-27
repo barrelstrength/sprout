@@ -3,7 +3,6 @@
 namespace BarrelStrength\Sprout\mailer\components\mailers\fieldlayoutelements;
 
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
-use BarrelStrength\Sprout\mailer\components\mailers\SystemMailer;
 use Craft;
 use craft\base\ElementInterface;
 use craft\errors\MissingComponentException;
