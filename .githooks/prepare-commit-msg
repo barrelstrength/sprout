@@ -54,7 +54,7 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
         then
             ## echo grep result
             echo "You have changed a file that contains the string 'sprout-module-($NON_CORE_TRANSLATION_CATEGORY_MATCH)'"
-#            exit 1;
+            exit 1;
         fi
     fi
 
@@ -93,7 +93,7 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
             then
                 ## echo grep result
                 echo "Incorrect translation category in src/$CATEGORY_FOLDER"
-#                exit 1;
+                exit 1;
             fi
         fi
     done
