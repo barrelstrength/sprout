@@ -5,7 +5,7 @@
         "alpinejs": "^3.12.2",
         "apexcharts": "^3.44.0",
         "craftcms-sass": "^3.5.7",
-        "datatables.net": "^1.13.2",
+        "datatables.net": "^1.13.8",
         "dom-autoscroller": "^2.3.4",
         "jquery": "^3.7.0",
         "jquery-tageditor": "^1.0.1"
