@@ -117,6 +117,7 @@
 {% endset %}
 
 {% if robotsContext is defined and robotsContext == 'globals' %}
+
     {{ forms.field({
         label: "Robots"|t('sprout-module-forms') ~ sproutMetaCp.infoIcon({
             label: "Robots"|t('sprout-module-forms'),
@@ -127,9 +128,12 @@
         errors: '',
         first: true,
     }, robotsCheckboxes) }}
+
 {% else %}
+
     {{ forms.field({
         errors: '',
         first: true,
     }, robotsCheckboxes) }}
+
 {% endif %}

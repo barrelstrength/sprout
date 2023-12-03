@@ -16,11 +16,11 @@ class Globals extends Model
 
     public ?array $identity = null;
 
-    public ?array $ownership = null;
+    public array $ownership = [];
 
-    public ?array $contacts = null;
+    public array $contacts = [];
 
-    public ?array $social = null;
+    public array $social = [];
 
     public ?array $robots = null;
 
@@ -33,6 +33,35 @@ class Globals extends Model
     public ?string $uid = null;
 
     public ?Address $addressModel = null;
+
+    public function __construct($config = [])
+    {
+        if (isset($config['contacts'])) {
+            foreach ($config['contacts'] as $key => $contact) {
+                if (empty($contact['contactType']) && empty($contact['telephone'])) {
+                    unset($config['contacts'][$key]);
+                }
+            }
+        }
+
+        if (isset($config['social'])) {
+            foreach ($config['social'] as $key => $row) {
+                if (empty($row['url']) && empty($row['profileName'])) {
+                    unset($config['social'][$key]);
+                }
+            }
+        }
+
+        if (isset($config['ownership'])) {
+            foreach ($config['ownership'] as $key => $row) {
+                if (empty($row['metaTagName']) && empty($row['metaTagContent'])) {
+                    unset($config['ownership'][$key]);
+                }
+            }
+        }
+
+        parent::__construct($config);
+    }
 
     public function init(): void
     {
@@ -115,14 +144,12 @@ class Globals extends Model
         $contacts = $this->contacts;
         $contactPoints = null;
 
-        if (is_array($contacts)) {
-            foreach ($contacts as $contact) {
-                $contactPoints[] = [
-                    '@type' => 'ContactPoint',
-                    'contactType' => $contact['contactType'] ?? $contact[0],
-                    'telephone' => $contact['telephone'] ?? $contact[1],
-                ];
-            }
+        foreach ($contacts as $contact) {
+            $contactPoints[] = [
+                '@type' => 'ContactPoint',
+                'contactType' => $contact['contactType'] ?? $contact[0],
+                'telephone' => $contact['telephone'] ?? $contact[1],
+            ];
         }
 
         return $contactPoints;
@@ -137,13 +164,11 @@ class Globals extends Model
 
         $profileLinks = null;
 
-        if (is_array($profiles)) {
-            foreach ($profiles as $profile) {
-                $profileLinks[] = [
-                    'profileName' => $profile['profileName'] ?? $profile[0],
-                    'url' => $profile['url'] ?? $profile[1],
-                ];
-            }
+        foreach ($profiles as $profile) {
+            $profileLinks[] = [
+                'profileName' => $profile['profileName'] ?? $profile[0],
+                'url' => $profile['url'] ?? $profile[1],
+            ];
         }
 
         return $profileLinks;
