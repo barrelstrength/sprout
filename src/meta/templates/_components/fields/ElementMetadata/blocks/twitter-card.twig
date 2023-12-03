@@ -39,10 +39,9 @@
         {% set twitterImageId = meta.getTwitterImage() %}
         {% set twitterImageElement = twitterImageId ? craft.app.elements.getElementById(twitterImageId) : null %}
 
-        {{ forms.field({
-            label: 'Image'|t('sprout-module-forms'),
-            instructions: 'An image that represents your content that will display in Twitter Card metadata.'|t('sprout-module-forms'),
-        }, forms.elementSelect({
+        {% set hasVolumes = craft.app.getVolumes().getAllVolumes() %}
+
+        {% set imageElementSelect = forms.elementSelect({
             elements: [twitterImageElement],
             sourceElementId: [twitterImageId],
             elementType: 'craft\\elements\\Asset',
@@ -53,7 +52,13 @@
             addButtonLabel: 'Select Image'|t('sprout-module-forms'),
             limit: 1,
             criteria: {kind: ['image'], siteId : null}
-        })) }}
+        }) %}
+
+        {{ forms.field({
+            label: 'Image'|t('sprout-module-forms'),
+            instructions: 'An image that represents your content that will display in Twitter Card metadata.'|t('sprout-module-forms'),
+            tip: not hasVolumes ? 'Add a volume to manage the Meta Image'|t('sprout-module-meta') : null,
+        }, hasVolumes ? imageElementSelect : '') }}
 
         {{ forms.textField({
             label: "Creator"|t('sprout-module-forms'),

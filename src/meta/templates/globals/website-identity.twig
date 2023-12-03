@@ -61,23 +61,21 @@
             first: true,
             maxlength: 60,
             showCharsLeft: true,
-            required: true,
             placeholder: siteName,
             class: 'nicetext',
             translatable: isMultiSite,
         }) }}
 
-        {% set hasAlternateName = websiteIdentity['alternateName'] is defined and websiteIdentity.alternateName %}
+        {% set hasAlternateName = websiteIdentity['alternateName'] is defined and websiteIdentity.alternateName|length %}
 
         {{ forms.checkboxField({
             label: "Show Alternate Name field"|t('sprout-module-mailer'),
             name: 'hasNameField',
             toggle: 'alternate-name-container',
-            reverseToggle: '#alternate-name-container',
-            checked: not hasAlternateName,
+            checked: hasAlternateName,
         }) }}
 
-        <div id="alternate-name-container" class="{{ (hasAlternateName ?: 'hidden' ) }}">
+        <div id="alternate-name-container" class="{{ (not hasAlternateName ?: 'hidden' ) }}">
 
             {{ sproutMetaCp.hiddenInfoIcon({
                 label: "Alternate Name"|t('sprout-module-meta'),
@@ -116,12 +114,13 @@
             name: 'meta[globals][identity][description]',
             value: websiteIdentity['description'] is defined ? websiteIdentity.description : null,
             errors: '',
-            required: true,
             maxlength: maxDescriptionLength,
             showCharsLeft: true,
             placeholder: "The official website of " ~ siteName,
             translatable: isMultiSite,
         }) }}
+
+        {% set hasVolumes = craft.app.getVolumes().getAllVolumes() %}
 
         {{ sproutMetaCp.hiddenInfoIcon({
             label: "Image"|t('sprout-module-meta'),
@@ -132,13 +131,7 @@
             priority: 'globals'
         }, 'meta-image') }}
 
-        {{ forms.field({
-            label: 'Image'|t('sprout-module-meta'),
-            instructions: "The preferred image or profile picture for your website."|t('sprout-module-meta'),
-            id: 'meta-image',
-            required: true,
-            translatable: isMultiSite,
-        }, forms.elementSelect({
+        {% set imageElementSelect = forms.elementSelect({
             elements: [imageElement],
             sourceElementId: websiteIdentity['image'] is defined and imageElement ? websiteIdentity.image : null,
             elementType: elementType,
@@ -149,7 +142,16 @@
             sources: '*',
             limit: 1,
             criteria: {kind: ['image'], siteId : null},
-        })) }}
+        }) %}
+
+        {{ forms.field({
+            label: 'Image'|t('sprout-module-meta'),
+            instructions: "The preferred image or profile picture for your website."|t('sprout-module-meta'),
+            id: 'meta-image',
+            class: 'error',
+            translatable: isMultiSite,
+            tip: not hasVolumes ? 'Add a volume to manage the Meta Image'|t('sprout-module-meta') : null,
+        }, hasVolumes ? imageElementSelect : '') }}
 
         {% set keywordsValue = websiteIdentity['keywords'] is defined ? websiteIdentity.keywords : null %}
 
