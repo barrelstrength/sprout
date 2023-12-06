@@ -13,6 +13,7 @@ use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
+use BarrelStrength\Sprout\fields\FieldsModule;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
 use BarrelStrength\Sprout\meta\globals\AddressHelper;
 use BarrelStrength\Sprout\meta\globals\GlobalMetadata;
@@ -53,6 +54,7 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
 
     public static function getInstance(): MetaModule
     {
+        FieldsModule::getInstance();
         UrisModule::getInstance();
 
         /** @var MetaModule $module */

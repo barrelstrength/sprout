@@ -14,6 +14,7 @@ use BarrelStrength\Sprout\core\relations\RelationsHelper;
 use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\datastudio\datasources\DataSources;
+use BarrelStrength\Sprout\fields\FieldsModule;
 use BarrelStrength\Sprout\forms\captchas\Captchas;
 use BarrelStrength\Sprout\forms\components\datasources\IntegrationLogDataSource;
 use BarrelStrength\Sprout\forms\components\datasources\SpamLogDataSource;
@@ -79,6 +80,8 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
 
     public static function getInstance(): FormsModule
     {
+        FieldsModule::getInstance();
+
         /** @var FormsModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-forms');
 

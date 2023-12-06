@@ -40,7 +40,7 @@ trait OptimizedTrait
             $optimizedTitleFieldSetting === 'elementTitle' => $element->title,
             $optimizedTitleFieldSetting === '' => $this->optimizedTitle,
             is_numeric($optimizedTitleFieldSetting) => OptimizeMetadataHelper::getSelectedFieldForOptimizedMetadata($optimizedTitleFieldSetting),
-            default => Craft::$app->getView()->renderObjectTemplate($optimizedTitleFieldSetting, $element),
+            default => Craft::$app->getView()->renderObjectTemplate($elementMetadataField->optimizedTitleFieldFormat, $element),
         };
 
         return $title ?: null;
@@ -67,7 +67,7 @@ trait OptimizedTrait
         $description = match (true) {
             $optimizedDescriptionFieldSetting === '' => $this->optimizedDescription ?? null,
             is_numeric($optimizedDescriptionFieldSetting) => OptimizeMetadataHelper::getSelectedFieldForOptimizedMetadata($optimizedDescriptionFieldSetting),
-            default => Craft::$app->view->renderObjectTemplate($optimizedDescriptionFieldSetting, $element),
+            default => Craft::$app->view->renderObjectTemplate($elementMetadataField->optimizedDescriptionFieldFormat, $element),
         };
 
         // Just save the first 255 characters (we only output 160...)

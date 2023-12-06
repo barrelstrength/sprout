@@ -1,6 +1,6 @@
 {% extends "sprout-module-meta/_layouts/global-metadata" %}
 {% import "_includes/forms" as forms %}
-{% import "sprout-module-core/_macros/forms" as sproutFields %}
+{% import "sprout-module-fields/_macros/forms" as sproutFields %}
 {% import "sprout-module-meta/_macros/meta" as sproutMetaCp %}
 
 {% set imageElement = null %}
@@ -204,7 +204,7 @@
         {{ sproutFields.phoneField({
             label: "Telephone"|t('sprout-module-meta'),
             instructions: 'The preferred telephone number for your website.'|t('sprout-module-meta'),
-            namespaceInputId: 'sprout-websiteidentity-phone',
+            namespaceInputId: 'meta-phone',
             id: 'meta-phone',
             fieldContext: 'sproutmeta',
             name: 'meta[globals][identity][telephone]',
