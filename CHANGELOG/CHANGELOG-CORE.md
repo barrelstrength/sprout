@@ -2,6 +2,10 @@
 
 ## 4.2.0 - UNRELEASED
 
+### Added
+
+- Added support for plugin migrations to trigger module migrations via `migrate/all`
+
 ### Fixed
 
 - Updated sidebar nav logic to default to URL of first nav item if only a single subnav item is found
