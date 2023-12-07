@@ -3,7 +3,10 @@
 namespace BarrelStrength\Sprout\core\db;
 
 use Craft;
+use craft\console\controllers\MigrateController;
 use craft\db\MigrationManager;
+use craft\events\RegisterMigratorEvent;
+use yii\base\Event;
 
 /**
  * Add MigrationTrait to any Sprout module that needs to support migrations
