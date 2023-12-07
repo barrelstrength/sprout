@@ -19,17 +19,6 @@ use yii\base\Event;
  */
 trait MigrationTrait
 {
-    public function registerMigrationTrack(): void
-    {
-        Event::on(
-            MigrateController::class,
-            MigrateController::EVENT_REGISTER_MIGRATOR,
-            function(RegisterMigratorEvent $event): void {
-                $event->migrator = $this->getMigrator();
-            }
-        );
-    }
-
     public function getMigrator(): MigrationManager
     {
         $migrationNamespace = 'BarrelStrength\\Sprout\\' . static::getShortNameSlug() . '\\migrations';

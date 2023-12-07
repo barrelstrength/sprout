@@ -192,17 +192,6 @@ class Sprout extends Module implements SproutModuleInterface, MigrationInterface
             BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
             [ConditionHelper::class, 'registerConditionRuleTypes']
         );
-
-        Craft::$app->onInit(function() {
-            $modules = self::getInstance()->coreModules->getAvailableModules();
-
-            foreach ($modules as $module) {
-                if ($module::hasMigrations()) {
-                    $instance = new $module($module);
-                    $instance->registerMigrationTrack();
-                }
-            }
-        });
     }
 
     public function createSettingsModel(): SproutSettings
