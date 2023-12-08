@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\meta\controllers;
 
+use BarrelStrength\Sprout\fields\FieldsModule;
 use BarrelStrength\Sprout\meta\globals\Globals;
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
@@ -62,6 +63,7 @@ class GlobalMetadataController extends Controller
             'currentSite' => $site,
             'selectedTabHandle' => $selectedTabHandle,
             'locationField' => $locationField,
+            'countryOptions' => FieldsModule::getInstance()->phoneHelper::getCountries(),
         ]);
     }
 

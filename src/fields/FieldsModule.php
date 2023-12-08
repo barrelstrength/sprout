@@ -6,14 +6,16 @@ use BarrelStrength\Sprout\core\modules\SproutModuleInterface;
 use BarrelStrength\Sprout\core\modules\SproutModuleTrait;
 use BarrelStrength\Sprout\core\modules\TranslatableTrait;
 use BarrelStrength\Sprout\core\Sprout;
-use BarrelStrength\Sprout\core\twig\SproutVariable;
-use BarrelStrength\Sprout\uris\links\Links;
+use BarrelStrength\Sprout\fields\helpers\PhoneHelper;
 use Craft;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\Module;
 
+/**
+ * @property PhoneHelper $phoneHelper
+ */
 class FieldsModule extends Module implements SproutModuleInterface
 {
     use SproutModuleTrait;
@@ -43,11 +45,11 @@ class FieldsModule extends Module implements SproutModuleInterface
     {
         parent::init();
 
-        $this->registerTranslations();
+        $this->setComponents([
+            'phoneHelper' => PhoneHelper::class,
+        ]);
 
-        //$this->setComponents([
-        //    'links' => Links::class,
-        //]);
+        $this->registerTranslations();
 
         Event::on(
             View::class,
@@ -55,12 +57,5 @@ class FieldsModule extends Module implements SproutModuleInterface
             function(RegisterTemplateRootsEvent $e): void {
                 $e->roots['sprout-module-fields'] = $this->getBasePath() . DIRECTORY_SEPARATOR . 'templates';
             });
-
-        //Event::on(
-        //    SproutVariable::class,
-        //    SproutVariable::EVENT_INIT,
-        //    function(Event $event): void {
-        //        $event->sender->registerModule($this);
-        //    });
     }
 }

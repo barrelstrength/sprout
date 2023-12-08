@@ -2,7 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\components\formfields;
 
-use BarrelStrength\Sprout\core\helpers\PhoneHelper;
+use BarrelStrength\Sprout\fields\FieldsModule;
+use BarrelStrength\Sprout\fields\helpers\PhoneHelper;
 use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\fields\address\Addresses;
 use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
@@ -107,8 +108,9 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/fields/Phone/settings', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-fields/_components/fields/Phone/settings', [
             'field' => $this,
+            'countryOptions' => FieldsModule::getInstance()->phoneHelper::getCountries(),
         ]);
     }
 
@@ -116,7 +118,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
     {
         $countries = PhoneHelper::getCountries();
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/fields/Phone/example',
+        return Craft::$app->getView()->renderTemplate('sprout-module-fields/_components/fields/Phone/example',
             [
                 'field' => $this,
                 'countries' => $countries,
@@ -136,7 +138,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         $country = $value['country'] ?? $this->country;
         $val = $value['phone'] ?? null;
 
-        return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/fields/Phone/input', [
+        return Craft::$app->getView()->renderTemplate('sprout-module-fields/_components/fields/Phone/input', [
             'namespaceInputId' => $namespaceInputId,
             'namespaceCountryId' => $namespaceCountryId,
             'id' => $inputId,
@@ -146,6 +148,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
             'value' => $val,
             'countries' => $countries,
             'country' => $country,
+            'countryOptions' => FieldsModule::getInstance()->phoneHelper::getCountries(),
         ]);
     }
 
@@ -226,22 +229,9 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         }
 
         $phone = $value['phone'] ?? null;
-        $country = $value['country'] ?? Addresses::DEFAULT_COUNTRY;
+        $country = $value['country'] ?? null;
 
-        $phoneUtil = PhoneNumberUtil::getInstance();
-
-        try {
-            $phoneNumber = $phoneUtil->parse($phone, $country);
-
-            if (!$phoneNumber) {
-                throw new NumberParseException(400, 'Unable to parse phone number.');
-            }
-
-            $isValid = $phoneUtil->isValidNumber($phoneNumber);
-        } catch (NumberParseException $numberParseException) {
-            Craft::error($numberParseException->getMessage(), __METHOD__);
-            $isValid = false;
-        }
+        $isValid = PhoneHelper::validatePhone($phone, $country);
 
         if (!$isValid) {
             $message = $this->getErrorMessage($value->country);

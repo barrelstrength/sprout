@@ -1,7 +1,5 @@
 {% import "_includes/forms" as forms %}
 
-{% set options = sprout.modules.core.phoneHelper.getCountries() %}
-
 {% if field.limitToSingleCountry %}
     <input type="hidden" name="{{ name }}[country]" value="{{ country }}">
 {% endif %}
@@ -11,7 +9,7 @@
         {{ forms.select({
             id: countryId,
             name: name~'[country]',
-            options: options,
+            options: countryOptions,
             value: country,
             disabled: field.limitToSingleCountry == 1 ? true : false
         }) }}

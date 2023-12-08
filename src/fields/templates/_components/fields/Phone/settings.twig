@@ -1,12 +1,10 @@
 {% import "_includes/forms" as forms %}
 
-{% set options = sprout.modules.core.phoneHelper.getCountries() %}
-
 {{ forms.selectField({
     name: 'country',
     instructions: "This country will display as selected when the field loads for the first time."|t('sprout-module-forms'),
     label: 'Default Country'|t('sprout-module-forms'),
-    options: options,
+    options: countryOptions,
     value: field.country
 }) }}
 

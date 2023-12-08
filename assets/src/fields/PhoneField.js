@@ -52,17 +52,17 @@ class SproutPhoneField {
     validatePhoneNumber(currentPhoneField, data) {
         let self = this;
 
-        // Craft.sendActionRequest('POST', 'sprout-module-forms/fields/validate-phone', {
-        //     data: data,
-        // }).then((response) => {
-        //     console.log(response.data);
-        //     if (response.data.success) {
-        //         document.querySelector(self.sproutPhoneFieldButtonClass).classList.add('fade');
-        //         document.querySelector(self.sproutPhoneFieldButtonClass + ' a').setAttribute('href', 'tel:' + data.phone);
-        //     } else {
-        //         document.querySelector(self.sproutPhoneFieldButtonClass).classList.remove('fade');
-        //     }
-        // });
+        Craft.sendActionRequest('POST', 'sprout-module-fields/fields/validate-phone', {
+            data: data,
+        }).then((response) => {
+            console.log(response.data);
+            if (response.data.success) {
+                document.querySelector(self.sproutPhoneFieldButtonClass).classList.add('fade');
+                document.querySelector(self.sproutPhoneFieldButtonClass + ' a').setAttribute('href', 'tel:' + data.phone);
+            } else {
+                document.querySelector(self.sproutPhoneFieldButtonClass).classList.remove('fade');
+            }
+        });
     }
 }
 

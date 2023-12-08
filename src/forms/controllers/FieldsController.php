@@ -37,18 +37,6 @@ class FieldsController extends BaseController
         return $this->asJson(['success' => $isValid]);
     }
 
-    public function actionValidatePhone(): Response
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $value = Craft::$app->getRequest()->getParam('value');
-
-        $isValid = FormsModule::getInstance()->phoneField->validate($value);
-
-        return $this->asJson(['success' => $isValid]);
-    }
-
     public function actionValidateRegularExpression(): Response
     {
         $this->requirePostRequest();
