@@ -1,5 +1,5 @@
 <?php
-/** @noinspection DuplicatedCode */
+/** @noinspection DuplicatedCode DuplicatedCode */
 
 namespace BarrelStrength\Sprout\sentemail\migrations;
 
