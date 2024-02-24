@@ -1,6 +1,6 @@
 <?php
 
-/** @noinspection DuplicatedCode */
+/** @noinspection DuplicatedCode DuplicatedCode */
 
 namespace BarrelStrength\Sprout\redirects\migrations;
 
