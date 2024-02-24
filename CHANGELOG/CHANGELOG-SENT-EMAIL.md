@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.7 - 2024-02-23
+
+- Fixed permission logic in migrations ([#297])
+
+[#297]: https://github.com/barrelstrength/sprout/issues/297
+
 ## 4.1.6 - 2023-11-27
 
 ### Added
