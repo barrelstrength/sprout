@@ -55,5 +55,12 @@ return [
     'Info' => 'Info',
     'Failed' => 'Failed',
     'ID' => 'ID',
-    'Craft unable to send email. Check logs for more info.' => 'Craft unable to send email. Check logs for more info.'
+    'Craft unable to send email. Check logs for more info.' => 'Craft unable to send email. Check logs for more info.',
+    'Encryption Method' => 'Encryption Method',
+    'Username' => 'Username',
+    'Timeout' => 'Timeout',
+    'Port' => 'Port',
+    'Comma-separated list of recipients.' => 'Comma-separated list of recipients.',
+    'Host Name' => 'Host Name',
+    'Email Details' => 'Email Details'
 ];
