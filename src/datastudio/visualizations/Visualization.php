@@ -283,7 +283,7 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
     /**
      * Aggregate method dynamically called based on Visualization settings
      *
-     * @noinspection PhpUnusedPrivateMethodInspection
+     * @noinspection PhpUnusedPrivateMethodInspection PhpUnusedPrivateMethodInspection
      */
     private function sum($values): float|int
     {
@@ -293,7 +293,7 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
     /**
      * Aggregate method dynamically called based on Visualization settings
      *
-     * @noinspection PhpUnusedPrivateMethodInspection
+     * @noinspection PhpUnusedPrivateMethodInspection PhpUnusedPrivateMethodInspection
      */
     private function count($values): int
     {
@@ -303,7 +303,7 @@ abstract class Visualization extends SavableComponent implements VisualizationIn
     /**
      * Aggregate method dynamically called based on Visualization settings
      *
-     * @noinspection PhpUnusedPrivateMethodInspection
+     * @noinspection PhpUnusedPrivateMethodInspection PhpUnusedPrivateMethodInspection
      */
     private function average($values): float|int
     {

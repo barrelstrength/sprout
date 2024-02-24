@@ -128,4 +128,15 @@ return [
     'Email column' => 'Email column',
     'Common Email Column Names' => 'Common Email Column Names',
     'The name of the email column in your data set.' => 'The name of the email column in your data set.',
+    'UID' => 'UID',
+    'Data Set List' => 'Data Set List',
+    'View reports: "{dataSet}"' => 'View reports: "{dataSet}"',
+    'Reports' => 'Reports',
+    'Enable Reports' => 'Enable Reports',
+    'Date Updated' => 'Date Updated',
+    'ID' => 'ID',
+    'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.' => 'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.',
+    'Date Created' => 'Date Created',
+    'Sprout Module | Data Studio' => 'Sprout Module | Data Studio',
+    'New Data Set...' => 'New Data Set...'
 ];
