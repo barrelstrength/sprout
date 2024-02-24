@@ -15,6 +15,7 @@ use BarrelStrength\Sprout\redirects\components\elements\RedirectElement;
 use BarrelStrength\Sprout\redirects\redirects\Redirects;
 use Craft;
 use craft\config\BaseConfig;
+use craft\console\Application as ConsoleApplication;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\ExceptionEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -80,6 +81,10 @@ class RedirectsModule extends Module
         $this->setComponents([
             'redirects' => Redirects::class,
         ]);
+
+        if (Craft::$app instanceof ConsoleApplication) {
+            $this->controllerNamespace = 'BarrelStrength\\Sprout\\redirects\\controllers\\console';
+        }
 
         Event::on(
             UrlManager::class,

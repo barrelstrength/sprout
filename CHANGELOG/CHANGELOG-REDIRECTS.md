@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.7 - 2024-02-23
+
+- Adds Support console utility
+
 ## 4.1.0 - 2023-09-05
 
 ### Changed
