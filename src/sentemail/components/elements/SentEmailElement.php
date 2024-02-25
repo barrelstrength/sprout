@@ -285,6 +285,11 @@ class SentEmailElement extends Element implements EmailPreviewInterface
         return $user->can(SentEmailModule::p('viewSentEmail'));
     }
 
+    public function canDelete(User $user): bool
+    {
+        return $user->can($user->admin);
+    }
+
     public function canResend(User $user): bool
     {
         return $user->can(SentEmailModule::isPro() && SentEmailModule::p('resendSentEmail'));
