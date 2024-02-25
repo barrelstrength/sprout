@@ -16,8 +16,6 @@ class DefaultMessageField extends TextareaField
 
     public ?int $rows = 11;
 
-    public ?int $maxlength = 255;
-
     protected function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::t('sprout-module-mailer', 'Message');
