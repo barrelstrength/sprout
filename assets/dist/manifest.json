@@ -48,7 +48,7 @@
     "css": [
       "assets/DataStudio-a18bcbd3.css"
     ],
-    "file": "assets/dataStudio-ab176247.js",
+    "file": "assets/dataStudio-b5e8ed05.js",
     "isEntry": true,
     "src": "data-studio/DataStudio.js"
   },
@@ -106,7 +106,7 @@
     "src": "fields/UrlField.js"
   },
   "forms-frontend/Accessibility.js": {
-    "file": "assets/accessibility-2384dda5.js",
+    "file": "assets/accessibility-942ec4f2.js",
     "isEntry": true,
     "src": "forms-frontend/Accessibility.js"
   },
@@ -139,6 +139,18 @@
     "file": "assets/emailTypes-25710d85.js",
     "isEntry": true,
     "src": "mailer/EmailTypesSettings.js"
+  },
+  "mailer/SendEmailModal.css": {
+    "file": "assets/SendEmailModal-94724ebd.css",
+    "src": "mailer/SendEmailModal.css"
+  },
+  "mailer/SendEmailModal.js": {
+    "css": [
+      "assets/SendEmailModal-94724ebd.css"
+    ],
+    "file": "assets/sendEmailModal-b4fede1a.js",
+    "isEntry": true,
+    "src": "mailer/SendEmailModal.js"
   },
   "meta/Meta.css": {
     "file": "assets/Meta-0704b2ba.css",
