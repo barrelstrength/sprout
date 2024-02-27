@@ -3,8 +3,10 @@
 ## 4.1.7 - 2024-02-23
 
 - Fixed return type of `DataSetElement::___toString()` method when name is null ([#308])
+- Fixed Data Set export in multi-site configuration ([#310])
 
 [#308]: https://github.com/barrelstrength/sprout/issues/308
+[#310]: https://github.com/barrelstrength/sprout/issues/310
 
 ## 4.1.5 - 2023-11-05
 
