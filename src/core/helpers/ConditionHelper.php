@@ -3,14 +3,14 @@
 namespace BarrelStrength\Sprout\core\helpers;
 
 use BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule;
-use craft\base\Element;
+use BarrelStrength\Sprout\transactional\components\elements\TransactionalEmailElement;
 use craft\events\RegisterConditionRuleTypesEvent;
 
 class ConditionHelper
 {
     public static function registerConditionRuleTypes(RegisterConditionRuleTypesEvent $event): void
     {
-        if (!$event->sender->elementType instanceof Element) {
+        if (!$event->sender->elementType === TransactionalEmailElement::class) {
             return;
         }
 
