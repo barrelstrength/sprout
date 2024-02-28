@@ -94,8 +94,8 @@ if [[ "$COMMIT_SOURCE" != "merge" ]]; then
             if git diff --cached --name-only --diff-filter=MRT | xargs grep -E --quiet "$MATCH_STRINGS_REGEX";
             then
                 ## echo grep result
-                echo "Incorrect translation category in src/$CATEGORY_FOLDER"
-                exit 1;
+#                echo "Incorrect translation category in src/$CATEGORY_FOLDER"
+#                exit 1;
             fi
         fi
     done

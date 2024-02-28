@@ -56,6 +56,7 @@
                 heading: "From Name"|t('sprout-module-mailer'),
                 code: true,
                 suggestEnvVars: true,
+                suggestions: [],
             },
             fromEmail: {
                 type: 'autosuggest',
@@ -63,6 +64,7 @@
                 required: true,
                 code: true,
                 suggestEnvVars: true,
+                suggestions: [],
             },
         }|filter,
         rows: mailer.approvedSenders ?? [''],
@@ -84,6 +86,7 @@
                 heading: "Reply To Email"|t('sprout-module-mailer'),
                 code: true,
                 suggestEnvVars: true,
+                suggestions: [],
             },
         }|filter,
         rows: mailer.approvedReplyToEmails ?? [''],

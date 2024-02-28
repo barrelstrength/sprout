@@ -90,6 +90,8 @@ class m211101_000004_update_user_permissions extends Migration
         $newViewEmailPermissionId = $this->db->getLastInsertID(Table::USERPERMISSIONS);
 
         $this->insert(Table::USERPERMISSIONS, [
+            // Bug: https://github.com/barrelstrength/sprout/issues/297
+            // Fixed in m240223_000001_cleanup_resend_permission
             'name' => strtolower('sprout-module-sent-email:resendEmails'),
         ]);
         $newEditEmailPermissionId = $this->db->getLastInsertID(Table::USERPERMISSIONS);

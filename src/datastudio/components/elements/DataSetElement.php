@@ -237,7 +237,11 @@ class DataSetElement extends Element
             }
         }
 
-        return $this->name;
+        if ($this->name) {
+            return $this->name;
+        }
+
+        return parent::__toString();
     }
 
     protected static function defineFieldLayouts(string $source): array

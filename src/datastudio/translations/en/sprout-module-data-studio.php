@@ -124,6 +124,7 @@ return [
     'Common Email Column Names' => 'Common Email Column Names',
     'The name of the email column in your data set.' => 'The name of the email column in your data set.',
     'Enable Notifications' => 'Enable Notifications',
+    'UID' => 'UID',
     'Data Set List' => 'Data Set List',
     'View reports: "{dataSet}"' => 'View reports: "{dataSet}"',
     'Reports' => 'Reports',
@@ -142,4 +143,5 @@ return [
     'What this form will be called in the control panel' => 'What this form will be called in the control panel',
     'The name you' => 'The name you',
     'What this form will be called in the control panel.' => 'What this form will be called in the control panel.'
+    'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.' => 'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.',
 ];

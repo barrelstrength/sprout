@@ -93,4 +93,5 @@ wp-admin(.*)$',
     'ID' => 'ID',
     'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro].' => 'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro].',
     'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro]' => 'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro]'
+    'ID' => 'ID'
 ];
