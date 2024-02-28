@@ -14,13 +14,13 @@ class m240223_000001_cleanup_resend_permission extends Migration
         $oldResendSentEmailPermissionId = (new Query())
             ->select('id')
             ->from(Table::USERPERMISSIONS)
-            ->where(['name' => 'sprout-module-sent-email:resendEmails'])
+            ->where(['name' => strtolower('sprout-module-sent-email:resendEmails')])
             ->scalar();
 
         $resendSentEmailPermissionId = (new Query())
             ->select('id')
             ->from(Table::USERPERMISSIONS)
-            ->where(['name' => 'sprout-module-sent-email:resendSentEmail'])
+            ->where(['name' => strtolower('sprout-module-sent-email:resendSentEmail')])
             ->scalar();
 
         // if the old permission still exists, clean it up
@@ -29,7 +29,7 @@ class m240223_000001_cleanup_resend_permission extends Migration
                 // if the correct permission does not yet exist
                 // update the old permission to the correct permission
                 $this->update(Table::USERPERMISSIONS, [
-                    'name' => 'sprout-module-sent-email:resendSentEmail',
+                    'name' => strtolower('sprout-module-sent-email:resendSentEmail'),
                 ], [
                     'id' => $oldResendSentEmailPermissionId,
                 ]);
