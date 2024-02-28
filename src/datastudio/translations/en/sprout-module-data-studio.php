@@ -142,6 +142,5 @@ return [
     'Sprout Module | Data Studio' => 'Sprout Module | Data Studio',
     'What this form will be called in the control panel' => 'What this form will be called in the control panel',
     'The name you' => 'The name you',
-    'What this form will be called in the control panel.' => 'What this form will be called in the control panel.'
     'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.' => 'This page lists any data sets that are known to be related to this form. Manage all your reporting via Data Studio.',
 ];

@@ -92,6 +92,5 @@ wp-admin(.*)$',
     'Sprout Sitemaps [pro] enables content managers to manage redirects and short URLs, monitor 404s, configure advanced redirect rules, and ensure all your content is findable.' => 'Sprout Sitemaps [pro] enables content managers to manage redirects and short URLs, monitor 404s, configure advanced redirect rules, and ensure all your content is findable.',
     'ID' => 'ID',
     'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro].' => 'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro].',
-    'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro]' => 'Manage unlimited Content Sitemaps and Custom Query Sitemaps with Sprout Sitemaps [pro]'
     'ID' => 'ID'
 ];
