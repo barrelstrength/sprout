@@ -22,7 +22,9 @@ class TwigExpressionConditionRule extends BaseConditionRule implements ElementCo
 
     public function getExclusiveQueryParams(): array
     {
-        return [];
+        return [
+            'twigExpression',
+        ];
     }
 
     public function getConfig(): array
