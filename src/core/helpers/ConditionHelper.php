@@ -10,7 +10,13 @@ class ConditionHelper
 {
     public static function registerConditionRuleTypes(RegisterConditionRuleTypesEvent $event): void
     {
-        if (!$event->sender->elementType === TransactionalEmailElement::class) {
+        $elementType = $event->sender?->elementType;
+
+        if ($elementType === null) {
+            return;
+        }
+
+        if (!is_subclass_of($elementType, Element::class)) {
             return;
         }
 
