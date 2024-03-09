@@ -4,8 +4,8 @@
 <div class="sprout-box">
 
     {{ forms.textField({
-        label: "Title"|t('sprout-module-forms'),
-        instructions: "The Title of your content which will appear in search results"|t('sprout-module-forms'),
+        label: "Title"|t('sprout-module-meta'),
+        instructions: "The Title of your content which will appear in search results"|t('sprout-module-meta'),
         name: field.handle~'[metadata][title]',
         showCharsLeft: true,
         value: meta.title,
@@ -14,8 +14,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "Description"|t('sprout-module-forms'),
-        instructions: "A description of your content which will appear in search results."|t('sprout-module-forms'),
+        label: "Description"|t('sprout-module-meta'),
+        instructions: "A description of your content which will appear in search results."|t('sprout-module-meta'),
         name: field.handle~'[metadata][description]',
         showCharsLeft: true,
         value: meta.description,
@@ -24,9 +24,9 @@
     }) }}
 
     {{ forms.textField({
-        label: "Keywords"|t('sprout-module-forms'),
+        label: "Keywords"|t('sprout-module-meta'),
         id: 'sprout-searchKeywords',
-        instructions: "A list of keywords that describe your content"|t('sprout-module-forms'),
+        instructions: "A list of keywords that describe your content"|t('sprout-module-meta'),
         name: field.handle~'[metadata][keywords]',
         value: meta.keywords,
         errors: "",

@@ -7,15 +7,15 @@
 
 {% block content %}
 
-        {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
-        {{ hiddenInput('globalColumn', 'robots') }}
-        {{ hiddenInput('siteId', globals.siteId) }}
+    {{ actionInput('sprout-module-meta/global-metadata/save-global-metadata') }}
+    {{ hiddenInput('globalColumn', 'robots') }}
+    {{ hiddenInput('siteId', globals.siteId) }}
 
-        {% set redirectUrl = craft.app.request.pathInfo~'?site='~currentSite.handle %}
-        {{ redirectInput(redirectUrl) }}
+    {% set redirectUrl = craft.app.request.pathInfo~'?site='~currentSite.handle %}
+    {{ redirectInput(redirectUrl) }}
 
-        {% set robotsContext = 'globals' %}
-        {% set robotsNamespace = 'meta[globals][robots]' %}
-        {% include "sprout-module-meta/_components/fields/ElementMetadata/blocks/robots" %}
+    {% set robotsContext = 'globals' %}
+    {% set robotsNamespace = 'meta[globals][robots]' %}
+    {% include "sprout-module-meta/_components/fields/ElementMetadata/blocks/robots" %}
 
 {% endblock %}

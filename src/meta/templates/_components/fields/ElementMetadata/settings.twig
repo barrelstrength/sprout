@@ -119,8 +119,8 @@
     {% set optimizedKeywordOptions = sprout.modules.meta.globalMetadata.getKeywordsOptions() %}
 
     {{ forms.selectField({
-        label: "Meta Keywords"|t('sprout-module-forms'),
-        instructions: "Generate keywords and key phrases dynamically based on an algorithm or add them manually."|t('sprout-module-forms'),
+        label: "Meta Keywords"|t('sprout-module-meta'),
+        instructions: "Generate keywords and key phrases dynamically based on an algorithm or add them manually."|t('sprout-module-meta'),
         id: 'optimizedKeywordsField',
         name: 'optimizedKeywordsField',
         options: optimizedKeywordOptions,
@@ -130,8 +130,8 @@
     <hr>
 
     {{ forms.lightswitchField({
-        label: "Enable Meta Details fields"|t('sprout-module-forms') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
-        instructions: "Meta Details fields add one more level of fine-tuning over your metadata. With Meta Details fields enabled, content editors will have additional control to customize Search, Open Graph, Twitter Card, Geo, and Robots metadata. Note: enabling Meta Details fields may require additional time for content planning and monitoring in your metadata strategy."|t('sprout-module-forms'),
+        label: "Enable Meta Details fields"|t('sprout-module-meta') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
+        instructions: "Meta Details fields add one more level of fine-tuning over your metadata. With Meta Details fields enabled, content editors will have additional control to customize Search, Open Graph, Twitter Card, Geo, and Robots metadata. Note: enabling Meta Details fields may require additional time for content planning and monitoring in your metadata strategy."|t('sprout-module-meta'),
         name: 'enableMetaDetailsFields',
         toggle: 'settings-enablemetadadetails',
         on: not isPro ? false : settings.enableMetaDetailsFields,
@@ -145,14 +145,14 @@
             <table class="data" style="width: auto;">
                 <thead>
                 <tr>
-                    <th scope="col">{{ "Meta Tag Type"|t('sprout-module-forms') }}</th>
-                    <th scope="col">{{ "Editable?"|t('sprout-module-forms') }}</th>
+                    <th scope="col">{{ "Meta Tag Type"|t('sprout-module-meta') }}</th>
+                    <th scope="col">{{ "Editable?"|t('sprout-module-meta') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>
-                        <label for="showSearchMeta">{{ "Allow Search Meta fields to be edited?"|t('sprout-module-forms') }}</label>
+                        <label for="showSearchMeta">{{ "Allow Search Meta fields to be edited?"|t('sprout-module-meta') }}</label>
                     </td>
                     <td class="centeralign">
                         <div>
@@ -165,7 +165,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="showOpenGraph">{{ "Allow Open Graph fields to be edited?"|t('sprout-module-forms') }}</label>
+                        <label for="showOpenGraph">{{ "Allow Open Graph fields to be edited?"|t('sprout-module-meta') }}</label>
                     </td>
                     <td class="centeralign">
                         <div>
@@ -178,7 +178,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="showTwitter">{{ "Allow Twitter fields to be edited?"|t('sprout-module-forms') }}</label>
+                        <label for="showTwitter">{{ "Allow Twitter fields to be edited?"|t('sprout-module-meta') }}</label>
                     </td>
                     <td class="centeralign">
                         <div>
@@ -191,7 +191,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="showGeo">{{ "Allow Geo fields to be edited?"|t('sprout-module-forms') }}</label>
+                        <label for="showGeo">{{ "Allow Geo fields to be edited?"|t('sprout-module-meta') }}</label>
                     </td>
                     <td class="centeralign">
                         <div>
@@ -204,7 +204,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="showRobots">{{ "Allow Robots fields to be edited?"|t('sprout-module-forms') }}</label>
+                        <label for="showRobots">{{ "Allow Robots fields to be edited?"|t('sprout-module-meta') }}</label>
                     </td>
                     <td class="centeralign">
                         <div>
@@ -229,8 +229,8 @@
     <hr>
 
     {{ forms.lightswitchField({
-        label: "Enable Canonical URL field"|t('sprout-module-forms') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
-        instructions: "Allow users to override the Canonical URL at Element Metadata field level"|t('sprout-module-forms'),
+        label: "Enable Canonical URL field"|t('sprout-module-meta') ~ (not isPro ? ' <span class="sprout-pro">PRO</span>' : ''),
+        instructions: "Allow users to override the Canonical URL at Element Metadata field level"|t('sprout-module-meta'),
         id: 'editCanonical',
         name: 'editCanonical',
         on: not isPro ? false : settings.editCanonical,

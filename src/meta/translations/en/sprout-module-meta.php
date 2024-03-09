@@ -195,13 +195,10 @@ return [
     'Select the default Open Graph Type for content using the Element Metadata field. Learn more about <a href="https://developers.facebook
             .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>' => 'Select the default Open Graph Type for content using the Element Metadata field. Learn more about <a href="https://developers.facebook
             .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>',
-    'The Social Profile URL to associate with your website' => 'The Social Profile URL to associate with your website',
     'The URL that represents your social profile' => 'The URL that represents your social profile',
-    'Select your default Open Graph Type for individual entries using the Element Metadata field. Learn more about <a href="https://developers.facebook
-            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>' => 'Select your default Open Graph Type for individual entries using the Element Metadata field. Learn more about <a href="https://developers.facebook
-            .com/docs/reference/opengraph#object-type" target="_blank">How Open Graph Stories work.</a>',
-    'Select the default Twitter Card Type for content using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards"
-            target="_blank">How Twitter Cards work</a>.' => 'Select the default Twitter Card Type for content using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards"
-            target="_blank">How Twitter Cards work</a>.',
-    'Select your default Twitter Card Type for individual entries using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards" target="_blank">How Twitter Cards work</a>.' => 'Select your default Twitter Card Type for individual entries using the Element Metadata field.. Learn more about <a href="https://dev.twitter.com/docs/cards" target="_blank">How Twitter Cards work</a>.'
+    'Add a volume to manage the Meta Image' => 'Add a volume to manage the Meta Image',
+    'Meta Details' => 'Meta Details',
+    'Fine-tune your metadata to your specific metadata needs. Meta Details values will take priority when displaying metadata for this page.' => 'Fine-tune your metadata to your specific metadata needs. Meta Details values will take priority when displaying metadata for this page.',
+    'Canonical URL' => 'Canonical URL',
+    'The Canonical URL of your web page' => 'The Canonical URL of your web page'
 ];

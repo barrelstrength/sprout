@@ -7,7 +7,7 @@
 {# Prepare our metadata badge info icons #}
 <div class="sprout-metatitle-info hidden">
     {{- sproutMetaCp.infoIcon({
-        label: "Meta Title"|t('sprout-module-forms'),
+        label: "Meta Title"|t('sprout-module-meta'),
         search: true,
         openGraph: true,
         twitterCard: true,
@@ -17,7 +17,7 @@
 
 <div class="sprout-metadescription-info hidden">
     {{- sproutMetaCp.infoIcon({
-        label: "Meta Description"|t('sprout-module-forms'),
+        label: "Meta Description"|t('sprout-module-meta'),
         search: true,
         openGraph: true,
         twitterCard: true,
@@ -27,7 +27,7 @@
 
 <div class="sprout-metaimage-info hidden">
     {{- sproutMetaCp.infoIcon({
-        label: "Meta Image"|t('sprout-module-forms'),
+        label: "Meta Image"|t('sprout-module-meta'),
         search: true,
         openGraph: true,
         twitterCard: true,
@@ -48,14 +48,14 @@
             {% set displayMetadataField = true %}
 
             {{ forms.textField({
-                label: "Canonical URL"|t('sprout-module-forms') ~ sproutMetaCp.infoIcon({
-                    label: "Canonical URL"|t('sprout-module-forms'),
+                label: "Canonical URL"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+                    label: "Canonical URL"|t('sprout-module-meta'),
                     search: true,
                     structured: true,
                     openGraph: true,
                     twitterCard: true
                 }),
-                instructions: "The Canonical URL of your web page"|t('sprout-module-forms'),
+                instructions: "The Canonical URL of your web page"|t('sprout-module-meta'),
                 id: 'sprout-canonical',
                 name: field.handle~'[metadata][canonical]',
                 value: values.canonical
@@ -94,8 +94,8 @@
             {% endset %}
 
             {{ forms.field({
-                label: 'Meta Details'|t('sprout-module-forms'),
-                instructions: 'Fine-tune your metadata to your specific metadata needs. Meta Details values will take priority when displaying metadata for this page.'|t('sprout-module-forms'),
+                label: 'Meta Details'|t('sprout-module-meta'),
+                instructions: 'Fine-tune your metadata to your specific metadata needs. Meta Details values will take priority when displaying metadata for this page.'|t('sprout-module-meta'),
                 id: 'sprout-advancedcustomizationfields',
             }, advancedMetaButtons) }}
         {% endif %}

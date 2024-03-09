@@ -8,8 +8,8 @@
     <table class="data" style="width: auto;">
         <thead>
         <tr>
-            <th scope="col">{{ "Enable?"|t('sprout-module-forms') }}</th>
-            <th scope="col">{{ "Description"|t('sprout-module-forms') }}</th>
+            <th scope="col">{{ "Enable?"|t('sprout-module-meta') }}</th>
+            <th scope="col">{{ "Description"|t('sprout-module-meta') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
             <td>
                 <label for="showGeo">
                     <code>noindex</code>
-                    - {{ "search engines should not index this page"|t('sprout-module-forms') }}
+                    - {{ "search engines should not index this page"|t('sprout-module-meta') }}
                 </label>
             </td>
         </tr>
@@ -41,7 +41,7 @@
             <td>
                 <label for="showRobots">
                     <code>nofollow</code>
-                    - {{ "search engines should not follow links on this page"|t('sprout-module-forms') }}
+                    - {{ "search engines should not follow links on this page"|t('sprout-module-meta') }}
                 </label>
             </td>
         </tr>
@@ -57,7 +57,7 @@
             <td>
                 <label for="showOpenGraph">
                     <code>noarchive</code>
-                    - {{ "search engines should not provide archived versions of this page"|t('sprout-module-forms') }}
+                    - {{ "search engines should not provide archived versions of this page"|t('sprout-module-meta') }}
                 </label>
             </td>
         </tr>
@@ -73,7 +73,7 @@
             <td>
                 <label for="showTwitter">
                     <code>noimageindex</code>
-                    - {{ "search engines should not index images on this page"|t('sprout-module-forms') }}
+                    - {{ "search engines should not index images on this page"|t('sprout-module-meta') }}
                 </label>
             </td>
         </tr>
@@ -119,8 +119,8 @@
 {% if robotsContext is defined and robotsContext == 'globals' %}
 
     {{ forms.field({
-        label: "Robots"|t('sprout-module-forms') ~ sproutMetaCp.infoIcon({
-            label: "Robots"|t('sprout-module-forms'),
+        label: "Robots"|t('sprout-module-meta') ~ sproutMetaCp.infoIcon({
+            label: "Robots"|t('sprout-module-meta'),
             search: true,
             priority: 'globals'
         }),

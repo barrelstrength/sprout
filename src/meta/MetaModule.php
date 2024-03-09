@@ -116,7 +116,7 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
             Settings::class,
             Settings::INTERNAL_SPROUT_EVENT_REGISTER_CP_SETTINGS_NAV_ITEMS,
             function(RegisterCpNavItemsEvent $event): void {
-                $groupName = Craft::t('sprout-module-redirects', 'SEO');
+                $groupName = Craft::t('sprout-module-meta', 'SEO');
                 $newNavItems = $this->getSproutCpSettingsNavItems();
                 $event->navItems = CpNavHelper::mergeSproutCpSettingsNavItems(
                     $event->navItems,
