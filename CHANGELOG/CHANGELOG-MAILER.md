@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.8 - 2024-03-09
+
+### Fixed
+
+- Fixed error triggered in console requests
+
 ## 4.1.6 - 2023-11-27
 
 ### Added

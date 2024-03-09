@@ -63,8 +63,6 @@ class MailerModule extends Module implements SproutModuleInterface, MigrationInt
 
     public static function getInstance(): MailerModule
     {
-        DataStudioModule::getInstance();
-
         /** @var MailerModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-mailer');
 

@@ -2,17 +2,21 @@
 
 ## 4.2.0 - UNRELEASED
 
-### Added
-
-- Added support for plugin migrations to trigger module migrations via `migrate/all`
-
 ### Fixed
 
 - Updated sidebar nav logic to default to URL of first nav item if only a single subnav item is found
 
+## 4.1.8 - 2024-03-09
+
+### Fixed
+
+- Fixed loading of `BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule`
+
 ## 4.1.7 - 2024-02-23
 
-- Updates `SproutPluginMigrator` to support `migrate/all` workflow
+### Updated
+
+- Updated `SproutPluginMigrator` to support `migrate/all` workflow
 
 ## 4.1.6 - 2023-11-27
 

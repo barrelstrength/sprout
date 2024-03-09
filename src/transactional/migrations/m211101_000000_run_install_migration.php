@@ -3,6 +3,7 @@
 namespace BarrelStrength\Sprout\transactional\migrations;
 
 use BarrelStrength\Sprout\forms\components\emailtypes\FormSummaryEmailType;
+use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\components\emailtypes\EmailMessageEmailType;
 use BarrelStrength\Sprout\mailer\migrations\helpers\MailerSchemaHelper;
 use Craft;
@@ -32,6 +33,9 @@ class m211101_000000_run_install_migration extends Migration
         $sproutFormsIsInstalled = Craft::$app->getPlugins()->isPluginInstalled('sprout-forms');
 
         if ($sproutFormsIsInstalled) {
+            // Ensure translation category is loaded
+            FormsModule::getInstance();
+
             MailerSchemaHelper::createEmailTypeIfNoTypeExists(
                 FormSummaryEmailType::class, [
                 'name' => 'Form Summary',

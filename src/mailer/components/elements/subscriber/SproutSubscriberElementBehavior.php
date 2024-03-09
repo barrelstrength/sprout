@@ -28,6 +28,10 @@ class SproutSubscriberElementBehavior extends Behavior
 
     public function beforeSave(): void
     {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
         $newListIds = Craft::$app->getRequest()->getBodyParam('sproutSubscriberListIds', null);
 
         if ($newListIds === null) {
