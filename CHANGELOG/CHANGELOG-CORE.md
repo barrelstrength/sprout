@@ -1,8 +1,16 @@
 # Changelog
 
+## 4.1.8 - UNRELEASED
+
+### Fixed
+
+- Fixed loading of `BarrelStrength\Sprout\core\components\elements\conditions\TwigExpressionConditionRule`
+
 ## 4.1.7 - 2024-02-23
 
-- Updates `SproutPluginMigrator` to support `migrate/all` workflow
+### Updated
+
+- Updated `SproutPluginMigrator` to support `migrate/all` workflow
 
 ## 4.1.6 - 2023-11-27
 
