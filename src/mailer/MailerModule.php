@@ -62,8 +62,6 @@ class MailerModule extends Module
 
     public static function getInstance(): MailerModule
     {
-        DataStudioModule::getInstance();
-
         /** @var MailerModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-mailer');
 
