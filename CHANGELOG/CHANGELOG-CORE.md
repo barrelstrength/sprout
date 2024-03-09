@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.1.8 - UNRELEASED
+## 4.1.8 - 2024-03-09
 
 ### Fixed
 

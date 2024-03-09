@@ -1,11 +1,10 @@
 # Changelog
 
-## 4.1.8 - UNRELEASED
+## 4.1.8 - 2024-03-09
 
 ### Fixed
 
-- Fixed shared module loading when instantiating module 
-- Fixed error triggered in console requests
+- Fixed shared module loading when instantiating module
 
 ## 4.1.5 - 2023-11-05
 
