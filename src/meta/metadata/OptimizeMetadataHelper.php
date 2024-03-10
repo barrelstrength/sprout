@@ -54,7 +54,9 @@ class OptimizeMetadataHelper
 
         $transform = MetaModule::getInstance()->optimizeMetadata->getSelectedTransform($transform);
 
-        $imageUrl = $asset->getUrl($transform);
+         if (!$imageUrl = $asset->getUrl($transform)) {
+             return null;
+         }
 
         // check to see if Asset already has full Site Url in folder Url
         if (str_contains($imageUrl, 'http')) {
