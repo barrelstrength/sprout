@@ -289,3 +289,12 @@ a.fieldtoggle.instructionstoggle {
 .field.alternate-name-wrapper {
     margin-top: 0;
 }
+
+.sprout-icon-meta {
+    /* Adjust inline position on Element Edit page */
+    margin-bottom: -4px;
+}
+/* Override default position adjustment */
+.sprout-global-metadata .sprout-icon-meta {
+    margin-bottom: 0;
+}
