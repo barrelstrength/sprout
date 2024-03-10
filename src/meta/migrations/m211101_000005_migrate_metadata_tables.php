@@ -41,19 +41,21 @@ class m211101_000005_migrate_metadata_tables extends Migration
                 'sproutSeo-twitterRectangle' => 'sprout-twitterRectangle',
             ];
 
-            foreach ($rows as $row) {
-                $row['settings'] = Json::decode($row['settings']);
+            foreach ($rows as &$row) {
+                $settings = Json::decode($row['settings']);
 
-                if (isset($row['settings']['ogTransform'])) {
-                    $row['settings']['ogTransform'] = $defaultImageMapping[$row['settings']['ogTransform']] ?? $row['settings']['ogTransform'];
+                if (isset($settings['ogTransform'])) {
+                    $settings['ogTransform'] = $defaultImageMapping[$settings['ogTransform']] ?? $settings['ogTransform'];
                 }
 
-                if (isset($row['settings']['twitterTransform'])) {
-                    $row['settings']['twitterTransform'] = $defaultImageMapping[$row['settings']['twitterTransform']] ?? $row['settings']['twitterTransform'];
+                if (isset($settings['twitterTransform'])) {
+                    $settings['twitterTransform'] = $defaultImageMapping[$settings['twitterTransform']] ?? $settings['twitterTransform'];
                 }
 
-                $row['settings'] = Json::encode($row['settings']);
+                $row['settings'] = Json::encode($settings);
             }
+
+            unset($row);
 
             Craft::$app->getDb()->createCommand()
                 ->batchInsert(self::GLOBAL_METADATA_TABLE, $cols, $rows)
