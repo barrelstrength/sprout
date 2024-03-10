@@ -4,7 +4,7 @@ namespace BarrelStrength\Sprout\meta\migrations;
 
 use craft\db\Migration;
 
-class m211101_000006_remove_old_tables_from_db extends Migration
+class m211101_000009_remove_old_tables_from_db extends Migration
 {
     public const OLD_GLOBALS_TABLE = '{{%sproutseo_globals}}';
 
