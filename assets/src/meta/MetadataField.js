@@ -1,5 +1,6 @@
 /* global Craft */
-import 'jquery-tageditor';
+import Tagify from '@yaireo/tagify';
+import '@yaireo/tagify/dist/tagify.css'
 
 class SproutMetaMetadataField {
     constructor(props) {
@@ -86,56 +87,41 @@ class SproutMetaMetadataField {
                 $targetInputElement = $('#title');
             }
 
+            // Make sure we don't have a badge already
             if ($(targetLabelId).find('.sprout-info').length === 0) {
+                // Move our hidden badge with js listeners to the target label location
                 $('div.' + badgeClass).appendTo($(targetLabelId)).removeClass('hidden');
             }
 
+            if (type === 'optimizedTitleField') {
+                $targetInputElement.attr('maxlength', 60);
+                new Garnish.NiceText($targetInputElement, {showCharsLeft: true});
+            }
 
+            if (type === 'optimizedDescriptionField') {
+                let metaTextareaId = '#fields-' + fieldHandle + '-field textarea';
+                let metaTextarea = $(metaTextareaId);
+                metaTextarea.attr('maxlength', self.maxDescriptionLength);
 
-            // self.appendMetaBadge(targetLabelId, metaButton);
-            // Craft.initUiElements($(targetLabelId));
-            //
-            // if (type === 'optimizedTitleField') {
-            //     $targetInputElement.attr('maxlength', 60);
-            //     new Garnish.NiceText($targetInputElement, {showCharsLeft: true});
-            // }
-            //
-            // if (type === 'optimizedDescriptionField') {
-            //     let metaTextareaId = '#fields-' + fieldHandle + '-field textarea';
-            //     let metaTextarea = $(metaTextareaId);
-            //     metaTextarea.attr('maxlength', self.maxDescriptionLength);
-            //
-            //     // triggers Double instantiating console error
-            //     new Garnish.NiceText(metaTextarea, {showCharsLeft: true});
-            // }
-        }
-    }
-
-    getCustomizationSettings(customKey) {
-        return $('input[name=\'fields[' + this.fieldHandle + '][metadata][' + customKey + ']\']');
-    }
-
-    appendMetaBadge(targetLabelId, metaButton) {
-        // console.log('appendMetaBadge', targetLabelId, metaButton);
-        if ($(targetLabelId).find('.sprout-info').length === 0) {
-            $(targetLabelId).append(metaButton).removeClass('hidden');
+                // triggers Double instantiating console error
+                new Garnish.NiceText(metaTextarea, {showCharsLeft: true});
+            }
         }
     }
 }
 
-class SproutMetaKeywordsField {
-    constructor(props) {
-        this.keywordsFieldId = props.keywordsFieldId;
+class SproutInitTagifyUI {
+    constructor() {
+        let inputElems = document.querySelectorAll('input.sprout-tagify-field');
 
-        this.initKeywordsField();
-    }
-
-    initKeywordsField() {
-        // $(this.keywordsFieldId + ' input').tagEditor({
-        //   animateDelete: 20,
-        // });
+        for (let inputElem of inputElems) {
+            new Tagify(inputElem, {
+                // assume no commas in tag names
+                originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+            });
+        }
     }
 }
 
 window.SproutMetaMetadataField = SproutMetaMetadataField;
-window.SproutMetaKeywordsField = SproutMetaKeywordsField;
+window.SproutInitTagifyUI = SproutInitTagifyUI;

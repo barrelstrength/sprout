@@ -26,6 +26,7 @@
     {{ forms.textField({
         label: "Keywords"|t('sprout-module-meta'),
         id: 'sprout-searchKeywords',
+        class: 'sprout-tagify-field',
         instructions: "A list of keywords that describe your content"|t('sprout-module-meta'),
         name: field.handle~'[metadata][keywords]',
         value: meta.keywords,
@@ -36,7 +37,5 @@
 </div>
 
 {% js on ready %}
-    new SproutMetaKeywordsField({
-    keywordsFieldId: '#fields-sprout-searchKeywords'
-    });
+    new SproutInitTagifyUI();
 {% endjs %}

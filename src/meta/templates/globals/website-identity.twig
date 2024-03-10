@@ -166,6 +166,7 @@
             label: "Keywords"|t('sprout-module-meta'),
             instructions: "The primary keywords or phrases that describe your website."|t('sprout-module-meta'),
             id: 'meta-keywords',
+            class: 'sprout-tagify-field',
             name: 'meta[globals][identity][keywords]',
             value: keywordsValue,
             errors: '',
@@ -481,8 +482,6 @@
     thirdDropdownId: '#main-entity-third-dropdown',
     });
 
-    new SproutMetaKeywordsField({
-    keywordsFieldId: '#keywords-field'
-    });
+    new SproutInitTagifyUI();
 {% endjs %}
 
