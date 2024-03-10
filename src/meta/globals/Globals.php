@@ -36,6 +36,11 @@ class Globals extends Model
 
     public function __construct($config = [])
     {
+        if (isset($config['identity'])) {
+            if (isset($config['identity']['telephone']) && is_string($config['identity']['telephone'])) {
+                $config['identity']['telephone'] = [];
+            }
+        }
         if (isset($config['contacts'])) {
             foreach ($config['contacts'] as $key => $contact) {
                 if (empty($contact['contactType']) && empty($contact['telephone'])) {
