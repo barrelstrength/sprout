@@ -44,6 +44,11 @@ class m211101_000005_migrate_metadata_tables extends Migration
             foreach ($rows as &$row) {
                 $settings = Json::decode($row['settings']);
 
+                if (isset($settings['seoDivider'])) {
+                    $settings['metaDivider'] = $settings['seoDivider'];
+                    unset($settings['seoDivider']);
+                }
+
                 if (isset($settings['ogTransform'])) {
                     $settings['ogTransform'] = $defaultImageMapping[$settings['ogTransform']] ?? $settings['ogTransform'];
                 }
