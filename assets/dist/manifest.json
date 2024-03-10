@@ -182,15 +182,27 @@
     "isEntry": true,
     "src": "mailer/EmailTypesSettings.js"
   },
+  "mailer/SendEmailModal.css": {
+    "file": "assets/SendEmailModal-94724ebd.css",
+    "src": "mailer/SendEmailModal.css"
+  },
+  "mailer/SendEmailModal.js": {
+    "css": [
+      "assets/SendEmailModal-94724ebd.css"
+    ],
+    "file": "assets/sendEmailModal-b4fede1a.js",
+    "isEntry": true,
+    "src": "mailer/SendEmailModal.js"
+  },
   "meta/Meta.css": {
-    "file": "assets/Meta-deacc20c.css",
+    "file": "assets/Meta-c488fdc6.css",
     "src": "meta/Meta.css"
   },
   "meta/Meta.js": {
     "css": [
-      "assets/Meta-deacc20c.css"
+      "assets/Meta-c488fdc6.css"
     ],
-    "file": "assets/meta-3f49cb1c.js",
+    "file": "assets/meta-37c23453.js",
     "imports": [
       "fields/AddressField.js",
       "fields/EmailField.js",

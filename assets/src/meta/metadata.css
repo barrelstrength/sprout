@@ -282,3 +282,10 @@ a.fieldtoggle.instructionstoggle {
     height: 32px; /* necessary to stop on select event adjusting height */
     margin-top: 5px;
 }
+
+#meta-name-field {
+    margin-bottom: 5px;
+}
+.field.alternate-name-wrapper {
+    margin-top: 0;
+}
