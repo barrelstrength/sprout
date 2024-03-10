@@ -25,8 +25,8 @@ class MetadataVariable
 
         $divider = '';
 
-        if (isset($globals['settings']['seoDivider'])) {
-            $divider = $globals->getSettings()['seoDivider'];
+        if (isset($globals['settings']['metaDivider'])) {
+            $divider = $globals->getSettings()['metaDivider'];
         }
 
         return $divider;
