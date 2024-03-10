@@ -6,6 +6,12 @@
 
 - Updated sidebar nav logic to default to URL of first nav item if only a single subnav item is found
 
+## 4.1.9 - 2024-03-10
+
+### Fixed 
+
+- Fixed sidebar subnav logic error
+
 ## 4.1.8 - 2024-03-09
 
 ### Fixed
