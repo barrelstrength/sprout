@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.9 - 2024-03-10
+
+### Fixed 
+
+- Fixed sidebar subnav logic error
+
 ## 4.1.8 - 2024-03-09
 
 ### Fixed
