@@ -5,7 +5,7 @@
 {% set maxDescriptionLength = sprout.modules.meta.elementMetadata.getDescriptionLength() %}
 
 {# Prepare our metadata badge info icons #}
-<div class="sprout-metatitle-info hidden">
+<div class="sprout-info sprout-icon sprout-icon-meta sprout-metatitle-info hidden">
     {{- sproutMetaCp.infoIcon({
         label: "Meta Title"|t('sprout-module-meta'),
         search: true,
@@ -15,7 +15,7 @@
     }) -}}
 </div>
 
-<div class="sprout-metadescription-info hidden">
+<div class="sprout-info sprout-icon sprout-icon-meta sprout-metadescription-info hidden">
     {{- sproutMetaCp.infoIcon({
         label: "Meta Description"|t('sprout-module-meta'),
         search: true,
@@ -25,7 +25,7 @@
     }) -}}
 </div>
 
-<div class="sprout-metaimage-info hidden">
+<div class="sprout-info sprout-icon sprout-icon-meta sprout-metaimage-info hidden">
     {{- sproutMetaCp.infoIcon({
         label: "Meta Image"|t('sprout-module-meta'),
         search: true,
@@ -112,6 +112,12 @@
 
     {% endif %}
 </div>
+
+{% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}
 
 {% do sprout.modules.core.vite.register('meta/Meta.js', false) %}
 

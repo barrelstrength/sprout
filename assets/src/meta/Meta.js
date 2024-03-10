@@ -1,6 +1,6 @@
 import './metadata.css';
 
-import './General';
+import './MetadataField';
 import './EditableTable';
 import './MetaDetailsToggle';
 import './Schema';

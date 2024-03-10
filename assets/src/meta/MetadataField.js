@@ -68,38 +68,46 @@ class SproutMetaMetadataField {
         let self = this;
 
         for (let key in this.metaBadgeInfo) {
+            console.log(this.metaBadgeInfo[key]);
             let type = this.metaBadgeInfo[key]['type'];
             let fieldHandle = this.metaBadgeInfo[key]['handle'];
             let badgeClass = this.metaBadgeInfo[key]['badgeClass'];
 
-            let metaButton = document.querySelector('div.' + badgeClass).innerHTML;
+            // $('div.' + badgeClass).appendTo()
+            // let metaButton = document.querySelector('div.' + badgeClass).innerHTML;
 
-            let metaLabelId = '#fields-' + fieldHandle + '-label';
-            let metaInputId = '#fields-' + fieldHandle + '-field input';
+            let targetLabelId = '#fields-' + fieldHandle + '-label';
+            let targetInputId = '#fields-' + fieldHandle + '-field input';
 
-            let metaInput = $(metaInputId);
+            let $targetInputElement = $(targetInputId);
 
             if (fieldHandle === 'title') {
-                metaLabelId = '#title-label';
-                metaInput = $('#title');
+                targetLabelId = '#title-label';
+                $targetInputElement = $('#title');
             }
 
-            self.appendMetaBadge(metaLabelId, metaButton);
-            Craft.initUiElements($(metaLabelId));
-
-            if (type === 'optimizedTitleField') {
-                metaInput.attr('maxlength', 60);
-                new Garnish.NiceText(metaInput, {showCharsLeft: true});
+            if ($(targetLabelId).find('.sprout-info').length === 0) {
+                $('div.' + badgeClass).appendTo($(targetLabelId)).removeClass('hidden');
             }
 
-            if (type === 'optimizedDescriptionField') {
-                let metaTextareaId = '#fields-' + fieldHandle + '-field textarea';
-                let metaTextarea = $(metaTextareaId);
-                metaTextarea.attr('maxlength', self.maxDescriptionLength);
 
-                // triggers Double instantiating console error
-                new Garnish.NiceText(metaTextarea, {showCharsLeft: true});
-            }
+
+            // self.appendMetaBadge(targetLabelId, metaButton);
+            // Craft.initUiElements($(targetLabelId));
+            //
+            // if (type === 'optimizedTitleField') {
+            //     $targetInputElement.attr('maxlength', 60);
+            //     new Garnish.NiceText($targetInputElement, {showCharsLeft: true});
+            // }
+            //
+            // if (type === 'optimizedDescriptionField') {
+            //     let metaTextareaId = '#fields-' + fieldHandle + '-field textarea';
+            //     let metaTextarea = $(metaTextareaId);
+            //     metaTextarea.attr('maxlength', self.maxDescriptionLength);
+            //
+            //     // triggers Double instantiating console error
+            //     new Garnish.NiceText(metaTextarea, {showCharsLeft: true});
+            // }
         }
     }
 
@@ -108,7 +116,7 @@ class SproutMetaMetadataField {
     }
 
     appendMetaBadge(targetLabelId, metaButton) {
-        console.log('appendMetaBadge', targetLabelId, metaButton);
+        // console.log('appendMetaBadge', targetLabelId, metaButton);
         if ($(targetLabelId).find('.sprout-info').length === 0) {
             $(targetLabelId).append(metaButton).removeClass('hidden');
         }
