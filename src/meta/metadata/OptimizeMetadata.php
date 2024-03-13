@@ -83,21 +83,38 @@ class OptimizeMetadata extends Component
         // Renders <title> and <meta> tags at end of <head>
         foreach ($metadata['meta'] as $metaTagTypes) {
             foreach ($metaTagTypes as $name => $content) {
-                if ($name === 'title') {
-                    Craft::$app->getView()->title = $content;
-                    continue;
+                switch (true) {
+                    case ($name === 'title'):
+                        Craft::$app->getView()->title = $content;
+                        break;
+                    case ($name === 'author'):
+                    case ($name === 'publisher'):
+                    case ($name === 'canonical'):
+                        Craft::$app->getView()->registerLinkTag([
+                            'rel' => $name,
+                            'href' => $content,
+                        ]);
+                        break;
+                    case (str_starts_with($name, 'og')):
+                    case (str_starts_with($name, 'article')):
+                        Craft::$app->getView()->registerMetaTag([
+                            'property' => $name,
+                            'content' => $content,
+                        ]);
+                        break;
+                    default:
+                        Craft::$app->getView()->registerMetaTag([
+                            'name' => $name,
+                            'content' => $content,
+                        ]);
                 }
-                Craft::$app->getView()->registerMetaTag([
-                    'name' => $name,
-                    'content' => $content,
-                ]);
             }
         }
 
         /** @var Globals $globals */
         $globals = $metadata['globals'];
         $ownershipTags = $globals->getOwnership();
-
+        
         foreach ($ownershipTags as $ownershipTag) {
             if (!$ownershipTag['metaTagName'] || !$ownershipTag['metaTagContent']) {
                 continue;
