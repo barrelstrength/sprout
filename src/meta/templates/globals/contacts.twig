@@ -19,14 +19,13 @@
             structured: true,
             priority: 'globals'
         }),
-        instructions: "Manage Contacts for your website. <a href='https://developers.google.com/search/docs/data-types/corporate-contact' target='_blank'>Corporate Contacts</a> metadata is automatically detected and displayed in the Google Knowledge panel."|t('sprout-module-meta'),
+        instructions: "Manage contacts metadata for your website."|t('sprout-module-meta'),
         id: 'sites',
         name: 'meta[globals][contacts]',
         cols: {
             contactType: {
                 type: 'autosuggest',
                 heading: "Contact Type"|t('sprout-module-meta'),
-                info: ""|t('sprout-module-meta'),
                 code: true,
                 suggestions: [
                     {
@@ -50,7 +49,6 @@
             telephone: {
                 type: 'singleline',
                 heading: "Telephone"|t('sprout-module-meta'),
-                info: ""|t('sprout-module-meta'),
                 placeholder: '+1-800-555-1212 - International Format'|t('sprout-module-meta'),
                 code: true,
             },
