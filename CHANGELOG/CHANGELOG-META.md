@@ -17,6 +17,5 @@
 
 ### Removed
 
-- Removed Sprout SEO Element Metadata "Editable Field" option
-  - We recommend using existing fields first and falling back to Meta Details Search fields  
+- Removed Sprout SEO Element Metadata "Editable Field" option 
 - Removed `displayFieldHandles` setting. Craft now supports Field relabeling.
