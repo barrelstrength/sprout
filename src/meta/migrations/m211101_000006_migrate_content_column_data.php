@@ -40,18 +40,18 @@ class m211101_000006_migrate_content_column_data extends Migration
             ];
 
             foreach ($rows as &$row) {
-                $settings = Json::decode($row[$fieldColumn]);
+                $fieldData = Json::decode($row[$fieldColumn]);
 
-                if (isset($settings['ogTransform'])) {
-                    $settings['ogTransform'] = $defaultImageMapping[$settings['ogTransform']] ?? $settings['ogTransform'];
+                if (isset($fieldData['ogTransform'])) {
+                    $fieldData['ogTransform'] = $defaultImageMapping[$fieldData['ogTransform']] ?? $fieldData['ogTransform'];
                 }
 
-                if (isset($settings['twitterTransform'])) {
-                    $settings['twitterTransform'] = $defaultImageMapping[$settings['twitterTransform']] ?? $settings['twitterTransform'];
+                if (isset($fieldData['twitterTransform'])) {
+                    $fieldData['twitterTransform'] = $defaultImageMapping[$fieldData['twitterTransform']] ?? $fieldData['twitterTransform'];
                 }
 
                 $this->update('{{%content}}', [
-                    $fieldColumn => Json::encode($settings),
+                    $fieldColumn => Json::encode($fieldData),
                 ], [
                     'id' => $row['id'],
                 ]);

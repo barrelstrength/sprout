@@ -94,6 +94,11 @@ class m211101_000002_update_field_settings extends Migration
             ->where(['not', [$fieldColumn => null]])
             ->all();
 
+        $isManualTitle = $settings['optimizedTitleField'] === 'manually';
+        $isManualDescription = $settings['optimizedDescriptionField'] === 'manually';
+        $isManualImage = $settings['optimizedImageField'] === 'manually';
+        $isManualKeywords = $settings['optimizedKeywordsField'] === 'manually';
+
         $hasMetaDetails = isset($settings['enableMetaDetailsFields']) &&
             $settings['enableMetaDetailsFields'] === true;
 
@@ -102,49 +107,56 @@ class m211101_000002_update_field_settings extends Migration
         $isUsingTwitterMetaDetails = $hasMetaDetails && $settings['showTwitter'] === true;
 
         foreach ($rows as $row) {
-            $data = Json::decode($row[$fieldColumn]);
+            $fieldData = Json::decode($row[$fieldColumn]);
 
-            if ($isUsingSearchMetaDetails || $isUsingOpenGraphMetaDetails || $isUsingTwitterMetaDetails) {
-                // If Editable + Meta Details are both in use
+            // If Editable Fields are the only thing in use (optimizedTitle, optimizedDescription, optimizedKeywords, optimizedImage)
+                // Migrate Editable to Meta Details (title, description, keywords, ogImage, twitterImage)
+            // If Editable + Meta Details are both in use
+                // If Editable field override is null, use Meta Details value
+                // If Meta Details is null, just use the Editable Field value
 
-                // If override is null, use Editable field
-                // If Meta Details is not null, just use the Editable Field value
-                $data['title'] = $data['optimizedTitle'] ?? $data['title'];
-                $data['description'] = $data['optimizedDescription'] ?? $data['description'];
-                $data['keywords'] = $data['optimizedKeywords'] ?? $data['keywords'];
-
-                $data['ogImage'] = $data['optimizedImage'] ?? $data['ogImage'];
-                $data['twitterImage'] = $data['optimizedImage'] ?? $data['twitterImage'];
-
-                $this->update('{{%content}}', [
-                    $fieldColumn => Json::encode($settings),
-                ], [
-                    'id' => $row['id'],
-                ]);
-            } else {
-                // If Editable Fields are the only thing in use
-
-                // Migrate Editable to Meta Details
-                $data['title'] = $data['optimizedTitle'] ?? '';
-                $data['description'] = $data['optimizedDescription'] ?? '';
-                $data['keywords'] = $data['optimizedKeywords'] ?? '';
-
-                $data['ogImage'] = $data['optimizedImage'] ?? '';
-                $data['twitterImage'] = $data['optimizedImage'] ?? '';
-
-                $this->update('{{%content}}', [
-                    $fieldColumn => Json::encode($data),
-                ], [
-                    'id' => $row['id'],
-                ]);
+            if ($isManualTitle) {
+                $fieldData['title'] = $fieldData['optimizedTitle'] ?? $fieldData['title'];
+                $fieldData['optimizedTitle'] = null;
+                $settings['optimizedTitleField'] = null;
             }
+            if ($isManualDescription) {
+                $fieldData['description'] = $fieldData['optimizedDescription'] ?? $fieldData['description'];
+                $fieldData['optimizedDescription'] = null;
+                $settings['optimizedDescriptionField'] = null;
+            }
+            if ($isManualKeywords) {
+                $fieldData['keywords'] = $fieldData['optimizedKeywords'] ?? $fieldData['keywords'];
+                $fieldData['optimizedKeywords'] = null;
+                $settings['optimizedKeywordsField'] = null;
+            }
+            if ($isManualImage) {
+                $fieldData['ogImage'] = $fieldData['optimizedImage'] ?? $fieldData['ogImage'];
+                $fieldData['twitterImage'] = $fieldData['optimizedImage'] ?? $fieldData['twitterImage'];
+                $fieldData['optimizedImage'] = null;
+                $settings['optimizedImageField'] = null;
+            }
+
+            $this->update('{{%content}}', [
+                $fieldColumn => Json::encode($fieldData),
+            ], [
+                'id' => $row['id'],
+            ]);
         }
 
+        // At least one of these scenarios exists, so ensure Meta Detail Fields are enabled
+        $settings['enableMetaDetailsFields'] = true;
+
         if (!$isUsingSearchMetaDetails) {
-            // If Editable Fields are the only thing in use
-            // Update the settings to enable Search Meta Detail Fields
-            $settings['enableMetaDetailsFields'] = true;
             $settings['showSearchMeta'] = true;
+        }
+
+        if (!$isUsingOpenGraphMetaDetails) {
+            $settings['showOpenGraph'] = true;
+        }
+
+        if (!$isUsingTwitterMetaDetails) {
+            $settings['showTwitter'] = true;
         }
 
         return $settings;
