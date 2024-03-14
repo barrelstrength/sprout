@@ -42,6 +42,26 @@ class m211101_000005_migrate_metadata_tables extends Migration
             ];
 
             foreach ($rows as &$row) {
+
+                if (!empty($row['robots'])) {
+                    $robotsValues = [
+                        'noindex' => '0',
+                        'nofollow' => '0',
+                        'noarchive' => '0',
+                        'noimageindex' => '0',
+                        'noodp' => '0',
+                        'noydir' => '0',
+                    ];
+
+                    $row['robots'] = str_replace('"', '', $row['robots']);
+                    $oldRobots = explode(',', $row['robots']);
+                    foreach ($oldRobots as $robotValue) {
+                        $robotsValues[trim($robotValue)] = '1';
+                    }
+
+                    $row['robots'] = Json::encode($robotsValues);
+                }
+
                 $settings = Json::decode($row['settings']);
 
                 if (isset($settings['seoDivider'])) {

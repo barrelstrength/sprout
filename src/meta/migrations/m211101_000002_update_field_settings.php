@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection DuplicatedCode DuplicatedCode */
+
 namespace BarrelStrength\Sprout\meta\migrations;
 
 use craft\db\Migration;
@@ -39,6 +41,22 @@ class m211101_000002_update_field_settings extends Migration
 
                 if ($this->db->columnExists('{{%content}}', $fieldColumn)) {
                     $settings = $this->migrateContentData($fieldColumn, $settings);
+                }
+
+                if ($isManualTitle) {
+                    $settings['optimizedTitleField'] = null;
+                }
+
+                if ($isManualDescription) {
+                    $settings['optimizedDescriptionField'] = null;
+                }
+
+                if ($isManualImage) {
+                    $settings['optimizedImageField'] = null;
+                }
+
+                if ($isManualKeywords) {
+                    $settings['optimizedKeywordsField'] = null;
                 }
             }
 
@@ -135,6 +153,25 @@ class m211101_000002_update_field_settings extends Migration
                 $fieldData['twitterImage'] = $fieldData['optimizedImage'] ?? $fieldData['twitterImage'];
                 $fieldData['optimizedImage'] = null;
                 $settings['optimizedImageField'] = null;
+            }
+
+            if (!empty($fieldData['robots'])) {
+                $robotsValues = [
+                    'noindex' => '0',
+                    'nofollow' => '0',
+                    'noarchive' => '0',
+                    'noimageindex' => '0',
+                    'noodp' => '0',
+                    'noydir' => '0',
+                ];
+
+                $fieldData['robots'] = str_replace('"', '', $fieldData['robots']);
+                $oldRobots = explode(',', $fieldData['robots']);
+                foreach ($oldRobots as $robotValue) {
+                    $robotsValues[trim($robotValue)] = '1';
+                }
+
+                $row['robots'] = $robotsValues;
             }
 
             $this->update('{{%content}}', [
