@@ -192,13 +192,6 @@ class Globals extends Model
         return $this->robots;
     }
 
-    public function getRobots2(): ?string
-    {
-        $robots = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($this->robots);
-
-        return $robots ?? null;
-    }
-
     /**
      * Get the values associated with the Settings column in the database
      */

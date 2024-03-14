@@ -11,7 +11,7 @@ class RobotsMetaType extends MetaType
 {
     protected ?string $canonical = null;
 
-    protected ?string $robots = null;
+    protected string|array|null $robots = null;
 
     public static function displayName(): string
     {
@@ -48,12 +48,16 @@ class RobotsMetaType extends MetaType
             return $this->robots;
         }
 
+        if ($this->robots !== null) {
+            return MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($this->robots);
+        }
+
         return MetaModule::getInstance()->optimizeMetadata->globals['robots'] ?? null;
     }
 
     public function setRobots($value): void
     {
-        $this->robots = MetaModule::getInstance()->optimizeMetadata->prepareRobotsMetadataValue($value);
+        $this->robots = $value;
     }
 
     public function getHandle(): string
