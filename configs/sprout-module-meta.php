@@ -13,14 +13,10 @@
  * setup as a multi-environment config just as Craft's config/general.php
  * and all settings here can be overridden by environment variables.
  *
- * SPROUT_MODULE_META_ENABLE_RENDER_METADATA=true
- * SPROUT_MODULE_META_USE_METADATA_VARIABLE=false
- * SPROUT_MODULE_META_METADATA_VARIABLE_NAME='metadata'
+ * SPROUT_MODULE_META_RENDER_METADATA=true
  * SPROUT_MODULE_META_MAX_META_DESCRIPTION_LENGTH=160
  */
 return [
-    'enableRenderMetadata' => true,
-    'useMetadataVariable' => false,
-    'metadataVariableName' => 'metadata',
+    'renderMetadata' => true,
     'maxMetaDescriptionLength' => 160,
 ];
