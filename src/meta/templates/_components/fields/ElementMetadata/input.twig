@@ -4,36 +4,19 @@
 {% set displayMetadataField = false %}
 {% set maxDescriptionLength = sprout.modules.meta.elementMetadata.getDescriptionLength() %}
 
-{# Prepare our metadata badge info icons #}
-<div class="sprout-info sprout-icon sprout-icon-meta sprout-metatitle-info hidden">
-    {{- sproutMetaCp.infoIcon({
-        label: "Meta Title"|t('sprout-module-meta'),
-        search: true,
-        openGraph: true,
-        twitterCard: true,
-        priority: 'elements'
-    }) -}}
-</div>
+{% set metaBadgeInfo = sprout.modules.meta.elementMetadata.getMetaBadgeInfo(settings) %}
 
-<div class="sprout-info sprout-icon sprout-icon-meta sprout-metadescription-info hidden">
-    {{- sproutMetaCp.infoIcon({
-        label: "Meta Description"|t('sprout-module-meta'),
-        search: true,
-        openGraph: true,
-        twitterCard: true,
-        priority: 'elements'
-    }) -}}
-</div>
-
-<div class="sprout-info sprout-icon sprout-icon-meta sprout-metaimage-info hidden">
-    {{- sproutMetaCp.infoIcon({
-        label: "Meta Image"|t('sprout-module-meta'),
-        search: true,
-        openGraph: true,
-        twitterCard: true,
-        priority: 'elements'
-    }) -}}
-</div>
+{% for badge in metaBadgeInfo %}
+    {# Prepare our metadata badge info icons #}
+    <div id="sprout-meta-badge-{{ badge.handle }}" class="{{ badge.badgeClass }}" style="display:inline-block;">
+        {{- sproutMetaCp.infoIcon({
+            search: true,
+            openGraph: true,
+            twitterCard: true,
+            priority: 'elements',
+        }) -}}
+    </div>
+{% endfor %}
 
 <div>
     <div class="sprout-box-optimized">
@@ -130,8 +113,6 @@ feel like they are part of the natural flow of fields #}
 {% endcss %}
 
 {% js on ready %}
-
-    {% set metaBadgeInfo = sprout.modules.meta.elementMetadata.getMetaBadgeInfo(settings) %}
 
     new SproutMetaMetadataField({
     fieldHandle: '{{ field.handle }}',

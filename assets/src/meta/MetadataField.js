@@ -11,7 +11,6 @@ class SproutMetaMetadataField {
         this.initMetadataFieldButtons();
         this.addMetaBadgesToUi();
     }
-
     initMetadataFieldButtons() {
         let self = this;
 
@@ -69,13 +68,10 @@ class SproutMetaMetadataField {
         let self = this;
 
         for (let key in this.metaBadgeInfo) {
-            console.log(this.metaBadgeInfo[key]);
+
             let type = this.metaBadgeInfo[key]['type'];
             let fieldHandle = this.metaBadgeInfo[key]['handle'];
             let badgeClass = this.metaBadgeInfo[key]['badgeClass'];
-
-            // $('div.' + badgeClass).appendTo()
-            // let metaButton = document.querySelector('div.' + badgeClass).innerHTML;
 
             let targetLabelId = '#fields-' + fieldHandle + '-label';
             let targetInputId = '#fields-' + fieldHandle + '-field input';
@@ -90,7 +86,9 @@ class SproutMetaMetadataField {
             // Make sure we don't have a badge already
             if ($(targetLabelId).find('.sprout-info').length === 0) {
                 // Move our hidden badge with js listeners to the target label location
-                $('div.' + badgeClass).appendTo($(targetLabelId)).removeClass('hidden');
+                let $targetLabelElement = $(targetLabelId);
+                let $infoContainer = $('#fields-sprout-meta-badge-' + fieldHandle);
+                $infoContainer.appendTo($targetLabelElement).removeClass('hidden');
             }
 
             if (type === 'optimizedTitleField') {
@@ -100,6 +98,7 @@ class SproutMetaMetadataField {
 
             if (type === 'optimizedDescriptionField') {
                 let metaTextareaId = '#fields-' + fieldHandle + '-field textarea';
+
                 let metaTextarea = $(metaTextareaId);
                 metaTextarea.attr('maxlength', self.maxDescriptionLength);
 

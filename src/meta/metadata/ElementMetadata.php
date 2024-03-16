@@ -62,22 +62,23 @@ class ElementMetadata extends Component
         $targetSettings = [
             [
                 'type' => 'optimizedTitleField',
-                'value' => $settings['optimizedTitleField'],
+                'targetFieldHandles' => $settings['optimizedTitleFieldFormat'],
                 'badgeClass' => 'sprout-metatitle-info',
             ], [
                 'type' => 'optimizedDescriptionField',
-                'value' => $settings['optimizedDescriptionField'],
+                'targetFieldHandles' => $settings['optimizedDescriptionFieldFormat'],
                 'badgeClass' => 'sprout-metadescription-info',
             ], [
                 'type' => 'optimizedImageField',
-                'value' => $settings['optimizedImageField'],
+                'targetFieldHandles' => $settings['optimizedImageFieldFormat'],
                 'badgeClass' => 'sprout-metaimage-info',
             ],
         ];
 
         $metaFieldHandles = [];
+
         foreach ($targetSettings as $targetSetting) {
-            $handles = $this->getFieldHandles($targetSetting['value']);
+            $handles = $this->getFieldHandles($targetSetting['targetFieldHandles']);
 
             foreach ($handles as $handle) {
                 if (isset($metaFieldHandles[$handle])) {
