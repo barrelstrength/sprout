@@ -16,7 +16,7 @@ class m211101_000001_update_seo_projectconfig extends Migration
         $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
 
         $defaultSettings = [
-            'enableRenderMetadata' => true,
+            'renderMetadata' => true,
             'maxMetaDescriptionLength' => 160,
         ];
 
@@ -27,17 +27,21 @@ class m211101_000001_update_seo_projectconfig extends Migration
             $newConfig[$key] = $oldConfig[$key] ?? $defaultValue;
         }
 
+        if (isset($oldConfig['enableRenderMetadata'])) {
+            $newConfig['renderMetadata'] = $oldConfig['enableRenderMetadata'];
+        }
+
         // Ensure proper data types
+        if ($newConfig['renderMetadata'] === '1') {
+            $newConfig['renderMetadata'] = true;
+        }
+
+        if ($newConfig['renderMetadata'] === '') {
+            $newConfig['renderMetadata'] = false;
+        }
+
         if (!is_int($newConfig['maxMetaDescriptionLength'])) {
             $newConfig['maxMetaDescriptionLength'] = (int)$newConfig['maxMetaDescriptionLength'];
-        }
-
-        if ($newConfig['enableRenderMetadata'] === '1') {
-            $newConfig['enableRenderMetadata'] = true;
-        }
-
-        if ($newConfig['enableRenderMetadata'] === '') {
-            $newConfig['enableRenderMetadata'] = false;
         }
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, $newConfig,

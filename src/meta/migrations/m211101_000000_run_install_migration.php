@@ -32,7 +32,7 @@ class m211101_000000_run_install_migration extends Migration
         }
 
         Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-            'enableRenderMetadata' => true,
+            'renderMetadata' => true,
             'maxMetaDescriptionLength' => 160,
         ], "Update Sprout CP Settings for “{$moduleSettingsKey}”");
 
