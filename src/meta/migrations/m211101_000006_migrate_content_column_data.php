@@ -50,6 +50,13 @@ class m211101_000006_migrate_content_column_data extends Migration
                     $fieldData['twitterTransform'] = $defaultImageMapping[$fieldData['twitterTransform']] ?? $fieldData['twitterTransform'];
                 }
 
+                unset(
+                    $fieldData['optimizedTitle'],
+                    $fieldData['optimizedDescription'],
+                    $fieldData['optimizedImage'],
+                    $fieldData['optimizedKeywords'],
+                );
+
                 $this->update('{{%content}}', [
                     $fieldColumn => Json::encode($fieldData),
                 ], [
