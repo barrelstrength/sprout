@@ -14,6 +14,10 @@ class MetadataVariable
      */
     public function update(array $meta = []): void
     {
+        if (!MetaModule::isPro()) {
+            return;
+        }
+
         if ($meta !== []) {
             MetaModule::getInstance()->optimizeMetadata->updateMeta($meta);
         }
