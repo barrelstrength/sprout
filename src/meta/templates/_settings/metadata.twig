@@ -7,10 +7,17 @@
 {% set module = sprout.modules.meta %}
 {% set settings = module.getSettings() %}
 
-{% set isPro = module.isPro() %}
-{% set isProBadge = not isPro ? ' <span class="sprout-pro">PRO</span>' : '' %}
-
 {% block settings %}
+
+    {{ forms.lightswitchField({
+        label: "Render metadata"|t('sprout-module-meta'),
+        instructions: "Enable or disable whether metadata is rendered."|t('sprout-module-meta'),
+        name: 'renderMetadata',
+        on: settings.renderMetadata is empty ? false : true,
+        onLabel: "Enabled"|t('sprout-module-meta'),
+        offLabel: "Disabled"|t('sprout-module-meta'),
+        warning: sproutConfigWarning(module, 'renderMetadata')
+    }) }}
 
     {{ forms.textField({
         label: "Meta Description Length"|t('sprout-module-meta'),
@@ -21,17 +28,6 @@
         value: settings.maxMetaDescriptionLength,
         errors: '',
         warning: sproutConfigWarning(module, 'maxMetaDescriptionLength')
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: "Automatically render metadata"|t('sprout-module-meta') ~ isProBadge,
-        instructions: "Sprout Meta prepares and outputs all of your metadata in your template. If you'd like to manage this output manually, you can disable this setting and enable the 'Enable custom metadata variable' setting below."|t('sprout-module-meta'),
-        name: 'enableRenderMetadata',
-        on: not isPro ? true : (settings.enableRenderMetadata is empty ? false : true),
-        onLabel: "Automatic"|t('sprout-module-meta'),
-        offLabel: "Manual"|t('sprout-module-meta'),
-        disabled: not isPro,
-        warning: sproutConfigWarning(module, 'enableRenderMetadata')
     }) }}
 
 {% endblock %}

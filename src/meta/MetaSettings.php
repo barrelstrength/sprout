@@ -6,13 +6,13 @@ use craft\config\BaseConfig;
 
 class MetaSettings extends BaseConfig
 {
-    public bool $enableRenderMetadata = true;
+    public bool $renderMetadata = true;
 
     public int $maxMetaDescriptionLength = 160;
 
-    public function enableRenderMetadata(bool $value): self
+    public function renderMetadata(bool $value): self
     {
-        $this->enableRenderMetadata = $value;
+        $this->renderMetadata = $value;
 
         return $this;
     }

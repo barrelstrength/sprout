@@ -134,32 +134,6 @@ class OptimizeMetadata extends Component
         }
     }
 
-    public function renderMetadataHtml($site): ?string
-    {
-        $metadata = $this->getMetadata($site);
-
-        $settings = MetaModule::getInstance()->getSettings();
-
-        if (!$settings->enableRenderMetadata) {
-            return null;
-        }
-
-        return $this->renderMetadata($metadata);
-    }
-
-    public function renderSchemaHtml($site): ?string
-    {
-        $metadata = $this->getMetadata($site);
-
-        $settings = MetaModule::getInstance()->getSettings();
-
-        if (!$settings->enableRenderMetadata) {
-            return null;
-        }
-
-        return $this->renderSchema($metadata);
-    }
-
     public function getMetadata($site = null): array|string
     {
         Sprout::beginProfile('OptimizeMetadata::getMetadata');
@@ -309,43 +283,6 @@ class OptimizeMetadata extends Component
         $schema->prioritizedMetadataModel = $this->prioritizedMetadataModel;
 
         return $schema;
-    }
-
-    /**
-     * Get all metadata (Meta Tags and Structured Data) for the page
-     */
-    public function renderMetadata($metadata): string
-    {
-        $metaTemplatesPath = Craft::getAlias('@BarrelStrength/Sprout/templates');
-
-        Craft::$app->view->setTemplatesPath($metaTemplatesPath);
-
-        $frontEndMetadataTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/metadata.twig');
-
-        $output = Craft::$app->view->renderTemplate($frontEndMetadataTemplate, [
-            'metadata' => $metadata,
-        ]);
-
-        Craft::$app->view->setTemplatesPath(Craft::$app->path->getSiteTemplatesPath());
-
-        return $output;
-    }
-
-    public function renderSchema($metadata): string
-    {
-        $metaTemplatesPath = Craft::getAlias('@BarrelStrength/Sprout/templates');
-
-        Craft::$app->view->setTemplatesPath($metaTemplatesPath);
-
-        $frontEndSchemaTemplate = Craft::getAlias('@Sprout/TemplateRoot/meta/schema.twig');
-
-        $output = Craft::$app->view->renderTemplate($frontEndSchemaTemplate, [
-            'metadata' => $metadata,
-        ]);
-
-        Craft::$app->view->setTemplatesPath(Craft::$app->path->getSiteTemplatesPath());
-
-        return $output;
     }
 
     /**

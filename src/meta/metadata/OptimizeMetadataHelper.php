@@ -21,6 +21,12 @@ class OptimizeMetadataHelper
             return;
         }
 
+        $settings = MetaModule::getInstance()->getSettings();
+
+        if ($settings->renderMetadata !== true) {
+            return;
+        }
+
         $site = Craft::$app->getSites()->getCurrentSite();
 
         MetaModule::getInstance()->optimizeMetadata->registerMetadata($site);
