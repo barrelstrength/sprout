@@ -156,15 +156,15 @@ class Metadata extends Model
      * Returns metadata as a flat array of the base values stored on the model.
      * The raw data is stored in the database and used when submitting related forms.
      * This method does not return any calculated values.
+     *
+     * We don't store optimized data here because it's dynamic and may rely on multiple
+     * fields, and Craft only updates fields that have changed. Optimized metadata will be
+     * generated dynamically on front-end requests.
      */
     public function getRawData(): array
     {
         $metaForDb = [];
 
-        $metaForDb['optimizedTitle'] = $this->getOptimizedTitle();
-        $metaForDb['optimizedDescription'] = $this->getOptimizedDescription();
-        $metaForDb['optimizedImage'] = $this->getOptimizedImage();
-        $metaForDb['optimizedKeywords'] = $this->getOptimizedKeywords();
         $metaForDb['canonical'] = $this->getCanonical();
 
         foreach ($this->metaTypes as $metaType) {
