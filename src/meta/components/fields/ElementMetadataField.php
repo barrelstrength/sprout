@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\meta\components\fields;
 
+use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\meta\metadata\Metadata;
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
@@ -115,6 +116,8 @@ class ElementMetadataField extends Field
     {
         $schemas = MetaModule::getInstance()->schemaMetadata->getSchemaOptions();
         $schemaSubtypes = MetaModule::getInstance()->schemaMetadata->getSchemaSubtypes($schemas);
+
+        Sprout::getInstance()->vite->register('core/SproutCp.js');
 
         return Craft::$app->view->renderTemplate('sprout-module-meta/_components/fields/ElementMetadata/settings.twig', [
             'fieldId' => $this->id,

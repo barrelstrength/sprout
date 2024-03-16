@@ -237,18 +237,6 @@
         disabled: not isPro
     }) }}
 
-    {% do sprout.modules.core.vite.register('core/SproutCp.js', false, {
-        'depends': [
-            'craft\\web\\assets\\cp\\CpAsset'
-        ]
-    }) %}
-
-    {% do sprout.modules.core.vite.register('meta/Meta.js', false, {
-        'depends': [
-            'craft\\web\\assets\\cp\\CpAsset'
-        ]
-    }) %}
-
     {% js on ready %}
 
         new SproutMetaWebsiteIdentitySettings({
