@@ -12,7 +12,7 @@ class MetadataVariable
      *
      * @param array<string, mixed> $meta Array of supported meta values
      */
-    public function meta(array $meta = []): void
+    public function update(array $meta = []): void
     {
         if ($meta !== []) {
             MetaModule::getInstance()->optimizeMetadata->updateMeta($meta);
