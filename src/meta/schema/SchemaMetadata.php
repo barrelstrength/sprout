@@ -27,6 +27,11 @@ use yii\base\Component;
 
 class SchemaMetadata extends Component
 {
+    /**
+     * Only to be used by Sprout
+     */
+    public const INTERNAL_SPROUT_EVENT_REGISTER_SCHEMAS = 'registerInternalSproutSchemas';
+
     public const EVENT_REGISTER_SCHEMAS = 'registerSproutSchemas';
 
     /**
@@ -70,13 +75,23 @@ class SchemaMetadata extends Component
             $schemas[] = ProductSchema::class;
         }
 
-        $event = new RegisterComponentTypesEvent([
+        $internalEvent = new RegisterComponentTypesEvent([
             'types' => $schemas,
         ]);
 
-        $this->trigger(self::EVENT_REGISTER_SCHEMAS, $event);
+        $this->trigger(self::INTERNAL_SPROUT_EVENT_REGISTER_SCHEMAS, $internalEvent);
 
-        foreach ($event->types as $schema) {
+        $proEvent = new RegisterComponentTypesEvent([
+            'types' => $schemas,
+        ]);
+
+        $this->trigger(self::EVENT_REGISTER_SCHEMAS, $proEvent);
+
+        $availableSchemas = MetaModule::isPro()
+            ? array_merge($internalEvent->types, $proEvent->types)
+            : $internalEvent->types;
+
+        foreach ($availableSchemas as $schema) {
             $this->schemaTypes[] = $schema;
         }
 
