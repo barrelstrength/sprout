@@ -128,10 +128,10 @@ class m211101_000002_update_field_settings extends Migration
             $fieldData = Json::decode($row[$fieldColumn]);
 
             // If Editable Fields are the only thing in use (optimizedTitle, optimizedDescription, optimizedKeywords, optimizedImage)
-                // Migrate Editable to Meta Details (title, description, keywords, ogImage, twitterImage)
+            // Migrate Editable to Meta Details (title, description, keywords, ogImage, twitterImage)
             // If Editable + Meta Details are both in use
-                // If Editable field override is null, use Meta Details value
-                // If Meta Details is null, just use the Editable Field value
+            // If Editable field override is null, use Meta Details value
+            // If Meta Details is null, just use the Editable Field value
 
             if ($isManualTitle) {
                 $fieldData['title'] = $fieldData['optimizedTitle'] ?? $fieldData['title'];
