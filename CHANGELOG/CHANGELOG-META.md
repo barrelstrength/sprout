@@ -6,6 +6,7 @@
 
 - Added support for Craft 4
 - Metadata now renders automatically 
+- Added `@yaireo/tagify` dependency
 
 ### Changed
 
@@ -17,5 +18,7 @@
 
 ### Removed
 
-- Removed Sprout SEO Element Metadata "Editable Field" option 
-- Removed `displayFieldHandles` setting. Craft now supports Field relabeling.
+- Removed `{% sproutseo 'optimize' %}` tag
+- Removed Element Metadata "Editable Field" settings 
+- Removed `displayFieldHandles` setting. Craft now supports Field relabeling
+- Removed `jquery/tag-editor` dependency
