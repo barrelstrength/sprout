@@ -114,7 +114,7 @@ class OptimizeMetadata extends Component
         /** @var Globals $globals */
         $globals = $metadata['globals'];
         $ownershipTags = $globals->getOwnership();
-        
+
         foreach ($ownershipTags as $ownershipTag) {
             if (!$ownershipTag['metaTagName'] || !$ownershipTag['metaTagContent']) {
                 continue;
