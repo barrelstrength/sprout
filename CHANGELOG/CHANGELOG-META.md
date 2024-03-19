@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.1 - 2024-03-18
+
+### Fixed
+
+- Fixed an issue where Website Identity 'name' value was not being populated
+
 ## 4.2.0 - 2024-03-18
 
 ### Added

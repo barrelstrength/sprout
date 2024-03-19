@@ -209,7 +209,9 @@ class OpenGraphMetaType extends MetaType
             return trim($optimizedTitle) ?: null;
         }
 
-        return trim(MetaModule::getInstance()->optimizeMetadata->globals->getIdentity()['name']);
+        $identity = MetaModule::getInstance()->optimizeMetadata->globals->getIdentity();
+
+        return isset($identity['name']) ? trim($identity['name']) : null;
     }
 
     public function setOgTitle(?string $value): void
