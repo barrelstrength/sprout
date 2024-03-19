@@ -60,8 +60,8 @@ class WebsiteIdentityOrganizationSchema extends Schema
             $this->addOpeningHours($openingHours);
         }
 
-        if (isset($schema['address']) && $schema['address']) {
-            $this->addAddress('address');
+        if (isset($schema['locationAddressId']) && $schema['locationAddressId']) {
+            $this->addAddress('locationAddressId');
         }
 
         if (isset($schema['foundingDate']['date'])) {

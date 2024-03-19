@@ -390,7 +390,13 @@ abstract class Schema
      */
     public function addAddress($propertyName): void
     {
-        $addressModel = $this->globals->addressModel;
+        $locationAddressId = $this->globals->identity['locationAddressId'] ?? null;
+
+        if ($locationAddressId === null) {
+            return;
+        }
+
+        $addressModel = Craft::$app->elements->getElementById($locationAddressId);
 
         if (!$addressModel instanceof Address) {
             return;

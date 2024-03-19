@@ -34,8 +34,8 @@ class WebsiteIdentityPersonSchema extends Schema
         $this->addTelephone('telephone', $schema['telephone']);
         $this->addEmail('email', $schema['email']);
 
-        if (isset($schema['address']) && $schema['address']) {
-            $this->addAddress('address');
+        if (isset($schema['locationAddressId']) && $schema['locationAddressId']) {
+            $this->addAddress('locationAddressId');
         }
 
         if (isset($schema['image'])) {

@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed an issue where Website Identity 'name' value was not being populated
+- Fixed rendering of Website Identity 'address' value 
 
 ## 4.2.0 - 2024-03-18
 

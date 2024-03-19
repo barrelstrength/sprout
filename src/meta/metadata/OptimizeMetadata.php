@@ -240,7 +240,7 @@ class OptimizeMetadata extends Component
         $identity = $this->globals->getIdentity();
 
         // Website Identity Place
-        if (isset($identity['address']) && $identity['address']) {
+        if (isset($identity['locationAddressId']) && $identity['locationAddressId']) {
             $placeSchema = new WebsiteIdentityPlaceSchema();
             $placeSchema->addContext = true;
 
