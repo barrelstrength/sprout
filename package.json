@@ -4,7 +4,7 @@
     "dependencies": {
         "@yaireo/tagify": "^4.21.2",
         "alpinejs": "^3.13.0",
-        "apexcharts": "^3.44.0",
+        "apexcharts": "^3.47.0",
         "craftcms-sass": "^3.5.7",
         "datatables.net": "^1.13.6",
         "dom-autoscroller": "^2.3.4",
