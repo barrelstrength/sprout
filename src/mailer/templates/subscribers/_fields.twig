@@ -1,10 +1,17 @@
 {% import "_includes/forms" as forms %}
 
-{{ forms.checkboxGroupField({
-    label: "Subscriber Lists"|t('sprout-module-mailer'),
-    instructions: "The lists in which this user is subscribed."|t('sprout-module-mailer'),
-    id: 'sproutSubscriberListIds',
-    name: 'sproutSubscriberListIds',
-    options: options,
-    values: values,
-}) }}
+{% if options|length %}
+    {{ forms.checkboxGroupField({
+        label: "Subscriber Lists"|t('sprout-module-mailer'),
+        instructions: "The lists in which this user is subscribed."|t('sprout-module-mailer'),
+        id: 'sproutSubscriberListIds',
+        name: 'sproutSubscriberListIds',
+        options: options,
+        values: values,
+    }) }}
+{% else %}
+    {{ forms.field({
+        label: "Subscriber Lists"|t('sprout-module-mailer'),
+        instructions: "The lists in which this user is subscribed."|t('sprout-module-mailer'),
+    }, 'Subscriber Lists can be created in: Email->Audiences.'|t('sprout-module-mailer')) }}
+{% endif %}

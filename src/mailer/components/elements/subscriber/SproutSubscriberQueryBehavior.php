@@ -41,7 +41,7 @@ class SproutSubscriberQueryBehavior extends Behavior
 
         $this->owner->subQuery->innerJoin(
             ['subscriptions' => SproutTable::SUBSCRIPTIONS],
-            '[[users.id]] = [[subscriptions.userId]]'
+            '[[elements.id]] = [[subscriptions.userId]]'
         );
 
         $this->owner->subQuery->andWhere([
