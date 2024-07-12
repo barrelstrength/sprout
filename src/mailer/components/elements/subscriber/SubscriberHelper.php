@@ -4,7 +4,6 @@ namespace BarrelStrength\Sprout\mailer\components\elements\subscriber;
 
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
-use BarrelStrength\Sprout\mailer\components\elements\subscriber\fieldlayoutelements\SubscriberListsField;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
 use craft\elements\User;
@@ -29,19 +28,6 @@ class SubscriberHelper
 
         if ($settings->enableSubscriberLists) {
             $event->behaviors[SproutSubscriberQueryBehavior::class] = SproutSubscriberQueryBehavior::class;
-        }
-    }
-
-    public static function defineNativeSubscriberField(DefineFieldLayoutFieldsEvent $event): void
-    {
-        if ($event->sender->type !== User::class) {
-            return;
-        }
-
-        $settings = MailerModule::getInstance()->getSettings();
-
-        if ($settings->enableSubscriberLists) {
-            $event->fields[] = SubscriberListsField::class;
         }
     }
 

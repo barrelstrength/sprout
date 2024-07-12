@@ -83,10 +83,21 @@ class SubscriberListsController extends Controller
 
     protected function populateSubscriptionFromPost(): SubscriptionRecord
     {
+        $useLoggedInUserInfo = Craft::$app->getRequest()->getBodyParam('useLoggedInUserInfo');
+
+        if ($useLoggedInUserInfo) {
+            $user = Craft::$app->getUser()->getIdentity();
+            $userId = $user->id;
+            $email = $user->email;
+        } else {
+            $userId = Craft::$app->getRequest()->getBodyParam('user.id');
+            $email = Craft::$app->getRequest()->getBodyParam('user.email');
+        }
+
         $subscription = new SubscriptionRecord([
             'subscriberListId' => Craft::$app->getRequest()->getRequiredBodyParam('audience.id'),
-            'userId' => Craft::$app->getRequest()->getBodyParam('user.id'),
-            'email' => Craft::$app->getRequest()->getBodyParam('user.email'),
+            'userId' => $userId,
+            'email' => $email,
         ]);
 
         return $subscription;

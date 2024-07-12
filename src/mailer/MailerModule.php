@@ -18,6 +18,7 @@ use BarrelStrength\Sprout\mailer\components\datasources\SubscriberListDataSource
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\email\EmailElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SubscriberHelper;
+use BarrelStrength\Sprout\mailer\controllers\SubscriberListsUsersController;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypes;
 use BarrelStrength\Sprout\mailer\mailers\MailerHelper;
@@ -27,8 +28,11 @@ use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
+use craft\commerce\controllers\UsersController as CommerceUsersController;
+use craft\controllers\UsersController;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
+use craft\events\DefineEditUserScreensEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -134,10 +138,14 @@ class MailerModule extends Module implements SproutModuleInterface, MigrationInt
             FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             [AudienceElement::class, 'defineNativeFields']);
 
+
         Event::on(
-            FieldLayout::class,
-            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            [SubscriberHelper::class, 'defineNativeSubscriberField']);
+            UsersController::class,
+            UsersController::EVENT_DEFINE_EDIT_SCREENS,
+            static function(DefineEditUserScreensEvent $event) {
+            $event->screens[SubscriberListsUsersController::SCREEN_SUBSCRIBER_LISTS] = [
+                'label' => Craft::t('sprout-module-mailer', 'Subscriber Lists')];
+        });
 
         Event::on(
             FieldLayout::class,
@@ -319,6 +327,12 @@ class MailerModule extends Module implements SproutModuleInterface, MigrationInt
                 'sprout-module-mailer/audience/create-audience',
             'sprout/email/audiences' =>
                 'sprout-module-mailer/audience/audience-index-template',
+
+            // Subscriber Lists User Screen
+            'myaccount/sprout/subscriber-lists' =>
+                'sprout-module-mailer/subscriber-lists-users/index',
+            'users/<userId:\d+>/sprout/subscriber-lists' =>
+                'sprout-module-mailer/subscriber-lists-users/index',
 
             // Settings: Email Types
             'sprout/settings/email-types/new' =>

@@ -3,15 +3,29 @@
 {% if options|length %}
     {{ forms.checkboxGroupField({
         label: "Subscriber Lists"|t('sprout-module-mailer'),
-        instructions: "The lists in which this user is subscribed."|t('sprout-module-mailer'),
         id: 'sproutSubscriberListIds',
-        name: 'sproutSubscriberListIds',
+        name: 'audience[id]',
         options: options,
         values: values,
     }) }}
 {% else %}
     {{ forms.field({
         label: "Subscriber Lists"|t('sprout-module-mailer'),
-        instructions: "The lists in which this user is subscribed."|t('sprout-module-mailer'),
     }, 'Subscriber Lists can be created in: Email->Audiences.'|t('sprout-module-mailer')) }}
 {% endif %}
+
+{% if currentUser.admin %}
+<div class="readable">
+    <blockquote class="tip note">
+        {{ "Manage Subscriber Lists in <a href='{url}'>Email->Audiences</a>."|t('sprout-module-mailer', {
+            url: cpUrl('sprout/email/audiences')
+        })|raw }}
+    </blockquote>
+</div>
+{% endif %}
+
+{% do sprout.modules.core.vite.register('mailer/SubscriberListsScreen.js', false, {
+    'depends': [
+        'craft\\web\\assets\\cp\\CpAsset'
+    ]
+}) %}

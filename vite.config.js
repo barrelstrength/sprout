@@ -25,6 +25,7 @@ export default ({command}) => ({
                 adminTable: '/core/SproutAdminTable.js',
                 emailTypes: '/mailer/EmailTypesSettings.js',
                 sendEmailModal: '/mailer/SendEmailModal.js',
+                subscriberListsScreen: '/mailer/SubscriberListsScreen.js',
                 sentEmailDetailsModal: '/sent-email/SentEmailDetailsModal.js',
                 transactionalEmail: '/transactional/NotificationEvents.js',
                 // copyPaste: '/campaigns/CopyPaste.js',
