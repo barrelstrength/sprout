@@ -28,7 +28,6 @@ use BarrelStrength\Sprout\mailer\twig\MailerVariable;
 use BarrelStrength\Sprout\sentemail\SentEmailModule;
 use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
-use craft\commerce\controllers\UsersController as CommerceUsersController;
 use craft\controllers\UsersController;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
@@ -143,9 +142,10 @@ class MailerModule extends Module implements SproutModuleInterface, MigrationInt
             UsersController::class,
             UsersController::EVENT_DEFINE_EDIT_SCREENS,
             static function(DefineEditUserScreensEvent $event) {
-            $event->screens[SubscriberListsUsersController::SCREEN_SUBSCRIBER_LISTS] = [
-                'label' => Craft::t('sprout-module-mailer', 'Subscriber Lists')];
-        });
+                $event->screens[SubscriberListsUsersController::SCREEN_SUBSCRIBER_LISTS] = [
+                    'label' => Craft::t('sprout-module-mailer', 'Subscriber Lists'),
+                ];
+            });
 
         Event::on(
             FieldLayout::class,

@@ -5,17 +5,11 @@ namespace BarrelStrength\Sprout\mailer\controllers;
 use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType;
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\components\elements\subscriber\SproutSubscriberElementBehavior;
-use BarrelStrength\Sprout\mailer\MailerModule;
-use BarrelStrength\Sprout\mailer\subscriberlists\SubscriptionRecord;
 use Craft;
 use craft\controllers\EditUserTrait;
 use craft\elements\User;
-use craft\helpers\Html;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
-use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SubscriberListsUsersController extends Controller

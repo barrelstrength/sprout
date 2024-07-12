@@ -52,7 +52,7 @@ class SearchMetaType extends MetaType
 
         $identity = MetaModule::getInstance()->optimizeMetadata->globals->getIdentity();
 
-        return isset($identity['name']) ? trim($identity['name']. $appendTitleString) : null;
+        return isset($identity['name']) ? trim($identity['name'] . $appendTitleString) : null;
     }
 
     public function setTitle(?string $value): void

@@ -6,9 +6,7 @@ use BarrelStrength\Sprout\mailer\components\audiences\SubscriberListAudienceType
 use BarrelStrength\Sprout\mailer\components\elements\audience\AudienceElement;
 use BarrelStrength\Sprout\mailer\MailerModule;
 use Craft;
-use craft\elements\User;
 use craft\events\DefineBehaviorsEvent;
-use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterElementSourcesEvent;
 
 class SubscriberHelper
