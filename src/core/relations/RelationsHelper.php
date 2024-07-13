@@ -35,7 +35,7 @@ class RelationsHelper
             User::class,
         ];
 
-        if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
+        if (Craft::$app->getPlugins()->isPluginEnabled('commerce')) {
             $elementTypes[] = Product::class;
         }
 

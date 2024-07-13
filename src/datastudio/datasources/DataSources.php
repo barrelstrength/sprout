@@ -40,7 +40,7 @@ class DataSources extends Component
             UsersDataSource::class,
         ];
 
-        if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
+        if (Craft::$app->getPlugins()->isPluginEnabled('commerce')) {
             $internalDataSourceTypes = array_merge($internalDataSourceTypes, [
                 CommerceOrderHistoryDataSource::class,
                 CommerceProductRevenueDataSource::class,

@@ -27,7 +27,7 @@ use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
-use craft\web\Application;
+use craft\web\Application as WebApplication;
 use craft\web\UrlManager;
 use craft\web\View;
 use yii\base\Event;
@@ -119,8 +119,8 @@ class TransactionalModule extends Module implements SproutModuleInterface, Migra
             });
 
         Event::on(
-            Application::class,
-            Application::EVENT_INIT,
+            WebApplication::class,
+            WebApplication::EVENT_INIT,
             [$this->notificationEvents, 'registerNotificationEventHandlers']
         );
 

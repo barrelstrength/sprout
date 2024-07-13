@@ -29,7 +29,7 @@ class SitemapMetadata extends Component
             Category::class => CategorySitemapMetadata::class,
         ];
 
-        if (Craft::$app->getPlugins()->isPluginInstalled('commerce')) {
+        if (Craft::$app->getPlugins()->isPluginEnabled('commerce')) {
             $defaultMetadataTypes[Product::class] = ProductSitemapMetadata::class;
         }
 
