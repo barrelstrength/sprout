@@ -157,7 +157,7 @@ trait SystemMailerInstructionsTrait
         $mailingList->addRecipients($this->getRecipients($templateVariables));
 
         if ($mailingList->hasErrors()) {
-            $email->addError('mailerInstructionsSettings', $mailingList->getErrors());
+            $email->addError('mailerInstructionsSettings', 'Error building mailing list: ' . implode(', ', $mailingList->getErrors()));
         }
 
         return $mailingList;
