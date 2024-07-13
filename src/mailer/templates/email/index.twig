@@ -6,25 +6,29 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <div class="btn menubtn submit add icon">
-                {{ "New Email"|t('sprout-module-mailer') }}
-            </div>
-            <div class="menu">
-                <ul>
-                    {% for emailTypeUid, emailType in emailTypes %}
-                        <li>
-                            {{ tag('a', {
-                                href: cpUrl(newEmailUrl, {
-                                    emailTypeUid: emailTypeUid,
-                                }),
-                                text: emailType.name,
-                                class: 'menu-option',
-                            }) }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+            {% if emailTypes|length %}
+                <div class="btn menubtn submit add icon">
+                    {{ "New Email"|t('sprout-module-mailer') }}
+                </div>
+                <div class="menu">
+                    <ul>
+                        {% for emailTypeUid, emailType in emailTypes %}
+                            <li>
+                                {{ tag('a', {
+                                    href: cpUrl(newEmailUrl, {
+                                        emailTypeUid: emailTypeUid,
+                                    }),
+                                    text: emailType.name,
+                                    class: 'menu-option',
+                                }) }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{{ cpUrl('sprout/settings/email-types') }}" class="btn submit  icon">{{ "New Email Type"|t('sprout-module-mailer') }}</a>
+            {% endif %}
 
+        </div>
     </div>
 {% endblock %}
