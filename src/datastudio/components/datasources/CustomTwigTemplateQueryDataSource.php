@@ -211,6 +211,6 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         // Strip off the template root prefix and leave 'examples/' in the template path
         $sproutTemplatePath = ltrim($template, TemplateHelper::getSproutSiteTemplateRoot());
 
-        return Craft::getAlias('@Sprout/TemplatePath') . DIRECTORY_SEPARATOR . $sproutTemplatePath;
+        return Craft::getAlias('@Sprout/TemplatePath/' . $sproutTemplatePath);
     }
 }

@@ -106,7 +106,7 @@ trait SproutModuleTrait
     {
         $path = $path ? DIRECTORY_SEPARATOR . $path : null;
 
-        return Craft::getAlias('@Sprout/Assets' . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . static::getShortName() . $path);
+        return Craft::getAlias('@Sprout/Assets/dist/static/' . static::getShortName() . $path);
     }
 
     /**
