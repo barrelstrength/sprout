@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.0.3 - UNRELEASED
+
+### Fixed
+
+- Fixed TwigExpressionConditionRule logic if no Element Type exists ([#329], [#333PR])
+- Fixed use of `DIRECTORY_SEPARATOR` in alias methods ([#332], [#335])
+
+[#329]: https://github.com/barrelstrength/sprout/issues/329
+[#333PR]: https://github.com/barrelstrength/sprout/pull/333
+[#332]: https://github.com/barrelstrength/sprout/issues/332
+[#335]: https://github.com/barrelstrength/sprout/issues/335
+
 ## 5.0.0 - 2024-06-30
 
 ### Added

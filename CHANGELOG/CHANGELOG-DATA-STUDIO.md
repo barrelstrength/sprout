@@ -5,7 +5,10 @@
 ### Fixed 
 
 - Fixed Custom Twig Data Source `processHeaderRow` logic ([#336])
+- Fixed use of `DIRECTORY_SEPARATOR` in alias methods ([#332], [#335])
 
+[#332]: https://github.com/barrelstrength/sprout/issues/332
+[#335]: https://github.com/barrelstrength/sprout/issues/335
 [#336]: https://github.com/barrelstrength/sprout/issues/336
 
 ## 5.0.1 - 2024-06-30
