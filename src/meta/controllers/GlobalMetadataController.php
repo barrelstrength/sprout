@@ -175,9 +175,11 @@ class GlobalMetadataController extends Controller
         $address->title = Craft::t('sprout-module-meta', 'Website Identity');
         Craft::$app->getElements()->saveElement($address);
 
+        $identitySettings = $globals->getIdentity() ?? [];
+
         $updatedGlobals = new Globals([
             'siteId' => $site->id,
-            'identity' => array_merge($globals->getIdentity(), [
+            'identity' => array_merge($identitySettings, [
                 'locationAddressId' => $address->id,
             ]),
         ]);
