@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.3 - UNRELEASED
+
+### Fixed 
+
+- Fixed Custom Twig Data Source `processHeaderRow` logic ([#336])
+
+[#336]: https://github.com/barrelstrength/sprout/issues/336
+
 ## 5.0.1 - 2024-06-30
 
 ### Fixed 

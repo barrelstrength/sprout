@@ -176,23 +176,21 @@ class CustomTwigTemplateQueryDataSource extends DataSource
         // If we don't have default labels, we will use the first row as for our column headers
         // We do so by making the first row the keys of the second row
         if (empty($labels) && is_countable($rows) && count($rows) === 0) {
-            return;
-        }
+            $headerRow = [];
 
-        $headerRow = [];
+            /** @var array $firstRowColumns */
+            $firstRowColumns = array_shift($rows);
 
-        /** @var array $firstRowColumns */
-        $firstRowColumns = array_shift($rows);
+            if (is_countable($firstRowColumns) && count($firstRowColumns) > 0) {
+                $secondRow = array_shift($rows);
 
-        if (is_countable($firstRowColumns) && count($firstRowColumns) > 0) {
-            $secondRow = array_shift($rows);
-
-            foreach ($firstRowColumns as $key => $column) {
-                $headerRow[$column] = $secondRow[$key];
+                foreach ($firstRowColumns as $key => $column) {
+                    $headerRow[$column] = $secondRow[$key];
+                }
             }
-        }
 
-        array_unshift($rows, $headerRow);
+            array_unshift($rows, $headerRow);
+        }
     }
 
     /**
