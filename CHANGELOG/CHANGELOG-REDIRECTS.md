@@ -1,8 +1,16 @@
 # Changelog
 
-## 5.0.1 - 2024-06-30
+## 5.0.3 - UNRELEASED
 
 ### Fixed
+
+- Fixed error when running migrations in read-only environments ([#339])
+
+[#339]: https://github.com/barrelstrength/sprout/issues/339
+
+## 5.0.1 - 2024-06-30
+
+### Fixed 
 
 - Fixed potential logic error in migrations with field layout config settings
 

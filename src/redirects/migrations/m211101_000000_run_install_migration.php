@@ -2,7 +2,6 @@
 
 namespace BarrelStrength\Sprout\redirects\migrations;
 
-use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
@@ -30,32 +29,7 @@ class m211101_000000_run_install_migration extends Migration
 
     public function safeUp(): void
     {
-        $moduleSettingsKey = self::SPROUT_KEY . '.' . self::MODULE_ID;
-        $coreModuleSettingsKey = self::MODULES_KEY . '.' . self::MODULE_CLASS;
-
         $this->createTables();
-
-        // Create a Structure for new installs, we'll delete it later if upgrading
-        $structureUid = $this->createStructureAndGetUid();
-
-        $keyExists = Craft::$app->getProjectConfig()->get($moduleSettingsKey);
-
-        if (!$keyExists) {
-            Craft::$app->getProjectConfig()->set($moduleSettingsKey, [
-                'matchDefinition' => self::URL_WITHOUT_QUERY_STRINGS,
-                'queryStringStrategy' => self::REMOVE_QUERY_STRINGS,
-                'enable404RedirectLog' => false,
-                'trackRemoteIp' => false,
-                'total404Redirects' => 250,
-                'cleanupProbability' => 1000,
-                'structureUid' => $structureUid,
-                'globallyExcludedUrlPatterns' => null,
-            ], 'Update Sprout CP Settings for: ' . $moduleSettingsKey);
-
-            Craft::$app->getProjectConfig()->set($coreModuleSettingsKey, [
-                'enabled' => true,
-            ]);
-        }
     }
 
     public function safeDown(): bool
@@ -63,18 +37,6 @@ class m211101_000000_run_install_migration extends Migration
         echo self::class . " cannot be reverted.\n";
 
         return false;
-    }
-
-    public function createStructureAndGetUid(): string
-    {
-        $structure = new Structure();
-        $structure->maxLevels = 1;
-
-        if (!$structure->save()) {
-            throw new ElementNotFoundException('Unable to create Structure Element for Redirects.');
-        }
-
-        return $structure->uid;
     }
 
     public function createTables(): void
@@ -107,23 +69,5 @@ class m211101_000000_run_install_migration extends Migration
 
             $this->addForeignKey(null, self::REDIRECTS_TABLE, ['id'], Table::ELEMENTS, ['id'], 'CASCADE', 'CASCADE');
         }
-    }
-
-    /**
-     * Returns true if install migration is being run as part of a fresh install
-     *
-     * Checks if the old, shared datasources table exists to determine if this is an upgrade migration
-     */
-    public function isNewInstallation(): bool
-    {
-        $oldSettingsExist = (new Query())
-            ->select('model')
-            ->from([self::SETTINGS_TABLE])
-            ->where([
-                'model' => 'barrelstrength\sproutbaseredirects\models\Settings',
-            ])
-            ->exists();
-
-        return !$oldSettingsExist;
     }
 }
