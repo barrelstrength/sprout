@@ -90,6 +90,9 @@ class m211101_000001_migrate_settings_table_to_projectconfig extends Migration
             $newSettings['total404Redirects'] = (int)$newSettings['total404Redirects'];
         }
 
+        // Ensure the setting exists, there is a scenario where it may not
+        $newSettings['cleanupProbability'] = $newSettings['cleanupProbability'] ?? 1000;
+
         if (!is_int($newSettings['cleanupProbability'])) {
             $newSettings['cleanupProbability'] = (int)$newSettings['cleanupProbability'];
         }
