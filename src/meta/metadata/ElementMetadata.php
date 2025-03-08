@@ -153,7 +153,7 @@ class ElementMetadata extends Component
          */
         preg_match_all('#{ ?(object\.)?(?<handles>[a-zA-Z_]*)#', $value, $matches);
 
-        $matchedHandlesCount = isset($matches['handles'])
+        $matchedHandlesCount = !empty($matches['handles'])
             ? count($matches['handles'])
             : 0;
 
