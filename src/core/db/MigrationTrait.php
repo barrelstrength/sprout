@@ -19,7 +19,7 @@ trait MigrationTrait
     public function getMigrator(): MigrationManager
     {
         $migrationNamespace = 'BarrelStrength\\Sprout\\' . static::getShortNameSlug() . '\\migrations';
-        $migrationBasePath = Craft::getAlias('@BarrelStrength/Sprout' . DIRECTORY_SEPARATOR . static::getShortNameSlug());
+        $migrationBasePath = Craft::getAlias('@BarrelStrength/Sprout/' . static::getShortNameSlug());
         $migrationPath = $migrationBasePath . DIRECTORY_SEPARATOR . 'migrations';
 
         /** @var MigrationManager $migrator */
