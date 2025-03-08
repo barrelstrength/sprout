@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.0.3 - UNRELEASED
+
+### Changed
+
+- Improved logic when no Email Type exists
+
+### Fixed
+
+- Added default card attribute support to email field layouts
+
 ## 4.2.5 - 2024-05-24
 
 ### Fixed

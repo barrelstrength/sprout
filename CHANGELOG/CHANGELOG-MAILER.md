@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.3 - UNRELEASED
+
+### Changed
+
+- Added Subscriber List Screen in place of Subscriber Lists Field
+
 ## 4.2.7 - 2024-05-26
 
 ### Fixed

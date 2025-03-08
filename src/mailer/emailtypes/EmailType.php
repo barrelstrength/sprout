@@ -243,4 +243,9 @@ abstract class EmailType extends SavableComponent implements EmailTypeInterface
 
         return $config;
     }
+
+    public static function defaultCardAttributes(): array
+    {
+        return [];
+    }
 }

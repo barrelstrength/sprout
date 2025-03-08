@@ -121,4 +121,9 @@ abstract class Mailer extends SavableComponent implements MailerInterface
     {
         return $settings;
     }
+
+    public static function defaultCardAttributes(): array
+    {
+        return [];
+    }
 }
