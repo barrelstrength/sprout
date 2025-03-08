@@ -64,6 +64,6 @@ return [
     'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'.' => 'Twig expression matches if evaluates to \'true\', \'1\', \'on\', or \'yes\'.',
     '{% if object.field == \'send\' %}true{% endif %}' => '{% if object.field == \'send\' %}true{% endif %}',
     'Fields' => 'Fields',
-    'Is Revision' => 'Is Revision',
-    'Is Draft' => 'Is Draft',
+    'Relative URL' => 'Relative URL',
+    'Current URL' => 'Current URL'
 ];

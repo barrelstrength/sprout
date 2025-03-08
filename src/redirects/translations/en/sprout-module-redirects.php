@@ -87,4 +87,5 @@ wp-admin(.*)$',
     'Sprout Redirects [pro] enables content managers to manage redirects and short URLs, monitor 404s, configure advanced redirect rules, and ensure all your content is findable.' => 'Sprout Redirects [pro] enables content managers to manage redirects and short URLs, monitor 404s, configure advanced redirect rules, and ensure all your content is findable.',
     'UID' => 'UID',
     'ID' => 'ID',
+    'Select site' => 'Select site'
 ];
