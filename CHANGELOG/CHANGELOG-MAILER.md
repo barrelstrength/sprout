@@ -1,10 +1,10 @@
 # Changelog
 
-## 5.0.3 - UNRELEASED
+## 5.0.0 - UNRELEASED
 
-### Changed
+### Added
 
-- Added Subscriber List Screen in place of Subscriber Lists Field
+- Added Craft 5 compatibility
 
 ## 4.2.7 - 2024-05-26
 

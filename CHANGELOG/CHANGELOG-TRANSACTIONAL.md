@@ -1,14 +1,10 @@
 # Changelog
 
-## 5.0.3 - UNRELEASED
+## 5.0.0 - UNRELEASED
 
-### Changed
+### Added
 
-- Improved logic when no Email Type exists
-
-### Fixed
-
-- Added default card attribute support to email field layouts
+- Added Craft 5 compatibility
 
 ## 4.2.5 - 2024-05-24
 

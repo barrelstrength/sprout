@@ -8,7 +8,7 @@
 
 [#330]: https://github.com/barrelstrength/sprout/issues/330
 
-## 5.0.0-beta.1 - 2024-07-05
+## 5.0.0 - 2024-07-05
 
 ### Added
 
