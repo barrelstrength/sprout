@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\meta\metadata;
 use BarrelStrength\Sprout\meta\components\fields\ElementMetadataField;
 use BarrelStrength\Sprout\meta\MetaModule;
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\db\Query;
@@ -93,7 +92,7 @@ class ElementMetadata extends Component
                 ];
             }
         }
-        
+
         return $metaFieldHandles;
     }
 

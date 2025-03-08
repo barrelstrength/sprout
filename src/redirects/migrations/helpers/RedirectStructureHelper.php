@@ -14,7 +14,7 @@ class RedirectStructureHelper
 
     public static function updateStructureInDbToMatchUidInProjectConfig(
         string $structureUidFromConfig,
-        string $structureUidInDb
+        string $structureUidInDb,
     ): void {
         if ($structureUidFromConfig === $structureUidInDb) {
             return;

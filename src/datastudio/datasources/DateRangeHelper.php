@@ -200,7 +200,7 @@ class DateRangeHelper
             // timestamp or 1-January 12:00:00 AM
             $startDate = strtotime('1-January-' . $current_year);
             $endDate = strtotime('31-March-' . $current_year);
-        // timestamp or 1-April 12:00:00 AM means end of 31 March
+            // timestamp or 1-April 12:00:00 AM means end of 31 March
         } elseif ($current_month >= 7 && $current_month <= 9) {
             // timestamp or 1-April 12:00:00 AM
             $startDate = strtotime('1-April-' . $current_year);

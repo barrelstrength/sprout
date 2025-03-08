@@ -3,10 +3,7 @@
 namespace BarrelStrength\Sprout\redirects\migrations;
 
 use craft\db\Migration;
-use craft\db\Query;
 use craft\db\Table;
-use craft\errors\ElementNotFoundException;
-use craft\records\Structure;
 
 /**
  * @role permanent
