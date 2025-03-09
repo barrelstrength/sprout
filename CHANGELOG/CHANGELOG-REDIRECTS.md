@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.2.9 - UNRELEASED
+
+### Fixed
+
+- Fixed error when running migrations in read-only environments ([#339])
+
+[#339]: https://github.com/barrelstrength/sprout/issues/339
+
 ## 4.2.5 - 2024-05-24
 
 ### Fixed
