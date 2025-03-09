@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.2.9 - UNRELEASED
+
+### Fixed
+
+- Fixed issue where some legacy settings could exist in content table data ([#326])
+
+[#326]: https://github.com/barrelstrength/sprout/issues/326
+
 ## 4.2.5 - 2024-05-24
 
 ### Fixed

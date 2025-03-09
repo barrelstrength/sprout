@@ -44,6 +44,15 @@ class Metadata extends Model
         // Schema properties will be derived from global and field settings
         $this->setSchemaProperties();
 
+        // unset legacy values from content if they still exist
+        unset(
+            $config['enableMetaDetailsSearch'],
+            $config['enableMetaDetailsOpenGraph'],
+            $config['enableMetaDetailsTwitterCard'],
+            $config['enableMetaDetailsGeo'],
+            $config['enableMetaDetailsRobots'],
+        );
+
         parent::__construct($config);
     }
 
