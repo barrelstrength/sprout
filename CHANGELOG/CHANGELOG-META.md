@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.2.9 - UNRELEASED
+## 4.2.9 - 2025-03-09
 
 ### Fixed
 
