@@ -68,13 +68,15 @@ class DataSources extends Component
 
         $types = array_combine($availableDataSourceTypes, $availableDataSourceTypes);
 
-        $currentUser = Craft::$app->getUser()->getIdentity();
+        if (!Craft::$app->getRequest()->getIsConsoleRequest()) {
+            $currentUser = Craft::$app->getUser()->getIdentity();
 
-        $types = array_filter($types, static function($type) use ($currentUser) {
-            $dataSourcePermission = DataStudioModule::p('viewReports:' . $type);
+            $types = array_filter($types, static function($type) use ($currentUser) {
+                $dataSourcePermission = DataStudioModule::p('viewReports:' . $type);
 
-            return class_exists($type) && $currentUser->can($dataSourcePermission);
-        });
+                return class_exists($type) && $currentUser->can($dataSourcePermission);
+            });
+        }
 
         uasort($types, static function($a, $b): int {
             /**

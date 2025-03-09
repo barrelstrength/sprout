@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.2.6 - UNRELEASED
+
+### Fixed 
+
+- Fixed error where method called from console commands attempted to access user identity ([#327])
+- Fixed translation category reference
+
+[#327]: https://github.com/barrelstrength/sprout/issues/327
+
 ## 4.2.5 - 2024-05-18
 
 ### Fixed
