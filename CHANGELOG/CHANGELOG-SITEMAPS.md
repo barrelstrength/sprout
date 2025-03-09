@@ -5,7 +5,7 @@
 ### Added
 
 - Added Craft 5 compatibility
-- 
+
 ## 4.2.5 - 2024-05-24
 
 ### Fixed
