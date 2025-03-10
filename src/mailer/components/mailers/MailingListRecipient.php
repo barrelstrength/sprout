@@ -74,7 +74,11 @@ class MailingListRecipient extends Model
      */
     public static function stringToMailingListRecipientList(string $recipients): array
     {
-        $recipientsArray = array_map('trim', explode(',', $recipients));
+        if (str_contains($recipients, '{')) {
+            $recipientsArray = [$recipients];
+        } else {
+            $recipientsArray = array_map('trim', explode(',', $recipients));
+        }
 
         $recipients = array_map(static function($recipient) {
             $mailingListRecipient = new MailingListRecipient();
