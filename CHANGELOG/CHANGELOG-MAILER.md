@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.4 - UNRELEASED
+
+### Fixed
+
+- Improved support for dynamic email recipients in To field ([#325])
+
+[#325]: https://github.com/barrelstrength/sprout/issues/325
+
 ## 4.2.7 - 2024-05-26
 
 ### Fixed
