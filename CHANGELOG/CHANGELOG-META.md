@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.4 - UNRELEASED
+
+### Fixed
+
+- Fixes image management for Open Graph and Twitter Meta Details fields ([#345])
+
+[#345]: https://github.com/barrelstrength/sprout/issues/345
+
 ## 5.0.3 - 2025-03-07
 
 ### Fixed

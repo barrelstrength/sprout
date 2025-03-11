@@ -37,12 +37,16 @@
         }) }}
 
         {% set twitterImageId = meta.getTwitterImage() %}
-        {% set twitterImageElement = twitterImageId ? craft.app.elements.getElementById(twitterImageId) : null %}
+        {% if twitterImageId %}
+            {% set twitterImageElement = [craft.app.elements.getElementById(twitterImageId)] %}
+        {% else %}
+            {% set twitterImageElement = [] %}
+        {% endif %}
 
         {% set hasVolumes = craft.app.getVolumes().getAllVolumes() %}
 
         {% set imageElementSelect = forms.elementSelect({
-            elements: twitterImageElement ? [twitterImageElement] : [],
+            elements: twitterImageElement ? twitterImageElement : [],
             sourceElementId: [twitterImageId],
             elementType: 'craft\\elements\\Asset',
             sources: '*',

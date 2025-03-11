@@ -47,7 +47,7 @@
         {% set hasVolumes = craft.app.getVolumes().getAllVolumes() %}
 
         {% set imageElementSelect = forms.elementSelect({
-            elements: ogImageElement ? [ogImageElement] : [],
+            elements: ogImageElement ? ogImageElement : [],
             sourceElementId: [meta.ogImage],
             elementType: 'craft\\elements\\Asset',
             sources: '*',
@@ -55,8 +55,8 @@
             name: field.handle~'[metadata][ogImage]',
             jsClass: 'Craft.AssetSelectInput',
             addButtonLabel: 'Select Image'|t('sprout-module-meta'),
-            limit: 1,
-            criteria: {kind: ['image'], siteId : null}
+            limit: 2,
+            criteria: {kind: ['image'], siteId : null},
         }) %}
 
         {{ forms.field({
