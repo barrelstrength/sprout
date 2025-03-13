@@ -215,4 +215,9 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
 
         return $config;
     }
+
+    public static function defaultCardAttributes(): array
+    {
+        return [];
+    }
 }
