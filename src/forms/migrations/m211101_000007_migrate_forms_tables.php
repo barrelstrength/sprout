@@ -3,7 +3,7 @@
 namespace BarrelStrength\Sprout\forms\migrations;
 
 use BarrelStrength\Sprout\core\components\fieldlayoutelements\LightswitchField;
-use BarrelStrength\Sprout\uris\links\fieldlayoutelements\EnhancedLinkField;
+use BarrelStrength\Sprout\forms\components\formtypes\fieldlayoutelements\RedirectUrlField;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
@@ -429,7 +429,7 @@ class m211101_000007_migrate_forms_tables extends Migration
                 'attribute' => 'submitButtonText',
                 'uid' => 'SPROUT-UID-FORMS-SUBMIT-BUTTON-TEXT-FIELD',
             ]),
-            new EnhancedLinkField([
+            new RedirectUrlField([
                 'label' => Craft::t('sprout-module-forms', 'Redirect Page'),
                 'instructions' => Craft::t('sprout-module-forms', 'Where should the user be redirected upon form submission? Leave blank to redirect user back to the form.'),
                 'attribute' => 'redirectUri',

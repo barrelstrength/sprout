@@ -16,7 +16,7 @@
 {%- set errorClass = renderingOptions.errorClass is defined ? renderingOptions.errorClass : 'errors' -%}
 {%- set id = renderingOptions.id is defined ? renderingOptions.id : form.handle ~ '-form' -%}
 {%- set class = renderingOptions.class is defined ? renderingOptions.class : form.handle ~ '-form' -%}
-{%- set redirectUri = form.formType.redirectUrl.getUrl() -%}
+{%- set redirectUri = form.formType.getRedirectUrl() ?? null -%}
 {#{%- set rules = form.getRules() -%}#}
 
 {%- set globalErrorListHtml -%}

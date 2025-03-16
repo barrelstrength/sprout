@@ -33,31 +33,17 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
     public function setAttributes($values, $safeOnly = true): void
     {
         // @todo - How to clean this up and use across form types?
-        $redirectUrl = $values['redirectUrl'] ?? null;
+        $redirectLinkData = $values['redirectUrl'] ?? null;
 
-        if ($redirectUrl && !$redirectUrl instanceof LinkInterface) {
-            $type = $values['redirectUrl']['type'] ?? null;
-
-            if ($type !== null) {
-                if (isset($values['redirectUrl'][$type])) {
-                    // When saving form element page
-                    $attributes = array_merge(
-                        ['type' => $type],
-                        $values['redirectUrl'][$type] ?? []
-                    );
-                } else {
-                    // When loading Form Element page
-                    $attributes = $values['redirectUrl'];
-                }
-
-                $values['redirectUrl'] = Links::toLinkField($attributes) ?: null;
-            }
+        if (!$redirectLinkData instanceof LinkInterface) {
+            $link = RedirectUrlField::getNewRedirectLinkField();
+            $values['redirectUrl'] = $link->normalizeValueFromRequest($redirectLinkData, null);
         }
-
-        parent::setAttributes($values, $safeOnly);
 
         // reindex keys to allow re-ordering
         $this->formTypeMetadata = array_values($this->formTypeMetadata);
+
+        parent::setAttributes($values, $safeOnly);
     }
 
     //  General
@@ -82,6 +68,11 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
     public ?string $defaultUploadLocationSubpath = null;
 
     public array $formTypeMetadata = [];
+
+    // Native Fields
+    public LinkData|array|null $redirectUrl = null;
+
+    public bool $enableCaptchas = false;
 
     public ?FormElement $form = null;
 
@@ -176,6 +167,24 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
         }
 
         return $options;
+    }
+
+    public function getSettings(): array
+    {
+        $settings = parent::getSettings();
+
+        foreach ($settings as $key => $value) {
+            if ($key === 'redirectUrl' && $value !== null) {
+                $settings['redirectUrl'] = $value->serialize();
+            }
+        }
+
+        return $settings;
+    }
+
+    public function getRedirectUrl(): ?string
+    {
+        return $this->redirectUrl?->getValue();
     }
 
     protected function defineRules(): array

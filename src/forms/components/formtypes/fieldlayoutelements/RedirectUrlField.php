@@ -2,11 +2,13 @@
 
 namespace BarrelStrength\Sprout\forms\components\formtypes\fieldlayoutelements;
 
-use BarrelStrength\Sprout\uris\links\fieldlayoutelements\EnhancedLinkField;
 use Craft;
 use craft\base\ElementInterface;
+use craft\fieldlayoutelements\TextField;
+use craft\fields\data\LinkData;
+use craft\fields\Link;
 
-class RedirectUrlField extends EnhancedLinkField
+class RedirectUrlField extends TextField
 {
     public string $attribute = 'redirectUrl';
 
@@ -27,8 +29,31 @@ class RedirectUrlField extends EnhancedLinkField
         return 'sign-post';
     }
 
-    protected function value(?ElementInterface $element = null): mixed
+    protected function value(?ElementInterface $element = null): ?LinkData
     {
-        return $element?->getFormType()?->getRedirectUrl();
+        return $element?->getFormType()?->redirectUrl;
+    }
+
+    public static function getNewRedirectLinkField(): Link
+    {
+        return new Link([
+            'types' => [
+                'current-url',
+                'relative-url',
+                'category',
+                'entry',
+                'url',
+            ],
+        ]);
+    }
+
+    protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string
+    {
+        $link = self::getNewRedirectLinkField();
+        $link->handle = 'formTypeSettings[' . $this->attribute . ']';
+
+        $html = $link->getInputHtml($this->value($element), $element);
+
+        return $html;
     }
 }
