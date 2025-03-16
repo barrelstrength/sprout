@@ -3,13 +3,14 @@
 namespace BarrelStrength\Sprout\forms\formtypes;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\components\formtypes\fieldlayoutelements\RedirectUrlField;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
-use BarrelStrength\Sprout\uris\links\LinkInterface;
-use BarrelStrength\Sprout\uris\links\Links;
 use Craft;
 use craft\base\FieldLayoutProviderInterface;
 use craft\base\SavableComponent;
+use craft\fields\data\LinkData;
+use craft\fields\linktypes\BaseLinkType;
 use craft\models\FieldLayout;
 
 abstract class FormType extends SavableComponent implements FormTypeInterface, FieldLayoutProviderInterface
@@ -35,7 +36,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
         // @todo - How to clean this up and use across form types?
         $redirectLinkData = $values['redirectUrl'] ?? null;
 
-        if (!$redirectLinkData instanceof LinkInterface) {
+        if (!$redirectLinkData instanceof BaseLinkType) {
             $link = RedirectUrlField::getNewRedirectLinkField();
             $values['redirectUrl'] = $link->normalizeValueFromRequest($redirectLinkData, null);
         }

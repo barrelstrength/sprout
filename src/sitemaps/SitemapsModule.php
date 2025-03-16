@@ -16,7 +16,6 @@ use BarrelStrength\Sprout\core\Sprout;
 use BarrelStrength\Sprout\core\twig\SproutVariable;
 use BarrelStrength\Sprout\sitemaps\sitemapmetadata\SitemapMetadata;
 use BarrelStrength\Sprout\sitemaps\sitemaps\XmlSitemap;
-use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -41,8 +40,6 @@ class SitemapsModule extends Module implements SproutModuleInterface, MigrationI
 
     public static function getInstance(): SitemapsModule
     {
-        UrisModule::getInstance();
-
         /** @var SitemapsModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-sitemaps');
 

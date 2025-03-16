@@ -173,17 +173,17 @@ class m211101_000007_migrate_forms_tables extends Migration
                 if (filter_var($oldRedirectUri, FILTER_VALIDATE_URL)) {
                     $rows[$key]['redirectUri'] = Json::encode([
                         'url' => $oldRedirectUri,
-                        'type' => 'BarrelStrength\Sprout\uris\components\links\AbsoluteUrl',
+                        'type' => 'BarrelStrength\Sprout\core\components\linktypes\CurrentUrl',
                     ]);
                 } elseif (!empty($oldRedirectUri)) {
                     $rows[$key]['redirectUri'] = Json::encode([
                         'url' => $oldRedirectUri,
-                        'type' => 'BarrelStrength\Sprout\uris\components\links\RelativeUrl',
+                        'type' => 'BarrelStrength\Sprout\core\components\linktypes\RelativeUrl',
                     ]);
                 } else {
                     $rows[$key]['redirectUri'] = Json::encode([
                         'url' => null,
-                        'type' => 'BarrelStrength\\Sprout\\uris\\components\\links\\CurrentPageUrl',
+                        'type' => 'BarrelStrength\Sprout\core\components\linktypes\CurrentUrl',
                     ]);
                 }
 

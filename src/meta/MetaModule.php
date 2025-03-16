@@ -22,7 +22,6 @@ use BarrelStrength\Sprout\meta\metadata\MetadataVariable;
 use BarrelStrength\Sprout\meta\metadata\OptimizeMetadata;
 use BarrelStrength\Sprout\meta\metadata\OptimizeMetadataHelper;
 use BarrelStrength\Sprout\meta\schema\SchemaMetadata;
-use BarrelStrength\Sprout\uris\UrisModule;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
@@ -55,7 +54,6 @@ class MetaModule extends Module implements SproutModuleInterface, MigrationInter
     public static function getInstance(): MetaModule
     {
         FieldsModule::getInstance();
-        UrisModule::getInstance();
 
         /** @var MetaModule $module */
         $module = Sprout::getSproutModule(static::class, 'sprout-module-meta');
