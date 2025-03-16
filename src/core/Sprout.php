@@ -2,6 +2,7 @@
 
 namespace BarrelStrength\Sprout\core;
 
+use BarrelStrength\Sprout\core\components\linktypes\AbsoluteUrl;
 use BarrelStrength\Sprout\core\components\linktypes\CurrentUrl;
 use BarrelStrength\Sprout\core\components\linktypes\RelativeUrl;
 use BarrelStrength\Sprout\core\db\MigrationInterface;
@@ -200,6 +201,7 @@ class Sprout extends Module implements SproutModuleInterface, MigrationInterface
             static function(RegisterComponentTypesEvent $event): void {
                 $event->types[] = CurrentUrl::class;
                 $event->types[] = RelativeUrl::class;
+                $event->types[] = AbsoluteUrl::class;
             });
     }
 

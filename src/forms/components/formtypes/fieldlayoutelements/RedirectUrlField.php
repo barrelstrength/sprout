@@ -40,9 +40,9 @@ class RedirectUrlField extends TextField
             'types' => [
                 'current-url',
                 'relative-url',
+                'absolute-url',
                 'category',
                 'entry',
-                'url',
             ],
         ]);
     }
