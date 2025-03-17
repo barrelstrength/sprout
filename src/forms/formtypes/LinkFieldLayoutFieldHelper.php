@@ -45,7 +45,11 @@ class LinkFieldLayoutFieldHelper
 
     public static function toFieldLayoutField(array $config): ?LinkData
     {
-        $typeId = $config['type'];
+        $typeId = $config['type'] ?? null;
+
+        if (!$typeId) {
+            return null;
+        }
 
         $value = $config[$typeId]['value'] // First scenario is POST data with all link types in it
             ?? $config['value']  // Second scenario is from the db, with only the saved value

@@ -63,11 +63,12 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
     /**
      * Most of the above form type settings are handled by saving the form type in the project config
      * Some settings, need to be stored on the Form Elements and those attributes should be included here.
+     *
      * @todo can redirect URL be included as a trait?
      */
     public function settingsAttributes(): array
     {
-        $attributes =  parent::settingsAttributes();
+        $attributes = parent::settingsAttributes();
 
         return array_merge($attributes, [
             'redirectUrl',
