@@ -788,7 +788,7 @@ class FormElement extends Element implements FieldLayoutProviderInterface
     {
         $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
         $formType?->setAttributes($this->formTypeSettings, false);
-        
+
         if (!$formType) {
             throw new MissingComponentException('No Form Type found.');
         }

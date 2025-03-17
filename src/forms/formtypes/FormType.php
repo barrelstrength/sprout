@@ -13,22 +13,6 @@ use craft\models\FieldLayout;
 
 abstract class FormType extends SavableComponent implements FormTypeInterface, FieldLayoutProviderInterface
 {
-    public function __construct($config = [])
-    {
-        //if (isset($config['redirectUrl'])) {
-        //    $config['redirectUrl'] = Links::toLinkField($config['redirectUrl']) ?: null;
-        //}
-
-        //if (isset($config['submissionMethod']) || $config['submissionMethod'] === null) {
-        unset($config['submissionMethod']);
-        //}
-        //if (isset($config['errorDisplayMethod']) || $config['errorDisplayMethod'] === null) {
-        unset($config['errorDisplayMethod']);
-        //}
-
-        parent::__construct($config);
-    }
-
     public function setAttributes($values, $safeOnly = true): void
     {
         if (array_key_exists('redirectUrl', $values) && is_array($values['redirectUrl'])) {
@@ -182,7 +166,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
     public function getSettings(): array
     {
         $settings = parent::getSettings();
-        
+
         foreach ($settings as $key => $value) {
             if ($key === 'redirectUrl' && $value !== null) {
                 $settings['redirectUrl'] = $value->serialize();
