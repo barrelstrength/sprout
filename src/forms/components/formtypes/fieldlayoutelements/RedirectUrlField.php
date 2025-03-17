@@ -2,6 +2,8 @@
 
 namespace BarrelStrength\Sprout\forms\components\formtypes\fieldlayoutelements;
 
+use BarrelStrength\Sprout\forms\components\elements\FormElement;
+use BarrelStrength\Sprout\forms\formtypes\LinkFieldLayoutFieldHelper;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TextField;
@@ -13,6 +15,21 @@ class RedirectUrlField extends TextField
     public string $attribute = 'redirectUrl';
 
     public ?string $name = 'formTypeSettings[redirectUrl]';
+
+    public ?LinkData $linkData = null;
+
+    public static function getNewRedirectLinkField(array $settings = []): Link
+    {
+        return new Link(array_merge([
+            'types' => [
+                'current-url',
+                'relative-url',
+                'absolute-url',
+                'category',
+                'entry',
+            ],
+        ], $settings));
+    }
 
     protected function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
@@ -31,20 +48,17 @@ class RedirectUrlField extends TextField
 
     protected function value(?ElementInterface $element = null): ?LinkData
     {
-        return $element?->getFormType()?->redirectUrl;
-    }
+        if (!$element instanceof FormElement) {
+            return null;
+        }
 
-    public static function getNewRedirectLinkField(): Link
-    {
-        return new Link([
-            'types' => [
-                'current-url',
-                'relative-url',
-                'absolute-url',
-                'category',
-                'entry',
-            ],
-        ]);
+        if (!$this->linkData) {
+            $config = $element->formTypeSettings[$this->attribute] ?? [];
+            $linkData = LinkFieldLayoutFieldHelper::toFieldLayoutField($config);
+            $this->linkData = $linkData;
+        }
+
+        return $this->linkData;
     }
 
     protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string

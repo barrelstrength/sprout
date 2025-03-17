@@ -128,14 +128,7 @@ class FormElement extends Element implements FieldLayoutProviderInterface
             return $this->_formType;
         }
 
-        $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
-        $formType?->setAttributes($this->formTypeSettings, false);
-
-        if (!$formType) {
-            throw new MissingComponentException('No Form Type found.');
-        }
-
-        $formType->form = $this;
+        $formType = $this->getFromTypeFromElement();
 
         return $this->_formType = $formType;
     }
@@ -437,6 +430,8 @@ class FormElement extends Element implements FieldLayoutProviderInterface
             $record->formTypeUid = $this->formTypeUid;
 
             $formType = $this->getFormType();
+            $formType->setAttributes($this->formTypeSettings, false);
+
             $record->formTypeSettings = $formType->getSettings();
 
             if ($this->duplicateOf) {
@@ -789,6 +784,20 @@ class FormElement extends Element implements FieldLayoutProviderInterface
         };
     }
 
+    public function getFromTypeFromElement(): FormType
+    {
+        $formType = FormTypeHelper::getFormTypeByUid($this->formTypeUid);
+        $formType?->setAttributes($this->formTypeSettings, false);
+        
+        if (!$formType) {
+            throw new MissingComponentException('No Form Type found.');
+        }
+
+        $formType->form = $this;
+
+        return $formType;
+    }
+
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
@@ -811,9 +820,21 @@ class FormElement extends Element implements FieldLayoutProviderInterface
 
         $rules[] = [['submissionFieldLayoutConfig'], 'safe'];
         $rules[] = [['formTypeUid'], 'safe'];
-        $rules[] = [['formTypeSettings'], 'safe'];
+        $rules[] = [['formTypeSettings'], 'validateFormTypeSettings'];
 
         return $rules;
+    }
+
+    public function validateFormTypeSettings($attribute, $params): void
+    {
+        $formType = $this->getFromTypeFromElement();
+
+        if (!$formType->validate()) {
+            foreach ($formType->getErrors() as $error) {
+                // @todo this needs to be a string, but could be handled better and also passed back to the model so the errors display properly inline
+                $this->addError($attribute, $error[0] ?? Craft::t('sprout-module-forms', 'Invalid Form Type Settings'));
+            }
+        }
     }
 
     public function __construct($config = [])

@@ -29,10 +29,7 @@ class AbsoluteUrl extends Url
 
     public function validateValue(string $value, ?string &$error = null): bool
     {
-        // strip off any starting '/'
-        //$value = ltrim($value, '/');
-
-        return !str_starts_with($value, 'http');
+        return filter_var($value, FILTER_VALIDATE_URL);
     }
 
     public function supports(string $value): bool

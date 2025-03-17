@@ -32,6 +32,7 @@ class FormsSettings extends BaseConfig
 
     public array $formMetadata = [];
 
+    /** @todo - move to FormType? */
     public string $defaultSubmissionMethod = 'sync';
 
     public array $integrationTypes = [];

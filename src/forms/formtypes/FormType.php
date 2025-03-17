@@ -3,14 +3,12 @@
 namespace BarrelStrength\Sprout\forms\formtypes;
 
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
-use BarrelStrength\Sprout\forms\components\formtypes\fieldlayoutelements\RedirectUrlField;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\mailer\emailtypes\EmailTypeHelper;
 use Craft;
 use craft\base\FieldLayoutProviderInterface;
 use craft\base\SavableComponent;
 use craft\fields\data\LinkData;
-use craft\fields\linktypes\BaseLinkType;
 use craft\models\FieldLayout;
 
 abstract class FormType extends SavableComponent implements FormTypeInterface, FieldLayoutProviderInterface
@@ -33,12 +31,8 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
 
     public function setAttributes($values, $safeOnly = true): void
     {
-        // @todo - How to clean this up and use across form types?
-        $redirectLinkData = $values['redirectUrl'] ?? null;
-
-        if (!$redirectLinkData instanceof BaseLinkType) {
-            $link = RedirectUrlField::getNewRedirectLinkField();
-            $values['redirectUrl'] = $link->normalizeValueFromRequest($redirectLinkData, null);
+        if (array_key_exists('redirectUrl', $values) && is_array($values['redirectUrl'])) {
+            $values['redirectUrl'] = LinkFieldLayoutFieldHelper::toFieldLayoutField($values['redirectUrl']);
         }
 
         // reindex keys to allow re-ordering
@@ -75,11 +69,26 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
 
     public bool $enableCaptchas = false;
 
+    // Misc
     public ?FormElement $form = null;
 
     protected ?FieldLayout $_fieldLayout = null;
 
     public ?string $uid = null;
+
+    /**
+     * Most of the above form type settings are handled by saving the form type in the project config
+     * Some settings, need to be stored on the Form Elements and those attributes should be included here.
+     * @todo can redirect URL be included as a trait?
+     */
+    public function settingsAttributes(): array
+    {
+        $attributes =  parent::settingsAttributes();
+
+        return array_merge($attributes, [
+            'redirectUrl',
+        ]);
+    }
 
     public function getIncludeTemplates(): array
     {
@@ -173,7 +182,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
     public function getSettings(): array
     {
         $settings = parent::getSettings();
-
+        
         foreach ($settings as $key => $value) {
             if ($key === 'redirectUrl' && $value !== null) {
                 $settings['redirectUrl'] = $value->serialize();
@@ -185,7 +194,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
 
     public function getRedirectUrl(): ?string
     {
-        return $this->redirectUrl?->getValue();
+        return $this->redirectUrl?->getUrl();
     }
 
     protected function defineRules(): array
@@ -193,8 +202,24 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
         $rules = parent::defineRules();
 
         $rules[] = [['name', 'handle'], 'required'];
+        $rules[] = ['redirectUrl', 'validateRedirectUrl'];
 
         return $rules;
+    }
+
+    public function validateRedirectUrl($attribute, $params): void
+    {
+        if ($this->redirectUrl) {
+            $linkType = $this->redirectUrl->getType();
+            $value = $this->redirectUrl->getValue();
+
+            $linkTypeClass = LinkFieldLayoutFieldHelper::getLinkTypeClassById($linkType);
+            $link = new $linkTypeClass();
+
+            if (!$link->validateValue($value)) {
+                $this->addError($attribute, Craft::t('sprout-module-forms', 'Invalid redirect URL'));
+            }
+        }
     }
 
     public function getConfig(): array

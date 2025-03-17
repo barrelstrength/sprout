@@ -43,6 +43,7 @@ class CurrentUrl extends BaseTextLinkType
         }
 
         // This might not be the URL of the exact page but it should confirm that the appended value creates a valid URL
+        //@todo can call getUrl() on LinkData to get the full URL
         $url = UrlHelper::siteUrl($value, null, null, $site->id);
 
         return filter_var($url, FILTER_VALIDATE_URL);
