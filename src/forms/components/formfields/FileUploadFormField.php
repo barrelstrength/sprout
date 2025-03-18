@@ -30,6 +30,10 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
         if (!$this->defaultUploadLocationSubpath) {
             $this->defaultUploadLocationSubpath = $this->formType->defaultUploadLocationSubpath;
         }
+
+        if (!$this->sources) {
+            $this->allowedAssetVolumes = $this->formType->allowedAssetVolumes;
+        }
     }
 
     public static function getGroupLabel(): string
@@ -68,13 +72,11 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
     {
         $variables = parent::settingsTemplateVariables();
 
-        $settings = FormsModule::getInstance()->getSettings();
-
         $allowedSourceOptions = $this->getSourceOptions();
 
-        if ($settings->allowedAssetVolumes !== '*') {
+        if ($this->formType->allowedAssetVolumes !== '*') {
             foreach ($allowedSourceOptions as $key => $sourceOption) {
-                if (!in_array($sourceOption['value'], $settings->allowedAssetVolumes, false)) {
+                if (!in_array($sourceOption['value'], $this->formType->allowedAssetVolumes, false)) {
                     unset($allowedSourceOptions[$key]);
                 }
             }
