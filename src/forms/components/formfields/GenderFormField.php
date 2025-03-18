@@ -61,28 +61,10 @@ class GenderFormField extends Field implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'errorMessage' => '',
             'renderingOptions' => $renderingOptions,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('gender/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'errorMessage' => '',
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {

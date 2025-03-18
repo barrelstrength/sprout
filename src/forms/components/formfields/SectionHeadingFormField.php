@@ -131,23 +131,4 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
             'output' => $this->output,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $name = $this->handle;
-    //    $namespaceInputId = $this->getNamespace() . '-' . $name;
-    //
-    //    if ($this->notes === null) {
-    //        $this->notes = '';
-    //    }
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('sectionheading/input',
-    //        [
-    //            'id' => $namespaceInputId,
-    //            'field' => $this,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 }

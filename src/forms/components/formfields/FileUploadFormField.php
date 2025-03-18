@@ -113,27 +113,10 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'multiple' => $multiple,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('fileupload/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

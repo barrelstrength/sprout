@@ -117,28 +117,11 @@ class OptInFormField extends Field implements FormFieldInterface, PreviewableFie
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'label' => $this->optInMessage,
             'selectedByDefault' => $this->selectedByDefault,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('optin/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getElementConditionRuleType(): array|string|null
     {

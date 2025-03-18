@@ -49,27 +49,10 @@ class MultiSelectFormField extends CraftMultiSelect implements FormFieldInterfac
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'options' => $this->options,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('multiselect/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

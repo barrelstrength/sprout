@@ -70,12 +70,6 @@ class PrivateNotesFormField extends Field implements FormFieldInterface
         );
     }
 
-    public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    {
-        // Only visible and updated in the Control Panel
-        return TemplateHelper::raw('');
-    }
-
     public function getCompatibleCraftFieldTypes(): array
     {
         return [

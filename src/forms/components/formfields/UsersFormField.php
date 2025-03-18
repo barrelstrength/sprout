@@ -52,8 +52,6 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'users' => $users,
             'multiple' => $multiple,
@@ -61,23 +59,6 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
             'usernameFormat' => $this->usernameFormat,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $users = FormsModule::getInstance()->frontEndFields->getFrontEndUsers($this->getSettings());
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('users/input', [
-    //            'name' => $this->handle,
-    //            'value' => $value->ids(),
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //            'users' => $users,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

@@ -100,8 +100,6 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'displayMultipleFields' => $this->displayMultipleFields,
             'displayPrefix' => $this->displayPrefix,
@@ -109,25 +107,6 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
             'displaySuffix' => $this->displaySuffix,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    if ($this->displayMultipleFields) {
-    //        $this->hasMultipleLabels = true;
-    //    }
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('name/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     /**
      * Prepare our Name for use as an NameFormFieldData

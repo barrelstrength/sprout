@@ -91,35 +91,12 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'pattern' => $this->customPattern,
             'errorMessage' => $errorMessage,
             'renderingOptions' => $renderingOptions,
             'placeholder' => $placeholder,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $errorMessage = FormsModule::getInstance()->urlField->getErrorMessage($this);
-    //    $placeholder = $this->placeholder ?? '';
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('url/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'pattern' => $this->customPattern,
-    //            'errorMessage' => $errorMessage,
-    //            'renderingOptions' => $renderingOptions,
-    //            'placeholder' => $placeholder,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getPreviewHtml(mixed $value, ElementInterface $element): string
     {

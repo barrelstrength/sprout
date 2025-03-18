@@ -123,29 +123,12 @@ class NumberFormField extends CraftNumber implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'min' => $this->min,
             'max' => $this->max,
             'decimals' => $this->decimals,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('number/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

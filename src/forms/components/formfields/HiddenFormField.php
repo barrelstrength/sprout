@@ -90,34 +90,9 @@ class HiddenFormField extends Field implements FormFieldInterface, PreviewableFi
         return [
             'name' => $this->handle,
             'value' => $value,
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    if ($this->value) {
-    //        try {
-    //            $value = Craft::$app->getView()->renderObjectTemplate($this->value, Forms::getFormMetadataVariables());
-    //        } catch (Exception $exception) {
-    //            Craft::error($exception->getMessage(), __METHOD__);
-    //        }
-    //    }
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('hidden/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value,
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getElementConditionRuleType(): array|string|null
     {

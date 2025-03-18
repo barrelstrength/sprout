@@ -50,32 +50,12 @@ class EntriesFormField extends CraftEntries implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'entries' => $entries,
             'multiple' => $multiple,
             'selectionLabel' => $this->selectionLabel,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $entries = FormsModule::getInstance()->frontEndFields->getFrontEndEntries($this->getSettings());
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('entries/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value->ids(),
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //            'entries' => $entries,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

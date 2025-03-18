@@ -50,32 +50,12 @@ class CategoriesFormField extends CraftCategories implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'categories' => $categories,
             'multiple' => $multiple,
             'selectionLabel' => $this->selectionLabel,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $categories = FormsModule::getInstance()->frontEndFields->getFrontEndCategories($this->getSettings());
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('categories/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value->ids(),
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //            'categories' => $categories,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {

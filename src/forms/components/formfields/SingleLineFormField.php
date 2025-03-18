@@ -108,16 +108,6 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
         ];
     }
 
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $rendered = Craft::$app->getView()->renderTemplate('singleline/input',
-    //        $this->getFrontEndInputVariables($value, $submission, $renderingOptions)
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
-
     public function getSearchKeywords(mixed $value, ElementInterface $element): string
     {
         $value = (string)$value;

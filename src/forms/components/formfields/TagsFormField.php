@@ -49,31 +49,11 @@ class TagsFormField extends CraftTags implements FormFieldInterface
         return [
             'name' => $this->handle,
             'value' => $value->ids(),
-            //'field' => $this,
-            //'submission' => $submission,
             'renderingOptions' => $renderingOptions,
             'tags' => $tags,
             'selectionLabel' => $this->selectionLabel,
         ];
     }
-
-    //public function getFrontEndInputHtml($value, SubmissionElement $submission, array $renderingOptions = null): Markup
-    //{
-    //    $tags = FormsModule::getInstance()->frontEndFields->getFrontEndTags($this->getSettings());
-    //
-    //    $rendered = Craft::$app->getView()->renderTemplate('tags/input',
-    //        [
-    //            'name' => $this->handle,
-    //            'value' => $value->ids(),
-    //            'field' => $this,
-    //            'submission' => $submission,
-    //            'renderingOptions' => $renderingOptions,
-    //            'tags' => $tags,
-    //        ]
-    //    );
-    //
-    //    return TemplateHelper::raw($rendered);
-    //}
 
     public function getCompatibleCraftFieldTypes(): array
     {
