@@ -222,9 +222,7 @@ class SubmissionsController extends BaseController
         $submissionId = null;
         $request = Craft::$app->getRequest();
 
-        $settings = FormsModule::getInstance()->getSettings();
-
-        if ($request->getIsCpRequest() || $settings->enableEditSubmissionViaFrontEnd) {
+        if ($request->getIsCpRequest() || $this->form->getFormType()->enableEditSubmissionViaFrontEnd) {
             $submissionId = $request->getBodyParam('submissionId');
         }
 
@@ -233,6 +231,7 @@ class SubmissionsController extends BaseController
         }
 
         $submission = FormsModule::getInstance()->submissions->getSubmissionById($submissionId);
+
 
         if (!$submission instanceof ElementInterface) {
             $message = Craft::t('sprout-module-forms', 'No submission exists with the given ID: {id}', [

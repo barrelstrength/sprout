@@ -32,9 +32,6 @@ class FormsSettings extends BaseConfig
 
     public array $formMetadata = [];
 
-    /** @todo - move to FormType? */
-    public string $defaultSubmissionMethod = 'sync';
-
     public array $integrationTypes = [];
 
     public array $formTypes = [];
@@ -51,12 +48,6 @@ class FormsSettings extends BaseConfig
 
     public array $captchaSettings = self::DEFAULT_CAPTCHA_SETTINGS;
 
-    public bool $enableEditSubmissionViaFrontEnd = false;
-
-    public string|array $allowedAssetVolumes = '*';
-
-    public string $defaultUploadLocationSubpath = '';
-
     /**
      * The Field Layout Config that will be saved to Project Config
      */
@@ -65,13 +56,6 @@ class FormsSettings extends BaseConfig
     public function defaultSidebarTab(string $value): self
     {
         $this->defaultSidebarTab = $value;
-
-        return $this;
-    }
-
-    public function defaultSubmissionMethod(string $value): self
-    {
-        $this->defaultSubmissionMethod = $value;
 
         return $this;
     }
@@ -114,27 +98,6 @@ class FormsSettings extends BaseConfig
     public function captchaSettings(array $value): self
     {
         $this->captchaSettings = $value;
-
-        return $this;
-    }
-
-    public function enableEditSubmissionViaFrontEnd(bool $value): self
-    {
-        $this->enableEditSubmissionViaFrontEnd = $value;
-
-        return $this;
-    }
-
-    public function allowedAssetVolumes(string|array $value): self
-    {
-        $this->allowedAssetVolumes = $value;
-
-        return $this;
-    }
-
-    public function defaultUploadLocationSubpath(string|null $value): self
-    {
-        $this->defaultUploadLocationSubpath = $value;
 
         return $this;
     }

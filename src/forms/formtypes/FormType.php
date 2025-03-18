@@ -42,7 +42,7 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
 
     public bool $enableEditSubmissionViaFrontEnd = false;
 
-    public array|string $allowedAssetVolumes = [];
+    public array|string $allowedAssetVolumes = '*';
 
     public ?string $defaultUploadLocationSubpath = null;
 
