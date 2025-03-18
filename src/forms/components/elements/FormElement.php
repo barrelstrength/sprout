@@ -433,7 +433,7 @@ class FormElement extends Element implements FieldLayoutProviderInterface
             $formType->setAttributes($this->formTypeSettings, false);
 
             $record->formTypeSettings = $formType->getSettings();
-
+            
             if ($this->duplicateOf) {
                 $record->name = $this->name . ' - ' . Craft::t('sprout-module-forms', 'Copy');
                 $record->handle = StringHelper::toHandle($this->name) . '_' . StringHelper::randomString(6);
@@ -708,7 +708,15 @@ class FormElement extends Element implements FieldLayoutProviderInterface
         $formFieldsService = FormsModule::getInstance()->formFields;
 
         $fieldTypes = $formFieldsService->getFormFieldTypes();
-        $formFields = ComponentHelper::typesToInstances($fieldTypes);
+
+        $formType = $this->getFormType();
+
+        // Map field types to field instances
+        $formFields = array_map(static function($type) use ($formType) {
+            return new $type([
+                'formType' => $formType,
+            ]);
+        }, $fieldTypes);
 
         $fieldTypesByGroup = $formFieldsService->getDefaultFormFieldTypesByGroup();
 

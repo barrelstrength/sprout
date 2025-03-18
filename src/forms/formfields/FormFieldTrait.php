@@ -6,6 +6,7 @@ use BarrelStrength\Sprout\forms\components\elements\SubmissionElement;
 use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\forms\RenderingOptionsHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
+use BarrelStrength\Sprout\forms\formtypes\FormType;
 use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\Html;
@@ -15,6 +16,8 @@ use yii\web\ForbiddenHttpException;
 
 trait FormFieldTrait
 {
+    public ?FormType $formType = null;
+
     protected array $compatibleCraftFields = [];
 
     protected string $originalTemplatesPath;

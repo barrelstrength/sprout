@@ -27,11 +27,8 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
     {
         parent::__construct($config);
 
-        // @todo - can we do this somewhere else? Fields get loaded by Craft and this
-        // enables the form module when it doesn't need to be enabled.
-        if (FormsModule::isEnabled() && !$this->defaultUploadLocationSubpath) {
-            $settings = FormsModule::getInstance()->getSettings();
-            $this->defaultUploadLocationSubpath = $settings->defaultUploadLocationSubpath;
+        if (!$this->defaultUploadLocationSubpath) {
+            $this->defaultUploadLocationSubpath = $this->formType->defaultUploadLocationSubpath;
         }
     }
 
