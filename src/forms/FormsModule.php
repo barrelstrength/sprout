@@ -2,6 +2,9 @@
 
 namespace BarrelStrength\Sprout\forms;
 
+use BarrelStrength\Sprout\core\components\linktypes\AbsoluteUrl;
+use BarrelStrength\Sprout\core\components\linktypes\CurrentUrl;
+use BarrelStrength\Sprout\core\components\linktypes\RelativeUrl;
 use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\editions\EditionTrait;
@@ -45,6 +48,7 @@ use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\fields\Link;
 use craft\models\FieldLayout;
 use craft\services\Elements;
 use craft\services\Fields;
@@ -262,6 +266,16 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
         //    FormTypesController::INTERNAL_SPROUT_EVENT_DEFINE_FORM_FEATURE_SETTINGS,
         //    [WorkflowTabFormFeature::class, 'defineFormTypeSettings']
         //);
+
+        // @todo - Consider moving to Sprout Module
+        Event::on(
+            Link::class,
+            Link::EVENT_REGISTER_LINK_TYPES,
+            static function(RegisterComponentTypesEvent $event): void {
+                $event->types[] = CurrentUrl::class;
+                $event->types[] = RelativeUrl::class;
+                $event->types[] = AbsoluteUrl::class;
+            });
 
         $this->registerProjectConfigEventListeners();
     }

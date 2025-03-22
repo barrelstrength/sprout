@@ -2,9 +2,6 @@
 
 namespace BarrelStrength\Sprout\core;
 
-use BarrelStrength\Sprout\core\components\linktypes\AbsoluteUrl;
-use BarrelStrength\Sprout\core\components\linktypes\CurrentUrl;
-use BarrelStrength\Sprout\core\components\linktypes\RelativeUrl;
 use BarrelStrength\Sprout\core\db\MigrationInterface;
 use BarrelStrength\Sprout\core\db\MigrationTrait;
 use BarrelStrength\Sprout\core\helpers\ConditionHelper;
@@ -21,15 +18,12 @@ use BarrelStrength\Sprout\core\twig\TemplateHelper;
 use BarrelStrength\Sprout\core\web\assetbundles\vite\ViteAssetBundle;
 use Craft;
 use craft\base\conditions\BaseCondition;
-use craft\ckeditor\events\DefineLinkOptionsEvent;
 use craft\console\Application as ConsoleApplication;
-use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterCpSettingsEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
-use craft\fields\Link;
 use craft\helpers\App;
 use craft\services\UserPermissions;
 use craft\web\Application as WebApplication;
@@ -194,15 +188,6 @@ class Sprout extends Module implements SproutModuleInterface, MigrationInterface
             BaseCondition::EVENT_REGISTER_CONDITION_RULES,
             [ConditionHelper::class, 'registerConditionRuleTypes']
         );
-
-        Event::on(
-            Link::class,
-            Link::EVENT_REGISTER_LINK_TYPES,
-            static function(RegisterComponentTypesEvent $event): void {
-                $event->types[] = CurrentUrl::class;
-                $event->types[] = RelativeUrl::class;
-                $event->types[] = AbsoluteUrl::class;
-            });
     }
 
     public function createSettingsModel(): SproutSettings
