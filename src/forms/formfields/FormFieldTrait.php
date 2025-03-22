@@ -16,11 +16,16 @@ use yii\web\ForbiddenHttpException;
 
 trait FormFieldTrait
 {
-    public ?FormType $formType = null;
-
     protected array $compatibleCraftFields = [];
 
     protected string $originalTemplatesPath;
+
+    protected ?FormType $formType = null;
+
+    public function setFormType(?FormType $formType): void
+    {
+        $this->formType = $formType;
+    }
 
     public static function getGroupLabel(): string
     {

@@ -711,7 +711,6 @@ class FormElement extends Element implements FieldLayoutProviderInterface
 
         $formType = $this->getFormType();
 
-        // Map field types to field instances
         $formFields = array_map(static function($type) use ($formType) {
             return new $type([
                 'formType' => $formType,
@@ -721,8 +720,6 @@ class FormElement extends Element implements FieldLayoutProviderInterface
         $fieldTypesByGroup = $formFieldsService->getDefaultFormFieldTypesByGroup();
 
         $sourceFields = [];
-
-        $formType = $this->getFormType();
 
         foreach ($fieldTypesByGroup as $groupName => $typesInGroup) {
             foreach ($typesInGroup as $type) {

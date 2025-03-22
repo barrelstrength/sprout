@@ -58,9 +58,12 @@ class GenderFormField extends Field implements FormFieldInterface
 
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
+        $options = $this->getGenderOptions($value);
+
         return [
             'name' => $this->handle,
             'value' => $value,
+            'options' => $options,
             'errorMessage' => '',
             'renderingOptions' => $renderingOptions,
         ];
@@ -80,5 +83,47 @@ class GenderFormField extends Field implements FormFieldInterface
                 'value' => $value,
             ]
         );
+    }
+
+    private function getGenderOptions($value): array
+    {
+        $options = [
+            [
+                'label' => Craft::t('sprout-module-forms', 'Select...'),
+                'value' => ''
+            ],
+            [
+                'label' => Craft::t('sprout-module-forms', 'Female'),
+                'value' => 'female'
+            ],
+            [
+                'label' => Craft::t('sprout-module-forms', 'Male'),
+                'value' => 'male',
+            ],
+            [
+                'label' => Craft::t('sprout-module-forms', 'Prefer not to say'),
+                'value' => 'decline'
+            ]
+        ];
+
+        $gender = $value ?? null;
+
+        $options[] = [
+            'optgroup' => Craft::t('sprout-module-forms', 'Custom')
+        ];
+
+        if (!array_key_exists($gender, ['female' => 0, 'male' => 1, 'decline' => 2]) && $gender != '') {
+            $options[] = [
+                'label' => $gender,
+                'value' => $gender
+            ];
+        }
+
+        $options[] = [
+            'label' => Craft::t('sprout-module-forms', 'Add Custom'),
+            'value' => 'custom'
+        ];
+
+        return $options;
     }
 }
