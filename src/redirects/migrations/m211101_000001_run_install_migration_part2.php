@@ -64,10 +64,12 @@ class m211101_000001_run_install_migration_part2 extends Migration
             ]);
         }
 
-        RedirectStructureHelper::updateStructureInDbToMatchUidInProjectConfig(
-            $structureUidFromConfig,
-            $structureUidInDb
-        );
+        if ($structureUidFromConfig !== null) {
+            RedirectStructureHelper::updateStructureInDbToMatchUidInProjectConfig(
+                $structureUidFromConfig,
+                $structureUidInDb
+            );
+        }
     }
 
     public function safeDown(): bool
