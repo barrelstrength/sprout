@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.6 - 2025-03-21
+
+### Fixed
+
+- Fixed error where migration variable could be null ([#346])
+
+[#346]: https://github.com/barrelstrength/sprout/issues/346
+
 ## 5.0.3 - 2025-03-07
 
 ### Fixed
