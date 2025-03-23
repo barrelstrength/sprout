@@ -62,10 +62,13 @@ class SubmissionsHelper
             ] + $config);
 
         if (is_array($tabConfigs)) {
-            $layout->setTabs(array_values(array_map(
+            $fieldLayoutTabs = array_map(
                 static fn(array $tabConfig) => self::createSubmissionFieldLayoutTabFromConfig($form, $layout, $tabConfig),
                 $tabConfigs,
-            )));
+            );
+            // Re-index the array
+            $tabConfig = array_values($fieldLayoutTabs);
+            $layout->setTabs($tabConfig);
         } else {
             $layout->setTabs([]);
         }
@@ -84,12 +87,11 @@ class SubmissionsHelper
 
         foreach ($elementConfigs as $layoutElementConfig) {
             $field = Craft::$app->getFields()->getFieldByUid($layoutElementConfig['fieldUid'] ?? null);
+            $fieldConfig = $layoutElementConfig['formField'] ?? null;
+            $fieldSettings = $fieldConfig['settings'] ?? [];
 
             if ($field === null) {
-                $fieldConfig = $layoutElementConfig['formField'] ?? null;
-
                 $fieldType = $fieldConfig['type'];
-                $fieldSettings = $fieldConfig['settings'] ?? [];
 
                 unset(
                     $fieldConfig['type'],
@@ -97,9 +99,10 @@ class SubmissionsHelper
                 );
 
                 $field = new $fieldType($fieldConfig);
-                $field->setAttributes($fieldSettings, false);
                 $field->context = 'sproutForms:' . $form->id;
             }
+
+            $field->setAttributes($fieldSettings, false);
 
             $label = $layoutElementConfig['formField']['name'] ?? null;
             $instructions = $layoutElementConfig['formField']['instructions'] ?? null;
