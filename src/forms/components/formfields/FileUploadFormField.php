@@ -14,8 +14,6 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     /**
      * Override the CP default for front-end use.
      */

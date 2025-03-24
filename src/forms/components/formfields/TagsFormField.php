@@ -14,8 +14,6 @@ class TagsFormField extends CraftTags implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     protected string $settingsTemplate = 'sprout-module-forms/_components/fields/elementfieldsettings';
 
     public static function getGroupLabel(): string

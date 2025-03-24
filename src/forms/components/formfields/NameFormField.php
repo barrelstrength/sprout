@@ -20,8 +20,6 @@ class NameFormField extends Field implements FormFieldInterface, PreviewableFiel
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public bool $displayMultipleFields = false;
 
     public bool $displayMiddleName = false;

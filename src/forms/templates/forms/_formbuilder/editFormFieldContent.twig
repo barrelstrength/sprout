@@ -41,14 +41,60 @@
 
 {% endset %}
 
-{% set metadataTabHtml %}
-    {% namespace 'formField' %}
+<div id="form-field-general">
+    {# Don't wrap namespace around div.id or tab switching won't work       #}
+    {% namespace 'layoutElement' %}
+        {% if field.allowRequired() %}
+            {{ forms.lightswitchField({
+                label: "Required"|t('sprout-module-forms'),
+                name: 'required',
+                on: fieldLayoutElement.required ?? false,
+                first: true
+            }) }}
+        {% else %}
+            {{ hiddenInput('required', '') }}
+        {% endif %}
+
+        {{ fieldTabHtml }}
+    {% endnamespace %}
+</div>
+
+<div id="form-field-advanced" class="hidden">
+    {% namespace 'formField[layoutElement]' %}
         {{ forms.textField({
             label: 'Handle'|t('sprout-module-forms'),
             name: 'handle',
             value: field.handle,
             errors: field.getErrors('handle'),
             required: true,
+            first: true,
+        }) }}
+
+        {{ forms.editableTableField({
+            label: "CSS Classes"|t('sprout-module-forms'),
+            instructions: "Custom CSS classes that will be added to the container."|t('sprout-module-forms'),
+            name: 'cssClasses',
+            cols: {
+                label: {
+                    type: 'singleline',
+                    heading: "Attribute"|t('sprout-module-forms'),
+                    info: 'i.e. color, font-size, etc.',
+                    class: 'code',
+                },
+                metadatumFormat: {
+                    type: 'singleline',
+                    heading: "Value"|t('sprout-module-forms'),
+                    info: 'i.e. red, 12px, etc.',
+                    class: 'code',
+                },
+            }|filter,
+            rows: field.cssClasses,
+            fullWidth: true,
+            allowAdd: true,
+            allowReorder: true,
+            allowDelete: true,
+            minRows: 0,
+            errors: field.getErrors('cssClasses'),
         }) }}
 
         <hr>
@@ -69,36 +115,19 @@
             disabled: true,
         }) }}
     {% endnamespace %}
-{% endset %}
-
-<div id="form-field-general">
-    {# Don't wrap namespace around div.id or tab switching won't work       #}
-    {% namespace 'layoutElement' %}
-        {% if field.allowRequired() %}
-            {{ forms.lightswitchField({
-                label: "Required"|t('sprout-module-forms'),
-                name: 'required',
-                on: fieldLayoutElement.required ?? false,
-                first: true
-            }) }}
-        {% else %}
-            {{ hiddenInput('required', '') }}
-        {% endif %}
-
-        {{ fieldTabHtml }}
-    {% endnamespace %}
-</div>
-
-<div id="form-field-metadata" class="hidden">
-    {% namespace 'layoutElement' %}
-        {{ metadataTabHtml }}
-    {% endnamespace %}
 </div>
 
 <div id="form-field-rules" class="hidden">
-
-    {#    {{ conditionHtml|raw }} #}
-
+{#    {% namespace 'formField[layoutElement]' %}#}
+{#    {{ forms.field({#}
+{#        label: 'Current User Condition'|t('sprout-module-forms'),#}
+{#        instructions: 'Only show for front-end users who match the following rules:'|t('sprout-module-forms'),#}
+{#    }, userCondition.getBuilderHtml()) }}#}
+{#    {{ forms.field({#}
+{#        label: 'Form Condition'|t('sprout-module-forms'),#}
+{#        instructions: 'Only show on forms that match the following rules:'|t('sprout-module-forms'),#}
+{#    }, elementCondition.getBuilderHtml()) }}#}
+{#    {% endnamespace %}#}
 </div>
 
 {# {% js %} #}

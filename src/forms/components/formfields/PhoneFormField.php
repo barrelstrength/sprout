@@ -22,8 +22,6 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public ?string $customPatternErrorMessage = null;
 
     public ?bool $limitToSingleCountry = null;

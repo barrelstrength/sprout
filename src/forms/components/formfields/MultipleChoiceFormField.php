@@ -13,8 +13,6 @@ class MultipleChoiceFormField extends CraftRadioButtons implements FormFieldInte
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public static function getGroupLabel(): string
     {
         return GroupLabel::label(GroupLabel::GROUP_COMMON);

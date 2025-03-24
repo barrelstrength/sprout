@@ -20,8 +20,6 @@ class DateFormField extends CraftDate implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     // YYYY-MM-DD
     public ?string $minimumDate = null;
 

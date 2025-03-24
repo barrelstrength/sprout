@@ -18,8 +18,6 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public string $notes = '';
 
     public bool $hideLabel = false;

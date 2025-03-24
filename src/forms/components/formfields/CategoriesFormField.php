@@ -14,8 +14,6 @@ class CategoriesFormField extends CraftCategories implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     protected string $settingsTemplate = 'sprout-module-forms/_components/fields/Categories/settings';
 
     public static function getGroupLabel(): string

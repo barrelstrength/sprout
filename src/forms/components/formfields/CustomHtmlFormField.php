@@ -15,8 +15,6 @@ class CustomHtmlFormField extends Field implements FormFieldInterface, Previewab
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public string $customHtml = '';
 
     public bool $hideLabel = false;

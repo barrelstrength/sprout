@@ -17,8 +17,6 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public ?string $customPatternErrorMessage = null;
 
     public ?bool $customPatternToggle = null;

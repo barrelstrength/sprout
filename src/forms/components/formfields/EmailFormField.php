@@ -28,8 +28,6 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
 
     public bool $uniqueEmail = false;
 
-    public string $cssClasses = '';
-
     public ?string $placeholder = null;
 
     public static function getGroupLabel(): string

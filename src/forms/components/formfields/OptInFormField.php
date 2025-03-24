@@ -22,8 +22,6 @@ class OptInFormField extends Field implements FormFieldInterface, PreviewableFie
 {
     use FormFieldTrait;
 
-    public ?string $cssClasses = null;
-
     public ?string $optInMessage = null;
 
     public bool $selectedByDefault = false;

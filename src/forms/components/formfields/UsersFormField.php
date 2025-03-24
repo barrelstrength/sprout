@@ -14,8 +14,6 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public string $usernameFormat = 'fullName';
 
     protected string $settingsTemplate = 'sprout-module-forms/_components/fields/Users/settings';

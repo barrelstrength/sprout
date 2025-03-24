@@ -16,8 +16,6 @@ class ParagraphFormField extends CraftPlainText implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public ?string $placeholder = '';
 
     public ?int $charLimit = null;

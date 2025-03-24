@@ -19,8 +19,6 @@ class RegularExpressionFormField extends Field implements FormFieldInterface, Pr
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public string $customPatternErrorMessage = '';
 
     public string $customPattern = '';

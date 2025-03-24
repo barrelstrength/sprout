@@ -19,8 +19,6 @@ class EmailDropdownFormField extends CraftDropdownField implements FormFieldInte
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public static function getGroupLabel(): string
     {
         return GroupLabel::label(GroupLabel::GROUP_REFERENCE);

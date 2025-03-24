@@ -14,8 +14,6 @@ class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInter
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public static function getGroupLabel(): string
     {
         return GroupLabel::label(GroupLabel::GROUP_COMMON);

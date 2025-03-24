@@ -16,6 +16,8 @@ use yii\web\ForbiddenHttpException;
 
 trait FormFieldTrait
 {
+    public string $cssClasses = '';
+
     protected array $compatibleCraftFields = [];
 
     protected string $originalTemplatesPath;

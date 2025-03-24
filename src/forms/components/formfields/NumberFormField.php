@@ -18,8 +18,6 @@ class NumberFormField extends CraftNumber implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     /**
      * The size of the field
      */

@@ -5,7 +5,6 @@ namespace BarrelStrength\Sprout\forms\controllers;
 use BarrelStrength\Sprout\forms\components\elements\FormElement;
 use BarrelStrength\Sprout\forms\formfields\CustomFormField;
 use BarrelStrength\Sprout\forms\formfields\FormFieldLayoutTab;
-use BarrelStrength\Sprout\forms\forms\FormBuilderHelper;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
 use craft\elements\conditions\users\UserCondition;
@@ -171,15 +170,6 @@ class FormBuilderController extends BaseController
         //$field = FormBuilderHelper::getFieldData($layoutElementConfig['fieldUid']);
         //$field = $fieldLayoutElement['field'];
 
-        $contentHtml = $view->renderTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldContent.twig', [
-            'field' => $field,
-            'fieldLayoutElement' => $fieldLayoutElement,
-            'fieldUid' => $layoutElementConfig['fieldUid'],
-            'settingsHtml' => $settingsHtml,
-            //'conditionHtml' => $conditionHtml,
-            'conditionHtml' => '',
-        ]);
-
         $fieldSettingsJs = $view->clearJsBuffer();
 
         $tabs = [
@@ -191,11 +181,11 @@ class FormBuilderController extends BaseController
                 'visible' => true,
                 //'class' => $tab->hasErrors ? 'error' : null,
             ],
-            'form-field-metadata' => [
+            'form-field-advanced' => [
                 // FieldLayoutForm
                 //'tabId' => 'form-field',
-                'label' => Craft::t('sprout-module-forms', 'Metadata'),
-                'url' => '#form-field-metadata',
+                'label' => Craft::t('sprout-module-forms', 'Advanced'),
+                'url' => '#form-field-advanced',
                 'visible' => false,
                 //'class' => $tab->hasErrors ? 'error' : null,
             ],
@@ -209,15 +199,18 @@ class FormBuilderController extends BaseController
             //],
         ];
 
-        $html =
-            Template::raw($contentHtml) .
-            Template::raw($fieldSettingsJs);
-
         return $this->asCpScreen()
             ->tabs($tabs)
             ->submitButtonLabel('Apply')
             ->action('sprout-module-forms/form-builder/edit-form-field-slideout-response')
-            ->contentHtml($html);
+            ->contentTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldContent.twig', [
+                'field' => $field,
+                'fieldLayoutElement' => $fieldLayoutElement,
+                'fieldUid' => $layoutElementConfig['fieldUid'],
+                'settingsHtml' => $settingsHtml,
+                // Render conditions in the contentTemplate to ensure JS works
+                //'userCondition' => $userCondition,
+            ]);
     }
 
     public function actionEditFormTabSlideoutResponse(): Response

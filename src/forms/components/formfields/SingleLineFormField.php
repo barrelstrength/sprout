@@ -18,8 +18,6 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
 {
     use FormFieldTrait;
 
-    public string $cssClasses = '';
-
     public ?string $placeholder = '';
 
     public ?int $charLimit = null;
