@@ -116,7 +116,7 @@ class FormBuilderController extends BaseController
         $fieldLayoutElement = new CustomFormField($field);
         $fieldLayoutElement->layout = $form->getSubmissionFieldLayout();
 
-        $fieldLayoutElement->required = $layoutElementConfig['required'] === true;
+        $fieldLayoutElement->required = $layoutElementConfig['required'] === 'true'; // String
         $fieldLayoutElement->width = $layoutElementConfig['width'];
         $fieldLayoutElement->uid = $layoutElementConfig['uid'];
 
@@ -124,20 +124,7 @@ class FormBuilderController extends BaseController
         //$fieldLayoutElement->setUserCondition($layoutElementConfig['userCondition']);
         //$fieldLayoutElement->setElementCondition($layoutElementConfig['elementCondition']);
 
-        $view = Craft::$app->getView();
-        $view->startJsBuffer();
-
-        // Render Field Settings
-        // Render Condition Builders
-        // Render JS for condition builders
-        // we used to do this in the JS after the response but asCpScreen doesn't
-        // allow this in the same way. So we have to try to do it in the buffer.
-
-        $settingsHtml = $fieldLayoutElement->getSettingsHtml();
-
-        // Just get the Field Settings, without Condition builder stuff
         $field = $fieldLayoutElement->getField();
-        $settingsHtml = $field->getSettingsHtml();
 
         //Craft::$app->getView()->registerAssetBundle(ConditionBuilderAsset::class);
 
@@ -170,8 +157,6 @@ class FormBuilderController extends BaseController
         //$field = FormBuilderHelper::getFieldData($layoutElementConfig['fieldUid']);
         //$field = $fieldLayoutElement['field'];
 
-        $fieldSettingsJs = $view->clearJsBuffer();
-
         $tabs = [
             'form-field-general' => [
                 // FieldLayoutForm
@@ -203,12 +188,11 @@ class FormBuilderController extends BaseController
             ->tabs($tabs)
             ->submitButtonLabel('Apply')
             ->action('sprout-module-forms/form-builder/edit-form-field-slideout-response')
+            // Render field settings and conditions directly in the content template to ensure JS works
             ->contentTemplate('sprout-module-forms/forms/_formbuilder/editFormFieldContent.twig', [
                 'field' => $field,
                 'fieldLayoutElement' => $fieldLayoutElement,
                 'fieldUid' => $layoutElementConfig['fieldUid'],
-                'settingsHtml' => $settingsHtml,
-                // Render conditions in the contentTemplate to ensure JS works
                 //'userCondition' => $userCondition,
             ]);
     }

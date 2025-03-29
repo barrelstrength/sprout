@@ -1,15 +1,24 @@
 {% import "_includes/forms" as forms %}
 {% import "sprout-module-core/_macros/sproutcp" as sproutCp %}
 
-{# Add a settings namespace to our field settings #}
-{% set fieldSettingsHtml %}
-    {% namespace 'settings' %}
-        {{ settingsHtml|raw }}
-    {% endnamespace %}
-{% endset %}
+<div id="form-field-general">
+    {# Don't wrap namespace around div.id or tab switching won't work       #}
+    {% namespace 'layoutElement' %}
 
-{% set fieldTabHtml %}
-    {% namespace 'formField' %}
+        {% if field.allowRequired() %}
+            {{ forms.lightswitchField({
+                label: "Required"|t('sprout-module-forms'),
+                name: 'required',
+                on: fieldLayoutElement.required ?? false,
+                first: true
+            }) }}
+        {% else %}
+            {{ hiddenInput('required', '') }}
+        {% endif %}
+
+    {% endnamespace %}
+
+    {% namespace 'layoutElement[formField]' %}
         {{ forms.textField({
             label: 'Name'|t('sprout-module-forms') ~ sproutCp.infoIcon(
                 'The field label displayed to your users.'|t('sprout-module-forms')
@@ -36,31 +45,15 @@
             }) }}
         {% endif %}
 
-        {{ fieldSettingsHtml }}
     {% endnamespace %}
 
-{% endset %}
-
-<div id="form-field-general">
-    {# Don't wrap namespace around div.id or tab switching won't work       #}
-    {% namespace 'layoutElement' %}
-        {% if field.allowRequired() %}
-            {{ forms.lightswitchField({
-                label: "Required"|t('sprout-module-forms'),
-                name: 'required',
-                on: fieldLayoutElement.required ?? false,
-                first: true
-            }) }}
-        {% else %}
-            {{ hiddenInput('required', '') }}
-        {% endif %}
-
-        {{ fieldTabHtml }}
+    {% namespace 'layoutElement[formField][settings]' %}
+        {{ field.getSettingsHtml()|raw }}
     {% endnamespace %}
 </div>
 
 <div id="form-field-advanced" class="hidden">
-    {% namespace 'formField[layoutElement]' %}
+    {% namespace 'layoutElement[formField]' %}
         {{ forms.textField({
             label: 'Handle'|t('sprout-module-forms'),
             name: 'handle',
@@ -68,6 +61,13 @@
             errors: field.getErrors('handle'),
             required: true,
             first: true,
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Hidden"|t('sprout-module-forms'),
+            instructions: "Don't display the field to users on the front-end. Field will still be visible in the code."|t('sprout-module-forms'),
+            name: 'hidden',
+            on: field.isHidden ?? false,
         }) }}
 
         {{ forms.editableTableField({
@@ -118,21 +118,14 @@
 </div>
 
 <div id="form-field-rules" class="hidden">
-{#    {% namespace 'formField[layoutElement]' %}#}
-{#    {{ forms.field({#}
-{#        label: 'Current User Condition'|t('sprout-module-forms'),#}
-{#        instructions: 'Only show for front-end users who match the following rules:'|t('sprout-module-forms'),#}
-{#    }, userCondition.getBuilderHtml()) }}#}
-{#    {{ forms.field({#}
-{#        label: 'Form Condition'|t('sprout-module-forms'),#}
-{#        instructions: 'Only show on forms that match the following rules:'|t('sprout-module-forms'),#}
-{#    }, elementCondition.getBuilderHtml()) }}#}
-{#    {% endnamespace %}#}
+    {#    {% namespace 'formField[layoutElement]' %} #}
+    {#    {{ forms.field({ #}
+    {#        label: 'Current User Condition'|t('sprout-module-forms'), #}
+    {#        instructions: 'Only show for front-end users who match the following rules:'|t('sprout-module-forms'), #}
+    {#    }, userCondition.getBuilderHtml()) }} #}
+    {#    {{ forms.field({ #}
+    {#        label: 'Form Condition'|t('sprout-module-forms'), #}
+    {#        instructions: 'Only show on forms that match the following rules:'|t('sprout-module-forms'), #}
+    {#    }, elementCondition.getBuilderHtml()) }} #}
+    {#    {% endnamespace %} #}
 </div>
-
-{# {% js %} #}
-{#    {% if not field.name %} #}
-{#    new Craft.HandleGenerator('#name', '#handle'); #}
-{#    {% endif %} #}
-{# {% endjs %} #}
-
