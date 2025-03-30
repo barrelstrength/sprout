@@ -11,6 +11,7 @@
 {%- set fieldCssClasses = fieldCssClasses ?? '' %}
 {%- set fieldInputFolder = fieldInputFolder ?? '' %}
 {%- set isPlainInput = isPlainInput ?: false %}
+{%- set isHidden = isHidden ?: false %}
 {%- set hasMultipleLabels = hasMultipleLabels ?: false %}
 {%- set displayLabel = displayLabel ?: false %}
 
@@ -35,6 +36,7 @@
         {%- if fieldCssClasses %} {{ fieldCssClasses }}{% endif -%}
         {%- if errors %} {{ errorClass }}{% endif -%}
         {%- if required %} required{% endif -%}
+        {%- if isHidden %} hidden{% endif -%}
         " {{- dataAttributes|raw -}}
         >
         {% if (label or instructions) and displayLabel -%}

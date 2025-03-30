@@ -166,10 +166,18 @@ class FormBuilderController extends BaseController
                 'visible' => true,
                 //'class' => $tab->hasErrors ? 'error' : null,
             ],
+            'form-field-templates' => [
+                // FieldLayoutForm
+                //'tabId' => 'form-field',
+                'label' => Craft::t('sprout-module-forms', 'Templates'),
+                'url' => '#form-field-templates',
+                'visible' => false,
+                //'class' => $tab->hasErrors ? 'error' : null,
+            ],
             'form-field-advanced' => [
                 // FieldLayoutForm
                 //'tabId' => 'form-field',
-                'label' => Craft::t('sprout-module-forms', 'Advanced'),
+                'label' => Craft::t('sprout-module-forms', 'Info'),
                 'url' => '#form-field-advanced',
                 'visible' => false,
                 //'class' => $tab->hasErrors ? 'error' : null,

@@ -52,8 +52,54 @@
     {% endnamespace %}
 </div>
 
-<div id="form-field-advanced" class="hidden">
+<div id="form-field-templates" class="hidden">
+    {% namespace 'layoutElement[formField][settings]' %}
+
+        {{ forms.lightswitchField({
+            label: "Hidden"|t('sprout-module-forms'),
+            instructions: "Don't display the field to users on the front-end. Field will still be visible in the code."|t('sprout-module-forms'),
+            name: 'isHidden',
+            on: field.isHidden ?? false,
+        }) }}
+
+        {{ forms.textField({
+            label: 'Field Container CSS'|t('sprout-module-forms'),
+            instructions: "Custom CSS classes that will be added to the container. Separate classes with a space."|t('sprout-module-forms'),
+            name: 'cssClasses',
+            value: field.cssClasses,
+            errors: field.getErrors('cssClasses'),
+        }) }}
+
+        {{ forms.editableTableField({
+            label: "Field Container Attributes"|t('sprout-module-forms'),
+            instructions: "Custom HTML attributes that will be added to the container."|t('sprout-module-forms'),
+            name: 'containerAttributes',
+            cols: {
+                label: {
+                    type: 'singleline',
+                    heading: "Attribute"|t('sprout-module-forms'),
+                    info: 'e.g. data-attribute-name, etc.',
+                    class: 'code',
+                },
+                metadatumFormat: {
+                    type: 'singleline',
+                    heading: "Value"|t('sprout-module-forms'),
+                    info: 'i.e. attribute-value',
+                    class: 'code',
+                },
+            }|filter,
+            rows: field.containerAttributes,
+            fullWidth: true,
+            allowAdd: true,
+            allowReorder: true,
+            allowDelete: true,
+            minRows: 0,
+            errors: field.getErrors('containerAttributes'),
+        }) }}
+    {% endnamespace %}
+
     {% namespace 'layoutElement[formField]' %}
+
         {{ forms.textField({
             label: 'Handle'|t('sprout-module-forms'),
             name: 'handle',
@@ -63,42 +109,11 @@
             first: true,
         }) }}
 
-        {{ forms.lightswitchField({
-            label: "Hidden"|t('sprout-module-forms'),
-            instructions: "Don't display the field to users on the front-end. Field will still be visible in the code."|t('sprout-module-forms'),
-            name: 'hidden',
-            on: field.isHidden ?? false,
-        }) }}
+    {% endnamespace %}
+</div>
 
-        {{ forms.editableTableField({
-            label: "CSS Classes"|t('sprout-module-forms'),
-            instructions: "Custom CSS classes that will be added to the container."|t('sprout-module-forms'),
-            name: 'cssClasses',
-            cols: {
-                label: {
-                    type: 'singleline',
-                    heading: "Attribute"|t('sprout-module-forms'),
-                    info: 'i.e. color, font-size, etc.',
-                    class: 'code',
-                },
-                metadatumFormat: {
-                    type: 'singleline',
-                    heading: "Value"|t('sprout-module-forms'),
-                    info: 'i.e. red, 12px, etc.',
-                    class: 'code',
-                },
-            }|filter,
-            rows: field.cssClasses,
-            fullWidth: true,
-            allowAdd: true,
-            allowReorder: true,
-            allowDelete: true,
-            minRows: 0,
-            errors: field.getErrors('cssClasses'),
-        }) }}
-
-        <hr>
-
+<div id="form-field-advanced" class="hidden">
+    {% namespace 'layoutElement[formField]' %}
         {{ forms.textField({
             label: 'Field Type'|t('sprout-module-forms'),
             name: 'type',

@@ -18,6 +18,10 @@ trait FormFieldTrait
 {
     public string $cssClasses = '';
 
+    public array $containerAttributes = [];
+
+    public bool $isHidden = false;
+
     protected array $compatibleCraftFields = [];
 
     protected string $originalTemplatesPath;
