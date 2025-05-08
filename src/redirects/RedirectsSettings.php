@@ -121,6 +121,10 @@ class RedirectsSettings extends BaseConfig
             return $this->_siteExcludedUrlPatterns;
         }
 
+        if (!RedirectsModule::getInstance()->isPro()) {
+            return null;
+        }
+
         $settings = SettingsRecord::find()
             ->select('settings')
             ->where([
