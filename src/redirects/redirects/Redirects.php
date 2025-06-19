@@ -92,7 +92,8 @@ class Redirects extends Component
         if ($settings->queryStringStrategy === QueryStringStrategy::REMOVE_QUERY_STRINGS) {
             $queryString = '';
         } elseif ($settings->queryStringStrategy === QueryStringStrategy::APPEND_QUERY_STRINGS) {
-            $queryString = '?' . $request->getQueryStringWithoutPath();
+            $requestQueryString = $request->getQueryStringWithoutPath();
+            $queryString = $requestQueryString !== '' ? '?' . $requestQueryString : '';
         } else {
             return;
         }
