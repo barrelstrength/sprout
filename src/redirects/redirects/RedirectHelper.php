@@ -143,7 +143,7 @@ class RedirectHelper
                 }
             } elseif ($baseSiteUrl . $redirect['oldUrl'] === $absoluteUrl) {
                 // Update null value to return home page
-                $redirect['newUrl'] ??= '/';
+                $redirect['newUrl'] ??= '';
 
                 return new RedirectElement($redirect);
             }
