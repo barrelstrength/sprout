@@ -14,7 +14,6 @@ use BarrelStrength\Sprout\forms\components\formfields\EmailFormField;
 use BarrelStrength\Sprout\forms\components\formfields\EntriesFormField;
 use BarrelStrength\Sprout\forms\components\formfields\FileUploadFormField;
 use BarrelStrength\Sprout\forms\components\formfields\GenderFormField;
-use BarrelStrength\Sprout\forms\components\formfields\HiddenFormField;
 use BarrelStrength\Sprout\forms\components\formfields\MultipleChoiceFormField;
 use BarrelStrength\Sprout\forms\components\formfields\MultiSelectFormField;
 use BarrelStrength\Sprout\forms\components\formfields\NameFormField;
@@ -153,7 +152,6 @@ class FormFields extends Component
             DateFormField::class,
             NumberFormField::class,
             RegularExpressionFormField::class,
-            HiddenFormField::class,
 
             NameFormField::class,
             AddressFormField::class,
