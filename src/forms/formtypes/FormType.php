@@ -236,8 +236,19 @@ abstract class FormType extends SavableComponent implements FormTypeInterface, F
         return $config;
     }
 
+    /**
+     * @todo - FR: I believe this is necessary here for Craft to not throw an error because Field Layouts assume the 'type' is an ElementType
+     */
     public static function defaultCardAttributes(): array
     {
         return [];
+    }
+
+    /**
+     * @todo - FR: I believe this is necessary here for Craft to not throw an error because Field Layouts assume the 'type' is an ElementType
+     */
+    public static function hasThumbs(): bool
+    {
+        return false;
     }
 }

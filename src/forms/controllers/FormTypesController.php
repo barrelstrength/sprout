@@ -145,7 +145,7 @@ class FormTypesController extends Controller
         $fieldLayout->type = $type;
         $formType->setFieldLayout($fieldLayout);
 
-        $formType->featureSettings = Craft::$app->getRequest()->getBodyParam('featureSettings');
+        $formType->featureSettings = Craft::$app->getRequest()->getBodyParam('featureSettings', []);
         $formType->enabledFormFieldTypes = Craft::$app->getRequest()->getBodyParam('enabledFormFieldTypes');
 
         $formType->enableSaveData = Craft::$app->getRequest()->getBodyParam('enableSaveData');
