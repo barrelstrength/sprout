@@ -8,7 +8,7 @@
     'systemName': systemName
 }) -%}
 {%- set renderingOptions = renderingOptions is defined and renderingOptions is not empty ? renderingOptions : {} -%}
-{%- set submission = sprout.modules.forms.submissions.getSubmission(form) -%}
+{%- set submission = sprout.modules.forms.submissions.getSubmission(form, _context) -%}
 {%- set lastSubmission = sprout.forms.lastSubmission(form.id) -%}
 {%- set globalErrorsEnabled = form.formType.errorDisplayMethod in ['both', 'global'] ? true : false -%}
 {%- set globalErrorsEnabled = false -%}
