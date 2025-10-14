@@ -42,6 +42,8 @@ class SubmissionElement extends Element
 
     public array $formMetadata = [];
 
+    public array $context = [];
+
     /** @var Captcha[] $captchas */
     protected array $captchas = [];
 
