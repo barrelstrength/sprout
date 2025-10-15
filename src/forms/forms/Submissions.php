@@ -37,7 +37,7 @@ class Submissions extends Component
     /**
      * Returns an active or new submission element
      */
-    public function getSubmission(FormElement $form): SubmissionElement
+    public function getSubmission(FormElement $form, array $context = []): SubmissionElement
     {
         if (isset(FormsModule::getInstance()->forms->activeSubmissions[$form->handle])) {
             return FormsModule::getInstance()->forms->activeSubmissions[$form->handle];
@@ -45,6 +45,7 @@ class Submissions extends Component
 
         $submission = new SubmissionElement();
         $submission->formId = $form->getId();
+        $submission->context = $context;
 
         FormsModule::getInstance()->forms->activeSubmissions[$form->handle] = $submission;
 
