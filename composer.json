@@ -24,6 +24,7 @@
         "giggsey/libphonenumber-for-php": "^8.13",
         "league/html-to-markdown": "^5.1",
         "php-science/textrank": "^1.2",
+        "putyourlightson/craft-datastar-module": "^1.0.0-RC.1",
         "nystudio107/craft-plugin-vite": "^5.0",
         "twig/cssinliner-extra": "^v3.7"
     },

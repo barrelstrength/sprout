@@ -55,6 +55,7 @@ use craft\services\Fields;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use craft\web\View;
+use putyourlightson\datastar\Datastar;
 use yii\base\Event;
 use yii\base\Module;
 
@@ -125,6 +126,8 @@ class FormsModule extends Module implements SproutModuleInterface, MigrationInte
         ]);
 
         Craft::setAlias('@BarrelStrength/Sprout/forms', __DIR__);
+
+        Datastar::bootstrap();
 
         Event::on(
             UrlManager::class,
