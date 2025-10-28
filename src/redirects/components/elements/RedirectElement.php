@@ -385,6 +385,7 @@ class RedirectElement extends Element
             $this->oldUrl = RedirectHelper::removeSlash($this->oldUrl);
         }
 
+
         if ($this->newUrl) {
             $this->newUrl = RedirectHelper::removeSlash($this->newUrl);
 
@@ -436,7 +437,7 @@ class RedirectElement extends Element
 
     public function getAbsoluteNewUrl(): string
     {
-        $baseUrl = Craft::getAlias($this->getSite()->getBaseUrl());
+        return UrlHelper::siteUrl($this->newUrl);
 
         return $baseUrl . $this->newUrl;
     }
