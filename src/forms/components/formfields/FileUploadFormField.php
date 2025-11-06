@@ -110,7 +110,7 @@ class FileUploadFormField extends CraftAssets implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'renderingOptions' => $renderingOptions,
             'multiple' => $multiple,
         ];

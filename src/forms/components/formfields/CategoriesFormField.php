@@ -47,7 +47,7 @@ class CategoriesFormField extends CraftCategories implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value->ids(),
+            'value' => $submission->getFrontEndFormFieldValue($this, $value->ids()),
             'renderingOptions' => $renderingOptions,
             'categories' => $categories,
             'multiple' => $multiple,

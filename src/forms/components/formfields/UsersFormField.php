@@ -49,7 +49,7 @@ class UsersFormField extends CraftUsers implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value->ids(),
+            'value' => $submission->getFrontEndFormFieldValue($this, $value->ids()),
             'renderingOptions' => $renderingOptions,
             'users' => $users,
             'multiple' => $multiple,

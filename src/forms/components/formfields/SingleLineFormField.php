@@ -101,7 +101,7 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
             'placeholder' => $this->placeholder,
             'hasInstructions' => $this->instructions ? true : false,
             'charLimit' => $this->charLimit,
-            'value' => $submission->getFieldValue($this->handle),
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'errors' => $submission->getErrors($this->handle),
         ];
     }

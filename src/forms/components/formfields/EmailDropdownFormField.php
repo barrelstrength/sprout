@@ -130,7 +130,7 @@ class EmailDropdownFormField extends CraftDropdownField implements FormFieldInte
 
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'options' => $options,
             'renderingOptions' => $renderingOptions,
         ];

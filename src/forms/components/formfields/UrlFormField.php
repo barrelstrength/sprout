@@ -9,11 +9,11 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use Craft;
 use craft\base\ElementInterface;
+use craft\fields\Link as CraftLink;
 use craft\fields\PlainText as CraftPlainText;
-use craft\fields\Url as CraftUrl;
 use craft\helpers\Html;
 
-class UrlFormField extends CraftUrl implements FormFieldInterface
+class UrlFormField extends CraftLink implements FormFieldInterface
 {
     use FormFieldTrait;
 
@@ -61,6 +61,7 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
         $fieldContext = FormFieldHelper::getFieldContext($this, $element);
 
         return Craft::$app->getView()->renderTemplate('sprout-module-forms/_components/fields/Url/input', [
+                'field' => $this,
                 'namespaceInputId' => $namespaceInputId,
                 'id' => $inputId,
                 'name' => $name,
@@ -88,7 +89,7 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'pattern' => $this->customPattern,
             'errorMessage' => $errorMessage,
             'renderingOptions' => $renderingOptions,
@@ -158,7 +159,7 @@ class UrlFormField extends CraftUrl implements FormFieldInterface
     {
         return [
             CraftPlainText::class,
-            CraftUrl::class,
+            CraftLink::class,
             self::class,
         ];
     }

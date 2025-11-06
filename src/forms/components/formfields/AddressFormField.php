@@ -50,20 +50,13 @@ class AddressFormField extends CraftAddressesField implements FormFieldInterface
 
     public function getFrontEndInputVariables($value, SubmissionElement $submission, array $renderingOptions = null): array
     {
-        return [];
-        //$categories = FormsModule::getInstance()->frontEndFields->getFrontEndCategories($this->getSettings());
-        //$multiple = $this->maxRelations === null || $this->maxRelations > 1;
-        //
-        //return [
-        //    'name' => $this->handle,
-        //    'value' => $value->ids(),
-        //    //'field' => $this,
-        //    //'submission' => $submission,
-        //    'renderingOptions' => $renderingOptions,
-        //    'categories' => $categories,
-        //    'multiple' => $multiple,
-        //    'selectionLabel' => $this->selectionLabel,
-        //];
+        return [
+            'name' => $this->handle,
+            'value' => $submission->getFrontEndFormFieldValue($this, $value->ids()),
+            'renderingOptions' => $renderingOptions,
+            'countryInputHtml' => '',
+            'addressFormHtml' => '',
+        ];
     }
 
     public function getCompatibleCraftFieldTypes(): array

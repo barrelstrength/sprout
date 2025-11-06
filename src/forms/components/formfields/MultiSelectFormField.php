@@ -46,7 +46,7 @@ class MultiSelectFormField extends CraftMultiSelect implements FormFieldInterfac
     {
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'renderingOptions' => $renderingOptions,
             'options' => $this->options,
         ];

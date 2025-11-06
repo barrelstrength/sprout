@@ -114,7 +114,7 @@ class OptInFormField extends Field implements FormFieldInterface, PreviewableFie
     {
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'renderingOptions' => $renderingOptions,
             'label' => $this->optInMessage,
             'selectedByDefault' => $this->selectedByDefault,

@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\forms\formfields\FormFieldTrait;
 use BarrelStrength\Sprout\forms\formfields\GroupLabel;
 use BarrelStrength\Sprout\forms\FormsModule;
 use Craft;
+use craft\base\ElementInterface;
 use craft\fields\Entries as CraftEntries;
 
 class EntriesFormField extends CraftEntries implements FormFieldInterface
@@ -47,7 +48,7 @@ class EntriesFormField extends CraftEntries implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value->ids(),
+            'value' => $submission->getFrontEndFormFieldValue($this, $value->ids()),
             'renderingOptions' => $renderingOptions,
             'entries' => $entries,
             'multiple' => $multiple,

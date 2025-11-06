@@ -98,7 +98,7 @@ class ParagraphFormField extends CraftPlainText implements FormFieldInterface
     {
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'renderingOptions' => $renderingOptions,
             'placeholder' => $this->placeholder,
             'maxLength' => $this->charLimit,

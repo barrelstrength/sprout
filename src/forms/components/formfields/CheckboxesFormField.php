@@ -47,7 +47,7 @@ class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInter
     {
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'renderingOptions' => $renderingOptions,
 
             'options' => $this->options,

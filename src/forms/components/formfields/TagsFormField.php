@@ -46,7 +46,7 @@ class TagsFormField extends CraftTags implements FormFieldInterface
 
         return [
             'name' => $this->handle,
-            'value' => $value->ids(),
+            'value' => $submission->getFrontEndFormFieldValue($this, $value->ids()),
             'renderingOptions' => $renderingOptions,
             'tags' => $tags,
             'selectionLabel' => $this->selectionLabel,

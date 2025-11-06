@@ -55,6 +55,14 @@
 <div id="form-field-templates" class="hidden">
     {% namespace 'layoutElement[formField][settings]' %}
 
+        {{ forms.textField({
+            label: 'Prepopulated Field Value'|t('sprout-module-forms'),
+            name: 'prePopulatedValue',
+            instructions: 'Value to set when the field is displayed. Craft Object Syntax is supported.'|t('sprout-module-forms'),
+            placeholder: '{craft.app.getRequest().getAbsoluteUrl()}',
+            value: field.prePopulatedValue
+        }) }}
+
         {{ forms.lightswitchField({
             label: "Hidden"|t('sprout-module-forms'),
             instructions: "Don't display the field to users on the front-end. Field will still be visible in the code."|t('sprout-module-forms'),

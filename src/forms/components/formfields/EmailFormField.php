@@ -91,7 +91,7 @@ class EmailFormField extends CraftEmail implements FormFieldInterface
     {
         return [
             'name' => $this->handle,
-            'value' => $value,
+            'value' => $submission->getFrontEndFormFieldValue($this),
             'errorMessage' => $this->getErrorMessage(),
             'renderingOptions' => $renderingOptions,
             'placeholder' => $this->placeholder,

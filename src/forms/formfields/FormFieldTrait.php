@@ -20,7 +20,11 @@ trait FormFieldTrait
 
     public array $containerAttributes = [];
 
+    public array $inputAttributes = [];
+
     public bool $isHidden = false;
+
+    public mixed $prePopulatedValue = null;
 
     protected array $compatibleCraftFields = [];
 
@@ -137,17 +141,22 @@ trait FormFieldTrait
         return strtolower($fieldClassReflection->getShortName());
     }
 
-
     public function getFormBuilderSourceFieldData(): array
     {
         $fieldData['formField'] = FormBuilderHelper::getFormFieldData($this);
         $fieldData['formFieldUi'] = FormBuilderHelper::getFormFieldUiData($this);
         $fieldData['groupName'] = self::getGroupLabel();
+
         return [
             'groupName' => self::getGroupLabel(),
             'formField' => $fieldData['formField'],
             'formFieldUi' => $fieldData['formFieldUi'],
         ];
+    }
+
+    public function getPrePopulatedValue(array $context = []): mixed
+    {
+        return Craft::$app->getView()->renderObjectTemplate($this->prePopulatedValue, $context);
     }
 
     public function getRenderingOptions($renderingOptions = []): array
@@ -177,7 +186,7 @@ trait FormFieldTrait
         return [];
     }
 
-    public function getPreviewHtml(mixed $value, ElementInterface $element): string
+    public function getPreviewHtml(mixed $value, ElementInterface $element = null): string
     {
         $value = (string)$value;
 

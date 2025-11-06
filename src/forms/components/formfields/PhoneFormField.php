@@ -132,7 +132,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         $countries = PhoneHelper::getCountries();
 
         $country = $value['country'] ?? $this->country;
-        $val = $value['phone'] ?? null;
+        $phone = $value['phone'] ?? null;
 
         return Craft::$app->getView()->renderTemplate('sprout-module-fields/_components/fields/Phone/input', [
             'namespaceInputId' => $namespaceInputId,
@@ -141,7 +141,7 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
             'countryId' => $countryId,
             'name' => $this->handle,
             'field' => $this,
-            'value' => $val,
+            'value' => $phone,
             'countries' => $countries,
             'country' => $country,
             'countryOptions' => FieldsModule::getInstance()->phoneHelper::getCountries(),
@@ -153,11 +153,11 @@ class PhoneFormField extends Field implements FormFieldInterface, PreviewableFie
         $name = $this->handle;
         $country = $value['country'] ?? $this->country;
         $countries = PhoneHelper::getCountries();
-        $val = $value['phone'] ?? null;
+        $phone = $value['phone'] ?? null;
 
         return [
             'name' => $name,
-            'value' => $val,
+            'value' => $submission->getFrontEndFormFieldValue($this, $phone),
             'country' => $country,
             'countries' => $countries,
             'renderingOptions' => $renderingOptions,

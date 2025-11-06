@@ -7,7 +7,9 @@ use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsDefaultStatus;
 use BarrelStrength\Sprout\forms\components\elements\actions\MarkAsSpam;
 use BarrelStrength\Sprout\forms\components\elements\conditions\SubmissionCondition;
 use BarrelStrength\Sprout\forms\components\elements\db\SubmissionElementQuery;
+use BarrelStrength\Sprout\forms\components\formfields\EntriesFormField;
 use BarrelStrength\Sprout\forms\db\SproutTable;
+use BarrelStrength\Sprout\forms\formfields\FormFieldInterface;
 use BarrelStrength\Sprout\forms\FormsModule;
 use BarrelStrength\Sprout\forms\submissions\SubmissionRecord;
 use BarrelStrength\Sprout\forms\submissions\SubmissionsSpamLog;
@@ -254,6 +256,22 @@ class SubmissionElement extends Element
     {
         return 'sproutForms:' . $this->formId;
     }
+
+    /**
+     * @param mixed|null $inputValue - Field value is sometimes stored as EntryQuery or something that cannot be used directly
+     * This gives a field a chance to just calculate and provide that value to this method to support pre-population
+     */
+    public function getFrontEndFormFieldValue(FormFieldInterface $field, mixed $inputValue = null): mixed
+    {
+        $value = $inputValue ?? $this->getFieldValue($field->handle);
+
+        if (empty($value) && $field->prePopulatedValue) {
+            $value = $field->getPrePopulatedValue($this->context);
+        }
+
+        return $value;
+    }
+
 
     public function cpEditUrl(): ?string
     {
