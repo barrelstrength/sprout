@@ -34,6 +34,11 @@ class SectionHeadingFormField extends Field implements FormFieldInterface
         return false;
     }
 
+    public function isEditable(): bool
+    {
+        return false;
+    }
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Section Heading');

@@ -18,6 +18,19 @@
 
     {% endnamespace %}
 
+    {% namespace 'layoutElement[formField][settings]' %}
+        {% if field.isEditable() %}
+            {{ forms.lightswitchField ({
+                label: "Allow edits"|t('sprout-module-forms'),
+                instructions: "Allow admin users to edit the submitted field value."|t('sprout-module-forms'),
+                name: 'allowEdits',
+                on: field.allowEdits,
+            }) }}
+        {% else %}
+            {{ hiddenInput('allowEdits', field.allowEdits ? '1' : '') }}
+        {% endif %}
+    {% endnamespace %}
+
     {% namespace 'layoutElement[formField]' %}
         {{ forms.textField({
             label: 'Name'|t('sprout-module-forms') ~ sproutCp.infoIcon(

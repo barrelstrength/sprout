@@ -29,6 +29,11 @@ class CustomHtmlFormField extends Field implements FormFieldInterface, Previewab
         return false;
     }
 
+    public function isEditable(): bool
+    {
+        return false;
+    }
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Custom HTML');

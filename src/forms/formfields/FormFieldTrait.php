@@ -24,6 +24,8 @@ trait FormFieldTrait
 
     public bool $isHidden = false;
 
+    public bool $allowEdits = true;
+
     public mixed $prePopulatedValue = null;
 
     protected array $compatibleCraftFields = [];
@@ -61,6 +63,14 @@ trait FormFieldTrait
     public function isPlainInput(): bool
     {
         return false;
+    }
+
+    /**
+     * Tells Sprout Forms whether this field will display the allowEdits setting in the Form Builder
+     */
+    public function isEditable(): bool
+    {
+        return true;
     }
 
     /**

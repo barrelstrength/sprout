@@ -104,6 +104,7 @@ class FormBuilderController extends BaseController
         $class = $fieldConfig['type'] ?? null;
         $fieldSettings = $fieldConfig['settings'] ?? [];
         $fieldSettings['isHidden'] = $fieldSettings['isHidden'] === 'true';
+        $fieldSettings['allowEdits'] = $fieldSettings['allowEdits'] === 'true';
 
         unset(
             $fieldConfig['type'],
