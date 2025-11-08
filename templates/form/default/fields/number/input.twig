@@ -34,5 +34,6 @@
     {%- if min %} min="{{ min }}"{% endif %}
     {%- if max %} max="{{ max }}"{% endif %}
     {%- if step is not null %} step="0.{{ step }}"{% endif %}
+    {%- if size is not null %} size="{{ size }}"{% endif %}
     {{- dataAttributes|raw -}}
 >
