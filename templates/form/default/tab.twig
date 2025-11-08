@@ -55,6 +55,7 @@
             isPlainInput: field.isPlainInput(),
             isHidden: field.isHidden,
             fieldCssClasses: field['cssClasses'] is defined and not null ? field.cssClasses : '',
+            fieldContainerAttributes: field.renderFieldContainerAttributes(),
 
             inlineErrorHtml: inlineErrorHtml,
             input: input,

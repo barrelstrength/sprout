@@ -169,6 +169,17 @@ trait FormFieldTrait
         return Craft::$app->getView()->renderObjectTemplate($this->prePopulatedValue, $context);
     }
 
+    public function renderFieldContainerAttributes(): ?string
+    {
+        $fieldContainerAttributes = null;
+
+        foreach ($this->containerAttributes as $containerAttribute) {
+            $fieldContainerAttributes .= ' ' . $containerAttribute['label'] . '=' . $containerAttribute['metadatumFormat'];
+        }
+
+        return $fieldContainerAttributes;
+    }
+
     public function getRenderingOptions($renderingOptions = []): array
     {
         $allFieldOptions = $renderingOptions['*'] ?? [];

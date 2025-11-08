@@ -15,10 +15,9 @@
 {%- set hasMultipleLabels = hasMultipleLabels ?: false %}
 {%- set displayLabel = displayLabel ?: false %}
 
-{%- set dataAttributes = null %}
 {%- set data = fieldRenderingOptions.data ?? null %}
 {%- for key, dataValue in data %}
-    {%- set dataAttributes = dataAttributes ~ ' data-'~key~'="'~dataValue~'"' %}
+    {%- set fieldContainerAttributes = fieldContainerAttributes ~ ' data-'~key~'="'~dataValue~'"' %}
 {% endfor -%}
 
 {%- namespace fieldNamespace -%}
@@ -37,7 +36,7 @@
         {%- if errors %} {{ errorClass }}{% endif -%}
         {%- if required %} required{% endif -%}
         {%- if isHidden %} hidden{% endif -%}
-        " {{- dataAttributes|raw -}}
+        " {{- fieldContainerAttributes|raw -}}
         >
         {% if (label or instructions) and displayLabel -%}
             <div data-label="form-field-heading">
