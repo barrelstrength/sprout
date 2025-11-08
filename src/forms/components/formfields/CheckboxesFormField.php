@@ -14,6 +14,12 @@ class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInter
 {
     use FormFieldTrait;
 
+    protected static bool $optionIcons = false;
+
+    protected static bool $optionColors = false;
+
+    protected static bool $allowCustomOptions = false;
+
     public static function getGroupLabel(): string
     {
         return GroupLabel::label(GroupLabel::GROUP_COMMON);

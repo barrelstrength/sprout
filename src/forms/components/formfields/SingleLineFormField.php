@@ -42,20 +42,6 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
         return $value !== '' ? $value : null;
     }
 
-    /**
-     * Validates that the Character Limit isn't set to something higher than the Column Type will hold.
-     */
-    public function validateCharLimit(string $attribute): void
-    {
-        if ($this->charLimit) {
-            $columnTypeMax = Db::getTextualColumnStorageCapacity($this->columnType);
-
-            if ($columnTypeMax && $columnTypeMax < $this->charLimit) {
-                $this->addError($attribute, Craft::t('sprout-module-forms', 'Character Limit is too big for your chosen Column Type.'));
-            }
-        }
-    }
-
     public function selectorIcon(): string
     {
         return 'font';
@@ -119,14 +105,5 @@ class SingleLineFormField extends PlainText implements FormFieldInterface
             CraftPlainText::class,
             CraftDropdown::class,
         ];
-    }
-
-    protected function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['charLimit'], 'validateCharLimit'];
-
-        return $rules;
     }
 }

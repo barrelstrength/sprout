@@ -13,6 +13,10 @@ class MultiSelectFormField extends CraftMultiSelect implements FormFieldInterfac
 {
     use FormFieldTrait;
 
+    protected static bool $optionIcons = false;
+
+    protected static bool $optionColors = false;
+
     public static function getGroupLabel(): string
     {
         return GroupLabel::label(GroupLabel::GROUP_COMMON);
