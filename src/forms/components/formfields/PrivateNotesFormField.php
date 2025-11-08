@@ -32,7 +32,7 @@ class PrivateNotesFormField extends Field implements FormFieldInterface
     {
         return false;
     }
-    
+
     public static function displayName(): string
     {
         return Craft::t('sprout-module-forms', 'Private Notes');

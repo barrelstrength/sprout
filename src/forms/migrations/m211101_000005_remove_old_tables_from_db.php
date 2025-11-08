@@ -7,8 +7,8 @@ use craft\db\Migration;
 /**
  * @role temporary: Craft 4 => 5
  * @schema sprout-module-forms
- * @deprecated Remove in craftcms/cms:6.0
  */
+#[\Deprecated('tag:craftcms/cms:6.0', 'migration will be removed in Craft CMS 6.0')]
 class m211101_000005_remove_old_tables_from_db extends Migration
 {
     public const MIGRATION_ADDRESSES_TABLE = '{{%sprout_addresses_craft3}}';

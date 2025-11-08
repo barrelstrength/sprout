@@ -19,14 +19,14 @@ class CheckboxesFormField extends CraftCheckboxesField implements FormFieldInter
         return GroupLabel::label(GroupLabel::GROUP_COMMON);
     }
 
-    public function hasMultipleLabels(): bool
-    {
-        return true;
-    }
-
     public function selectorIcon(): string
     {
         return 'square-check';
+    }
+
+    public function hasMultipleLabels(): bool
+    {
+        return true;
     }
 
     public function getFieldInputFolder(): string

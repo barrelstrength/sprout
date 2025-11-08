@@ -20,8 +20,8 @@ use craft\models\FieldLayoutTab;
 /**
  * @role temporary: Craft 4 => 5
  * @schema sprout-module-forms
- * @deprecated Remove in craftcms/cms:6.0
  */
+#[\Deprecated('tag:craftcms/cms:6.0', 'migration will be removed in Craft CMS 6.0')]
 class m211101_000007_migrate_forms_tables extends Migration
 {
     public const SPROUT_KEY = 'sprout';

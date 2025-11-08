@@ -44,17 +44,17 @@ trait FormFieldTrait
         return GroupLabel::label(GroupLabel::GROUP_CUSTOM);
     }
 
-    public function allowRequired(): bool
-    {
-        return true;
-    }
-
     /**
      * The icon to display for your form field
      */
     public function selectorIcon(): string
     {
         return '';
+    }
+
+    public function allowRequired(): bool
+    {
+        return true;
     }
 
     /**
