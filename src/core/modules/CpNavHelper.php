@@ -13,7 +13,7 @@ class CpNavHelper
     {
         $beforePluginNavItemKeys = [
             'dashboard',
-            'entries',
+            'content/entries',
             'globals',
             'categories',
             'assets',
