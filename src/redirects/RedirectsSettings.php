@@ -153,6 +153,9 @@ class RedirectsSettings extends BaseConfig
     {
         // If there is a field layout, it's saved with a UID key and we just need the first value
         if ($fieldLayout = reset($this->fieldLayouts)) {
+            // @todo - this `type` value should be saved to the project config with the correct type but appears to be missing per one ticket. fix this in upgrade migrations
+            $fieldLayout['type'] = RedirectElement::class;
+
             return FieldLayout::createFromConfig($fieldLayout);
         }
 
