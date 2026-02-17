@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.9 - 2025-02-16
+
+### Fixed
+
+- Fixed settings field layout type assignment ([#373])
+
+[#373]: https://github.com/barrelstrength/sprout/issues/373
+
 ## 5.0.4 - 2025-03-09
 
 ### Fixed

@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.0.10 - 2026-02-16
+
+### Changed
+
+- Updated `BarrelStrength\Sprout\core\modules\CpNavHelper` to improve support for nav item positioning
+
+## 5.0.8 - 2026-02-14
+
+### Fixed
+
+- Fixed module nav items positioning in Craft 5.9 ([#372])
+
+[#372]: https://github.com/barrelstrength/sprout/issues/372
+
 ## 5.0.3 - 2025-03-07
 
 ### Fixed
