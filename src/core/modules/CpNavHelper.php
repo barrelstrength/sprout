@@ -2,53 +2,43 @@
 
 namespace BarrelStrength\Sprout\core\modules;
 
+use BarrelStrength\Sprout\core\db\SproutPluginMigrationInterface;
 use BarrelStrength\Sprout\core\Sprout;
+use Craft;
+use Illuminate\Support\Collection;
 
 class CpNavHelper
 {
     /**
      * Updates Craft's CP sidebar navigation to include nav items for Sprout modules
+     *
+     * Add $hasCpSection to any Sprout plugin that uses modules that should be added to the CP sidebar navigation.
      */
     public static function getUpdatedCpNavItems(array $cpNavItems): array
     {
-        $beforePluginNavItemKeys = [
-            'dashboard',
-            'content/entries',
-            'globals',
-            'categories',
-            'assets',
-            'users',
-        ];
+        $plugins = Craft::$app->getPlugins()->getAllPlugins();
 
-        $afterPluginNavItemKeys = [
-            'graphql',
-            'utilities',
-            'settings',
-            'plugin-store',
-        ];
+        $pluginsWithCpSections = array_filter($plugins, static function($plugin) {
+            return $plugin->hasCpSection;
+        });
 
-        $newCpNavItems = [];
-        $afterCpNavItems = [];
-        $otherCpNavItems = [];
+        // We have to enable $hasCpSection in each plugin then remove the default output just in case no other plugins with CP sections are installed
+        $cpNavSproutPluginNavKeys = array_keys(array_filter($pluginsWithCpSections, static function($plugin) {
+            return $plugin instanceof SproutPluginMigrationInterface;
+        }));
 
-        // Break out the current nav into multiple arrays that we can re-assemble later
-        // 1. Craft defaults at the top of the nav
-        // 2. Plugins and stuff
-        // 3. Craft defaults and settings at bottom of nav
-        foreach ($cpNavItems as $cpNavItem) {
-            switch (true) {
-                case in_array($cpNavItem['url'], $beforePluginNavItemKeys, true):
-                    $newCpNavItems[] = $cpNavItem;
-                    break;
-
-                case in_array($cpNavItem['url'], $afterPluginNavItemKeys, true):
-                    $afterCpNavItems[] = $cpNavItem;
-                    break;
-                default:
-                    $otherCpNavItems[] = $cpNavItem;
-                    break;
+        // get the nav items of the plugins with cp sections from the $cpNavItems based on the $pluginsWithCpSections matching the url to the plugin handle
+        $cpNavOldPluginNavItems = array_filter($cpNavItems, static function($navItem) use ($pluginsWithCpSections) {
+            foreach ($pluginsWithCpSections as $plugin) {
+                if ($navItem['url'] === $plugin->handle) {
+                    return true;
+                }
             }
-        }
+
+            return false;
+        });
+
+        $cpNavSproutModuleNavItems = [];
 
         $sproutNavGroupsInfo = Sprout::getInstance()->coreSettings->getCraftCpSidebarNavItems();
         $sproutNavGroups = [];
@@ -100,21 +90,45 @@ class CpNavHelper
                 unset($sproutNavGroup['subnav']);
             }
 
-            $otherCpNavItems[] = $sproutNavGroup;
+            $cpNavSproutModuleNavItems[] = $sproutNavGroup;
         }
 
-        // Sort custom nav items alphabetically by label
-        uasort($otherCpNavItems, static fn($a, $b) => $a['label'] <=> $b['label']);
+        $cpNavNewPluginNavItems = array_merge($cpNavOldPluginNavItems, $cpNavSproutModuleNavItems);
 
-        // Add the custom nav items back to the nav
-        foreach ($otherCpNavItems as $otherCpNavItem) {
-            $newCpNavItems[] = $otherCpNavItem;
+        $cpNavNewPluginNavItems = array_filter($cpNavNewPluginNavItems, static function($navItem) use ($cpNavSproutPluginNavKeys) {
+            foreach ($cpNavSproutPluginNavKeys as $sproutNavKey) {
+                if ($navItem['url'] === $sproutNavKey) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        uasort($cpNavNewPluginNavItems, static fn($a, $b) => $a['label'] <=> $b['label']);
+
+        // Remove all the Sprout Plugin hasCpSection nav items
+        $newCpNavItems = array_filter($cpNavItems, static function($navItem) use ($pluginsWithCpSections) {
+            foreach ($pluginsWithCpSections as $plugin) {
+                if ($navItem['url'] === $plugin->handle) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // If no other plugins are installed and no modules are enabled, this will be the Sprout plugin and just get removed later
+        $cpNavFirstPluginItemKey = array_key_first($pluginsWithCpSections);
+        $cpNavFirstPluginItemIndex = Collection::make($cpNavItems)->search(fn(array $item) => $item['url'] === $cpNavFirstPluginItemKey);
+
+        // If we don't find any plugins with CP sections (a Sprout Plugin should always be there), we'll just add the Sprout Modules to the end of the nav
+        if ($cpNavFirstPluginItemIndex === false) {
+            $cpNavFirstPluginItemIndex = count($newCpNavItems);
         }
 
-        // Add the Craft defaults back to the bottom of the nav
-        foreach ($afterCpNavItems as $afterCpNavItem) {
-            $newCpNavItems[] = $afterCpNavItem;
-        }
+        // Insert the Sprout Module nav items
+        array_splice($newCpNavItems, $cpNavFirstPluginItemIndex, 0, $cpNavNewPluginNavItems);
 
         return $newCpNavItems;
     }
@@ -123,8 +137,8 @@ class CpNavHelper
      * Adds nav items for a give module to the Sprout settings sidebar navigation
      */
     public static function mergeSproutCpSettingsNavItems(
-        array  $oldNavItems,
-        array  $newNavItems,
+        array $oldNavItems,
+        array $newNavItems,
         string $groupName,
     ): array {
         $navItems = $oldNavItems;
