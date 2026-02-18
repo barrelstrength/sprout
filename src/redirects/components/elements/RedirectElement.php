@@ -385,7 +385,6 @@ class RedirectElement extends Element
             $this->oldUrl = RedirectHelper::removeSlash($this->oldUrl);
         }
 
-
         if ($this->newUrl) {
             $this->newUrl = RedirectHelper::removeSlash($this->newUrl);
 
@@ -447,16 +446,24 @@ class RedirectElement extends Element
      */
     public function uniqueUrl(string $attribute): void
     {
-        $redirect = self::find()
+        $redirectQuery = self::find()
             ->siteId($this->siteId)
-            ->where(['like binary', 'oldUrl', $this->$attribute])
-            ->andWhere([
+            ->where([
                 'in', 'statusCode', [
                     StatusCode::TEMPORARY,
                     StatusCode::PERMANENT,
                 ],
-            ])
-            ->one();
+            ]);
+
+        if (Craft::$app->getDb()->getIsPgsql()) {
+            // 'like' is case sensitive in Postgres
+            $redirectQuery->andWhere(['like', 'oldUrl', $this->$attribute]);
+        } else {
+            // 'like binary' is case sensitive in MySQL
+            $redirectQuery->andWhere(['like binary', 'oldUrl', $this->$attribute]);
+        }
+
+        $redirect = $redirectQuery->one();
 
         if ($redirect && $redirect->id != $this->id) {
             $this->addError($attribute, Craft::t('sprout-module-redirects', 'This url already exists.'));
