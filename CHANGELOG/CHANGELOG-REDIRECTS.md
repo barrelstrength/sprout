@@ -1,6 +1,23 @@
 # Changelog
 
+## UNRELEASED
+
+### Fixed
+
+- Fixed query string handling in redirect URL when 'Append Query String' enabled ([#353])
+- Fixed trailing slash handling in redirect URL when redirecting to home page ([#355])
+- Fixed like comparison in Postgres query ([#371])
+- Fixed queueing of purge redirects job ([#370])
+
+[#353]: https://github.com/barrelstrength/sprout/issues/353
+[#355]: https://github.com/barrelstrength/sprout/issues/355
+[#370]: https://github.com/barrelstrength/sprout/issues/370
+[#371]: https://github.com/barrelstrength/sprout/issues/371
+
+
 ## 5.0.9 - 2025-02-16
+
+### Fixed
 
 - Fixed settings field layout type assignment ([#362])
 
