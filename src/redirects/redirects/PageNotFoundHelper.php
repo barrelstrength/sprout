@@ -164,7 +164,7 @@ class PageNotFoundHelper
                     // Call the delete redirects job, give it some delay so we don't demand
                     // all the server resources. This is most important if anybody changes the
                     // Redirect Limit setting in a massive way
-                    $delay = ($i - 1) * 20;
+                    $delay = $i  * 20;
 
                     $purgeElements = new PurgeElements();
                     $purgeElements->elementType = RedirectElement::class;
