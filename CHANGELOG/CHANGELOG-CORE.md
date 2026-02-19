@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.12 - UNRELEASED
+
+### Fixed
+
+- Fixed module nav items positioning when nav items use different value than plugin handles ([#372])
+
+[#372]: https://github.com/barrelstrength/sprout/issues/372
+
 ## 5.0.10 - 2026-02-16
 
 ### Changed

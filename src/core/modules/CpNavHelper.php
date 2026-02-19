@@ -30,7 +30,9 @@ class CpNavHelper
         // get the nav items of the plugins with cp sections from the $cpNavItems based on the $pluginsWithCpSections matching the url to the plugin handle
         $cpNavOldPluginNavItems = array_filter($cpNavItems, static function($navItem) use ($pluginsWithCpSections) {
             foreach ($pluginsWithCpSections as $plugin) {
-                if ($navItem['url'] === $plugin->handle) {
+                $cpNavItem = $plugin->getCpNavItem();
+                $pluginNavItemUrl = $cpNavItem['url'] ?? null;
+                if ($navItem['url'] === $pluginNavItemUrl) {
                     return true;
                 }
             }
@@ -110,7 +112,9 @@ class CpNavHelper
         // Remove all the Sprout Plugin hasCpSection nav items
         $newCpNavItems = array_filter($cpNavItems, static function($navItem) use ($pluginsWithCpSections) {
             foreach ($pluginsWithCpSections as $plugin) {
-                if ($navItem['url'] === $plugin->handle) {
+                $cpNavItem = $plugin->getCpNavItem();
+                $pluginNavItemUrl = $cpNavItem['url'] ?? null;
+                if ($navItem['url'] === $pluginNavItemUrl) {
                     return false;
                 }
             }
@@ -119,8 +123,10 @@ class CpNavHelper
         });
 
         // If no other plugins are installed and no modules are enabled, this will be the Sprout plugin and just get removed later
-        $cpNavFirstPluginItemKey = array_key_first($pluginsWithCpSections);
-        $cpNavFirstPluginItemIndex = Collection::make($cpNavItems)->search(fn(array $item) => $item['url'] === $cpNavFirstPluginItemKey);
+        $firstPlugin = reset($pluginsWithCpSections);
+        $firstCpNavItem = $firstPlugin->getCpNavItem();
+        $firstPluginNavItemUrl = $firstCpNavItem['url'] ?? null;
+        $cpNavFirstPluginItemIndex = Collection::make($cpNavItems)->search(fn(array $item) => $item['url'] === $firstPluginNavItemUrl);
 
         // If we don't find any plugins with CP sections (a Sprout Plugin should always be there), we'll just add the Sprout Modules to the end of the nav
         if ($cpNavFirstPluginItemIndex === false) {
