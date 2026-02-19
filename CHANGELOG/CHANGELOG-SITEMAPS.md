@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.13 - UNRELEASED
+
+### Fixed
+
+- Fixed template loading for content query sitemaps  ([#375])
+
+[#375]:  https://github.com/barrelstrength/sprout/issues/375
+
 ## 5.0.0 - 2024-06-30
 
 ### Added
