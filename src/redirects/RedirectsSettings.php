@@ -8,6 +8,7 @@ use BarrelStrength\Sprout\redirects\redirects\MatchDefinition;
 use BarrelStrength\Sprout\redirects\redirects\QueryStringStrategy;
 use Craft;
 use craft\config\BaseConfig;
+use craft\errors\ElementNotFoundException;
 use craft\models\FieldLayout;
 use craft\models\Structure;
 
@@ -103,6 +104,11 @@ class RedirectsSettings extends BaseConfig
         }
 
         $this->structure = Craft::$app->getStructures()->getStructureByUid($this->structureUid);
+
+        if (!$this->structure) {
+            // This error indicates a bug in the installation or upgrade migrations and the Redirects Structure in the DB will need to be updated to reflect the structureUid in the Project Config.
+            throw new ElementNotFoundException('Unable to find Redirects Structure in database using Project Config setting sprout.sprout-module-redirects.structureUid: ' . $this->structureUid);
+        }
 
         return $this->structure;
     }
