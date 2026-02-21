@@ -9,7 +9,7 @@ use BarrelStrength\Sprout\redirects\redirects\QueryStringStrategy;
 use Craft;
 use craft\config\BaseConfig;
 use craft\models\FieldLayout;
-use craft\records\Structure;
+use craft\models\Structure;
 
 /**
  * @property int $structureUid
@@ -51,6 +51,8 @@ class RedirectsSettings extends BaseConfig
      * to a single Site.
      */
     public ?string $structureUid = null;
+
+    private ?Structure $structure = null;
 
     public function enable404RedirectLog(bool $value): self
     {
@@ -94,20 +96,15 @@ class RedirectsSettings extends BaseConfig
         return $this;
     }
 
-    public function getStructureId(): int
+    public function getStructure(): Structure
     {
-        if (!$this->structureUid) {
-            $this->structureUid = Craft::$app->getProjectConfig()->get(RedirectsModule::projectConfigPath('structureUid'));
+        if ($this->structure) {
+            return $this->structure;
         }
 
-        $structureId = (int)Structure::find()
-            ->select('id')
-            ->where([
-                'uid' => $this->structureUid,
-            ])
-            ->scalar();
+        $this->structure = Craft::$app->getStructures()->getStructureByUid($this->structureUid);
 
-        return $structureId;
+        return $this->structure;
     }
 
     public function setExcludedUrlPatterns(string $value = null): void

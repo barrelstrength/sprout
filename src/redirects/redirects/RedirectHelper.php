@@ -35,7 +35,7 @@ class RedirectHelper
 
     public static function getStructureId(): int
     {
-        return RedirectsModule::getInstance()->getSettings()->getStructureId();
+        return RedirectsModule::getInstance()->getSettings()->getStructure()->id;
     }
 
     /**
