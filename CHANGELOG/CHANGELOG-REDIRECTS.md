@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.0.14 - 2026-02-21
+
+### Fixed
+
+- Fixes redirect Structure configuration in some instances ([#339], [#376])
+
+[#339]: https://github.com/barrelstrength/sprout/issues/339
+[#376]: https://github.com/barrelstrength/sprout/issues/376
+
 ## 5.0.11 - 2026-02-17
 
 ### Fixed
