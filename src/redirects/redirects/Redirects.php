@@ -87,28 +87,30 @@ class Redirects extends Component
             return;
         }
 
-        RedirectHelper::incrementCount($redirect);
+        // Logged 404s are saved disabled, so count them before the enabled check
+        if ($redirect->statusCode === StatusCode::PAGE_NOT_FOUND) {
+            RedirectHelper::incrementCount($redirect);
 
-        if ($settings->queryStringStrategy === QueryStringStrategy::REMOVE_QUERY_STRINGS) {
-            $queryString = '';
-        } elseif ($settings->queryStringStrategy === QueryStringStrategy::APPEND_QUERY_STRINGS) {
-            $queryString = '?' . $request->getQueryStringWithoutPath();
-        } else {
             return;
         }
 
-        if ($redirect->enabled && $redirect->statusCode !== StatusCode::PAGE_NOT_FOUND) {
-            if (UrlHelper::isAbsoluteUrl($redirect->newUrl ?? RedirectHelper::SLASH_CHARACTER)) {
-                Craft::$app->getResponse()->redirect(
-                    $redirect->newUrl . $queryString, $redirect->statusCode
-                );
-            } else {
-                Craft::$app->getResponse()->redirect(
-                    $redirect->getAbsoluteNewUrl() . $queryString, $redirect->statusCode
-                );
-            }
-
-            Craft::$app->end();
+        if (!$redirect->enabled) {
+            return;
         }
+
+        RedirectHelper::incrementCount($redirect);
+
+        $queryString = match($settings->queryStringStrategy) {
+            QueryStringStrategy::APPEND_QUERY_STRINGS => $request->getQueryStringWithoutPath(),
+            default => ''
+        };
+
+        $redirectUrl = UrlHelper::siteUrl($redirect->newUrl, $queryString);
+
+        Craft::$app->getResponse()->redirect(
+            $redirectUrl, $redirect->statusCode
+        );
+
+        Craft::$app->end();
     }
 }
